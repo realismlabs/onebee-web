@@ -1,9 +1,10 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "next/font/google";
+import styles from "@/styles/Home.module.css";
+import GradientBorder from "../components/GradientBorder";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
@@ -14,110 +15,70 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>src/pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
+      <main className={`gap-12 ${styles.main}`}>
+        <header className="fixed left-0 top-0 w-full bg-opacity-50 px-12 py-4 backdrop-blur-lg backdrop-filter">
+          <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex h-16 items-center justify-between">
+              <div className="flex-shrink-0">
+                <img className="w-28" src="/images/logo.svg" alt="Logo" />
+              </div>
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
+                  {["Company", "Pricing", "Blog", "Use Cases"].map(
+                    (text, index) => (
+                      <a
+                        key={index}
+                        href="#"
+                        className="text-md font-sm rounded-md px-3 py-2 text-white/50 transition-colors duration-300 ease-in-out hover:text-white"
+                      >
+                        {text}
+                      </a>
+                    )
+                  )}
+                </div>
+              </div>
+              <div className="hidden md:block">
+                <div>
+                  <a
+                    href="#"
+                    className={`text-md inset-border rounded-full bg-slate-1 px-3 py-2 text-sm font-medium text-white ${styles.insetBorder}`}
+                  >
+                    Sign In
+                  </a>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </header>
 
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
+        <h1 className="font-regular text-[48px] text-white">
+          The ultimate data browser
+        </h1>
+        <div className="relative">
+          <img
+            className="relative z-20 "
+            src="/images/dataland_hero.svg"
+            alt="Hero Image"
           />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
+          <img
+            className="absolute inset-0 z-10 m-auto"
+            src="/images/gradients_hero.svg"
+            alt="Gradients"
+          />
+        </div>
+        <GradientBorder>
+          <div
+            style={{
+              margin: "20px",
+              padding: "20px",
+              backgroundColor: "#FFFFFF20",
+            }}
+          >
+            Content goes here
           </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+        </GradientBorder>
+        <button className="bg-gray-800 px-4 py-3 text-white">Button</button>
       </main>
     </>
-  )
+  );
 }
