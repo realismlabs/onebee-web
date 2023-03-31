@@ -16,14 +16,149 @@
   );
 }
 
-.insetBorder {
-  border: 1px solid;
+.insetButton {
+  display: inline-block;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
 
-  border-image-source: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(0, 0, 0, 0) 100%
+.insetButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: transparent;
+  box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  z-index: 2;
+}
+
+.heroImageContainer {
+  /* Dataland Hero Holder */
+
+  box-sizing: border-box;
+
+  /* Auto layout */
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px;
+  gap: 6px;
+
+  /* position: absolute;
+  width: 1065.04px;
+  height: 524.96px;
+  left: -6.03px;
+  top: -5.99px; */
+
+  /* Glassy */
+
+  background: linear-gradient(
+    104.81deg,
+    #03285e 0.42%,
+    #190e5b 22.11%,
+    #24135c 52.05%,
+    #32185d 80.44%,
+    #4f1854 97.48%
   );
+  /* box-shadow: 0px 4px 10px #23135c; */
+
+  /* borders */
+  border-radius: 8px;
+}
+
+.heroImageContainerOuter {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1px;
+
+  background: linear-gradient(
+    104.81deg,
+    rgba(0, 109, 255, 1) 0.42%,
+    rgba(67, 21, 243, 1) 22.11%,
+    rgba(113, 41, 249, 1) 52.05%,
+    rgba(141, 55, 253, 1) 80.44%,
+    rgba(253, 55, 221, 1) 97.48%
+  );
+  /* box-shadow: 0px 4px 10px #23135c; */
+
+  /* borders */
+  border-radius: 9px;
+}
+
+.rayOfLightTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 8px;
+  background-image: linear-gradient(90deg, transparent, white, transparent);
+  mix-blend-mode: overlay;
+  animation: ray-of-light-top 4s infinite linear;
+}
+
+.rayOfLightBottom {
+  position: absolute;
+  top: 520px;
+  left: 0;
+  width: 240px;
+  height: 8px;
+  background-image: linear-gradient(90deg, transparent, white, transparent);
+  mix-blend-mode: overlay;
+  animation: ray-of-light-bottom 4s infinite linear;
+}
+
+@keyframes ray-of-light-top {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  2% {
+    opacity: 0;
+  }
+  13% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(calc(1086px - 10px), 0);
+    opacity: 0;
+  }
+}
+
+@keyframes ray-of-light-bottom {
+  0% {
+    transform: translate(calc(1086px - 10px), 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
 }
 
 /* Tablet and Smaller Desktop */

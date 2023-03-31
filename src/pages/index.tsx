@@ -2,8 +2,6 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import GradientBorder from "../components/GradientBorder";
-import GradientImage from "../components/GradientImage";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -56,41 +54,40 @@ export default function Home() {
           The ultimate data browser
         </h1>
         <div className="relative">
-          <div
-            className="relative z-30 m-auto w-full text-center text-white"
-            style={{
-              top: 360,
-            }}
-          >
-            <h2>
-              We loaded every HN post and comment, 1.6 billion rows, into this
-              table.
-            </h2>
-            <h2>Try running search for “rust” or your HN username.</h2>
-            <button className="mt-4 inline-block bg-purple-11 py-2 px-4 w-auto rounded-full">
-              PLayground
-            </button>
+          {/* <HeroImage text="Hello, world!" /> */}
+          <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
+            <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
+              <Image
+                className="relative z-20 m-auto"
+                src="/images/dataland_hero.svg"
+                alt="Hero Image"
+                draggable="false"
+                width="1053"
+                height="513"
+              />
+              <div className="absolute pt-96 inset-0 z-30 m-auto w-full text-center text-white">
+                <h2>
+                  We loaded every HN post and comment, 1.6 billion rows, into
+                  this table.
+                </h2>
+                <h2>Try running search for “rust” or your HN username.</h2>
+
+                <button
+                  className={`mt-4 inline-block bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all ${styles.insetButton}`}
+                >
+                  Launch playground
+                </button>
+              </div>
+            </div>
+            <div
+              className={`absolute z-20 text-white ${styles.rayOfLightTop}`}
+            ></div>
+            <div
+              className={`absolute z-20 text-white ${styles.rayOfLightBottom}`}
+            ></div>
           </div>
-          <img
-            className="relative z-20 m-auto w-[85%]"
-            src="/images/dataland_hero.svg"
-            alt="Hero Image"
-            draggable="false"
-          />
-          <img
-            className="absolute inset-0 z-10 m-auto mix-blend-overlay"
-            src="/images/gradients_hero.svg"
-            alt="Gradients"
-            draggable="false"
-          />
-          <img
-            className="absolute inset-0 z-10 m-auto opacity-40"
-            src="/images/gradients_hero.svg"
-            alt="Gradients"
-            draggable="false"
-          />
         </div>
-        <button className="bg-gray-800 px-4 py-3 text-white">Button</button>
+        <button className={`bg-gray-800 px-4 py-3 text-white`}>Button</button>
       </main>
     </>
   );
