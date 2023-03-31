@@ -11,6 +11,7 @@ module.exports = {
   plugins: [require("windy-radix-palette")({
     colors: {
       slate: radixColors.slateDark,
+      purple: radixColors.purpleDark,
     },
   }),],
 }
