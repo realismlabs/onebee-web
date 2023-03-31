@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
+import ThreeDiv from "../components/ThreeDiv";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -53,8 +54,9 @@ export default function Home() {
         <h1 className="font-regular text-[48px] text-white">
           The ultimate data browser
         </h1>
-        <div className="relative">
-          {/* <HeroImage text="Hello, world!" /> */}
+        <div className={`relative ${styles.perspectiveDiv}`}>
+          {/* <ThreeDiv> */}
+          {/* Hero */}
           <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
             <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
               <Image
@@ -86,6 +88,7 @@ export default function Home() {
               className={`absolute z-20 text-white ${styles.rayOfLightBottom}`}
             ></div>
           </div>
+          {/* </ThreeDiv> */}
         </div>
         <button className={`bg-gray-800 px-4 py-3 text-white`}>Button</button>
       </main>
