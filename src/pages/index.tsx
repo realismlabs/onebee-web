@@ -78,6 +78,11 @@ export default function Home() {
             MozBackgroundClip: "text",
             backgroundClip: "text",
             color: "transparent",
+
+            animation: "fadeInFromBottom 0.4s ease-in-out",
+            animationDelay: "0.3s",
+            animationFillMode: "forwards",
+            opacity: 0,
           }}
         >
           The ultimate data browser
@@ -110,19 +115,22 @@ export default function Home() {
             className={`absolute pt-[600px] inset-0 z-30 m-auto w-full text-center text-white ${styles.heroTextContainer}`}
           >
             <h2>
-              We loaded every HN post and comment, 1.6 billion rows, into this
-              table.
+              We loaded every HN post and comment,
+              <span className="text-[#c07cff]">1.6 billion rows,</span> into
+              this table.
             </h2>
-            <h2>Try running search for “rust” or your HN username.</h2>
+            <h2>
+              Try running search for &quot;rust&quot; or your HN username.
+            </h2>
 
             <button
-              className={`mt-4 inline-block bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all ${styles.insetButton}`}
+              className={`mt-4 inline-block bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all`}
             >
               Launch playground
             </button>
           </div>
           <div
-            className={`absolute inset-0 pointer-events-none select-none pt-[640px] z-10 w-[2700px]`}
+            className={`absolute inset-0 pointer-events-none select-none pt-[640px] z-10 w-[2700px] bg-transparent`}
             style={{
               left: "50%",
               transform: "translate(-50%, -12%)",
@@ -133,8 +141,8 @@ export default function Home() {
             }}
           >
             <Image
-              src="/images/colored_gridlines.svg"
-              alt="Hero Image"
+              src="/images/gridlines_masked.svg"
+              alt="Gridlines"
               draggable="false"
               width="3000"
               height="600"
@@ -170,7 +178,7 @@ export default function Home() {
               href={`https://google.com`}
               text={`Get started`}
               target={`_blank`}
-              highlightValue={"0.5"}
+              highlightValue={"0.4"}
             />
             <p className="text-white"> $5 per GB-month • Unlimited users</p>
           </div>
@@ -277,14 +285,16 @@ export default function Home() {
             </div>
           </div>
           <div className="flex flex-col gap-12 items-center">
-            <div className="flex flex-col text-white items-center gap-12">
-              <h1 className="text-3xl w-[240px]">Rich cell types</h1>
-              <p className="text-md max-w-xl">
-                Rich cell types help users understand data, faster.
-              </p>{" "}
-              <p>
-                We auto-assign the right cell type based on column contents.
-              </p>
+            <div className="flex flex-col items-center gap-4 text-center">
+              <h1 className="text-3xl text-white">Rich cell types</h1>
+              <div className="space-y-1 text-slate-11">
+                <p className="text-md max-w-xl">
+                  Rich cell types help users understand data, faster.
+                </p>
+                <p>
+                  We auto-assign the right cell type based on column contents.
+                </p>
+              </div>
             </div>
             <div>
               <Image
@@ -296,6 +306,149 @@ export default function Home() {
                 height="489"
               />
             </div>
+
+            <Image
+              className="absolute pointer-events-none select-none"
+              src="/images/gradient_highlight.svg"
+              alt="Gradient highlight"
+              draggable="false"
+              width="1555"
+              height="600"
+              style={{
+                mixBlendMode: "overlay",
+                transform: "translateY(-200px)",
+              }}
+            />
+
+            <Image
+              className="absolute pointer-events-none select-none"
+              src="/images/gradient_highlight.svg"
+              alt="Product Screenshot - Rich Cell Types"
+              draggable="false"
+              width="1555"
+              height="600"
+              style={{
+                mixBlendMode: "normal",
+                transform: "translateY(-200px)",
+                opacity: 0.2,
+              }}
+            />
+          </div>
+          <div className="flex flex-row justify-evenly">
+            <Image
+              className="absolute pointer-events-none select-none z-10"
+              src="/images/gradient_highlight.svg"
+              alt="Product Screenshot - Rich Cell Types"
+              draggable="false"
+              width="1555"
+              height="600"
+              style={{
+                mixBlendMode: "overlay",
+                opacity: 1.0,
+                transform: "translateY(-200px)",
+              }}
+            />
+            <Image
+              className="absolute pointer-events-none select-none z-10"
+              src="/images/gradient_highlight.svg"
+              alt="Product Screenshot - Rich Cell Types"
+              draggable="false"
+              width="1555"
+              height="600"
+              style={{
+                mixBlendMode: "normal",
+                opacity: 0.3,
+                transform: "translateY(-200px)",
+              }}
+            />
+            <div className="flex flex-col gap-12">
+              <Image
+                className="relative pointer-events-none select-none"
+                src="/images/feature_sync_data.svg"
+                alt="Product Screenshot - Sync Data"
+                draggable="false"
+                width="402"
+                height="310"
+              />
+              <div className="flex flex-col gap-4 max-w-md">
+                <h1 className="text-2xl text-white">
+                  Syncs from your data warehouse
+                </h1>
+                <p className="space-y-1 text-slate-11">
+                  Connect your Postgres, BigQuery, or Snowflake to Dataland. The
+                  Dataland UI updates in realtime.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-12">
+              <Image
+                className="relative pointer-events-none select-none"
+                src="/images/feature_security_compliance.svg"
+                alt="Product Screenshot - Security and Compliance"
+                draggable="false"
+                width="402"
+                height="310"
+              />
+              <div className="flex flex-col gap-4 max-w-md">
+                <h1 className="text-2xl text-white">
+                  Enterprise-grade security
+                </h1>
+                <p className="space-y-1 text-slate-11">
+                  Dataland is SOC 2 Type 2 compliant, as well as HIPAA and GDPR
+                  certified in partnership with Vanta.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row gap-24 py-24">
+            <div className="flex flex-col gap-4 py-12">
+              <IconEyebrow
+                icon={<Lightning color="#E5C3F0" />}
+                text="Productivity"
+              />
+              <h1 className="text-3xl text-white">Row navigation</h1>
+              <div className="space-y-4 text-slate-11">
+                <p className="text-md max-w-xl">
+                  Dataland makes it easy to introspect rows in wide tables. Just
+                  double-click on a row to summon an object view.
+                </p>
+                <p>Access other object views from other tables via the dock.</p>
+              </div>
+            </div>
+            <Image
+              src="/images/feature_object_views.svg"
+              alt="Feature - Object Views"
+              draggable="false"
+              width="690"
+              height="528"
+            />
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="z-10 flex flex-col pb-96 items-center">
+              <h1 className="text-[48px] leading-tight text-white">
+                The ultimate <br></br>data browser
+              </h1>
+              <div className="flex flex-row gap-4 pt-12 items-center">
+                <InsetButton
+                  bgColor={`#4315F3`}
+                  href={`https://google.com`}
+                  text={`Get started`}
+                  target={`_blank`}
+                  highlightValue={"0.4"}
+                />
+              </div>
+            </div>
+            <Image
+              src="/images/footer_splash.svg"
+              alt="Gridlines"
+              draggable="false"
+              width="1440"
+              height="570"
+              className="absolute select-none pointer-events-none"
+              style={{
+                transform: "translateY(-60px)",
+              }}
+            />
           </div>
         </div>
       </main>

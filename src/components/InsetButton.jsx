@@ -21,14 +21,19 @@ const InsetButton = ({ bgColor, text, href, target, highlightValue }) => (
           fontSize: '1rem',
           fontWeight: '500',
           color: '#fff',
-          textDecoration: 'none'
+          textDecoration: 'none',
+          transition: 'filter 0.2s ease-in-out'
         }}
         className="text-md rounded-full font-medium"
+        // Add hover style to darken the button with a 10% opacity black fill
+        onMouseOver={(e) => e.target.style.filter = 'brightness(80%)'}
+        onMouseOut={(e) => e.target.style.filter = 'brightness(100%)'}
       >
         {text}
       </a>
     </div>
   </div>
+
 );
 
 export default InsetButton;
