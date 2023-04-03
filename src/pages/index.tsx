@@ -3,8 +3,24 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import InsetButton from "../components/InsetButton";
+import { Lightning } from "@phosphor-icons/react";
+import IconEyebrow from "../components/IconEyebrow";
 
 const inter = Inter({ subsets: ["latin"] });
+
+type StatsProps = {
+  value: string;
+  subtitle: string;
+};
+
+function Stats({ value, subtitle }: StatsProps): JSX.Element {
+  return (
+    <div className="flex flex-col gap-2 max-w-[240px] self-start">
+      <h1 className="text-white text-3xl font-medium">{value}</h1>
+      <p className="text-slate-11">{subtitle}</p>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -53,7 +69,17 @@ export default function Home() {
           </nav>
         </header>
 
-        <h1 className="font-regular text-[48px] text-white pt-8">
+        <h1
+          className="font-regular text-[48px] text-white pt-8"
+          style={{
+            backgroundImage: 'url("images/hero_text_gradient_mask_v6.svg")',
+            backgroundPosition: "bottom",
+            WebkitBackgroundClip: "text",
+            MozBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+          }}
+        >
           The ultimate data browser
         </h1>
         <div>
@@ -147,6 +173,129 @@ export default function Home() {
               highlightValue={"0.5"}
             />
             <p className="text-white"> $5 per GB-month • Unlimited users</p>
+          </div>
+        </div>
+        <div className="w-[1100px] space-y-36">
+          <div className="text-white flex flex-row gap-12">
+            <Image
+              className="relative z-20 m-auto pointer-events-none select-none"
+              src="/images/logos/logo_wyndly.svg"
+              alt="Wyndly"
+              draggable="false"
+              width="120"
+              height="120"
+            />
+            <Image
+              className="relative z-20 m-auto pointer-events-none select-none"
+              src="/images/logos/logo_gorgias.svg"
+              alt="Gorgias"
+              draggable="false"
+              width="120"
+              height="120"
+            />
+            <Image
+              className="relative z-20 m-auto pointer-events-none select-none"
+              src="/images/logos/logo_wyndly.svg"
+              alt="Wyndly"
+              draggable="false"
+              width="120"
+              height="120"
+            />
+            <Image
+              className="relative z-20 m-auto pointer-events-none select-none"
+              src="/images/logos/logo_gorgias.svg"
+              alt="Gorgias"
+              draggable="false"
+              width="120"
+              height="120"
+            />
+          </div>
+          <div className=" text-white z-20 flex flex-row gap-16 items-center">
+            <Image
+              className="relative z-20 m-auto pointer-events-none select-none w-2/3"
+              src="/images/performance_diagram.svg"
+              alt="Hero Image"
+              draggable="false"
+              width="1053"
+              height="513"
+            />
+            <div className="flex flex-col gap-4">
+              <IconEyebrow
+                icon={<Lightning color="#E5C3F0" />}
+                text="Performance"
+              />
+              <h2 className="text-xl">
+                Leveraging WebGL, WASM, and Rust for ultra-high performance
+              </h2>
+              <p className="text-slate-11">
+                The data source API handles automatic caching from selected
+                datasets in your data warehouse.
+              </p>
+              <p className="text-slate-11">
+                The indexing and caching layer is optimized for data loading and
+                full-text search.
+              </p>
+              <p className="text-slate-11">
+                The UI works with the caching layer to seamlessly translate user
+                action (scrolling, searching, etc.) to give instant results on
+                the front-end.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-row gap-12 justify-evenly">
+            <Stats value="<1s" subtitle="Load time for 1 billion rows" />
+            <Stats value="0.1s" subtitle="table load times" />
+            <Stats
+              value="133x faster"
+              subtitle="for searches compared to Retool querying directly from Snowflake"
+            />
+            <Stats
+              value="98x cheaper"
+              subtitle="for searches compared to querying directly from Snowflake"
+            />
+          </div>
+          <div className="flex flex-col gap-12 py-16 border-t border-b border-slate-3 items-center">
+            <div className="flex flex-row text-white items-center gap-24">
+              <h1 className="text-3xl w-[240px]">
+                Full-text search that just works
+              </h1>
+              <p className="text-md max-w-xl">
+                Just ⌘F to launch a case insensitive, substring search that
+                returns results instantly. Instantly jump to the next search
+                result a million rows away.
+              </p>
+            </div>
+            <div>
+              <Image
+                className="relative pointer-events-none select-none"
+                src="/images/product_search.svg"
+                alt="Product Screenshot - Search"
+                draggable="false"
+                width="1000"
+                height="378"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-12 items-center">
+            <div className="flex flex-col text-white items-center gap-12">
+              <h1 className="text-3xl w-[240px]">Rich cell types</h1>
+              <p className="text-md max-w-xl">
+                Rich cell types help users understand data, faster.
+              </p>{" "}
+              <p>
+                We auto-assign the right cell type based on column contents.
+              </p>
+            </div>
+            <div>
+              <Image
+                className="relative pointer-events-none select-none"
+                src="/images/product_rich_cells.svg"
+                alt="Product Screenshot - Rich Cell Types"
+                draggable="false"
+                width="1100"
+                height="489"
+              />
+            </div>
           </div>
         </div>
       </main>
