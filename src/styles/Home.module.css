@@ -72,6 +72,7 @@
 .heroImageContainerOuter {
   box-sizing: border-box;
 
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -92,9 +93,9 @@
   border-radius: 9px;
 
   transform-style: preserve-3d;
-  animation: loadIn 1s ease-in-out;
+  animation: heroLoadIn 2s ease-in-out;
   /* animation-delay: 1000ms; */
-  transform-origin: center bottom;
+  transform-origin: center center;
 }
 
 .rayOfLightTop {
@@ -113,7 +114,7 @@
   top: 520px;
   left: 0;
   width: 240px;
-  height: 8px;
+  height: 7px;
   background-image: linear-gradient(90deg, transparent, white, transparent);
   mix-blend-mode: overlay;
   animation: ray-of-light-bottom 4s infinite linear;
@@ -123,6 +124,14 @@
   perspective: 1000px;
 }
 
+.heroTextContainer {
+  /* // add keyframe for fade in from bottom after 2 seconds */
+  /* // add keyframe for fade out to bottom after 2 seconds */
+  animation: fadeInFromBottom 0.4s ease-in-out;
+  animation-delay: 1800ms;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
 @keyframes ray-of-light-top {
   0% {
     transform: translate(0, 0);
@@ -196,12 +205,20 @@
   }
 }
 
-@keyframes loadIn {
-  from {
+@keyframes heroLoadIn {
+  0% {
+    top: 40px;
     transform: rotateX(45deg);
+    opacity: 0.2;
   }
-
-  to {
-    transform: rotateX(0deg);
+  50% {
+    top: 0;
+    transform: rotateX(45deg);
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    top: 0;
+    transform: rotateX(0);
   }
 }

@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import ThreeDiv from "../components/ThreeDiv";
+import InsetButton from "../components/InsetButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,11 +16,16 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`gap-12 ${styles.main}`}>
-        <header className="fixed left-0 top-0 w-full bg-opacity-50 px-12 py-4 backdrop-blur-lg backdrop-filter">
-          <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <header className="fixed left-0 top-0 w-full bg-opacity-50 px-12 py-4 backdrop-blur-lg backdrop-filter z-40">
+          <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-40">
             <div className="flex h-16 items-center justify-between">
               <div className="flex-shrink-0">
-                <img className="w-28" src="/images/logo.svg" alt="Logo" />
+                <Image
+                  width="112"
+                  height="29"
+                  src="/images/logo.svg"
+                  alt="Logo"
+                />
               </div>
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
@@ -37,62 +42,113 @@ export default function Home() {
                   )}
                 </div>
               </div>
-              <div
-                className={`${styles.insetButtonOuterSlate1} p-1 flex flex-col items-center justify-center`}
-              >
-                <div>
-                  <a
-                    href="#"
-                    className={`${styles.insetButtonInnerSlate1} text-md rounded-full bg-slate-1 font-medium text-white`}
-                  >
-                    Sign in
-                  </a>
-                </div>
-              </div>
+              <InsetButton
+                bgColor={`var(--slate1)`}
+                href={`https://google.com`}
+                text={`Sign in`}
+                target={`_blank`}
+                highlightValue={"0.2"}
+              />
             </div>
           </nav>
         </header>
 
-        <h1 className="font-regular text-[48px] text-white">
+        <h1 className="font-regular text-[48px] text-white pt-8">
           The ultimate data browser
         </h1>
-        <div className={`relative ${styles.perspectiveDiv}`}>
-          {/* <ThreeDiv> */}
-          {/* Hero */}
-          <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
-            <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
-              <Image
-                className="relative z-20 m-auto"
-                src="/images/dataland_hero.svg"
-                alt="Hero Image"
-                draggable="false"
-                width="1053"
-                height="513"
-              />
-              <div className="absolute pt-96 inset-0 z-30 m-auto w-full text-center text-white">
-                <h2>
-                  We loaded every HN post and comment, 1.6 billion rows, into
-                  this table.
-                </h2>
-                <h2>Try running search for “rust” or your HN username.</h2>
-
-                <button
-                  className={`mt-4 inline-block bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all ${styles.insetButton}`}
-                >
-                  Launch playground
-                </button>
+        <div>
+          <div className={`relative ${styles.perspectiveDiv} z-20`}>
+            {/* <ThreeDiv> */}
+            {/* Hero */}
+            <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
+              <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
+                <Image
+                  className="relative z-20 m-auto pointer-events-none select-none"
+                  src="/images/dataland_hero.svg"
+                  alt="Hero Image"
+                  draggable="false"
+                  width="1053"
+                  height="513"
+                />
               </div>
+              <div
+                className={`absolute z-20 text-white ${styles.rayOfLightTop}`}
+              ></div>
+              <div
+                className={`absolute z-20 text-white ${styles.rayOfLightBottom}`}
+              ></div>
             </div>
-            <div
-              className={`absolute z-20 text-white ${styles.rayOfLightTop}`}
-            ></div>
-            <div
-              className={`absolute z-20 text-white ${styles.rayOfLightBottom}`}
-            ></div>
+            {/* </ThreeDiv> */}
           </div>
-          {/* </ThreeDiv> */}
+          <div
+            className={`absolute pt-[600px] inset-0 z-30 m-auto w-full text-center text-white ${styles.heroTextContainer}`}
+          >
+            <h2>
+              We loaded every HN post and comment, 1.6 billion rows, into this
+              table.
+            </h2>
+            <h2>Try running search for “rust” or your HN username.</h2>
+
+            <button
+              className={`mt-4 inline-block bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all ${styles.insetButton}`}
+            >
+              Launch playground
+            </button>
+          </div>
+          <div
+            className={`absolute inset-0 pointer-events-none select-none pt-[640px] z-10 w-[2700px]`}
+            style={{
+              left: "50%",
+              transform: "translate(-50%, -12%)",
+              animation: "fadeIn 0.4s ease-in-out",
+              animationDelay: "1.8s",
+              animationFillMode: "forwards",
+              opacity: 0,
+            }}
+          >
+            <Image
+              src="/images/colored_gridlines.svg"
+              alt="Hero Image"
+              draggable="false"
+              width="3000"
+              height="600"
+            />
+          </div>
         </div>
-        <button className={`bg-gray-800 px-4 py-3 text-white`}>Button</button>
+        <div
+          className="max-w-lg text-white z-20 flex flex-col gap-4 py-12"
+          style={{
+            animation: "fadeInFromBottom 0.4s ease-in-out",
+            animationDelay: "2.4s",
+            animationFillMode: "forwards",
+            opacity: 0,
+          }}
+        >
+          <h2 className="text-xl">
+            Dataland is a new kind of data browser that delivers a seamless user
+            experience, regardless of data scale.{" "}
+          </h2>
+          <p className="text-slate-11">
+            Dataland lets your internal teams access the data in your data
+            warehouse using a familiar spreadsheet-like UI that works the same
+            way across 10 rows or 10,000,000,000 rows.{" "}
+          </p>
+          <p className="text-slate-11">
+            Billion row tables load instantly, straight from your web browser.
+            Gone are the days of waiting for loading spinners, clicking through
+            50 rows per page, and being limited by pre-defined query patterns.
+          </p>
+          <div className="flex flex-row gap-4 pt-4 items-center">
+            <InsetButton
+              bgColor={`#4315F3`}
+              href={`https://google.com`}
+              text={`Get started`}
+              target={`_blank`}
+              highlightValue={"0.5"}
+            />
+            <p className="text-white"> $5 per GB-month • Unlimited users</p>
+          </div>
+        </div>
       </main>
     </>
   );
