@@ -37,13 +37,15 @@ export default function Home() {
                   )}
                 </div>
               </div>
-              <div className="hidden md:block">
+              <div
+                className={`${styles.insetButtonOuterSlate1} p-1 flex flex-col items-center justify-center`}
+              >
                 <div>
                   <a
                     href="#"
-                    className={`text-md inset-border rounded-full bg-slate-1 px-3 py-2 text-sm font-medium text-white ${styles.insetBorder}`}
+                    className={`${styles.insetButtonInnerSlate1} text-md rounded-full bg-slate-1 font-medium text-white`}
                   >
-                    Sign In
+                    Sign in
                   </a>
                 </div>
               </div>
