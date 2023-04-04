@@ -3,10 +3,12 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import InsetButton from "../components/InsetButton";
-import { Lightning, TwitterLogo, LinkedinLogo } from "@phosphor-icons/react";
+import { Lightning } from "@phosphor-icons/react";
 import IconEyebrow from "../components/IconEyebrow";
 import RotatingImage from "../components/RotatingImage";
 import React, { useState } from "react";
+import Link from "next/link";
+import Footer from "../components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -70,7 +72,6 @@ export default function Home() {
             </div>
           </nav>
         </header>
-
         <h1
           className="font-regular text-[48px] text-white pt-8"
           style={{
@@ -264,7 +265,7 @@ export default function Home() {
               subtitle="for searches compared to querying directly from Snowflake"
             />
           </div>
-          <div className="flex flex-col gap-12 py-16 border-t border-b border-slate-3 items-center">
+          <div className="flex flex-col gap-12 py-16 border-t border-b border-slate-4 items-center">
             <div className="flex flex-row text-white items-center gap-24">
               <h1 className="text-3xl w-[240px]">
                 Full-text search that just works
@@ -402,7 +403,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="flex flex-row gap-24 py-24">
+          <div className="px-12 flex flex-row gap-4 py-24">
             <div className="flex flex-col gap-4 py-12">
               <IconEyebrow
                 icon={<Lightning color="#E5C3F0" />}
@@ -418,7 +419,7 @@ export default function Home() {
               </div>
             </div>
             <Image
-              src="/images/feature_object_views.svg"
+              src="/images/feature_object_views.png"
               alt="Feature - Object Views"
               draggable="false"
               width="690"
@@ -454,46 +455,7 @@ export default function Home() {
             /> */}
           </div>
         </div>
-
-        <footer className="left-0 w-full bg-opacity-50 px-12 py-12 z-40">
-          <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-40">
-            <div className="flex h-16 items-center justify-between">
-              <div className="flex-shrink-0">
-                <Image
-                  width="112"
-                  height="29"
-                  src="/images/logo.svg"
-                  alt="Logo"
-                />
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  {["Privacy Policy", "Terms of Service"].map((text, index) => (
-                    <a
-                      key={index}
-                      href="#"
-                      className="text-md font-sm rounded-md px-3 py-2 text-slate-10 transition-colors duration-300 ease-in-out hover:text-white"
-                    >
-                      {text}
-                    </a>
-                  ))}
-                </div>
-              </div>
-              <div className="flex flex-row gap-4">
-                <TwitterLogo
-                  color="#FFFFFF"
-                  weight={"fill"}
-                  className="w-5 h-5"
-                />
-                <LinkedinLogo
-                  color="#FFFFFF"
-                  weight={"fill"}
-                  className="w-5 h-5"
-                />
-              </div>
-            </div>
-          </nav>
-        </footer>
+        <Footer />
       </main>
     </>
   );
