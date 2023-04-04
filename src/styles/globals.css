@@ -146,3 +146,30 @@ a {
     background-position: 0 0; /* start from the top-left corner */
   }
 }
+
+@keyframes scaleUpAndDown {
+  0% {
+    transform: scaleX(1) scaleY(1);
+  }
+  50% {
+    transform: scaleX(2.5) scaleY(1.2) translateY(-10px);
+  }
+  100% {
+    transform: scaleX(1) scaleY(1);
+  }
+}
+
+@keyframes scaleUpAndDown2 {
+  0% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleX(2.5) scaleY(1.4) translateY(-20px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 1;
+  }
+}

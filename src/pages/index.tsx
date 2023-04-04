@@ -8,6 +8,7 @@ import IconEyebrow from "../components/IconEyebrow";
 import React, { useState } from "react";
 import Link from "next/link";
 import Footer from "../components/Footer";
+import LogoSvgAnimation from "../components/LogoSvgAnimation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -95,7 +96,6 @@ export default function Home() {
         </h1>
         <div>
           <div className={`relative ${styles.perspectiveDiv} z-20`}>
-            {/* <ThreeDiv> */}
             {/* Hero */}
             <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
               <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
@@ -115,7 +115,6 @@ export default function Home() {
                 className={`absolute z-20 text-white ${styles.rayOfLightBottom}`}
               ></div>
             </div>
-            {/* </ThreeDiv> */}
           </div>
           <div
             className={`absolute pt-[600px] inset-0 z-30 m-auto w-full text-center text-white ${styles.heroTextContainer}`}
@@ -459,6 +458,7 @@ export default function Home() {
                 />
               </div>
             </div>
+            <LogoSvgAnimation />
           </div>
         </div>
         <Footer />
