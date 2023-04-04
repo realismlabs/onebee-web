@@ -5,7 +5,6 @@ import styles from "@/styles/Home.module.css";
 import InsetButton from "../components/InsetButton";
 import { Lightning } from "@phosphor-icons/react";
 import IconEyebrow from "../components/IconEyebrow";
-import RotatingImage from "../components/RotatingImage";
 import React, { useState } from "react";
 import Link from "next/link";
 import Footer from "../components/Footer";
@@ -36,7 +35,12 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`gap-12 ${styles.main}`}>
-        <header className="fixed left-0 top-0 w-full bg-opacity-50 px-12 py-4 backdrop-blur-md backdrop-filter z-40">
+        <header
+          className="fixed left-0 top-0 w-full bg-opacity-50 px-12 py-2 z-40 border-b border-slate-4"
+          style={{
+            backgroundColor: "rgb(4, 10, 25, 1)",
+          }}
+        >
           <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-40">
             <div className="flex h-16 items-center justify-between">
               <div className="flex-shrink-0">
@@ -126,11 +130,18 @@ export default function Home() {
               Try running search for &quot;rust&quot; or your HN username.
             </h2>
 
-            <button
-              className={`mt-4 inline-block bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all`}
-            >
-              Launch playground
-            </button>
+            <div className="mt-4">
+              <div className="inline-block bg-[#4315F3]">
+                <button
+                  className={`inline-block bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all`}
+                >
+                  Launch playground
+                  {/* <div
+                  className={`h-[40px] opacity-25 absolute w-12 ${styles.playgroundButtonShine}`}
+                ></div> */}
+                </button>
+              </div>
+            </div>
           </div>
           <div
             className={`absolute inset-0 pointer-events-none select-none pt-[640px] z-10 w-[2700px] bg-transparent`}
@@ -427,11 +438,11 @@ export default function Home() {
             />
           </div>
           <div className="flex flex-col items-center">
-            <div className="z-10 flex flex-col pb-96 items-center">
+            <div className="z-10 flex flex-col pb-96 items-center space-y-6">
               <h1 className="text-[48px] leading-tight text-white">
                 The ultimate <br></br>data browser
               </h1>
-              <div className="flex flex-row gap-4 pt-12 items-center">
+              <div className="flex flex-row gap-4 items-center">
                 <InsetButton
                   bgColor={`#4315F3`}
                   href={`https://google.com`}
@@ -441,18 +452,6 @@ export default function Home() {
                 />
               </div>
             </div>
-            <RotatingImage />
-            {/* <Image
-              src="/images/footer_splash.svg"
-              alt="Gridlines"
-              draggable="false"
-              width="1440"
-              height="570"
-              className="absolute select-none pointer-events-none"
-              style={{
-                transform: "translateY(-60px)",
-              }}
-            /> */}
           </div>
         </div>
         <Footer />

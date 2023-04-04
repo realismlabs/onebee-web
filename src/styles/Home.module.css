@@ -134,6 +134,7 @@
   animation-fill-mode: forwards;
   opacity: 0;
 }
+
 @keyframes ray-of-light-top {
   0% {
     transform: translate(0, 0);
