@@ -134,3 +134,15 @@ a {
     visibility: visible;
   }
 }
+
+@keyframes rotate {
+  0% {
+    background-position: 0 0; /* start from the top-left corner */
+  }
+  50% {
+    background-position: 100% 0; /* end at the top-right corner */
+  }
+  100% {
+    background-position: 0 0; /* start from the top-left corner */
+  }
+}
