@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.0.8",
+    "@react-hook/media-query": "^1.1.1",
     "@splinetool/loader": "^0.9.281",
     "@types/node": "18.15.11",
     "@types/react": "18.0.31",

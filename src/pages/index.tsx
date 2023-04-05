@@ -78,7 +78,7 @@ export default function Home() {
             </div>
           </div>
           <div
-            className={`inline-block lg:absolute lg:pt-[600px] lg:inset-0 z-30 m-auto w-full text-center text-white ${styles.heroTextContainer}`}
+            className={`inline-block pt-12 sm:absolute md:pt-[500px] lg:pt-[600px] md:inset-0 z-30 m-auto w-full text-center text-white ${styles.heroTextContainer}`}
           >
             <h2>
               We loaded every HN post and comment,
@@ -107,7 +107,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="absolute inset-0 w-full overflow-hidden">
+          <div className="hidden lg:absolute lg:inset-0 lg:w-full overflow-hidden">
             <div
               className={`block pointer-events-none select-none lg:inset-0 lg:pt-[640px] z-10 lg:absolute lg:w-[2700px] bg-transparent`}
               style={{
@@ -163,7 +163,7 @@ export default function Home() {
             <p className="text-white"> $5 per GB-month • Unlimited users</p>
           </div>
         </div>
-        <div className="w-[1100px] space-y-36">
+        <div className="lg:w-[1100px] space-y-36">
           <div className="text-white flex flex-row gap-12">
             <Image
               className="relative z-20 m-auto pointer-events-none select-none"
@@ -395,13 +395,15 @@ export default function Home() {
                 <p>Access other object views from other tables via the dock.</p>
               </div>
             </div>
-            <Image
-              src="/images/feature_object_views.png"
-              alt="Feature - Object Views"
-              draggable="false"
-              width="690"
-              height="528"
-            />
+            <div className="w-full">
+              <Image
+                src="/images/feature_object_views.png"
+                alt="Feature - Object Views"
+                draggable="false"
+                width="690"
+                height="528"
+              />
+            </div>
           </div>
           <div className="flex flex-col items-center">
             <div className="z-10 flex flex-col pb-96 items-center space-y-6">
@@ -418,7 +420,9 @@ export default function Home() {
                 />
               </div>
             </div>
-            <LogoSvgAnimation />
+            <div className="w-full overflow-hidden">
+              <LogoSvgAnimation />
+            </div>
           </div>
         </div>
         <Footer />
