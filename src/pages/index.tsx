@@ -8,6 +8,7 @@ import IconEyebrow from "../components/IconEyebrow";
 import React, { useState } from "react";
 import Link from "next/link";
 import Footer from "../components/Footer";
+import Header from "../components/Header";
 import LogoSvgAnimation from "../components/LogoSvgAnimation";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,47 +37,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`gap-12 ${styles.main}`}>
-        <header
-          className="fixed left-0 top-0 w-full bg-opacity-50 px-12 py-2 z-40 border-b border-[#FFFFFF10]"
-          style={{
-            backgroundColor: "rgb(4, 10, 25, 1)",
-          }}
-        >
-          <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-40">
-            <div className="flex h-16 items-center justify-between">
-              <div className="flex-shrink-0">
-                <Image
-                  width="112"
-                  height="29"
-                  src="/images/logo.svg"
-                  alt="Logo"
-                />
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  {["Company", "Pricing", "Blog", "Use Cases"].map(
-                    (text, index) => (
-                      <a
-                        key={index}
-                        href="#"
-                        className="text-md font-sm rounded-md px-3 py-2 text-slate-10 transition-colors duration-300 ease-in-out hover:text-white"
-                      >
-                        {text}
-                      </a>
-                    )
-                  )}
-                </div>
-              </div>
-              <InsetButton
-                bgColor={`var(--slate1)`}
-                href={`https://google.com`}
-                text={`Sign in`}
-                target={`_blank`}
-                highlightValue={"0.2"}
-              />
-            </div>
-          </nav>
-        </header>
+        <Header />
         <h1
           className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-8 "
           style={{
