@@ -9,7 +9,7 @@ function Header() {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
       const scrollPosition = window.scrollY;
-      const scaleFactor = 1 - scrollPosition / (windowHeight * 0.95);
+      const scaleFactor = 1 - scrollPosition / (windowHeight * 0.9);
       const newHeight = Math.max(60, Math.min(80, scaleFactor * windowHeight));
       setDivHeight(newHeight);
     };
@@ -35,7 +35,7 @@ function Header() {
             <Image
               width="112"
               height="29"
-              src="/images/logo.svg"
+              src="/images/logo_darker.svg"
               alt="Logo"
             />
           </div>
