@@ -23,7 +23,7 @@ function LogoSvgAnimation() {
       positionStyle = {
         position: 'absolute',
         scale: '0.8',
-        transform: 'translate(-260px, -800px)',
+        transform: 'translate(-200px, -800px)',
       };
       break;
     default:

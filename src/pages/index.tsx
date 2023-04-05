@@ -43,7 +43,16 @@ export default function Home() {
         className={`gap-6 md:gap-6 lg:gap-12 ${styles.main} sm:px-12 px-4 overflow-hidden`}
       >
         <Header />
-        <div id="header-text" className="flex flex-col items-center gap-6">
+        <div
+          id="header-text"
+          className="flex flex-col items-center gap-4 z-30"
+          style={{
+            animation: "fadeInFromBottom 0.4s ease-in-out",
+            animationDelay: "0.1s",
+            animationFillMode: "forwards",
+            opacity: 0,
+          }}
+        >
           <h1
             className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-2 md:pt-8 "
             style={{
@@ -53,10 +62,6 @@ export default function Home() {
               MozBackgroundClip: "text",
               backgroundClip: "text",
               color: "transparent",
-              animation: "fadeInFromBottom 0.4s ease-in-out",
-              animationDelay: "0.3s",
-              animationFillMode: "forwards",
-              opacity: 0,
             }}
           >
             Browse your data warehouse, fast
@@ -66,7 +71,7 @@ export default function Home() {
             spreadsheet-like UI to explore your data warehouse. It&apos;s fast,
             even on billions of rows.
           </p>
-          <div className="flex flex-row gap-6 items-center">
+          <div className="flex flex-row gap-6 items-center pt-2">
             <InsetButton
               bgColor={`#4315F3`}
               href={`https://google.com`}
@@ -79,6 +84,7 @@ export default function Home() {
             </Link>
           </div>
         </div>
+
         <div id="Hero Content">
           <div
             className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none pb-20`}
