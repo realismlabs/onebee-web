@@ -37,7 +37,7 @@ export default function Home() {
       </Head>
       <main className={`gap-12 ${styles.main}`}>
         <header
-          className="fixed left-0 top-0 w-full bg-opacity-50 px-12 py-2 z-40 border-b border-slate-4"
+          className="fixed left-0 top-0 w-full bg-opacity-50 px-12 py-2 z-40 border-b border-[#FFFFFF10]"
           style={{
             backgroundColor: "rgb(4, 10, 25, 1)",
           }}
@@ -78,7 +78,7 @@ export default function Home() {
           </nav>
         </header>
         <h1
-          className="font-regular text-[48px] text-white pt-8"
+          className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-8 "
           style={{
             backgroundImage: 'url("images/hero_text_gradient_mask_v6.svg")',
             backgroundPosition: "bottom",
@@ -282,7 +282,7 @@ export default function Home() {
               subtitle="for searches compared to querying directly from Snowflake"
             />
           </div>
-          <div className="flex flex-col gap-12 py-16 border-t border-b border-slate-4 items-center">
+          <div className="flex flex-col gap-12 py-16 border-t border-b border-[#FFFFFF10] items-center">
             <div className="flex flex-row text-white items-center gap-24">
               <h1 className="text-3xl w-[240px]">
                 Full-text search that just works
