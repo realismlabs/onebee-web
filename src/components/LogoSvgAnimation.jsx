@@ -14,8 +14,12 @@ const LogoSvgAnimation = () => (
         transform: 'translateY(-50px)',
       }}>
       <g clip-path="url(#clip0_1002_83860)">
-        <g id="bottom">
-
+        <g
+          id="bottom"
+          style={{
+            animation: 'floatUpAndDownBottom 3s ease-in-out infinite'
+          }}
+        >
           <path fill-rule="evenodd" clip-rule="evenodd" d="M732.44 494.821V570.292L490.795 508.597V433.929L731.32 495.081L732.44 494.821Z" fill="url(#paint0_linear_1002_83860)" />
           <path fill-rule="evenodd" clip-rule="evenodd" d="M732.439 494.818V570.274L881.362 532.534C891.388 529.898 915.785 520.805 919.651 508.426C920.282 506.403 920.185 504.834 920.185 502.792V433.109C919.395 444.629 900.337 456.177 863.418 464.676L732.439 494.818Z" fill="url(#paint1_linear_1002_83860)" />
           <path fill-rule="evenodd" clip-rule="evenodd" d="M490.795 435.583L621.333 404.768C693.129 387.818 806.341 387.804 872.916 404.736C939.49 421.663 935.309 449.786 863.424 466.333L731.32 496.739L490.795 435.583Z" fill="url(#paint2_linear_1002_83860)" />
@@ -41,12 +45,17 @@ const LogoSvgAnimation = () => (
             />
           </g>
         </g>
-        <g id="middle">
+        <g
+          id="middle"
+          style={{
+            animation: 'floatUpAndDownMiddle 3s ease-in-out infinite'
+          }}
+        >
           <g
             style={{
               'mix-blend-mode': 'overlay',
               // scale up and down animation
-              animation: 'scaleUpAndDown2 4s infinite',
+              animation: 'scaleUpAndDown2 3s infinite',
               transformOrigin: 'center',
               filter: 'url(#blurFilter)'
             }}
@@ -78,12 +87,17 @@ const LogoSvgAnimation = () => (
             />
           </g>
         </g>
-        <g id="top">
+        <g
+          id="top"
+          style={{
+            animation: 'floatUpAndDownTop 3s ease-in-out infinite'
+          }}
+        >
           <g
             style={{
               'mix-blend-mode': 'overlay',
               // scale up and down animation
-              animation: 'scaleUpAndDown 4s infinite',
+              animation: 'scaleUpAndDown 3s infinite',
               transformOrigin: 'center'
             }}
             filter="url(#filter0_f_1059_31287)"
