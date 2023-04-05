@@ -11,7 +11,6 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LogoSvgAnimation from "../components/LogoSvgAnimation";
 import useScreenSize from "../components/useScreenSize";
-import TypingHeadline from "../components/TypingHeadline";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -59,9 +58,9 @@ export default function Home() {
             opacity: 0,
           }}
         >
-          Browse your data warehouse
+          The ultimate data browser
         </h1>
-        <div id="Playground Text">
+        <div>
           <div className={`relative ${styles.perspectiveDiv} z-20`}>
             {/* Hero */}
             <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
@@ -154,12 +153,47 @@ export default function Home() {
             </div>
           </div>
         </div>
-
         <div
-          id="Sections"
-          className="w-full px-2 lg:px-0 lg:w-[1100px] space-y-36"
+          className="max-w-lg text-white z-20 flex flex-col gap-4 py-12"
+          style={{
+            animation: "fadeInFromBottom 0.4s ease-in-out",
+            animationDelay: "2.4s",
+            animationFillMode: "forwards",
+            opacity: 0,
+          }}
         >
-          <div id="Logos" className="text-white flex flex-row gap-12">
+          <h2 className="text-md md:text-lg lg:text-xl">
+            Dataland is a new kind of data browser that delivers a seamless user
+            experience, regardless of data scale.{" "}
+          </h2>
+          <div className="text-sm md:text-md lg:text-lg space-y-4">
+            <p className="text-slate-11">
+              Dataland lets your internal teams access the data in your data
+              warehouse using a familiar spreadsheet-like UI that works the same
+              way across 10 rows or 10,000,000,000 rows.{" "}
+            </p>
+            <p className="text-slate-11">
+              Billion row tables load instantly, straight from your web browser.
+              Gone are the days of waiting for loading spinners, clicking
+              through 50 rows per page, and being limited by pre-defined query
+              patterns.
+            </p>
+          </div>
+          <div className="block md:flex md:flex-row space-y-4 md:space-y-0 gap-4 pt-4 items-center">
+            <div className="flex flex-shrink">
+              <InsetButton
+                bgColor={`#4315F3`}
+                href={`https://google.com`}
+                text={`Get started`}
+                target={`_blank`}
+                highlightValue={"0.4"}
+              />
+            </div>
+            <p className="text-white"> $5 per GB-month • Unlimited users</p>
+          </div>
+        </div>
+        <div className="w-full px-2 lg:px-0 lg:w-[1100px] space-y-36">
+          <div className="text-white flex flex-row gap-12">
             <Image
               className="relative z-20 m-auto pointer-events-none select-none"
               src="/images/logos/logo_wyndly.svg"
@@ -193,10 +227,73 @@ export default function Home() {
               height="120"
             />
           </div>
-          <div
-            id="Rich cell types"
-            className="flex flex-col gap-12 items-center"
-          >
+          <div className=" text-white z-20 flex flex-col md:flex-row gap-16 items-center">
+            <Image
+              className="relative z-20 m-auto pointer-events-none select-none w-2/3"
+              src="/images/performance_diagram.svg"
+              alt="Hero Image"
+              draggable="false"
+              width="1053"
+              height="513"
+            />
+            <div className="flex flex-col gap-4">
+              <IconEyebrow
+                icon={<Lightning color="#E5C3F0" />}
+                text="Performance"
+              />
+              <h2 className="text-xl">
+                Leveraging WebGL, WASM, and Rust for ultra-high performance
+              </h2>
+              <p className="text-slate-11">
+                The data source API handles automatic caching from selected
+                datasets in your data warehouse.
+              </p>
+              <p className="text-slate-11">
+                The indexing and caching layer is optimized for data loading and
+                full-text search.
+              </p>
+              <p className="text-slate-11">
+                The UI works with the caching layer to seamlessly translate user
+                action (scrolling, searching, etc.) to give instant results on
+                the front-end.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-row gap-12 justify-evenly">
+            <Stats value="<1s" subtitle="Load time for 1 billion rows" />
+            <Stats value="0.1s" subtitle="table load times" />
+            <Stats
+              value="133x faster"
+              subtitle="for searches compared to Retool querying directly from Snowflake"
+            />
+            <Stats
+              value="98x cheaper"
+              subtitle="for searches compared to querying directly from Snowflake"
+            />
+          </div>
+          <div className="flex flex-col gap-12 py-16 border-t border-b border-[#FFFFFF10] items-center">
+            <div className="flex flex-row text-white items-center gap-24">
+              <h1 className="text-3xl w-[240px]">
+                Full-text search that just works
+              </h1>
+              <p className="text-md max-w-xl text-slate-11">
+                Just ⌘F to launch a case insensitive, substring search that
+                returns results instantly. Instantly jump to the next search
+                result a million rows away.
+              </p>
+            </div>
+            <div>
+              <Image
+                className="relative pointer-events-none select-none"
+                src="/images/product_search.svg"
+                alt="Product Screenshot - Search"
+                draggable="false"
+                width="1000"
+                height="378"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-12 items-center">
             <div className="flex flex-col items-center gap-4 text-center">
               <h1 className="text-3xl text-white">Rich cell types</h1>
               <div className="space-y-0 text-slate-11">
@@ -246,47 +343,7 @@ export default function Home() {
               }}
             />
           </div>
-          <div
-            id="Search"
-            className="flex flex-col gap-12 py-16 border-t border-b border-[#FFFFFF10] items-center"
-          >
-            <div className="flex flex-row text-white items-center gap-24">
-              <h1 className="text-3xl w-[240px]">
-                Full-text search that just works
-              </h1>
-              <p className="text-md max-w-xl text-slate-11">
-                Just ⌘F to launch a case insensitive, substring search that
-                returns results instantly. Instantly jump to the next search
-                result a million rows away.
-              </p>
-            </div>
-            <div>
-              <Image
-                className="relative pointer-events-none select-none"
-                src="/images/product_search.svg"
-                alt="Product Screenshot - Search"
-                draggable="false"
-                width="1000"
-                height="378"
-              />
-            </div>
-          </div>
-          <div id="Stats" className="flex flex-row gap-12 justify-evenly">
-            <Stats value="<1s" subtitle="Load time for 1 billion rows" />
-            <Stats value="0.1s" subtitle="table load times" />
-            <Stats
-              value="133x faster"
-              subtitle="for searches compared to Retool querying directly from Snowflake"
-            />
-            <Stats
-              value="98x cheaper"
-              subtitle="for searches compared to querying directly from Snowflake"
-            />
-          </div>
-          <div
-            id="Data sync and security"
-            className="flex flex-row justify-evenly"
-          >
+          <div className="flex flex-row justify-evenly">
             <Image
               className="absolute pointer-events-none select-none z-10"
               src="/images/gradient_highlight.svg"
@@ -352,7 +409,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div id="Object views" className="px-12 flex flex-row gap-4 py-24">
+          <div className="px-12 flex flex-row gap-4 py-24">
             <div className="flex flex-col gap-4 py-12">
               <IconEyebrow
                 icon={<Lightning color="#E5C3F0" />}
@@ -377,42 +434,7 @@ export default function Home() {
               />
             </div>
           </div>
-          <div
-            id="Architecture Diagram"
-            className=" text-white z-20 flex flex-col md:flex-row gap-16 items-center"
-          >
-            <Image
-              className="relative z-20 m-auto pointer-events-none select-none w-2/3"
-              src="/images/performance_diagram.svg"
-              alt="Hero Image"
-              draggable="false"
-              width="1053"
-              height="513"
-            />
-            <div className="flex flex-col gap-4">
-              <IconEyebrow
-                icon={<Lightning color="#E5C3F0" />}
-                text="Performance"
-              />
-              <h2 className="text-xl">
-                Leveraging WebGL, WASM, and Rust for ultra-high performance
-              </h2>
-              <p className="text-slate-11">
-                The data source API handles automatic caching from selected
-                datasets in your data warehouse.
-              </p>
-              <p className="text-slate-11">
-                The indexing and caching layer is optimized for data loading and
-                full-text search.
-              </p>
-              <p className="text-slate-11">
-                The UI works with the caching layer to seamlessly translate user
-                action (scrolling, searching, etc.) to give instant results on
-                the front-end.
-              </p>
-            </div>
-          </div>
-          <div id="End of page CTA" className="flex flex-col items-center">
+          <div className="flex flex-col items-center">
             <div className="z-10 flex flex-col pb-96 items-center space-y-6">
               <h1 className="text-[48px] leading-tight text-white">
                 The ultimate <br></br>data browser

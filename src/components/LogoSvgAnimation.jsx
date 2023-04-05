@@ -1,12 +1,8 @@
 import React from 'react';
-import { useMediaQuery } from '@react-hook/media-query';
+import useScreenSize from './useScreenSize';
 
 function LogoSvgAnimation() {
-  const isSm = useMediaQuery('(min-width: 640px)');
-  const isMd = useMediaQuery('(min-width: 768px)');
-  const isLg = useMediaQuery('(min-width: 1024px)');
-
-  const screen = isSm ? 'sm' : isMd ? 'md' : isLg ? 'lg' : 'xs';
+  const { isSm, isMd, isLg, screen } = useScreenSize();
   let positionStyle = {};
   switch (screen) {
     case 'sm':
@@ -20,7 +16,7 @@ function LogoSvgAnimation() {
       positionStyle = {
         position: 'absolute',
         scale: '1',
-        transform: 'translate(-260px, -1200px)',
+        transform: 'translate(-20px, -500px)',
       };
       break;
     case 'lg':
@@ -33,8 +29,8 @@ function LogoSvgAnimation() {
     default:
       positionStyle = {
         position: 'absolute',
-        scale: '1',
-        transform: 'none',
+        transform: 'translate(10px, -400px)',
+        scale: '1.0'
       };
   }
   console.log('ok', screen, positionStyle)

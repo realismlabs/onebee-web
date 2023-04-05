@@ -100,7 +100,7 @@
   box-shadow: rgba(255, 255, 255, 1.2);
 }
 
-.rayOfLightTop {
+.rayOfLightTopLg {
   position: absolute;
   top: 0;
   left: 0;
@@ -108,10 +108,10 @@
   height: 8px;
   background-image: linear-gradient(90deg, transparent, white, transparent);
   mix-blend-mode: overlay;
-  animation: ray-of-light-top 4s infinite linear;
+  animation: ray-of-light-top-lg 4s infinite linear;
 }
 
-.rayOfLightBottom {
+.rayOfLightBottomLg {
   position: absolute;
   top: 520px;
   left: 0;
@@ -119,7 +119,51 @@
   height: 7px;
   background-image: linear-gradient(90deg, transparent, white, transparent);
   mix-blend-mode: overlay;
-  animation: ray-of-light-bottom 4s infinite linear;
+  animation: ray-of-light-bottom-lg 4s infinite linear;
+}
+
+.rayOfLightTopMd {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 8px;
+  background-image: linear-gradient(90deg, transparent, white, transparent);
+  mix-blend-mode: overlay;
+  animation: ray-of-light-top-md 4s infinite linear;
+}
+
+.rayOfLightBottomMd {
+  position: absolute;
+  top: 354px;
+  left: 0;
+  width: 240px;
+  height: 7px;
+  background-image: linear-gradient(90deg, transparent, white, transparent);
+  mix-blend-mode: overlay;
+  animation: ray-of-light-bottom-md 4s infinite linear;
+}
+
+.rayOfLightTopXs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 8px;
+  background-image: linear-gradient(90deg, transparent, white, transparent);
+  mix-blend-mode: overlay;
+  animation: ray-of-light-top-xs 4s infinite linear;
+}
+
+.rayOfLightBottomXs {
+  position: absolute;
+  top: 174px;
+  left: 0;
+  width: 240px;
+  height: 7px;
+  background-image: linear-gradient(90deg, transparent, white, transparent);
+  mix-blend-mode: overlay;
+  animation: ray-of-light-bottom-xs 4s infinite linear;
 }
 
 .perspectiveDiv {
@@ -135,7 +179,7 @@
   opacity: 0;
 }
 
-@keyframes ray-of-light-top {
+@keyframes ray-of-light-top-lg {
   0% {
     transform: translate(0, 0);
     opacity: 0;
@@ -158,7 +202,7 @@
   }
 }
 
-@keyframes ray-of-light-bottom {
+@keyframes ray-of-light-bottom-lg {
   0% {
     transform: translate(calc(1086px - 10px), 0);
     opacity: 0;
@@ -167,6 +211,95 @@
     opacity: 0;
   }
   35% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes ray-of-light-top-md {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  2% {
+    opacity: 0;
+  }
+  13% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(calc(768px - 10px), 0);
+    opacity: 0;
+  }
+}
+
+@keyframes ray-of-light-bottom-md {
+  0% {
+    transform: translate(calc(768px - 10px), 0);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes ray-of-light-top-xs {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(calc(360px - 10px), 0);
+    opacity: 0;
+  }
+}
+
+@keyframes ray-of-light-bottom-xs {
+  0% {
+    transform: translate(calc(260px - 10px), 0);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0;
+  }
+  50% {
     opacity: 1;
   }
   70% {
