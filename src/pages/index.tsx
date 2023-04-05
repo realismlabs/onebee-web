@@ -11,7 +11,6 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LogoSvgAnimation from "../components/LogoSvgAnimation";
 import useScreenSize from "../components/useScreenSize";
-import TypingHeadline from "../components/TypingHeadline";
 
 const inter = Inter({ subsets: ["latin"] });
 
