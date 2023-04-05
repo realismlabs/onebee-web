@@ -23,7 +23,7 @@ function Header() {
 
   return (
     <header
-      className="fixed left-0 top-0 w-full bg-opacity-50 px-12 flex flex-row items-center z-40 border-b border-[#FFFFFF10]"
+      className="fixed left-0 top-0 lg:w-full bg-opacity-50 md:px-12 flex flex-row items-center z-40 border-b border-[#FFFFFF10]"
       style={{
         backgroundColor: "rgb(4, 10, 25, 1)",
         height: `${divHeight}px`
