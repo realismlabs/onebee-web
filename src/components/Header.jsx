@@ -29,7 +29,7 @@ function Header() {
         height: `${divHeight}px`
       }}
     >
-      <nav className="mx-auto px-4 sm:px-6 lg:px-8 z-40 flex-grow">
+      <nav className="mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-8 z-40 flex-grow">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-grow">
             <Image

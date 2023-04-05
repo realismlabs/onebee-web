@@ -44,25 +44,46 @@ export default function Home() {
         className={`gap-6 md:gap-6 lg:gap-12 ${styles.main} sm:px-12 px-4 overflow-hidden`}
       >
         <Header />
-        <h1
-          className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-2 md:pt-8 "
-          style={{
-            backgroundImage: 'url("images/hero_text_gradient_mask_v6.svg")',
-            backgroundPosition: "bottom",
-            WebkitBackgroundClip: "text",
-            MozBackgroundClip: "text",
-            backgroundClip: "text",
-            color: "transparent",
-            animation: "fadeInFromBottom 0.4s ease-in-out",
-            animationDelay: "0.3s",
-            animationFillMode: "forwards",
-            opacity: 0,
-          }}
-        >
-          Browse your data warehouse
-        </h1>
-        <div id="Playground Text">
-          <div className={`relative ${styles.perspectiveDiv} z-20`}>
+        <div id="header-text" className="flex flex-col items-center gap-6">
+          <h1
+            className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-2 md:pt-8 "
+            style={{
+              backgroundImage: 'url("images/hero_text_gradient_mask_v6.svg")',
+              backgroundPosition: "bottom",
+              WebkitBackgroundClip: "text",
+              MozBackgroundClip: "text",
+              backgroundClip: "text",
+              color: "transparent",
+              animation: "fadeInFromBottom 0.4s ease-in-out",
+              animationDelay: "0.3s",
+              animationFillMode: "forwards",
+              opacity: 0,
+            }}
+          >
+            Browse your data warehouse, fast
+          </h1>
+          <p className="max-w-2xl text-center text-lg text-slate-11 inline-block">
+            Stop building one-off data UIs. Give your whole team a familiar
+            spreadsheet-like UI to explore your data warehouse. It&apos;s fast,
+            even on billions of rows.
+          </p>
+          <div className="flex flex-row gap-6 items-center">
+            <InsetButton
+              bgColor={`#4315F3`}
+              href={`https://google.com`}
+              text={`Try Dataland for free`}
+              target={`_blank`}
+              highlightValue={"0.4"}
+            />
+            <Link href={`https://google.com`} passHref={true} target={`_blank`}>
+              <span className="text-white text-sm">Launch playground</span>
+            </Link>
+          </div>
+        </div>
+        <div id="Hero Content">
+          <div
+            className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none pb-20`}
+          >
             {/* Hero */}
             <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
               <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
@@ -100,41 +121,9 @@ export default function Home() {
               ></div>
             </div>
           </div>
-          <div
-            className={`inline-block pt-8 sm:absolute md:pt-[460px] lg:pt-[600px] md:inset-0 z-30 m-auto w-full text-center text-white text-sm md:text-md ${styles.heroTextContainer}`}
-          >
-            <div className="flex justify-center">
-              <h2 className="max-w-md md:max-w-md">
-                We loaded every HN post and comment,
-                <span className="text-[#c07cff]">
-                  &nbsp;1.6 billion rows,
-                </span>{" "}
-                into this table. Try running search for &quot;rust&quot; or your
-                HN username.
-              </h2>
-            </div>
-
-            <div className="mt-4">
-              <div
-                className="inline-block bg-[#4315F3] rounded-full"
-                style={{
-                  padding: "1px",
-                  background: "linear-gradient(to right, #8160FF, #4315F3)",
-                  animation: "rotate 3s linear infinite",
-                  backgroundSize: "400% 400%",
-                }}
-              >
-                <button
-                  className={`bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all`}
-                >
-                  Launch playground
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="hidden lg:absolute lg:inset-0 lg:w-full overflow-hidden">
+          <div className="lg:absolute lg:inset-0 lg:w-full">
             <div
-              className={`block pointer-events-none select-none lg:inset-0 lg:pt-[640px] z-10 lg:absolute lg:w-[2700px] bg-transparent`}
+              className={`block pointer-events-none select-none lg:inset-0 lg:pt-[760px] z-10 lg:absolute lg:w-[2700px] bg-transparent`}
               style={{
                 left: "50%",
                 transform: "translate(-50%, -12%)",
@@ -154,7 +143,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
         <div
           id="Sections"
           className="w-full px-2 lg:px-0 lg:w-[1100px] space-y-36"
@@ -270,18 +258,6 @@ export default function Home() {
                 height="378"
               />
             </div>
-          </div>
-          <div id="Stats" className="flex flex-row gap-12 justify-evenly">
-            <Stats value="<1s" subtitle="Load time for 1 billion rows" />
-            <Stats value="0.1s" subtitle="table load times" />
-            <Stats
-              value="133x faster"
-              subtitle="for searches compared to Retool querying directly from Snowflake"
-            />
-            <Stats
-              value="98x cheaper"
-              subtitle="for searches compared to querying directly from Snowflake"
-            />
           </div>
           <div
             id="Data sync and security"

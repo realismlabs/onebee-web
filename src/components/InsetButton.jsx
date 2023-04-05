@@ -27,7 +27,7 @@ function InsetButton({ bgColor, text, href, target, highlightValue }) {
   } else {
     innerStyleContainer = {
       background: `${bgColor}`,
-      padding: '10px 16px',
+      padding: '12px 16px',
       borderRadius: '100px',
       fontWeight: '500',
       color: '#fff',
@@ -36,9 +36,9 @@ function InsetButton({ bgColor, text, href, target, highlightValue }) {
     }
     outerStyleContainer = {
       background: `linear-gradient(180deg, rgba(255, 255, 255, ${highlightValue}) 0%, ${bgColor}, ${bgColor})`,
-      padding: '2px',
+      padding: '1px',
       borderRadius: '100px',
-      height: '42px'
+      height: '40px'
     }
   }
 
