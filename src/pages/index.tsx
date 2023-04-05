@@ -36,7 +36,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`gap-12 ${styles.main}`}>
+      <main className={`gap-12 ${styles.main} px-12 sm:px-0 overflow-hidden`}>
         <Header />
         <h1
           className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-8 "
@@ -78,7 +78,7 @@ export default function Home() {
             </div>
           </div>
           <div
-            className={`absolute pt-[600px] inset-0 z-30 m-auto w-full text-center text-white ${styles.heroTextContainer}`}
+            className={`inline-block lg:absolute lg:pt-[600px] lg:inset-0 z-30 m-auto w-full text-center text-white ${styles.heroTextContainer}`}
           >
             <h2>
               We loaded every HN post and comment,
@@ -103,31 +103,30 @@ export default function Home() {
                   className={`bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all`}
                 >
                   Launch playground
-                  {/* <div
-                  className={`h-[40px] opacity-25 absolute w-12 ${styles.playgroundButtonShine}`}
-                ></div> */}
                 </button>
               </div>
             </div>
           </div>
-          <div
-            className={`absolute inset-0 pointer-events-none select-none pt-[640px] z-10 w-[2700px] bg-transparent`}
-            style={{
-              left: "50%",
-              transform: "translate(-50%, -12%)",
-              animation: "fadeIn 0.4s ease-in-out",
-              animationDelay: "1.8s",
-              animationFillMode: "forwards",
-              opacity: 0,
-            }}
-          >
-            <Image
-              src="/images/gridlines_masked.svg"
-              alt="Gridlines"
-              draggable="false"
-              width="3000"
-              height="600"
-            />
+          <div className="absolute inset-0 w-full overflow-hidden">
+            <div
+              className={`block pointer-events-none select-none lg:inset-0 lg:pt-[640px] z-10 lg:absolute lg:w-[2700px] bg-transparent`}
+              style={{
+                left: "50%",
+                transform: "translate(-50%, -12%)",
+                animation: "fadeIn 0.4s ease-in-out",
+                animationDelay: "1.8s",
+                animationFillMode: "forwards",
+                opacity: 0,
+              }}
+            >
+              <Image
+                src="/images/gridlines_masked.svg"
+                alt="Gridlines"
+                draggable="false"
+                width="3000"
+                height="600"
+              />
+            </div>
           </div>
         </div>
         <div
