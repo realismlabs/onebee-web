@@ -38,7 +38,7 @@ function InsetButton({ bgColor, text, href, target, highlightValue }) {
       background: `linear-gradient(180deg, rgba(255, 255, 255, ${highlightValue}) 0%, ${bgColor}, ${bgColor})`,
       padding: '1px',
       borderRadius: '100px',
-      height: '40px'
+      height: '42px'
     }
   }
 
