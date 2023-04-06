@@ -24,7 +24,7 @@ function Stats({ value, subtitle }: StatsProps): JSX.Element {
   return (
     <div className="flex flex-col gap-2 max-w-[240px] self-start">
       <h1 className="text-white text-2xl lg:text-3xl font-medium">{value}</h1>
-      <p className="text-slate-11">{subtitle}</p>
+      <p className="text-slate-11 md:text-md text-sm">{subtitle}</p>
     </div>
   );
 }
@@ -271,6 +271,18 @@ export default function Home() {
                 height="378"
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 lg:flex lg:flex-row gap-12 justify-evenly pb-16 md:pb-0 border-b md:border-0  border-[#FFFFFF10]">
+            <Stats value="<1s" subtitle="Load time for 1 billion rows" />
+            <Stats value="0.1s" subtitle="table load times" />
+            <Stats
+              value="133x faster"
+              subtitle="for searches compared to Retool querying directly from Snowflake"
+            />
+            <Stats
+              value="98x cheaper"
+              subtitle="for searches compared to querying directly from Snowflake"
+            />
           </div>
           <div
             id="Data sync and security"
