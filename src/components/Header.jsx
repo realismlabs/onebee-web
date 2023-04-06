@@ -22,6 +22,7 @@ function Header() {
   }, []);
 
   return (
+
     <header
       className="fixed left-0 top-0 w-full bg-opacity-50 md:px-12 flex flex-row items-center z-40 border-b border-[#FFFFFF10]"
       style={{
@@ -54,6 +55,7 @@ function Header() {
               )}
             </div>
           </div>
+          <div className="bg-orange-900/30 text-orange-600 px-4 py-1 mr-2 rounded-full">Mockup site</div>
           <div>
             <InsetButton
               bgColor={`var(--slate1)`}
@@ -66,6 +68,7 @@ function Header() {
         </div>
       </nav>
     </header>
+
   );
 }
 

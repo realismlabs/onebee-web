@@ -11,6 +11,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LogoSvgAnimation from "../components/LogoSvgAnimation";
 import useScreenSize from "../components/useScreenSize";
+import HeroText from "../components/HeroText";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ function Stats({ value, subtitle }: StatsProps): JSX.Element {
 
 export default function Home() {
   const { isSm, isMd, isLg, screen } = useScreenSize();
+  const [heroType, setHeroType] = useState("hero_headline_subheader");
 
   return (
     <>
@@ -42,74 +44,25 @@ export default function Home() {
       <main
         className={`gap-6 md:gap-6 lg:gap-12 ${styles.main} sm:px-12 px-4 overflow-hidden`}
       >
+        {/* Add an input that changes the value of heroType */}
+
         <Header />
-        <div
-          id="header-text"
-          className="flex flex-col items-center gap-4 z-30"
-          style={{
-            animation: "fadeInFromBottom 0.4s ease-in-out",
-            animationDelay: "0.1s",
-            animationFillMode: "forwards",
-            opacity: 0,
+        {/* This option is the header + two-line subheader with DWH logos */}
+        <select
+          title="Hero Type"
+          id="Hero Type"
+          className="fixed z-50 top-4 right-4 w-16 text-white text-xs bg-transparent"
+          onChange={(event) => {
+            setHeroType(event.target.value);
           }}
         >
-          <h1
-            className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-2 md:pt-8 "
-            style={{
-              backgroundImage: 'url("images/hero_text_gradient_mask_v6.svg")',
-              backgroundPosition: "bottom",
-              WebkitBackgroundClip: "text",
-              MozBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
-          >
-            Browse your data warehouse, fast
-          </h1>
-          <div className="max-w-3xl text-center text-lg text-[#958eb3] inline-block">
-            Stop building one-off data UIs. Give your whole team a familiar
-            spreadsheet-like UI to explore your
-            <div className="inline-block space-x-2">
-              <div className="inline-block ml-1 pr-2 pl-2 py-0.5 bg-[#18113d] text-[#aba4cc] rounded-md ">
-                <Image
-                  className="pointer-events-none select-none inline-block"
-                  src="/images/logos/logo_bigquery.svg"
-                  alt="BigQuery"
-                  draggable="false"
-                  width="22"
-                  height="22"
-                />
-                <p className="ml-2 inline-block text-md">BigQuery</p>
-              </div>
-              <div className="inline-block ml-1 pr-2 pl-2 py-0.5 bg-[#18113d] text-[#aba4cc] rounded-md ">
-                <Image
-                  className="pointer-events-none select-none inline-block"
-                  src="/images/logos/logo_postgres.svg"
-                  alt="Postgres"
-                  draggable="false"
-                  width="22"
-                  height="22"
-                />
-                <p className="ml-2 inline-block">Postgres</p>
-              </div>
-              &nbsp;and
-              <div className="inline-block ml-1 pr-2 pl-2 py-0.5 bg-[#18113d] text-[#aba4cc] rounded-md ">
-                <Image
-                  className="pointer-events-none select-none inline-block"
-                  src="/images/logos/logo_snowflake.svg"
-                  alt="Snowflake"
-                  draggable="false"
-                  width="22"
-                  height="22"
-                />
-                <p className="ml-2 inline-block">Snowflake</p>
-              </div>
-            </div>
-            &nbsp;at billion-row scale.
-          </div>
-        </div>
+          <option value="">Select a hero type</option>
+          <option value="headline_logos">Hero 1</option>
+          <option value="hero_headline_subheader">Hero 2</option>
+        </select>
 
-        <div id="Hero Content">
+        <HeroText type={heroType} />
+        <div id="Hero Image Content">
           <div
             className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none pb-20`}
           >
@@ -145,7 +98,7 @@ export default function Home() {
                 className={`
                   absolute
                   w-full
-                  z-20 
+                  z-50 
                   text-center
                   mt-[260px]
                   text-white ${styles.heroTextContainer}`}
