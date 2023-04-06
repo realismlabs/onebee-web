@@ -66,11 +66,11 @@ export default function Home() {
           >
             Browse your data warehouse, fast
           </h1>
-          <p className="max-w-2xl text-center text-lg text-slate-11 inline-block">
+          <div className="max-w-3xl text-center text-lg text-[#958eb3] inline-block">
             Stop building one-off data UIs. Give your whole team a familiar
-            spreadsheet-like UI to explore
+            spreadsheet-like UI to explore your
             <div className="inline-block space-x-2">
-              <div className="inline-block ml-2 pr-3 pl-2 py-1 bg-[#FFFFFF15] rounded-md text-slate-12">
+              <div className="inline-block ml-1 pr-2 pl-2 py-0.5 bg-[#18113d] text-[#aba4cc] rounded-md ">
                 <Image
                   className="pointer-events-none select-none inline-block"
                   src="/images/logos/logo_bigquery.svg"
@@ -78,10 +78,10 @@ export default function Home() {
                   draggable="false"
                   width="22"
                   height="22"
-                />{" "}
-                BigQuery
+                />
+                <p className="ml-2 inline-block text-md">BigQuery</p>
               </div>
-              <div className="inline-block ml-2 pr-3 pl-2 py-1 bg-[#FFFFFF15] rounded-md text-slate-12">
+              <div className="inline-block ml-1 pr-2 pl-2 py-0.5 bg-[#18113d] text-[#aba4cc] rounded-md ">
                 <Image
                   className="pointer-events-none select-none inline-block"
                   src="/images/logos/logo_postgres.svg"
@@ -89,36 +89,24 @@ export default function Home() {
                   draggable="false"
                   width="22"
                   height="22"
-                />{" "}
-                Postgres
+                />
+                <p className="ml-2 inline-block">Postgres</p>
               </div>
               &nbsp;and
-              <div className="inline-block ml-2 pr-3 pl-2 py-1 bg-[#FFFFFF15] rounded-md text-slate-12">
+              <div className="inline-block ml-1 pr-2 pl-2 py-0.5 bg-[#18113d] text-[#aba4cc] rounded-md ">
                 <Image
                   className="pointer-events-none select-none inline-block"
                   src="/images/logos/logo_snowflake.svg"
-                  alt="Postgres"
+                  alt="Snowflake"
                   draggable="false"
                   width="22"
                   height="22"
-                />{" "}
-                Snowflake
+                />
+                <p className="ml-2 inline-block">Snowflake</p>
               </div>
             </div>
             &nbsp;at billion-row scale.
-          </p>
-          {/* <div className="flex flex-row gap-6 items-center pt-2">
-            <InsetButton
-              bgColor={`#4315F3`}
-              href={`https://google.com`}
-              text={`Try Dataland for free`}
-              target={`_blank`}
-              highlightValue={"0.4"}
-            />
-            <Link href={`https://google.com`} passHref={true} target={`_blank`}>
-              <span className="text-white text-sm">Launch playground</span>
-            </Link>
-          </div> */}
+          </div>
         </div>
 
         <div id="Hero Content">
