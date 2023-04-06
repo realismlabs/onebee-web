@@ -111,6 +111,33 @@ a {
   }
 }
 
+/* media query for sm size */
+@media (max-width: 640px) {
+  .floatingFooterCTA {
+    position: absolute;
+    transform: scale(1) translate(0px, -140px);
+    max-width: 1200px;
+  }
+}
+
+/* media query for md size from 641 to 768*/
+@media (min-width: 641px) and (max-width: 768px) {
+  .floatingFooterCTA {
+    position: absolute;
+    transform: scale(1) translate(0px, -160px);
+    max-width: 1200px;
+  }
+}
+
+/* larger than 768 */
+@media (min-width: 769px) {
+  .floatingFooterCTA {
+    position: absolute;
+    transform: scale(1) translate(0px, -360px);
+    max-width: 1200px;
+  }
+}
+
 @keyframes fadeInFromBottom {
   from {
     transform: translateY(30px);

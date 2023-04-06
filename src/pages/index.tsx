@@ -23,7 +23,7 @@ type StatsProps = {
 function Stats({ value, subtitle }: StatsProps): JSX.Element {
   return (
     <div className="flex flex-col gap-2 max-w-[240px] self-start">
-      <h1 className="text-white text-3xl font-medium">{value}</h1>
+      <h1 className="text-white text-2xl lg:text-3xl font-medium">{value}</h1>
       <p className="text-slate-11">{subtitle}</p>
     </div>
   );
@@ -66,7 +66,7 @@ export default function Home() {
         <HeroText type={heroType} />
         <div id="Hero Image Content">
           <div
-            className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none pb-20`}
+            className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none md:pb-20`}
           >
             <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
               <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
@@ -102,7 +102,8 @@ export default function Home() {
                   w-full
                   z-50 
                   text-center
-                  mt-[260px]
+                  lg:mt-[260px]
+                  mt-[100px]
                   text-white ${styles.heroTextContainer}`}
               >
                 <div
@@ -123,7 +124,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="lg:absolute lg:inset-0 lg:w-full">
+          <div className="md:absolute md:inset-0 md:w-full md:h-auto h-0">
             <div
               className={`block pointer-events-none select-none lg:inset-0 lg:pt-[760px] z-10 lg:absolute lg:w-[2700px] bg-transparent`}
               style={{
@@ -147,9 +148,12 @@ export default function Home() {
         </div>
         <div
           id="Sections"
-          className="w-full px-2 lg:px-0 lg:w-[1100px] space-y-36"
+          className="w-full px-2 lg:px-0 lg:w-[1100px] sm:space-y-36 space-y-16"
         >
-          <div id="Logos" className="text-white flex flex-row gap-12">
+          <div
+            id="Logos"
+            className="text-white flex sm:flex-row sm:gap-12 gap-4"
+          >
             <Image
               className="relative z-20 m-auto pointer-events-none select-none"
               src="/images/logos/logo_wyndly.svg"
@@ -167,7 +171,7 @@ export default function Home() {
               height="120"
             />
             <Image
-              className="relative z-20 m-auto pointer-events-none select-none"
+              className="z-20 m-auto pointer-events-none select-none hidden md:relative"
               src="/images/logos/logo_wyndly.svg"
               alt="Wyndly"
               draggable="false"
@@ -175,7 +179,7 @@ export default function Home() {
               height="120"
             />
             <Image
-              className="relative z-20 m-auto pointer-events-none select-none"
+              className="z-20 m-auto pointer-events-none select-none hidden md:relative"
               src="/images/logos/logo_gorgias.svg"
               alt="Gorgias"
               draggable="false"
@@ -188,13 +192,14 @@ export default function Home() {
             className="flex flex-col gap-12 items-center"
           >
             <div className="flex flex-col items-center gap-4 text-center">
-              <h1 className="text-3xl text-white">Rich cell types</h1>
+              <h1 className="text-2xl lg:text-3xl text-white">
+                Rich cell types
+              </h1>
               <div className="space-y-0 text-slate-11">
                 <p className="text-md max-w-xl">
-                  Rich cell types help users understand data, faster.
-                </p>
-                <p>
-                  We auto-assign the right cell type based on column contents.
+                  Rich cell types help users understand data, faster.{" "}
+                  <br className="hidden lg:block"></br>We auto-assign the right
+                  cell type based on column contents.
                 </p>
               </div>
             </div>
@@ -210,7 +215,7 @@ export default function Home() {
             </div>
 
             <Image
-              className="absolute pointer-events-none select-none"
+              className="absolute pointer-events-none select-none translate-y-6 lg:translate-y-[-200px]"
               src="/images/gradient_highlight.svg"
               alt="Gradient highlight"
               draggable="false"
@@ -218,12 +223,11 @@ export default function Home() {
               height="600"
               style={{
                 mixBlendMode: "overlay",
-                transform: "translateY(-200px)",
               }}
             />
 
             <Image
-              className="absolute pointer-events-none select-none"
+              className="absolute pointer-events-none select-none translate-y-6 lg:translate-y-[-200px]"
               src="/images/gradient_highlight.svg"
               alt="Product Screenshot - Rich Cell Types"
               draggable="false"
@@ -231,7 +235,6 @@ export default function Home() {
               height="600"
               style={{
                 mixBlendMode: "normal",
-                transform: "translateY(-200px)",
                 opacity: 0.2,
               }}
             />
@@ -240,9 +243,10 @@ export default function Home() {
             id="Search"
             className="flex flex-col gap-12 py-16 border-t border-b border-[#FFFFFF10] items-center"
           >
-            <div className="flex flex-row text-white items-center gap-24">
-              <h1 className="text-3xl w-[240px]">
-                Full-text search that just works
+            <div className="flex flex-col text-center lg:text-start lg:flex-row text-white items-center gap-6 lg:gap-24">
+              <h1 className="text-2xl lg:text-3xl lg:w-[240px]">
+                Full-text search <br className="hidden lg:block "></br>
+                that just works
               </h1>
               <p className="text-md max-w-xl text-slate-11">
                 Just ⌘F to launch a case insensitive, substring search that
@@ -263,10 +267,10 @@ export default function Home() {
           </div>
           <div
             id="Data sync and security"
-            className="flex flex-row justify-evenly"
+            className="flex md:flex-row flex-col justify-evenly gap-24"
           >
             <Image
-              className="absolute pointer-events-none select-none z-10"
+              className="hidden md:absolute pointer-events-none select-none z-10"
               src="/images/gradient_highlight.svg"
               alt="Product Screenshot - Rich Cell Types"
               draggable="false"
@@ -279,7 +283,7 @@ export default function Home() {
               }}
             />
             <Image
-              className="absolute pointer-events-none select-none z-10"
+              className="hidden md:file:absolute pointer-events-none select-none z-10"
               src="/images/gradient_highlight.svg"
               alt="Product Screenshot - Rich Cell Types"
               draggable="false"
@@ -293,15 +297,15 @@ export default function Home() {
             />
             <div className="flex flex-col gap-12">
               <Image
-                className="relative pointer-events-none select-none"
+                className="relative pointer-events-none select-none w-72 md:w-auto order-2 md:order-1"
                 src="/images/feature_sync_data.svg"
                 alt="Product Screenshot - Sync Data"
                 draggable="false"
                 width="402"
                 height="310"
               />
-              <div className="flex flex-col gap-4 max-w-md">
-                <h1 className="text-2xl text-white">
+              <div className="flex flex-col gap-4 max-w-md order-1 md:order-2">
+                <h1 className="text-xl lg:text-2xl text-white">
                   Syncs from your data warehouse
                 </h1>
                 <p className="space-y-1 text-slate-11">
@@ -312,15 +316,15 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-12">
               <Image
-                className="relative pointer-events-none select-none"
+                className="relative pointer-events-none select-none w-72 md:w-auto order-2 md:order-1"
                 src="/images/feature_security_compliance.svg"
                 alt="Product Screenshot - Security and Compliance"
                 draggable="false"
                 width="402"
                 height="310"
               />
-              <div className="flex flex-col gap-4 max-w-md">
-                <h1 className="text-2xl text-white">
+              <div className="flex flex-col gap-4 max-w-md order-1 md:order-2">
+                <h1 className="text-xl lg:text-2xl text-white">
                   Enterprise-grade security
                 </h1>
                 <p className="space-y-1 text-slate-11">
@@ -330,13 +334,18 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div id="Object views" className="px-12 flex flex-row gap-4 py-24">
-            <div className="flex flex-col gap-4 py-12">
+          <div
+            id="Object views"
+            className="lg:px-12 flex flex-col md:flex-row gap-4 md:gap-16 py-12 md:py-24"
+          >
+            <div className="flex flex-col gap-4 w-full md:w-2/5 py-12">
               <IconEyebrow
                 icon={<Lightning color="#E5C3F0" />}
                 text="Productivity"
               />
-              <h1 className="text-3xl text-white">Row navigation</h1>
+              <h1 className="text-2xl lg:text-3xl text-white">
+                Row navigation
+              </h1>
               <div className="space-y-4 text-slate-11">
                 <p className="text-md max-w-xl">
                   Dataland makes it easy to introspect rows in wide tables. Just
@@ -360,14 +369,14 @@ export default function Home() {
             className=" text-white z-20 flex flex-col md:flex-row gap-16 items-center"
           >
             <Image
-              className="relative z-20 m-auto pointer-events-none select-none w-2/3"
+              className="relative z-20 m-auto pointer-events-none select-none md:w-2/3 order-2 md:order-1"
               src="/images/performance_diagram.svg"
               alt="Hero Image"
               draggable="false"
               width="1053"
               height="513"
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 order-1 md:order-2">
               <IconEyebrow
                 icon={<Lightning color="#E5C3F0" />}
                 text="Performance"
@@ -391,8 +400,8 @@ export default function Home() {
             </div>
           </div>
           <div id="End of page CTA" className="flex flex-col items-center">
-            <div className="z-10 flex flex-col pb-96 items-center space-y-6">
-              <h1 className="text-[48px] leading-tight text-white">
+            <div className="z-10 flex flex-col pt-24 pb-48 md:pt-0 md:pb-96 items-center space-y-6">
+              <h1 className="text-3xl md:text-[48px] leading-tight text-white">
                 The ultimate <br></br>data browser
               </h1>
               <div className="flex flex-row gap-4 items-center">
@@ -405,8 +414,8 @@ export default function Home() {
                 />
               </div>
             </div>
-            <div className="w-full overflow-hidden">
-              <div className="flex justify-center items-center">
+            <div className="max-w-[1100px] overflow-hidden">
+              <div className="max-w-[1100px] flex justify-center items-center">
                 <LogoSvgAnimation />
               </div>
             </div>

@@ -10,11 +10,11 @@ function Footer() {
   }, []);
 
   return (
-    <footer className="left-0 w-full bg-opacity-50 px-12 py-6 z-40 border-t border-[#FFFFFF10]">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-40">
+    <footer className="left-0 w-full bg-opacity-50 px-0 md:px-12 py-6 z-40 border-t border-[#FFFFFF10]">
+      <nav className="mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-8 z-40">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-shrink-0 text-sm text-slate-10">
-            Realism Labs Incorporated, dba Dataland © {currentYear}
+            Realism Labs Inc., dba Dataland © {currentYear}
           </div>
           {/* <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
@@ -29,7 +29,7 @@ function Footer() {
                   ))}
                 </div>
               </div> */}
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row md:gap-4 gap-2">
             <Link
               href="https://twitter.com/datalandhq"
               target="_blank"

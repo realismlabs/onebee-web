@@ -5,32 +5,33 @@ function LogoSvgAnimation() {
   const { isSm, isMd, isLg, screen } = useScreenSize();
   let positionStyle = {};
   switch (screen) {
-    // case 'sm':
-    //   positionStyle = {
-    //     position: 'absolute',
-    //     scale: '1',
-    //     transform: 'none',
-    //   };
-    //   break;
-    // case 'md':
-    //   positionStyle = {
-    //     position: 'absolute',
-    //     scale: '1',
-    //     transform: 'translate(-20px, -500px)',
-    //   };
-    //   break;
-    // case 'lg':
-    //   positionStyle = {
-    //     position: 'absolute',
-    //     scale: '0.8',
-    //     transform: 'translate(-200px, -800px)',
-    //   };
-    //   break;
+    case 'sm':
+      positionStyle = {
+        position: 'absolute',
+        scale: '1',
+        transform: 'none',
+      };
+      break;
+    case 'md':
+      positionStyle = {
+        position: 'absolute',
+        scale: '1',
+        transform: 'translate(0px, -400px)',
+      };
+      break;
+    case 'lg':
+      positionStyle = {
+        position: 'absolute',
+        scale: '1.0',
+        maxWidth: '1200px',
+        transform: 'translate(0px, -800px)',
+      };
+      break;
     default:
       positionStyle = {
         position: 'absolute',
-        transform: 'translate(0px, -540px)',
-        scale: '0.6'
+        transform: 'translate(0px, -160px)',
+        scale: '1.0'
       };
   }
   console.log('ok', screen, positionStyle)
@@ -42,7 +43,8 @@ function LogoSvgAnimation() {
         preserveAspectRatio="xMinYMin meet"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={positionStyle}>
+        className="floatingFooterCTA"
+      >
         <g clipPath="url(#clip0_1002_83860)">
           <g
             id="bottom"
@@ -262,7 +264,7 @@ function LogoSvgAnimation() {
             <rect width="679" height="387" fill="white" transform="translate(380.453 182.917)" />
           </clipPath>
         </defs>
-      </svg>
+      </svg >
 
     </>
   )

@@ -22,7 +22,7 @@ function HeroText(type) {
       >
         Browse your data warehouse, fast
       </h1>
-      <div className="max-w-3xl text-center lg:text-lg text-md text-[#958eb3] inline-block">
+      <div className="max-w-3xl text-center md:text-lg md:mb-2 lg:mb-0 text-md text-[#958eb3] inline-block">
         Stop building one-off data UIs. Give your whole team a
         spreadsheet-like UI to explore your
         <div className="inline-block ml-2 lg:pr-2 lg:pl-2 lg:py-0.5 lg:bg-[#18113d] text-md text-[#aba4cc] rounded-md">
@@ -76,21 +76,13 @@ function HeroText(type) {
     }}
   >
     <h1
-      className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-2 md:pt-8 "
-      style={{
-        backgroundImage: 'url("images/hero_text_gradient_mask_v6.svg")',
-        backgroundPosition: "bottom",
-        WebkitBackgroundClip: "text",
-        MozBackgroundClip: "text",
-        backgroundClip: "text",
-        color: "transparent",
-      }}
+      className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[24px] text-white pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
     >
-      The ultimate data browser for
+      The ultimate data warehouse for
     </h1>
     <div className="max-w-3xl text-center text-2xl text-[#958eb3] inline-block">
-      <div className="flex flex-row gap-3">
-        <div className="flex flex-row items-center ml-1 pr-4 pl-3 py-2 bg-[#18113d] text-[#c1bcda] rounded-md ">
+      <div className="flex flex-row md:gap-3 gap-1">
+        <div className="flex flex-row items-center ml-1 pr-4 pl-3 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
           <Image
             className="pointer-events-none select-none inline-block"
             src="/images/logos/logo_bigquery.svg"
@@ -99,9 +91,9 @@ function HeroText(type) {
             width="22"
             height="22"
           />
-          <p className="ml-2 inline-block text-md">BigQuery</p>
+          <p className="ml-2 inline-block text-sm md:text-md">BigQuery</p>
         </div>
-        <div className="flex flex-row items-center ml-1 pr-4 pl-3 py-2 bg-[#18113d] text-[#c1bcda] rounded-md ">
+        <div className="flex flex-row items-center ml-1 pr-4 pl-3 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
           <Image
             className="pointer-events-none select-none inline-block"
             src="/images/logos/logo_postgres.svg"
@@ -110,9 +102,9 @@ function HeroText(type) {
             width="22"
             height="22"
           />
-          <p className="ml-2 inline-block">Postgres</p>
+          <p className="ml-2 inline-block text-sm md:text-md">Postgres</p>
         </div>
-        <div className="flex flex-row items-center ml-1 pr-4 pl-3 py-2 bg-[#18113d] text-[#c1bcda] rounded-md ">
+        <div className="flex flex-row items-center ml-1 pr-4 pl-3 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
           <Image
             className="pointer-events-none select-none inline-block"
             src="/images/logos/logo_snowflake.svg"
@@ -121,7 +113,7 @@ function HeroText(type) {
             width="22"
             height="22"
           />
-          <p className="ml-2 inline-block">Snowflake</p>
+          <p className="ml-2 inline-block text-sm md:text-md">Snowflake</p>
         </div>
       </div>
     </div>
