@@ -82,7 +82,7 @@ function HeroText(type) {
     </h1>
     <div className="max-w-3xl text-center text-2xl text-[#958eb3] inline-block">
       <div className="flex flex-row md:gap-3 gap-1">
-        <div className="flex flex-row items-center ml-1 pr-4 pl-3 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
+        <div className="flex flex-row items-center ml-1 md:pr-4 md:pl-3 pr-2 pl-1.5 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
           <Image
             className="pointer-events-none select-none inline-block"
             src="/images/logos/logo_bigquery.svg"
@@ -93,7 +93,7 @@ function HeroText(type) {
           />
           <p className="ml-2 inline-block text-sm md:text-md">BigQuery</p>
         </div>
-        <div className="flex flex-row items-center ml-1 pr-4 pl-3 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
+        <div className="flex flex-row items-center ml-1 md:pr-4 md:pl-3 pr-2 pl-1.5 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
           <Image
             className="pointer-events-none select-none inline-block"
             src="/images/logos/logo_postgres.svg"
@@ -104,7 +104,7 @@ function HeroText(type) {
           />
           <p className="ml-2 inline-block text-sm md:text-md">Postgres</p>
         </div>
-        <div className="flex flex-row items-center ml-1 pr-4 pl-3 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
+        <div className="flex flex-row items-center ml-1 md:pr-4 md:pl-3 pr-2 pl-1.5 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
           <Image
             className="pointer-events-none select-none inline-block"
             src="/images/logos/logo_snowflake.svg"

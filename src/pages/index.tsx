@@ -48,25 +48,32 @@ export default function Home() {
 
         <Header />
         {/* This option is the header + two-line subheader with DWH logos */}
-        <select
-          title="Hero Type"
-          id="Hero Type"
-          className="fixed z-50 top-4 right-4 w-16 text-white text-xs bg-transparent"
-          onChange={(event) => {
-            setHeroType(event.target.value);
-          }}
-        >
-          <option value="">Select a hero type</option>
-          <option value="headline_logos">Hero 1</option>
-          <option value="hero_headline_subheader" selected>
-            Hero 2
-          </option>
-        </select>
+        <div className="fixed z-50 top-1 right-1">
+          <div className="flex flex-row">
+            <div className="bg-orange-900/30 text-orange-600 px-2 py-1 mr-2 rounded-full text-[10px]">
+              Mockup site
+            </div>
+            <select
+              title="Hero Type"
+              id="Hero Type"
+              className="w-16 text-white text-xs bg-transparent"
+              onChange={(event) => {
+                setHeroType(event.target.value);
+              }}
+            >
+              <option value="">Select a hero type</option>
+              <option value="headline_logos">Hero 1</option>
+              <option value="hero_headline_subheader" selected>
+                Hero 2
+              </option>
+            </select>
+          </div>
+        </div>
 
         <HeroText type={heroType} />
         <div id="Hero Image Content">
           <div
-            className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none md:pb-20`}
+            className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none lg:pb-20`}
           >
             <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
               <div className={`px-2 py-2 ${styles.heroImageContainer}`}>

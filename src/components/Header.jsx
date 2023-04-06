@@ -55,7 +55,6 @@ function Header() {
               )}
             </div>
           </div>
-          <div className="bg-orange-900/30 text-orange-600 px-4 py-1 mr-2 rounded-full">Mockup site</div>
           <div>
             <InsetButton
               bgColor={`var(--slate1)`}

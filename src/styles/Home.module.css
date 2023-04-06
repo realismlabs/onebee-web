@@ -112,9 +112,22 @@
     animation: ray-of-light-top-xs 4s infinite linear;
   }
 }
+/* in between 769 and 1023*/
+@media (min-width: 769px) and (max-width: 1023px) {
+  .rayOfLightTop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 8px;
+    background-image: linear-gradient(90deg, transparent, white, transparent);
+    mix-blend-mode: overlay;
+    animation: ray-of-light-top-md 4s infinite linear;
+  }
+}
 
 /* styles for larger screens */
-@media (min-width: 769px) {
+@media (min-width: 1024px) {
   .rayOfLightTop {
     position: absolute;
     top: 0;
@@ -145,50 +158,6 @@
   background-image: linear-gradient(90deg, transparent, white, transparent);
   mix-blend-mode: overlay;
   animation: ray-of-light-bottom-lg 4s infinite linear;
-}
-
-.rayOfLightTopMd {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 240px;
-  height: 8px;
-  background-image: linear-gradient(90deg, transparent, white, transparent);
-  mix-blend-mode: overlay;
-  animation: ray-of-light-top-md 4s infinite linear;
-}
-
-.rayOfLightBottomMd {
-  position: absolute;
-  top: 354px;
-  left: 0;
-  width: 240px;
-  height: 7px;
-  background-image: linear-gradient(90deg, transparent, white, transparent);
-  mix-blend-mode: overlay;
-  animation: ray-of-light-bottom-md 4s infinite linear;
-}
-
-.rayOfLightTopXs {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 240px;
-  height: 8px;
-  background-image: linear-gradient(90deg, transparent, white, transparent);
-  mix-blend-mode: overlay;
-  animation: ray-of-light-top-xs 4s infinite linear;
-}
-
-.rayOfLightBottomXs {
-  position: absolute;
-  top: 174px;
-  left: 0;
-  width: 240px;
-  height: 7px;
-  background-image: linear-gradient(90deg, transparent, white, transparent);
-  mix-blend-mode: overlay;
-  animation: ray-of-light-bottom-xs 4s infinite linear;
 }
 
 .perspectiveDiv {
@@ -304,10 +273,10 @@
   10% {
     opacity: 1;
   }
-  40% {
+  30% {
     opacity: 1;
   }
-  45% {
+  35% {
     opacity: 0;
   }
   100% {
