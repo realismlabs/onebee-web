@@ -125,6 +125,15 @@
     mix-blend-mode: overlay;
     animation: ray-of-light-top-lg 4s infinite linear;
   }
+
+  .heroHeadlineMask {
+    background-image: url("../../public/images/hero_text_gradient_mask_v6.svg");
+    background-position: bottom;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }
 
 .rayOfLightBottomLg {
