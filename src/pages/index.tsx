@@ -68,10 +68,46 @@ export default function Home() {
           </h1>
           <p className="max-w-2xl text-center text-lg text-slate-11 inline-block">
             Stop building one-off data UIs. Give your whole team a familiar
-            spreadsheet-like UI to explore your data warehouse. It&apos;s fast,
-            even on billions of rows.
+            spreadsheet-like UI to explore
+            <div className="inline-block space-x-2">
+              <div className="inline-block ml-2 pr-3 pl-2 py-1 bg-[#FFFFFF15] rounded-md text-slate-12">
+                <Image
+                  className="pointer-events-none select-none inline-block"
+                  src="/images/logos/logo_bigquery.svg"
+                  alt="BigQuery"
+                  draggable="false"
+                  width="22"
+                  height="22"
+                />{" "}
+                BigQuery
+              </div>
+              <div className="inline-block ml-2 pr-3 pl-2 py-1 bg-[#FFFFFF15] rounded-md text-slate-12">
+                <Image
+                  className="pointer-events-none select-none inline-block"
+                  src="/images/logos/logo_postgres.svg"
+                  alt="Postgres"
+                  draggable="false"
+                  width="22"
+                  height="22"
+                />{" "}
+                Postgres
+              </div>
+              &nbsp;and
+              <div className="inline-block ml-2 pr-3 pl-2 py-1 bg-[#FFFFFF15] rounded-md text-slate-12">
+                <Image
+                  className="pointer-events-none select-none inline-block"
+                  src="/images/logos/logo_snowflake.svg"
+                  alt="Postgres"
+                  draggable="false"
+                  width="22"
+                  height="22"
+                />{" "}
+                Snowflake
+              </div>
+            </div>
+            &nbsp;at billion-row scale.
           </p>
-          <div className="flex flex-row gap-6 items-center pt-2">
+          {/* <div className="flex flex-row gap-6 items-center pt-2">
             <InsetButton
               bgColor={`#4315F3`}
               href={`https://google.com`}
@@ -82,7 +118,7 @@ export default function Home() {
             <Link href={`https://google.com`} passHref={true} target={`_blank`}>
               <span className="text-white text-sm">Launch playground</span>
             </Link>
-          </div>
+          </div> */}
         </div>
 
         <div id="Hero Content">
