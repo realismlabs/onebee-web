@@ -43,76 +43,26 @@ export default function Home() {
         className={`gap-6 md:gap-6 lg:gap-12 ${styles.main} sm:px-12 px-4 overflow-hidden`}
       >
         <Header />
-        <div
-          id="header-text"
-          className="flex flex-col items-center gap-4 z-30"
+        <h1
+          className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-2 md:pt-8 "
           style={{
+            backgroundImage: 'url("images/hero_text_gradient_mask_v6.svg")',
+            backgroundPosition: "bottom",
+            WebkitBackgroundClip: "text",
+            MozBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
             animation: "fadeInFromBottom 0.4s ease-in-out",
-            animationDelay: "0.1s",
+            animationDelay: "0.3s",
             animationFillMode: "forwards",
             opacity: 0,
           }}
         >
-          <h1
-            className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-2 md:pt-8 "
-            style={{
-              backgroundImage: 'url("images/hero_text_gradient_mask_v6.svg")',
-              backgroundPosition: "bottom",
-              WebkitBackgroundClip: "text",
-              MozBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
-          >
-            Browse your data warehouse, fast
-          </h1>
-          <div className="max-w-3xl text-center text-lg text-[#958eb3] inline-block">
-            Stop building one-off data UIs. Give your whole team a familiar
-            spreadsheet-like UI to explore your
-            <div className="inline-block space-x-2">
-              <div className="inline-block ml-1 pr-2 pl-2 py-0.5 bg-[#18113d] text-[#aba4cc] rounded-md ">
-                <Image
-                  className="pointer-events-none select-none inline-block"
-                  src="/images/logos/logo_bigquery.svg"
-                  alt="BigQuery"
-                  draggable="false"
-                  width="22"
-                  height="22"
-                />
-                <p className="ml-2 inline-block text-md">BigQuery</p>
-              </div>
-              <div className="inline-block ml-1 pr-2 pl-2 py-0.5 bg-[#18113d] text-[#aba4cc] rounded-md ">
-                <Image
-                  className="pointer-events-none select-none inline-block"
-                  src="/images/logos/logo_postgres.svg"
-                  alt="Postgres"
-                  draggable="false"
-                  width="22"
-                  height="22"
-                />
-                <p className="ml-2 inline-block">Postgres</p>
-              </div>
-              &nbsp;and
-              <div className="inline-block ml-1 pr-2 pl-2 py-0.5 bg-[#18113d] text-[#aba4cc] rounded-md ">
-                <Image
-                  className="pointer-events-none select-none inline-block"
-                  src="/images/logos/logo_snowflake.svg"
-                  alt="Snowflake"
-                  draggable="false"
-                  width="22"
-                  height="22"
-                />
-                <p className="ml-2 inline-block">Snowflake</p>
-              </div>
-            </div>
-            &nbsp;at billion-row scale.
-          </div>
-        </div>
-
-        <div id="Hero Content">
-          <div
-            className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none pb-20`}
-          >
+          The ultimate data browser
+        </h1>
+        <div>
+          <div className={`relative ${styles.perspectiveDiv} z-20`}>
+            {/* Hero */}
             <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
               <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
                 <Image
@@ -147,36 +97,43 @@ export default function Home() {
                 ${screen === "lg" ? styles.rayOfLightBottomLg : "hidden"}
                 `}
               ></div>
+            </div>
+          </div>
+          <div
+            className={`inline-block pt-8 sm:absolute md:pt-[460px] lg:pt-[600px] md:inset-0 z-30 m-auto w-full text-center text-white text-sm md:text-md ${styles.heroTextContainer}`}
+          >
+            <div className="flex justify-center">
+              <h2 className="max-w-md md:max-w-md">
+                We loaded every HN post and comment,
+                <span className="text-[#c07cff]">
+                  &nbsp;1.6 billion rows,
+                </span>{" "}
+                into this table. Try running search for &quot;rust&quot; or your
+                HN username.
+              </h2>
+            </div>
+
+            <div className="mt-4">
               <div
-                className={`
-                  absolute
-                  w-full
-                  z-20 
-                  text-center
-                  mt-[260px]
-                  text-white ${styles.heroTextContainer}`}
+                className="inline-block bg-[#4315F3] rounded-full"
+                style={{
+                  padding: "1px",
+                  background: "linear-gradient(to right, #8160FF, #4315F3)",
+                  animation: "rotate 3s linear infinite",
+                  backgroundSize: "400% 400%",
+                }}
               >
-                <div
-                  className="inline-block bg-[#4315F3] rounded-full"
-                  style={{
-                    padding: "1px",
-                    background: "linear-gradient(to right, #8160FF, #4315F3)",
-                    animation: "rotate 3s linear infinite",
-                    backgroundSize: "400% 400%",
-                  }}
+                <button
+                  className={`bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all`}
                 >
-                  <button
-                    className={`bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all`}
-                  >
-                    Launch playground
-                  </button>
-                </div>
+                  Launch playground
+                </button>
               </div>
             </div>
           </div>
-          <div className="lg:absolute lg:inset-0 lg:w-full">
+          <div className="hidden lg:absolute lg:inset-0 lg:w-full overflow-hidden">
             <div
-              className={`block pointer-events-none select-none lg:inset-0 lg:pt-[760px] z-10 lg:absolute lg:w-[2700px] bg-transparent`}
+              className={`block pointer-events-none select-none lg:inset-0 lg:pt-[640px] z-10 lg:absolute lg:w-[2700px] bg-transparent`}
               style={{
                 left: "50%",
                 transform: "translate(-50%, -12%)",
@@ -197,10 +154,46 @@ export default function Home() {
           </div>
         </div>
         <div
-          id="Sections"
-          className="w-full px-2 lg:px-0 lg:w-[1100px] space-y-36"
+          className="max-w-lg text-white z-20 flex flex-col gap-4 py-12"
+          style={{
+            animation: "fadeInFromBottom 0.4s ease-in-out",
+            animationDelay: "2.4s",
+            animationFillMode: "forwards",
+            opacity: 0,
+          }}
         >
-          <div id="Logos" className="text-white flex flex-row gap-12">
+          <h2 className="text-md md:text-lg lg:text-xl">
+            Dataland is a new kind of data browser that delivers a seamless user
+            experience, regardless of data scale.{" "}
+          </h2>
+          <div className="text-sm md:text-md lg:text-lg space-y-4">
+            <p className="text-slate-11">
+              Dataland lets your internal teams access the data in your data
+              warehouse using a familiar spreadsheet-like UI that works the same
+              way across 10 rows or 10,000,000,000 rows.{" "}
+            </p>
+            <p className="text-slate-11">
+              Billion row tables load instantly, straight from your web browser.
+              Gone are the days of waiting for loading spinners, clicking
+              through 50 rows per page, and being limited by pre-defined query
+              patterns.
+            </p>
+          </div>
+          <div className="block md:flex md:flex-row space-y-4 md:space-y-0 gap-4 pt-4 items-center">
+            <div className="flex flex-shrink">
+              <InsetButton
+                bgColor={`#4315F3`}
+                href={`https://google.com`}
+                text={`Get started`}
+                target={`_blank`}
+                highlightValue={"0.4"}
+              />
+            </div>
+            <p className="text-white"> $5 per GB-month • Unlimited users</p>
+          </div>
+        </div>
+        <div className="w-full px-2 lg:px-0 lg:w-[1100px] space-y-36">
+          <div className="text-white flex flex-row gap-12">
             <Image
               className="relative z-20 m-auto pointer-events-none select-none"
               src="/images/logos/logo_wyndly.svg"
@@ -234,10 +227,73 @@ export default function Home() {
               height="120"
             />
           </div>
-          <div
-            id="Rich cell types"
-            className="flex flex-col gap-12 items-center"
-          >
+          <div className=" text-white z-20 flex flex-col md:flex-row gap-16 items-center">
+            <Image
+              className="relative z-20 m-auto pointer-events-none select-none w-2/3"
+              src="/images/performance_diagram.svg"
+              alt="Hero Image"
+              draggable="false"
+              width="1053"
+              height="513"
+            />
+            <div className="flex flex-col gap-4">
+              <IconEyebrow
+                icon={<Lightning color="#E5C3F0" />}
+                text="Performance"
+              />
+              <h2 className="text-xl">
+                Leveraging WebGL, WASM, and Rust for ultra-high performance
+              </h2>
+              <p className="text-slate-11">
+                The data source API handles automatic caching from selected
+                datasets in your data warehouse.
+              </p>
+              <p className="text-slate-11">
+                The indexing and caching layer is optimized for data loading and
+                full-text search.
+              </p>
+              <p className="text-slate-11">
+                The UI works with the caching layer to seamlessly translate user
+                action (scrolling, searching, etc.) to give instant results on
+                the front-end.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-row gap-12 justify-evenly">
+            <Stats value="<1s" subtitle="Load time for 1 billion rows" />
+            <Stats value="0.1s" subtitle="table load times" />
+            <Stats
+              value="133x faster"
+              subtitle="for searches compared to Retool querying directly from Snowflake"
+            />
+            <Stats
+              value="98x cheaper"
+              subtitle="for searches compared to querying directly from Snowflake"
+            />
+          </div>
+          <div className="flex flex-col gap-12 py-16 border-t border-b border-[#FFFFFF10] items-center">
+            <div className="flex flex-row text-white items-center gap-24">
+              <h1 className="text-3xl w-[240px]">
+                Full-text search that just works
+              </h1>
+              <p className="text-md max-w-xl text-slate-11">
+                Just ⌘F to launch a case insensitive, substring search that
+                returns results instantly. Instantly jump to the next search
+                result a million rows away.
+              </p>
+            </div>
+            <div>
+              <Image
+                className="relative pointer-events-none select-none"
+                src="/images/product_search.svg"
+                alt="Product Screenshot - Search"
+                draggable="false"
+                width="1000"
+                height="378"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-12 items-center">
             <div className="flex flex-col items-center gap-4 text-center">
               <h1 className="text-3xl text-white">Rich cell types</h1>
               <div className="space-y-0 text-slate-11">
@@ -287,35 +343,7 @@ export default function Home() {
               }}
             />
           </div>
-          <div
-            id="Search"
-            className="flex flex-col gap-12 py-16 border-t border-b border-[#FFFFFF10] items-center"
-          >
-            <div className="flex flex-row text-white items-center gap-24">
-              <h1 className="text-3xl w-[240px]">
-                Full-text search that just works
-              </h1>
-              <p className="text-md max-w-xl text-slate-11">
-                Just ⌘F to launch a case insensitive, substring search that
-                returns results instantly. Instantly jump to the next search
-                result a million rows away.
-              </p>
-            </div>
-            <div>
-              <Image
-                className="relative pointer-events-none select-none"
-                src="/images/product_search.svg"
-                alt="Product Screenshot - Search"
-                draggable="false"
-                width="1000"
-                height="378"
-              />
-            </div>
-          </div>
-          <div
-            id="Data sync and security"
-            className="flex flex-row justify-evenly"
-          >
+          <div className="flex flex-row justify-evenly">
             <Image
               className="absolute pointer-events-none select-none z-10"
               src="/images/gradient_highlight.svg"
@@ -381,7 +409,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div id="Object views" className="px-12 flex flex-row gap-4 py-24">
+          <div className="px-12 flex flex-row gap-4 py-24">
             <div className="flex flex-col gap-4 py-12">
               <IconEyebrow
                 icon={<Lightning color="#E5C3F0" />}
@@ -406,42 +434,7 @@ export default function Home() {
               />
             </div>
           </div>
-          <div
-            id="Architecture Diagram"
-            className=" text-white z-20 flex flex-col md:flex-row gap-16 items-center"
-          >
-            <Image
-              className="relative z-20 m-auto pointer-events-none select-none w-2/3"
-              src="/images/performance_diagram.svg"
-              alt="Hero Image"
-              draggable="false"
-              width="1053"
-              height="513"
-            />
-            <div className="flex flex-col gap-4">
-              <IconEyebrow
-                icon={<Lightning color="#E5C3F0" />}
-                text="Performance"
-              />
-              <h2 className="text-xl">
-                Leveraging WebGL, WASM, and Rust for ultra-high performance
-              </h2>
-              <p className="text-slate-11">
-                The data source API handles automatic caching from selected
-                datasets in your data warehouse.
-              </p>
-              <p className="text-slate-11">
-                The indexing and caching layer is optimized for data loading and
-                full-text search.
-              </p>
-              <p className="text-slate-11">
-                The UI works with the caching layer to seamlessly translate user
-                action (scrolling, searching, etc.) to give instant results on
-                the front-end.
-              </p>
-            </div>
-          </div>
-          <div id="End of page CTA" className="flex flex-col items-center">
+          <div className="flex flex-col items-center">
             <div className="z-10 flex flex-col pb-96 items-center space-y-6">
               <h1 className="text-[48px] leading-tight text-white">
                 The ultimate <br></br>data browser
@@ -457,9 +450,7 @@ export default function Home() {
               </div>
             </div>
             <div className="w-full overflow-hidden">
-              <div className="flex justify-center items-center">
-                <LogoSvgAnimation />
-              </div>
+              <LogoSvgAnimation />
             </div>
           </div>
         </div>

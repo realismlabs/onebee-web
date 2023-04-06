@@ -23,14 +23,14 @@ function Header() {
 
   return (
     <header
-      className="fixed left-0 top-0 lg:w-full bg-opacity-50 md:px-12 flex flex-row items-center z-40 border-b border-[#FFFFFF10]"
+      className="fixed left-0 top-0 w-full bg-opacity-50 md:px-12 flex flex-row items-center z-40 border-b border-[#FFFFFF10]"
       style={{
         backgroundColor: "rgb(4, 10, 25, 1)",
         height: `${divHeight}px`
       }}
     >
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-40 flex-grow">
-        <div className="flex h-16 items-center justify-between flex-grow">
+      <nav className="mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-8 z-40 flex-grow">
+        <div className="flex h-16 items-center justify-between">
           <div className="flex-grow">
             <Image
               width="112"
@@ -54,13 +54,15 @@ function Header() {
               )}
             </div>
           </div>
-          <InsetButton
-            bgColor={`var(--slate1)`}
-            href={`https://google.com`}
-            text={`Sign in`}
-            target={`_blank`}
-            highlightValue={"0.2"}
-          />
+          <div>
+            <InsetButton
+              bgColor={`var(--slate1)`}
+              href={`https://google.com`}
+              text={`Sign in`}
+              target={`_blank`}
+              highlightValue={"0.2"}
+            />
+          </div>
         </div>
       </nav>
     </header>
