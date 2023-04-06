@@ -5,32 +5,32 @@ function LogoSvgAnimation() {
   const { isSm, isMd, isLg, screen } = useScreenSize();
   let positionStyle = {};
   switch (screen) {
-    case 'sm':
-      positionStyle = {
-        position: 'absolute',
-        scale: '1',
-        transform: 'none',
-      };
-      break;
-    case 'md':
-      positionStyle = {
-        position: 'absolute',
-        scale: '1',
-        transform: 'translate(-20px, -500px)',
-      };
-      break;
-    case 'lg':
-      positionStyle = {
-        position: 'absolute',
-        scale: '0.8',
-        transform: 'translate(-200px, -800px)',
-      };
-      break;
+    // case 'sm':
+    //   positionStyle = {
+    //     position: 'absolute',
+    //     scale: '1',
+    //     transform: 'none',
+    //   };
+    //   break;
+    // case 'md':
+    //   positionStyle = {
+    //     position: 'absolute',
+    //     scale: '1',
+    //     transform: 'translate(-20px, -500px)',
+    //   };
+    //   break;
+    // case 'lg':
+    //   positionStyle = {
+    //     position: 'absolute',
+    //     scale: '0.8',
+    //     transform: 'translate(-200px, -800px)',
+    //   };
+    //   break;
     default:
       positionStyle = {
         position: 'absolute',
-        transform: 'translate(10px, -400px)',
-        scale: '1.0'
+        transform: 'translate(0px, -540px)',
+        scale: '0.6'
       };
   }
   console.log('ok', screen, positionStyle)

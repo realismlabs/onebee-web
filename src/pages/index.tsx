@@ -114,6 +114,23 @@ export default function Home() {
             className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none pb-20`}
           >
             {/* Hero */}
+            <div
+              className={`
+                  absolute
+                  w-full
+                  z-20 
+                  text-white`}
+            >
+              <div className="mx-auto">
+                <InsetButton
+                  bgColor={`#4315F3`}
+                  href={`https://google.com`}
+                  text={`Get started`}
+                  target={`_blank`}
+                  highlightValue={"0.4"}
+                />
+              </div>
+            </div>
             <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
               <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
                 <Image
@@ -433,7 +450,9 @@ export default function Home() {
               </div>
             </div>
             <div className="w-full overflow-hidden">
-              <LogoSvgAnimation />
+              <div className="flex justify-center items-center">
+                <LogoSvgAnimation />
+              </div>
             </div>
           </div>
         </div>
