@@ -57,10 +57,10 @@ export default function Home() {
           }}
         >
           <option value="">Select a hero type</option>
-          <option value="headline_logos" selected>
-            Hero 1
+          <option value="headline_logos">Hero 1</option>
+          <option value="hero_headline_subheader" selected>
+            Hero 2
           </option>
-          <option value="hero_headline_subheader">Hero 2</option>
         </select>
 
         <HeroText type={heroType} />
