@@ -59,10 +59,10 @@ function LogoSvgAnimation() {
             <g filter="url(#filter1_f_1002_83860)">
               <path fillRule="evenodd" clipRule="evenodd" d="M490.795 435.583L621.333 404.768C693.129 387.818 806.341 387.804 872.916 404.736C939.49 421.663 935.309 449.786 863.424 466.333L731.32 496.739L490.795 435.583Z" fill="url(#paint4_linear_1002_83860)" />
             </g>
-            <g style={{ 'mix-blend-mode': 'soft-light' }} filter="url(#filter2_f_1002_83860)">
+            <g style={{ 'mixBlendMode': 'soft-light' }} filter="url(#filter2_f_1002_83860)">
               <path fillRule="evenodd" clipRule="evenodd" d="M490.795 453.709L621.333 410.065C693.129 386.057 806.341 386.037 872.916 410.019C939.49 433.994 935.309 473.825 863.424 497.261L731.32 540.327L490.795 453.709Z" fill="url(#paint5_linear_1002_83860)" />
             </g>
-            <g style={{ 'mix-blend-mode': 'overlay' }} filter="url(#filter3_f_1002_83860)">
+            <g style={{ 'mixBlendMode': 'overlay' }} filter="url(#filter3_f_1002_83860)">
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -83,7 +83,7 @@ function LogoSvgAnimation() {
           >
             <g
               style={{
-                'mix-blend-mode': 'overlay',
+                'mixBlendMode': 'overlay',
                 // scale up and down animation
                 animation: 'scaleUpAndDown2 3s infinite',
                 transformOrigin: 'center',
@@ -98,13 +98,13 @@ function LogoSvgAnimation() {
             <g filter="url(#filter4_f_1002_83860)">
               <path fillRule="evenodd" clipRule="evenodd" d="M490.795 330.89L621.333 300.075C693.129 283.125 806.341 283.111 872.916 300.043C939.49 316.97 935.309 345.093 863.424 361.64L731.32 392.046L490.795 330.89Z" fill="url(#paint9_linear_1002_83860)" />
             </g>
-            <g style={{ 'mix-blend-mode': 'soft-light' }} filter="url(#filter5_f_1002_83860)">
+            <g style={{ 'mixBlendMode': 'soft-light' }} filter="url(#filter5_f_1002_83860)">
               <path fillRule="evenodd" clipRule="evenodd" d="M490.795 330.89L621.333 300.075C693.129 283.125 806.341 283.111 872.916 300.043C939.49 316.97 935.309 345.093 863.424 361.64L731.32 392.046L490.795 330.89Z" fill="url(#paint10_linear_1002_83860)" />
             </g>
             <g filter="url(#filter6_f_1002_83860)">
               <path fillRule="evenodd" clipRule="evenodd" d="M490.795 330.89L621.333 300.075C693.129 283.125 806.341 283.111 872.916 300.043C939.49 316.97 935.309 345.093 863.424 361.64L731.32 392.046L490.795 330.89Z" fill="url(#paint11_linear_1002_83860)" />
             </g>
-            <g style={{ 'mix-blend-mode': 'overlay' }} filter="url(#filter7_f_1002_83860)">
+            <g style={{ 'mixBlendMode': 'overlay' }} filter="url(#filter7_f_1002_83860)">
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -125,7 +125,7 @@ function LogoSvgAnimation() {
           >
             <g
               style={{
-                'mix-blend-mode': 'overlay',
+                'mixBlendMode': 'overlay',
                 // scale up and down animation
                 animation: 'scaleUpAndDown 3s infinite',
                 transformOrigin: 'center'
