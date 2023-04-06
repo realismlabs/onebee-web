@@ -130,13 +130,7 @@ export default function Home() {
                   absolute 
                   z-20 
                   text-white 
-                  ${
-                    screen === "lg"
-                      ? styles.rayOfLightTopLg
-                      : screen === "md"
-                      ? styles.rayOfLightTopMd
-                      : styles.rayOfLightTopXs
-                  }
+                  ${styles.rayOfLightTop}
                   `}
               ></div>
               <div
