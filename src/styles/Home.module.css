@@ -100,15 +100,31 @@
   box-shadow: rgba(255, 255, 255, 1.2);
 }
 
-.rayOfLightTopLg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 240px;
-  height: 8px;
-  background-image: linear-gradient(90deg, transparent, white, transparent);
-  mix-blend-mode: overlay;
-  animation: ray-of-light-top-lg 4s infinite linear;
+@media (max-width: 768px) {
+  .rayOfLightTop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 8px;
+    background-image: linear-gradient(90deg, transparent, white, transparent);
+    mix-blend-mode: overlay;
+    animation: ray-of-light-top-xs 4s infinite linear;
+  }
+}
+
+/* styles for larger screens */
+@media (min-width: 769px) {
+  .rayOfLightTop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 8px;
+    background-image: linear-gradient(90deg, transparent, white, transparent);
+    mix-blend-mode: overlay;
+    animation: ray-of-light-top-lg 4s infinite linear;
+  }
 }
 
 .rayOfLightBottomLg {
