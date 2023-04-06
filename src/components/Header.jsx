@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import InsetButton from "../components/InsetButton";
 import Image from "next/image";
+import Link from "next/link";
 
 function Header() {
   const [divHeight, setDivHeight] = useState(80);
@@ -33,12 +34,14 @@ function Header() {
       <nav className="mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-8 z-40 flex-grow">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-grow">
-            <Image
-              width="112"
-              height="29"
-              src="/images/logo_darker.svg"
-              alt="Logo"
-            />
+            <Link href="/">
+              <Image
+                width="112"
+                height="29"
+                src="/images/logo_darker.svg"
+                alt="Logo"
+              />
+            </Link>
           </div>
           <div className="hidden md:block flex-grow">
             <div className="ml-10 flex items-baseline space-x-4">

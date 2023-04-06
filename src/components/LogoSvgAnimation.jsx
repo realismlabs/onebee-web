@@ -1,41 +1,6 @@
 import React from 'react';
-import useScreenSize from './useScreenSize';
 
 function LogoSvgAnimation() {
-  const { isSm, isMd, isLg, screen } = useScreenSize();
-  let positionStyle = {};
-  switch (screen) {
-    case 'sm':
-      positionStyle = {
-        position: 'absolute',
-        scale: '1',
-        transform: 'none',
-      };
-      break;
-    case 'md':
-      positionStyle = {
-        position: 'absolute',
-        scale: '1',
-        transform: 'translate(0px, -400px)',
-      };
-      break;
-    case 'lg':
-      positionStyle = {
-        position: 'absolute',
-        scale: '1.0',
-        maxWidth: '1200px',
-        transform: 'translate(0px, -800px)',
-      };
-      break;
-    default:
-      positionStyle = {
-        position: 'absolute',
-        transform: 'translate(0px, -160px)',
-        scale: '1.0'
-      };
-  }
-  console.log('ok', screen, positionStyle)
-
   return (
     <>
       <svg

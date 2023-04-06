@@ -91,7 +91,7 @@ function HeroText(type) {
             width="22"
             height="22"
           />
-          <p className="ml-2 inline-block text-sm md:text-md">BigQuery</p>
+          <p className="ml-2 inline-block text-sm md:text-xl">BigQuery</p>
         </div>
         <div className="flex flex-row items-center ml-1 md:pr-4 md:pl-3 pr-2 pl-1.5 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
           <Image
@@ -102,7 +102,7 @@ function HeroText(type) {
             width="22"
             height="22"
           />
-          <p className="ml-2 inline-block text-sm md:text-md">Postgres</p>
+          <p className="ml-2 inline-block text-sm md:text-xl">Postgres</p>
         </div>
         <div className="flex flex-row items-center ml-1 md:pr-4 md:pl-3 pr-2 pl-1.5 md:py-2 py-1 bg-[#18113d] text-[#c1bcda] rounded-md ">
           <Image
@@ -113,7 +113,7 @@ function HeroText(type) {
             width="22"
             height="22"
           />
-          <p className="ml-2 inline-block text-sm md:text-md">Snowflake</p>
+          <p className="ml-2 inline-block text-sm md:text-xl">Snowflake</p>
         </div>
       </div>
     </div>

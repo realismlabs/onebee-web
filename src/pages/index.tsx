@@ -72,9 +72,7 @@ export default function Home() {
 
         <HeroText type={heroType} />
         <div id="Hero Image Content">
-          <div
-            className={`relative ${styles.perspectiveDiv} z-20 pointer-events-none select-none lg:pb-20`}
-          >
+          <div className={`relative ${styles.perspectiveDiv} z-20 lg:pb-20`}>
             <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
               <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
                 <Image
@@ -114,7 +112,7 @@ export default function Home() {
                   text-white ${styles.heroTextContainer}`}
               >
                 <div
-                  className="inline-block bg-[#4315F3] rounded-full"
+                  className="inline-block bg-[#4315F3] rounded-full z-50"
                   style={{
                     padding: "1px",
                     background: "linear-gradient(to right, #8160FF, #4315F3)",
@@ -122,11 +120,13 @@ export default function Home() {
                     backgroundSize: "400% 400%",
                   }}
                 >
-                  <button
-                    className={`bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all`}
-                  >
-                    Launch playground
-                  </button>
+                  <Link href="/sandbox">
+                    <button
+                      className={`bg-[#4315F3] py-2 px-6 w-auto rounded-full hover:bg-[#3A16C7] hover:transition-all`}
+                    >
+                      Launch playground
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
