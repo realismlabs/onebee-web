@@ -4,7 +4,7 @@ import styles from "../styles/Home.module.css";
 
 const TextCycler = () => {
   const [title, setTitle] = useState('Fast data browsing for everyone');
-  const roles = ['everyone', 'support', 'finance', 'operations'];
+  const roles = ['everyone', 'operations', 'support', 'customer success'];
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [action, setAction] = useState('deleting');
 
