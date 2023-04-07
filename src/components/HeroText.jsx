@@ -35,7 +35,7 @@ const TextCycler = () => {
 
   return (
     <div>
-      <h1>{title}<span className="text-[#958eb3]A blinkingCursor">|</span></h1>
+      <h1>{title}<span className="text-[#958eb3] blinkingCursor">|</span></h1>
     </div>
   );
 };

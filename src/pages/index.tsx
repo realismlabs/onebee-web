@@ -31,7 +31,7 @@ function Stats({ value, subtitle }: StatsProps): JSX.Element {
 
 export default function Home() {
   const { isSm, isMd, isLg, screen } = useScreenSize();
-  const [heroType, setHeroType] = useState("hero_4");
+  const [heroType, setHeroType] = useState("hero_5");
 
   return (
     <>
