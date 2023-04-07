@@ -90,6 +90,13 @@ export default function Home() {
               ) : (
                 <option value="hero_4">Hero 4</option>
               )}
+              {heroType === "hero_5" ? (
+                <option value="hero_5" selected>
+                  Hero 5
+                </option>
+              ) : (
+                <option value="hero_5">Hero 5</option>
+              )}
             </select>
           </div>
         </div>
