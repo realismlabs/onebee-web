@@ -135,7 +135,7 @@ function HeroText(type) {
       <h1
         className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-white pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
       >
-        Fast data browsing for everyone
+        Fast data browsing <br className="sm:hidden"></br>for everyone
       </h1>
       <div className="max-w-3xl text-center md:text-lg md:mb-2 lg:mb-0 text-md text-[#958eb3] inline-block">
         Stop building one-off data UIs. Give your whole team a
