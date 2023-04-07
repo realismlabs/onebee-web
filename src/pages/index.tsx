@@ -48,10 +48,10 @@ export default function Home() {
 
         <Header />
         {/* This option is the header + two-line subheader with DWH logos */}
-        <div className="fixed z-50 top-1 right-1">
+        <div className="fixed z-50 sm:top-1 sm:right-1 bottom-0 bg-black sm:bg-transparent px-2 py-2 rounded-full sm:py-0 sm:px-0 sm:w-auto">
           <div className="flex flex-row">
             <div className="bg-orange-900/30 text-orange-600 px-2 py-1 mr-2 rounded-full text-[10px]">
-              Mockup site
+              Mockup
             </div>
             <select
               title="Hero Type"
