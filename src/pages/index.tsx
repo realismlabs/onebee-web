@@ -178,7 +178,7 @@ export default function Home() {
               height="120"
             />
             <Image
-              className="z-20 m-auto pointer-events-none select-none hidden md:relative"
+              className="relative z-20 m-auto pointer-events-none select-none hidden sm:block"
               src="/images/logos/logo_wyndly.svg"
               alt="Wyndly"
               draggable="false"
@@ -186,7 +186,7 @@ export default function Home() {
               height="120"
             />
             <Image
-              className="z-20 m-auto pointer-events-none select-none hidden md:relative"
+              className="relative z-20 m-auto pointer-events-none select-none hidden sm:block"
               src="/images/logos/logo_gorgias.svg"
               alt="Gorgias"
               draggable="false"

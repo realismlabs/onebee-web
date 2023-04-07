@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import LogoSvgAnimation from "../components/LogoSvgAnimation";
+import LoaderAnimation from "../components/LoaderAnimation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,15 +19,15 @@ export default function Sandbox() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={` ${styles.main} h-screen px-4 overflow-hidden`}>
+      <main className={` ${styles.main} px-4 overflow-hidden flex h-screen`}>
         {/* Add an input that changes the value of heroType */}
 
         <Header />
         {/* This option is the header + two-line subheader with DWH logos */}
 
-        <div className="text-white h-full">Hello </div>
-        <LogoSvgAnimation />
-
+        <div className="h-full flex items-center">
+          <LoaderAnimation />
+        </div>
         <Footer />
       </main>
     </>
