@@ -99,7 +99,7 @@ export default function Home() {
           <div className={`relative ${styles.perspectiveDiv} z-20 lg:pb-20`}>
             <div className={`px-2 py-2 ${styles.heroImageContainerOuter}`}>
               <div className={`px-2 py-2 ${styles.heroImageContainer}`}>
-                <Image
+                {/* <Image
                   className="relative z-20 m-auto pointer-events-none select-none"
                   src="/images/dataland_hero.svg"
                   alt="Hero Image"
@@ -107,7 +107,29 @@ export default function Home() {
                   width="1053"
                   height="513"
                   priority={true}
-                />
+                /> */}
+                <div
+                  className={`
+                  absolute
+                  z-60
+                  inset-2
+                  rounded-lg
+                  `}
+                  style={{
+                    background:
+                      "linear-gradient(to top, rgba(4,10,25,1.0), transparent)",
+                  }}
+                ></div>
+                <div className="w-[1053px] h-[513px]">
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    poster="/images/dataland_hero.svg"
+                    src="videos/hero_video_2.mp4"
+                  ></video>
+                </div>
               </div>
               <div
                 className={`
