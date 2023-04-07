@@ -66,6 +66,8 @@ export default function Home() {
               <option value="hero_headline_subheader" selected>
                 Hero 2
               </option>
+              <option value="hero_3">Hero 3</option>
+              <option value="hero_4">Hero 4</option>
             </select>
           </div>
         </div>

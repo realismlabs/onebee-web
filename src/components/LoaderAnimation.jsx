@@ -7,12 +7,12 @@ function LoaderAnimation() {
         <div
           className="w-[240px] h-[240px] flex flex-col justify-center"
           style={{
-            position: "absolute",
+            position: "relative",
             /* Set the left and top position to 50% */
             left: "50%",
             top: "50%",
             /* Use the transform property to move the div back by half its width and height */
-            transform: "translate(-50%, -59%)",
+            transform: "translate(-50%, -55%)",
           }}
         >
           <svg
