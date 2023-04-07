@@ -2,15 +2,15 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import InsetButton from "../components/InsetButton";
+import InsetButton from "../../components/InsetButton";
 import { Lightning } from "@phosphor-icons/react";
-import IconEyebrow from "../components/IconEyebrow";
+import IconEyebrow from "../../components/IconEyebrow";
 import React, { useState } from "react";
 import Link from "next/link";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import LogoSvgAnimation from "../components/LogoSvgAnimation";
-import useScreenSize from "../components/useScreenSize";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import LogoSvgAnimation from "../../components/LogoSvgAnimation";
+import useScreenSize from "../../components/useScreenSize";
 
 const inter = Inter({ subsets: ["latin"] });
 

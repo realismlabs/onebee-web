@@ -81,7 +81,7 @@ export default function Home() {
                   Hero 3
                 </option>
               ) : (
-                <option value="hero_4">Hero 4</option>
+                <option value="hero_3">Hero 3</option>
               )}
               {heroType === "hero_4" ? (
                 <option value="hero_4" selected>
