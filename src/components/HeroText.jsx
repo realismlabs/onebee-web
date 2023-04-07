@@ -4,7 +4,6 @@ import styles from "../styles/Home.module.css";
 
 function HeroText(type) {
 
-  console.log("this is the type", JSON.stringify(type));
   //  Header with headline + two sublines
   const hero_headline_subheader =
     <div

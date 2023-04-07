@@ -31,7 +31,7 @@ function Stats({ value, subtitle }: StatsProps): JSX.Element {
 
 export default function Home() {
   const { isSm, isMd, isLg, screen } = useScreenSize();
-  const [heroType, setHeroType] = useState("hero_headline_subheader");
+  const [heroType, setHeroType] = useState("hero_4");
 
   return (
     <>
@@ -62,12 +62,34 @@ export default function Home() {
               }}
             >
               <option value="">Select a hero type</option>
-              <option value="headline_logos">Hero 1</option>
-              <option value="hero_headline_subheader" selected>
-                Hero 2
-              </option>
-              <option value="hero_3">Hero 3</option>
-              <option value="hero_4">Hero 4</option>
+              {heroType === "headline_logos" ? (
+                <option value="headline_logos" selected>
+                  Hero 1
+                </option>
+              ) : (
+                <option value="headline_logos">Hero 1</option>
+              )}
+              {heroType === "hero_headline_subheader" ? (
+                <option value="hero_headline_subheader" selected>
+                  Hero 2
+                </option>
+              ) : (
+                <option value="hero_headline_subheader">Hero 2</option>
+              )}
+              {heroType === "hero_3" ? (
+                <option value="hero_3" selected>
+                  Hero 3
+                </option>
+              ) : (
+                <option value="hero_4">Hero 4</option>
+              )}
+              {heroType === "hero_4" ? (
+                <option value="hero_4" selected>
+                  Hero 4
+                </option>
+              ) : (
+                <option value="hero_4">Hero 4</option>
+              )}
             </select>
           </div>
         </div>
