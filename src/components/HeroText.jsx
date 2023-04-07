@@ -3,7 +3,7 @@ import Image from 'next/image';
 import styles from "../styles/Home.module.css";
 
 const TextCycler = () => {
-  const [title, setTitle] = useState('Fast data browsing for everyone');
+  const [title, setTitle] = useState('everyone');
   const roles = ['everyone', 'operations', 'support', 'customer success'];
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [action, setAction] = useState('deleting');
@@ -11,7 +11,7 @@ const TextCycler = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (action === 'deleting') {
-        if (title.length > 23) {
+        if (title.length > 0) {
           setTitle(title.slice(0, -1));
         } else {
           setAction('adding');
@@ -19,13 +19,15 @@ const TextCycler = () => {
         }
       } else if (action === 'adding') {
         const newRole = roles[currentRoleIndex];
-        const currentTyped = title.slice(23);
+        const currentTyped = title.slice(0);
 
         if (currentTyped !== newRole) {
           setTitle(title + newRole[currentTyped.length]);
         } else {
           setAction('waiting');
-          setTimeout(() => setAction('deleting'), 1500);
+          // Wait 3 seconds before deleting if the title is 'everyone'
+          const delay = title === 'everyone' ? 3000 : 1500;
+          setTimeout(() => setAction('deleting'), delay);
         }
       }
     }, action === 'waiting' ? 0 : 100);
@@ -33,9 +35,10 @@ const TextCycler = () => {
     return () => clearTimeout(timeout);
   }, [title, action, currentRoleIndex, roles]);
 
+
   return (
     <div>
-      <h1>{title}<span className="text-[#958eb3] blinkingCursor">|</span></h1>
+      <h1>Fast data browsing <br className="sm:hidden"></br>for {title}<span className="text-[#958eb3] blinkingCursor">|</span></h1>
     </div>
   );
 };
