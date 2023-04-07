@@ -126,7 +126,7 @@ export default function Home() {
                     loop
                     muted
                     playsInline
-                    poster="/images/dataland_hero.svg"
+                    poster="/images/hero_video_poster.svg"
                     src="videos/hero_video_2.mp4"
                   ></video>
                 </div>
