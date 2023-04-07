@@ -112,7 +112,7 @@ export default function Home() {
                   className={`
                   absolute
                   z-60
-                  inset-2
+                  inset-1.5
                   rounded-lg
                   `}
                   style={{
@@ -120,7 +120,7 @@ export default function Home() {
                       "linear-gradient(to top, rgba(4,10,25,1.0), transparent)",
                   }}
                 ></div>
-                <div className="w-[1053px] h-[513px]">
+                <div className="max-w-[1100px]">
                   <video
                     autoPlay
                     loop
