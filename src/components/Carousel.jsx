@@ -1,5 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
+import { motion, useAnimation } from "framer-motion";
+
+const AnimatedDiv = ({ obj, position, animationControl, animationTransition }) => (
+  <motion.div
+    className={`animated-div flex flex-row gap-4 p-4 bg-slate-1 text-white`}
+    style={{ zIndex: position.zIndex }}
+    initial={{ y: position.y, rotate: position.rotate }}
+    animate={animationControl}
+    transition={animationTransition}
+  >
+    <Image src={`${obj.image_url}`} alt="Picture of the author" width={64} height={64} />
+    <h3>{obj.question_text}</h3>
+  </motion.div>
+);
 
 const Carousel = () => {
   const data = [
@@ -29,36 +43,53 @@ const Carousel = () => {
       "question_text": "Hello5"
     }]
 
+  const positions = [
+    { y: 0, rotate: 3, zIndex: 1 },
+    { y: 45, rotate: -3, zIndex: 2 },
+    { y: 90, rotate: 3, zIndex: 3 },
+    { y: 135, rotate: -3, zIndex: 2 },
+    { y: 180, rotate: 3, zIndex: 1 },
+  ];
 
-  const [divOrder, setDivOrder] = useState(data);
+  const animationControls = data.map(() => useAnimation());
 
   useEffect(() => {
+    const animateDivs = async () => {
+      const animations = animationControls.map((control, i) =>
+        control.start({ y: positions[i].y, rotate: positions[i].rotate, zIndex: positions[i].zIndex })
+      );
+
+      await Promise.all(animations);
+    };
+
     const interval = setInterval(() => {
-      setDivOrder((prevState) => {
-        const newOrder = prevState.slice(1).concat(prevState[0]);
-        return newOrder.map((item, index) => {
-          return {
-            ...item,
-            position: index + 1,
-          };
-        });
-      });
+      animateDivs();
+      positions.unshift(positions.pop());
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [animationControls, positions]);
+
+  const animationTransition = {
+    duration: 1,
+    ease: "easeInOut",
+  };
 
   return (
     <div className="animated-divs">
-      {divOrder.map((obj, index) => (
-        <div
-          key={index}
-          className={`animated-div position-${obj.position} flex flex-row gap-4 p-4 bg-slate-1 text-white`}
-        >
-          <Image src={`${obj.image_url}`} alt="Picture of the author" width={64} height={64} />
-          <h3>{obj.question_text}</h3>
-        </div>
-      ))}
+      {data.map((obj, index) => {
+        const position = positions[index];
+
+        return (
+          <AnimatedDiv
+            key={index}
+            obj={obj}
+            position={position}
+            animationControl={animationControls[index]}
+            animationTransition={animationTransition}
+          />
+        );
+      })}
     </div>
   );
 };
