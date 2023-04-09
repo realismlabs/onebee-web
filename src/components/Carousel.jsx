@@ -10,7 +10,7 @@ const AnimatedDiv = ({ obj, position, animationControl, animationTransition }) =
     animate={animationControl}
     transition={animationTransition}
   >
-    <Image src={`${obj.image_url}`} alt="Picture of the author" width={64} height={64} />
+    <Image src={`${obj.image_url}`} alt="Picture of the author" width={48} height={48} className="self-start" />
     <h3>{obj.question_text}</h3>
   </motion.div>
 );
@@ -20,7 +20,7 @@ const Carousel = () => {
     {
       "position": 1,
       "image_url": "/images/avatar01.png",
-      "question_text": "What's the event timeline for this insurance claim?"
+      "question_text": "What's the event timeline for this insurance claim? When did X happen?"
     },
     {
       "position": 2,
@@ -40,15 +40,15 @@ const Carousel = () => {
     {
       "position": 5,
       "image_url": "/images/avatar05.png",
-      "question_text": "Hello5"
+      "question_text": "Lookup the financial history and credit score of this loan applicant."
     }]
 
   const positions = [
-    { y: 0, rotate: 3, zIndex: 1 },
-    { y: 45, rotate: -3, zIndex: 2 },
-    { y: 90, rotate: 3, zIndex: 3 },
-    { y: 135, rotate: -3, zIndex: 2 },
-    { y: 180, rotate: 3, zIndex: 1 },
+    { y: 0, rotate: 3, zIndex: 1, x: -20 },
+    { y: 80, rotate: -3, zIndex: 2, x: 20 },
+    { y: 160, rotate: 3, zIndex: 3, x: -20 },
+    { y: 240, rotate: -3, zIndex: 2, x: 20 },
+    { y: 320, rotate: 3, zIndex: 1, x: -20 },
   ];
 
   const animationControls = data.map(() => useAnimation());
@@ -56,7 +56,7 @@ const Carousel = () => {
   useEffect(() => {
     const animateDivs = async () => {
       const animations = animationControls.map((control, i) =>
-        control.start({ y: positions[i].y, rotate: positions[i].rotate, zIndex: positions[i].zIndex })
+        control.start({ y: positions[i].y, rotate: positions[i].rotate, zIndex: positions[i].zIndex, x: positions[i].x })
       );
 
       await Promise.all(animations);
@@ -65,7 +65,7 @@ const Carousel = () => {
     const interval = setInterval(() => {
       animateDivs();
       positions.unshift(positions.pop());
-    }, 3000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [animationControls, positions]);
