@@ -12,6 +12,7 @@ import Header from "../components/Header";
 import LogoSvgAnimation from "../components/LogoSvgAnimation";
 import useScreenSize from "../components/useScreenSize";
 import HeroText from "../components/HeroText";
+import Carousel from "../components/Carousel";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -246,6 +247,9 @@ export default function Home() {
               width="120"
               height="120"
             />
+          </div>
+          <div id="Question Carousel">
+            <Carousel />
           </div>
           <div
             id="Rich cell types"
