@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Lato } from "next/font/google";
 import Image from "next/image";
 
 const Carousel = () => {
-  const [divOrder, setDivOrder] = useState([
+  const data = [
     {
       "position": 1,
       "image_url": "/images/avatar01.png",
@@ -28,13 +27,21 @@ const Carousel = () => {
       "position": 5,
       "image_url": "/images/avatar05.png",
       "question_text": "Hello5"
-    }])
+    }]
+
+
+  const [divOrder, setDivOrder] = useState(data);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setDivOrder((prevState) => {
         const newOrder = prevState.slice(1).concat(prevState[0]);
-        return newOrder;
+        return newOrder.map((item, index) => {
+          return {
+            ...item,
+            position: index + 1,
+          };
+        });
       });
     }, 3000);
 
@@ -46,33 +53,14 @@ const Carousel = () => {
       {divOrder.map((obj, index) => (
         <div
           key={index}
-          className={`animated-div position-${index} flex flex-row gap-4 p-4 bg-slate-1 text-white`}
+          className={`animated-div position-${obj.position} flex flex-row gap-4 p-4 bg-slate-1 text-white`}
         >
           <Image src={`${obj.image_url}`} alt="Picture of the author" width={64} height={64} />
           <h3>{obj.question_text}</h3>
         </div>
-      )
-      )};
+      ))}
     </div>
   );
-};
-
-
-const getColor = (index) => {
-  switch (index) {
-    case 0:
-      return "red";
-    case 1:
-      return "orange";
-    case 2:
-      return "yellow";
-    case 3:
-      return "green";
-    case 4:
-      return "blue";
-    default:
-      return "";
-  }
 };
 
 export default Carousel;
