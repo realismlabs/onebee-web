@@ -61,9 +61,8 @@ function Header() {
           <div>
             <InsetButton
               bgColor={`var(--slate1)`}
-              href={`https://google.com`}
-              text={`Sign in`}
-              target={`_blank`}
+              href={`/signup`}
+              text={`Sign up`}
               highlightValue={"0.2"}
             />
           </div>

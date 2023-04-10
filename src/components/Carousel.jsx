@@ -64,7 +64,7 @@ const Carousel = () => {
         newPositions.unshift(newPositions.pop());
         return newPositions;
       });
-    }, 4000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
