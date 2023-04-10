@@ -213,7 +213,7 @@ export default function Home() {
         >
           <div
             id="Logos"
-            className="text-white flex sm:flex-row sm:gap-12 gap-4"
+            className="text-white flex sm:flex-row sm:gap-12 gap-4 opacity-40"
           >
             <Image
               className="relative z-20 m-auto pointer-events-none select-none"
