@@ -32,7 +32,7 @@ function Stats({ value, subtitle }: StatsProps): JSX.Element {
 
 export default function Home() {
   const { isSm, isMd, isLg, screen } = useScreenSize();
-  const [heroType, setHeroType] = useState("hero_5");
+  const [heroType, setHeroType] = useState("hero_4");
 
   return (
     <>
@@ -248,7 +248,16 @@ export default function Home() {
               height="120"
             />
           </div>
-          <div id="Question Carousel">
+          <div
+            id="Question Carousel"
+            className="flex sm:flex-row flex-col w-full gap-12 lg:px-24 items-center"
+          >
+            <div className="text-white sm:text-2xl text-xl flex flex-col gap-4 max-w-xs sm:max-w-full">
+              <h1>Your team performs database lookups all the time.</h1>
+              <h1 className="text-[#a474ff]">
+                Why waste time building <br></br>slow, one-off tools for them?
+              </h1>
+            </div>
             <Carousel />
           </div>
           <div

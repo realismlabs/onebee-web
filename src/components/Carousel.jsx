@@ -5,12 +5,17 @@ import { motion } from "framer-motion";
 const AnimatedDiv = ({ obj, position }) => (
   <motion.div
     className={`animated-div flex flex-row gap-4 p-4 bg-[#0F172C] text-white rounded-md`}
-    style={{ zIndex: position.zIndex }}
-    animate={{ y: position.y, rotate: position.rotate, x: position.x, opacity: position.opacity }}
+    style={{
+      zIndex: position.zIndex,
+      backgroundColor: position.backgroundColor,
+    }}
+    animate={{ y: position.y, rotate: position.rotate, x: position.x }}
     transition={{ duration: 1, ease: "easeInOut" }}
   >
-    <Image src={`${obj.image_url}`} alt="Picture of the author" width={48} height={48} className="self-start rounded-md" />
-    <h3>{obj.question_text}</h3>
+    <motion.div className="flex flex-row gap-4" animate={{ opacity: position.opacity }}>
+      <Image src={`${obj.image_url}`} alt="Picture of the author" width={48} height={48} className="self-start rounded-md" />
+      <h3 className="text-sm lg:text-md">{obj.question_text}</h3>
+    </motion.div>
   </motion.div>
 );
 
@@ -43,11 +48,11 @@ const Carousel = () => {
     }]
 
   const initialPositions = [
-    { y: 0, rotate: 3, zIndex: 1, x: -20, opacity: 0.1 },
-    { y: 80, rotate: -3, zIndex: 2, x: 20, opacity: 0.2 },
-    { y: 160, rotate: 0, zIndex: 3, x: -20, opacity: 1.0 },
-    { y: 240, rotate: 3, zIndex: 2, x: 20, opacity: 0.2 },
-    { y: 320, rotate: -3, zIndex: 1, x: -20, opacity: 0.1 }
+    { y: 0, rotate: 3, zIndex: 1, x: -20, opacity: 0.2, backgroundColor: "#070D1E" },
+    { y: 30, rotate: -3, zIndex: 2, x: 20, opacity: 0.2, backgroundColor: "#091123" },
+    { y: 90, rotate: 0, zIndex: 3, x: -20, opacity: 1.0, backgroundColor: "#111A31" },
+    { y: 150, rotate: 3, zIndex: 2, x: 20, opacity: 0.2, backgroundColor: "#091123" },
+    { y: 180, rotate: -3, zIndex: 1, x: -20, opacity: 0.2, backgroundColor: "#070D1E" }
   ];
 
   const [positions, setPositions] = useState(initialPositions);
@@ -65,7 +70,7 @@ const Carousel = () => {
   }, []);
 
   return (
-    <div className="animated-divs">
+    <div className="animated-divs w-full">
       {data.map((obj, index) => {
         const position = positions[index];
 
