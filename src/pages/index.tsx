@@ -10,7 +10,6 @@ import Link from "next/link";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import LogoSvgAnimation from "../components/LogoSvgAnimation";
-import useScreenSize from "../components/useScreenSize";
 import HeroText from "../components/HeroText";
 import Carousel from "../components/Carousel";
 
@@ -31,7 +30,6 @@ function Stats({ value, subtitle }: StatsProps): JSX.Element {
 }
 
 export default function Home() {
-  const { isSm, isMd, isLg, screen } = useScreenSize();
   const [heroType, setHeroType] = useState("hero_4");
 
   return (
@@ -152,7 +150,7 @@ export default function Home() {
                 absolute 
                 z-20 
                 text-white 
-                ${screen === "lg" ? styles.rayOfLightBottomLg : "hidden"}
+                ${styles.rayOfLightBottomLg}
                 `}
               ></div>
               <div
