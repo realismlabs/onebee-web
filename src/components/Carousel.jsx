@@ -1,16 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 
-const AnimatedDiv = ({ obj, position, animationControl, animationTransition }) => (
+const AnimatedDiv = ({ obj, position }) => (
   <motion.div
-    className={`animated-div flex flex-row gap-4 p-4 bg-slate-1 text-white`}
+    className={`animated-div flex flex-row gap-4 p-4 bg-[#0F172C] text-white rounded-md`}
     style={{ zIndex: position.zIndex }}
-    initial={{ y: position.y, rotate: position.rotate }}
-    animate={animationControl}
-    transition={animationTransition}
+    animate={{ y: position.y, rotate: position.rotate, x: position.x, opacity: position.opacity }}
+    transition={{ duration: 1, ease: "easeInOut" }}
   >
-    <Image src={`${obj.image_url}`} alt="Picture of the author" width={48} height={48} className="self-start" />
+    <Image src={`${obj.image_url}`} alt="Picture of the author" width={48} height={48} className="self-start rounded-md" />
     <h3>{obj.question_text}</h3>
   </motion.div>
 );
@@ -43,37 +42,27 @@ const Carousel = () => {
       "question_text": "Lookup the financial history and credit score of this loan applicant."
     }]
 
-  const positions = [
-    { y: 0, rotate: 3, zIndex: 1, x: -20 },
-    { y: 80, rotate: -3, zIndex: 2, x: 20 },
-    { y: 160, rotate: 3, zIndex: 3, x: -20 },
-    { y: 240, rotate: -3, zIndex: 2, x: 20 },
-    { y: 320, rotate: 3, zIndex: 1, x: -20 },
+  const initialPositions = [
+    { y: 0, rotate: 3, zIndex: 1, x: -20, opacity: 0.1 },
+    { y: 80, rotate: -3, zIndex: 2, x: 20, opacity: 0.2 },
+    { y: 160, rotate: 0, zIndex: 3, x: -20, opacity: 1.0 },
+    { y: 240, rotate: 3, zIndex: 2, x: 20, opacity: 0.2 },
+    { y: 320, rotate: -3, zIndex: 1, x: -20, opacity: 0.1 }
   ];
 
-  const animationControls = data.map(() => useAnimation());
+  const [positions, setPositions] = useState(initialPositions);
 
   useEffect(() => {
-    const animateDivs = async () => {
-      const animations = animationControls.map((control, i) =>
-        control.start({ y: positions[i].y, rotate: positions[i].rotate, zIndex: positions[i].zIndex, x: positions[i].x })
-      );
-
-      await Promise.all(animations);
-    };
-
     const interval = setInterval(() => {
-      animateDivs();
-      positions.unshift(positions.pop());
+      setPositions(prevPositions => {
+        const newPositions = [...prevPositions];
+        newPositions.unshift(newPositions.pop());
+        return newPositions;
+      });
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [animationControls, positions]);
-
-  const animationTransition = {
-    duration: 1,
-    ease: "easeInOut",
-  };
+  }, []);
 
   return (
     <div className="animated-divs">
@@ -85,8 +74,6 @@ const Carousel = () => {
             key={index}
             obj={obj}
             position={position}
-            animationControl={animationControls[index]}
-            animationTransition={animationTransition}
           />
         );
       })}
