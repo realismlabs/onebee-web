@@ -45,7 +45,7 @@ export default function Login() {
               <header className="fixed top-8">
                 <Link href="/">
                   <Image
-                    src="/images/logo.svg"
+                    src="/images/logo_darker.svg"
                     width={80}
                     height={32}
                     alt="Dataland logo"

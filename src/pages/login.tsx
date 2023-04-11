@@ -15,9 +15,7 @@ export default function Login() {
   // Mock API call to see if email and password are correct
   const isEmailAndPasswordCorrect = async (email: string, password: string) => {
     // Replace this with your actual API call
-    const registeredEmails = [
-      { email: "example@example.com", password: "password" },
-    ];
+    const registeredEmails = [{ email: "e@example.com", password: "password" }];
     return registeredEmails.some(
       (user) => user.email === email && user.password === password
     );
@@ -64,7 +62,7 @@ export default function Login() {
               <header className="fixed top-8">
                 <Link href="/">
                   <Image
-                    src="/images/logo.svg"
+                    src="/images/logo_darker.svg"
                     width={80}
                     height={32}
                     alt="Dataland logo"
@@ -111,9 +109,12 @@ export default function Login() {
                       </label>
                       <input
                         id="email"
-                        className={`bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
-                          errorMessage && "border-red-9"
-                        }`}
+                        className={`bg-slate-3 hover:bg-slate-4 border text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 
+                        ${
+                          errorMessage !== ""
+                            ? "border-red-9"
+                            : "border-slate-6"
+                        } `}
                         type="email"
                         placeholder="you@company.com"
                         value={email}
@@ -143,8 +144,12 @@ export default function Login() {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="•••••••••••••"
                           required
-                          className={`w-full bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
-                          ${errorMessage && "border-red-9"} 
+                          className={`w-full bg-slate-3 hover:bg-slate-4 border  text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
+                          ${
+                            errorMessage !== ""
+                              ? "border-red-9"
+                              : "border-slate-6"
+                          } 
                           `}
                         />
                         <button
@@ -157,13 +162,13 @@ export default function Login() {
                       </div>
 
                       {errorMessage && (
-                        <div className="text-red-9 mt-2 text-xs pb-2">
+                        <div className="text-red-9 mt-2 text-xs ">
                           {errorMessage}
                         </div>
                       )}
 
                       <button
-                        className="bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
+                        className="bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
                         type="submit"
                       >
                         Log in

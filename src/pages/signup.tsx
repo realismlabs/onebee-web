@@ -9,14 +9,14 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   // Mock API call to check if an email address is already registered
   const isEmailRegistered = async (email: string) => {
     // Replace this with your actual API call
-    const registeredEmails = ["registered@example.com"];
+    const registeredEmails = ["r@example.com"];
     return registeredEmails.includes(email);
   };
 
@@ -49,20 +49,22 @@ export default function Signup() {
     event.preventDefault();
     console.log("Signup submit data:", { email, password });
     // Here you can send the form data to your backend or perform any other necessary action.
-    setErrorMessage("");
+    setEmailErrorMessage("");
+    setPasswordErrorMessage("");
+
     if (!email || !password) {
-      setErrorMessage("Email and password are required.");
+      setEmailErrorMessage("Email and password are required.");
       return;
     }
 
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
     if (!emailRegex.test(email)) {
-      setErrorMessage("Please enter a valid email address.");
+      setEmailErrorMessage("Please enter a valid email address.");
       return;
     }
 
     if (await isEmailRegistered(email)) {
-      setErrorMessage("The email address is already registered.");
+      setEmailErrorMessage("The email address is already registered.");
       return;
     }
 
@@ -96,7 +98,7 @@ export default function Signup() {
               <header className="fixed top-8">
                 <Link href="/">
                   <Image
-                    src="/images/logo.svg"
+                    src="/images/logo_darker.svg"
                     width={80}
                     height={32}
                     alt="Dataland logo"
@@ -143,14 +145,21 @@ export default function Signup() {
                       </label>
                       <input
                         id="email"
-                        className={`bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
-                          errorMessage && "border-red-9"
+                        className={`bg-slate-3 hover:bg-slate-4 border text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
+                          emailErrorMessage !== ""
+                            ? "border-red-9"
+                            : "border-slate-6"
                         }`}
                         type="email"
                         placeholder="you@company.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
+                      {emailErrorMessage && (
+                        <div className="text-red-9 text-xs">
+                          {emailErrorMessage}
+                        </div>
+                      )}
                       {/* Add a password field */}
                       <label
                         htmlFor="password"
@@ -166,9 +175,12 @@ export default function Signup() {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="•••••••••••••"
                           required
-                          className={`w-full bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
-                          ${errorMessage && "border-red-9"} ${
-                            passwordErrorMessage && "border-red-9"
+                          className={`w-full bg-slate-3 hover:bg-slate-4 border text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
+                          ${
+                            passwordErrorMessage !== ""
+                              ? "border-red-9"
+                              : "border-slate-6"
+                          }
                           }`}
                         />
                         <button
@@ -179,19 +191,13 @@ export default function Signup() {
                           {showPassword ? "Hide" : "Show"}
                         </button>
                       </div>
-
-                      {errorMessage && (
-                        <div className="text-red-9 mt-2 text-xs pb-2">
-                          {errorMessage}
-                        </div>
-                      )}
                       {passwordErrorMessage && (
-                        <div className="text-red-9 mt-2 text-xs pb-2">
+                        <div className="text-red-9 text-xs">
                           {passwordErrorMessage}
                         </div>
                       )}
                       <button
-                        className="bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
+                        className="bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
                         type="submit"
                       >
                         Sign up
