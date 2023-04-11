@@ -64,7 +64,7 @@ export default function Sandbox() {
                     </label>
                     <input
                       id="email"
-                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9"
+                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9"
                       type="email"
                       placeholder="you@company.com"
                     />
@@ -77,7 +77,7 @@ export default function Sandbox() {
                     </label>
                     <input
                       id="password"
-                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9"
+                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9"
                       type="password"
                       placeholder="•••••••••••••"
                     />
