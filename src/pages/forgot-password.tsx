@@ -3,18 +3,39 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import React, { useState } from "react";
 import Link from "next/link";
+import { CircleNotch, CheckCircle } from "@phosphor-icons/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false); // Add this line
+  const [emailSent, setEmailSent] = useState(false); // Add this line
+
+  const sendEmailWithDelay = async (email: string) => {
+    await Promise.all([
+      new Promise<void>((resolve) => {
+        setTimeout(() => {
+          setLoading(false); // Set loading back to false after the delay
+          resolve();
+        }, 1500);
+      }),
+      new Promise<void>((resolve) => {
+        // Call mock API to send email here
+        console.log("Email sent to", email);
+        resolve();
+      }),
+    ]);
+    setEmailSent(true); // Set emailSent to true after both Promises have resolved
+  };
 
   // Handle Sign up
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     console.log("Password reset data:", { email });
     // Here you can send the form data to your backend or perform any other necessary action.
+    setEmailSent(false); // Reset emailSent to false
     setErrorMessage("");
     if (!email) {
       setErrorMessage("Email is required.");
@@ -26,6 +47,9 @@ export default function Login() {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
+
+    setLoading(true); // Set loading to true before the delay
+    await sendEmailWithDelay(email);
   };
 
   return (
@@ -52,7 +76,7 @@ export default function Login() {
                   ></Image>
                 </Link>
               </header>
-              <h1 className="text-xl ">Reset your password</h1>
+              <h1 className="text-xl ">Forgot your password?</h1>
               <h3 className="text-sm text-slate-11">
                 We&apos;ll email you a link to reset your password.
               </h3>
@@ -77,16 +101,35 @@ export default function Login() {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                     {errorMessage && (
-                      <div className="text-red-9 mt-2 text-xs pb-2">
-                        {errorMessage}
-                      </div>
+                      <div className="text-red-9 text-xs">{errorMessage}</div>
                     )}
                     <button
-                      className="bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center mt-4"
+                      className={`bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center mt-4
+                      ${loading ? "opacity-50 hover:bg-blue-600" : ""}`}
                       type="submit"
+                      disabled={loading}
                     >
-                      Send reset email
+                      {loading ? (
+                        <span className="animate-spin">
+                          <CircleNotch width={20} height={20} />
+                        </span>
+                      ) : (
+                        "Send reset email"
+                      )}
                     </button>
+                    {emailSent && (
+                      <div className="text-green-9 mt-2 text-xs p-4 flex flex-row gap-2 bg-slate-2 border border-slate-4 items-center rounded-md">
+                        <CheckCircle
+                          size={20}
+                          weight="fill"
+                          className="text-green-500"
+                        />
+                        <p>
+                          {" "}
+                          Sent! Check your inbox for the password reset email.{" "}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </form>
               </div>
