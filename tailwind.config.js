@@ -12,6 +12,7 @@ module.exports = {
     colors: {
       slate: radixColors.slateDark,
       purple: radixColors.purpleDark,
+      red: radixColors.redDark,
     },
   }),],
 }

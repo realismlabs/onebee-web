@@ -3,11 +3,82 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import React, { useState } from "react";
 import Link from "next/link";
-import LoaderAnimation from "../components/LoaderAnimation";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Sandbox() {
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Mock API call to check if an email address is already registered
+  const isEmailRegistered = async (email: string) => {
+    // Replace this with your actual API call
+    const registeredEmails = ["registered@example.com"];
+    return registeredEmails.includes(email);
+  };
+
+  const isPasswordStrong = (password: string) => {
+    // Replace this with your actual logic
+
+    if (password.length < 8) {
+      return {
+        result: false,
+        message: "Password must be at least 8 characters long.",
+      };
+    } else {
+      return { result: true, message: "" };
+    }
+  };
+
+  // Mock API call to see if email and password are correct
+  // const isEmailAndPasswordCorrect = async (email: string, password: string) => {
+  //   // Replace this with your actual API call
+  //   const registeredEmails = [
+  //     { email: "example@example.com", password: "password" },
+  //   ];
+  //   return registeredEmails.some(
+  //     (user) => user.email === email && user.password === password
+  //   );
+  // };
+
+  // Handle Sign up
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+    console.log("Signup submit data:", { email, password });
+    // Here you can send the form data to your backend or perform any other necessary action.
+    setErrorMessage("");
+    if (!email || !password) {
+      setErrorMessage("Email and password are required.");
+      return;
+    }
+
+    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    if (!emailRegex.test(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (await isEmailRegistered(email)) {
+      setErrorMessage("The email address is already registered.");
+      return;
+    }
+
+    // if (await isEmailAndPasswordCorrect(email, password)) {
+    // } else {
+    //   setErrorMessage("The email or password is incorrect.");
+    //   return;
+    // }
+
+    const is_password_strong = isPasswordStrong(password);
+    if (!is_password_strong.result) {
+      setPasswordErrorMessage(isPasswordStrong(password).message);
+      return;
+    }
+  };
+
   return (
     <>
       <Head>
@@ -21,31 +92,28 @@ export default function Sandbox() {
       >
         <div className="w-full flex flex-row flex-grow h-screen">
           <div className="w-full flex justify-center border-r border-slate-3">
-            <div className="w-[600px] text-white flex flex-col items-start justify-center left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
-              <div className="flex flex-col flex-grow justify-end text-center">
-                <h3 className="text-xs text-slate-9"></h3>
-              </div>
+            <div className="w-[600px] text-white flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
               <h1 className="text-xl ">Welcome back</h1>
               <h3 className="text-sm text-slate-11">Log into Dataland</h3>
               <div className="flex flex-col gap-4 mt-8 w-full">
                 <div className="w-full flex flex-col gap-2">
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                     <Image
                       src="/images/logo_google.svg"
                       width={24}
                       height={24}
                       alt="Google logo"
                     ></Image>
-                    Sign up with Google
+                    Log in with Google
                   </button>
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                     <Image
                       src="/images/logo_github.svg"
                       width={24}
                       height={24}
                       alt="Google logo"
                     ></Image>
-                    Sign up with GitHub
+                    Log in with GitHub
                   </button>
                 </div>
                 <div className="flex flex-row items-center justify-center">
@@ -54,38 +122,82 @@ export default function Sandbox() {
                   <hr className="w-full border-1 border-slate-6" />
                 </div>
                 {/* Write a form input compoennt */}
-                <div className="flex flex-col gap-2">
+                <form onSubmit={handleSubmit}>
                   <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="email"
-                      className="text-white text-sm font-medium"
-                    >
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9"
-                      type="email"
-                      placeholder="you@company.com"
-                    />
-                    {/* Add a password field */}
-                    <label
-                      htmlFor="password"
-                      className="text-white text-sm font-medium mt-2"
-                    >
-                      Password
-                    </label>
-                    <input
-                      id="password"
-                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9"
-                      type="password"
-                      placeholder="•••••••••••••"
-                    />
+                    <div className="flex flex-col gap-2">
+                      <label
+                        htmlFor="email"
+                        className="text-white text-sm font-medium"
+                      >
+                        Email
+                      </label>
+                      <input
+                        id="email"
+                        className={`bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9 ${
+                          errorMessage && "border-red-9"
+                        }`}
+                        type="email"
+                        placeholder="you@company.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                      {/* Add a password field */}
+                      <div className="mt-2 flex flex-row items-center">
+                        <label
+                          htmlFor="password"
+                          className="text-white text-sm font-medium flex-grow"
+                        >
+                          Password
+                        </label>
+                        <Link
+                          href="/forgot-password"
+                          className="text-slate-10 text-xs hover:text-slate-11"
+                        >
+                          {" "}
+                          Forgot password?
+                        </Link>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          id="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="•••••••••••••"
+                          required
+                          className={`w-full bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9
+                          ${errorMessage && "border-red-9"} ${
+                            passwordErrorMessage && "border-red-9"
+                          }`}
+                        />
+                        <button
+                          className="absolute top-1/2 transform -translate-y-1/2 right-2 px-2 py-1 text-xs text-slate-11  hover:bg-slate-2 rounded-sm"
+                          onClick={() => setShowPassword(!showPassword)}
+                          type="button"
+                        >
+                          {showPassword ? "Hide" : "Show"}
+                        </button>
+                      </div>
+
+                      {errorMessage && (
+                        <div className="text-red-9 mt-2 text-xs pb-2">
+                          {errorMessage}
+                        </div>
+                      )}
+                      {passwordErrorMessage && (
+                        <div className="text-red-9 mt-2 text-xs pb-2">
+                          {passwordErrorMessage}
+                        </div>
+                      )}
+                      <button
+                        className="bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
+                        type="submit"
+                      >
+                        Log in
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <button className="bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center">
-                  Log in
-                </button>
+                </form>
               </div>
               <h3 className="text-sm text-slate-11 mt-8 w-full items-center text-center">
                 Don&apos;t have an account yet?{" "}
@@ -97,7 +209,6 @@ export default function Sandbox() {
                   Sign up here.
                 </Link>
               </h3>
-              <div className="flex flex-col flex-grow justify-end text-center"></div>
             </div>
           </div>
         </div>
