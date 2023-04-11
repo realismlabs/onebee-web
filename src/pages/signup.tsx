@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import React, { useState } from "react";
 import Link from "next/link";
+import router from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -79,6 +80,10 @@ export default function Signup() {
       setPasswordErrorMessage(isPasswordStrong(password).message);
       return;
     }
+
+    // if it passes all tests, re-route to verify screen
+    // TODO: Re-route to verify screen only if email is not verified
+    router.push("/verify-email");
   };
 
   return (
