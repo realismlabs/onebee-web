@@ -101,7 +101,7 @@ export default function Signup() {
           <div className="w-full lg:w-1/2 flex justify-center border-r border-slate-3">
             <div className="w-[600px] text-white flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
               <header className="fixed top-8">
-                <Link href="/" tabIndex={-1}>
+                <Link href="/">
                   <Image
                     src="/images/logo_darker.svg"
                     width={80}
@@ -192,7 +192,6 @@ export default function Signup() {
                           className="absolute top-1/2 transform -translate-y-1/2 right-2 px-2 py-1 text-xs text-slate-11  hover:bg-slate-2 rounded-sm"
                           onClick={() => setShowPassword(!showPassword)}
                           type="button"
-                          tabIndex={-1}
                         >
                           {showPassword ? "Hide" : "Show"}
                         </button>

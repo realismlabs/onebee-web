@@ -84,8 +84,15 @@ export default function Login() {
                   ></Image>
                 </Link>
               </header>
-              <div className="max-w-xs gap-4 flex flex-col">
-                <h1 className="text-xl ">Check your inbox to verify account</h1>
+              <div className="gap-4 flex flex-col">
+                <h1 className="text-lg flex flex-row gap-2 items-center">
+                  <CheckCircle
+                    width={24}
+                    height={24}
+                    className="text-green-500"
+                  />
+                  Check your inbox to verify account
+                </h1>
 
                 <p className="text-sm text-slate-11">
                   Just one more step! Check your email for a link to verify your
