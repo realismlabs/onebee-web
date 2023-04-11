@@ -22,6 +22,9 @@ export default function Sandbox() {
         <div className="w-full flex flex-row flex-grow h-screen">
           <div className="w-1/2 flex justify-center border-r border-slate-6">
             <div className="w-[600px] text-white flex flex-col items-start justify-center left-0 py-3 gap-2 px-24 h-screen">
+              <div className="flex flex-col flex-grow justify-end text-center">
+                <h3 className="text-xs text-slate-9"></h3>
+              </div>
               <h1 className="text-xl ">Try Dataland for free</h1>
               <h3 className="text-sm text-slate-11">Create a new account</h3>
               <div className="flex flex-col gap-2 mt-8 w-full">
@@ -59,8 +62,9 @@ export default function Sandbox() {
                     </label>
                     <input
                       id="email"
-                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2"
+                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9"
                       type="email"
+                      placeholder="you@company.com"
                     />
                     {/* Add a password field */}
                     <label
@@ -71,8 +75,9 @@ export default function Sandbox() {
                     </label>
                     <input
                       id="password"
-                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2"
+                      className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9"
                       type="password"
+                      placeholder="•••••••••••••"
                     />
                   </div>
                 </div>
@@ -87,11 +92,65 @@ export default function Sandbox() {
                   Log in here.
                 </Link>
               </h3>
+              <div className="flex flex-col flex-grow justify-end text-center">
+                <h3 className="text-xs text-slate-9 mb-2">
+                  By continuing, you agree to Dataland&apos;s Terms of Service
+                  and Privacy Policy, and to receive periodic emails with
+                  updates.
+                </h3>
+              </div>
             </div>
           </div>
-          <div className="w-1/2 z-30 flex flex-col gap-6 items-center top-96 justify-center">
-            <div>
-              <h1 className="text-slate-9">Loading rows..</h1>
+          <div
+            className="w-1/2 z-30 flex flex-col gap-6 items-center top-96 justify-center bg-center h-screen"
+            style={{
+              backgroundImage: "url('/images/signup_render.png')",
+            }}
+          >
+            <div
+              className="absolute top-0 right-0 w-1/2 h-screen"
+              style={{
+                background:
+                  "linear-gradient(-30deg, #151718 37.35%, rgba(21, 23, 24, 0) 99.73%)",
+              }}
+            ></div>
+            <div className="absolute top-0 right-0 w-1/2 h-screen bg-gradient-to-b from-[#FFFFFF30]-to-transparent mix-blend-overlay"></div>
+            <div className="absolute top-0 right-0 w-1/2 h-screen">
+              <div className="flex flex-col flex-grow justify-end items-center pb-32 h-screen gap-4">
+                <div className="flex flex-row gap-4 items-center w-[300px]">
+                  <div className="p-3 bg-slate-2 border border-slate-6 rounded-md">
+                    <Image
+                      src="/images/white_lightning_duotone.svg"
+                      width={24}
+                      height={24}
+                      alt="Google logo"
+                    ></Image>
+                  </div>
+                  <p className="text-white">Lightning-fast browsing UX</p>
+                </div>
+                <div className="flex flex-row gap-4 items-center w-[300px]">
+                  <div className="p-3 bg-slate-2 border border-slate-6 rounded-md">
+                    <Image
+                      src="/images/white_shield_check_duotone.svg"
+                      width={24}
+                      height={24}
+                      alt="Google logo"
+                    ></Image>
+                  </div>
+                  <p className="text-white">Secure & SOC 2 compliant</p>
+                </div>
+                <div className="flex flex-row gap-4 items-center w-[300px]">
+                  <div className="p-3 bg-slate-2 border border-slate-6 rounded-md">
+                    <Image
+                      src="/images/white_fast_forward_duotone.svg"
+                      width={24}
+                      height={24}
+                      alt="Google logo"
+                    ></Image>
+                  </div>
+                  <p className="text-white">Lightning-fast browsing UX</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
