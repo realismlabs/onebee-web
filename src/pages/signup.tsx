@@ -34,17 +34,6 @@ export default function Signup() {
     }
   };
 
-  // Mock API call to see if email and password are correct
-  // const isEmailAndPasswordCorrect = async (email: string, password: string) => {
-  //   // Replace this with your actual API call
-  //   const registeredEmails = [
-  //     { email: "example@example.com", password: "password" },
-  //   ];
-  //   return registeredEmails.some(
-  //     (user) => user.email === email && user.password === password
-  //   );
-  // };
-
   // Handle Sign up
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -68,12 +57,6 @@ export default function Signup() {
       setEmailErrorMessage("The email address is already registered.");
       return;
     }
-
-    // if (await isEmailAndPasswordCorrect(email, password)) {
-    // } else {
-    //   setErrorMessage("The email or password is incorrect.");
-    //   return;
-    // }
 
     const is_password_strong = isPasswordStrong(password);
     if (!is_password_strong.result) {

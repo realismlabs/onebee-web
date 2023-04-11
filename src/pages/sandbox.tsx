@@ -30,7 +30,6 @@ export default function Sandbox() {
             Try with your data →
           </Link>
         </div>
-        {/* This is the full screen */}
         <div className="w-full flex flex-row flex-grow">
           <div className="w-12 text-white flex flex-col items-center left-0 border-r border-slate-6 py-3 gap-2">
             <div className="h-7 w-7 bg-slate-4 rounded-sm text-slate-11 flex items-center justify-center">
@@ -42,8 +41,6 @@ export default function Sandbox() {
             </div>
           </div>
         </div>
-
-        {/*  Loader-- */}
         <div className="absolute z-30 flex flex-col gap-6 items-center top-96 justify-center">
           <LoaderAnimation />
           <div>

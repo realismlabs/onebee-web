@@ -8,18 +8,12 @@ import { CircleNotch, CheckCircle } from "@phosphor-icons/react";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Login() {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false); // Add this line
-  const [emailSent, setEmailSent] = useState(false); // Add this line
+  const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
-  const resetPasswordWithDelay = async (
-    password: string,
-    confirmPassword: string
-  ) => {
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+    setEmailSent(false);
     setLoading(true); // Set loading to true before the delay
 
     await Promise.all([
@@ -31,33 +25,11 @@ export default function Login() {
       }),
       new Promise<void>((resolve) => {
         // Call mock API to send email here
-        console.log("Password reset to", password, confirmPassword);
         resolve();
       }),
     ]);
     setLoading(false);
     setEmailSent(true); // Set emailSent to true after both Promises have resolved
-  };
-
-  // Handle Sign up
-  const handleSubmit = async (event: any) => {
-    event.preventDefault();
-    // Here you can send the form data to your backend or perform any other necessary action.
-    setErrorMessage("");
-
-    // check if two passwords match
-    if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match.");
-      return;
-    }
-
-    // check if passwords are long enough / valid
-    if (password.length < 8) {
-      setErrorMessage("Password must be at least 8 characters long.");
-      return;
-    }
-
-    await resetPasswordWithDelay(password, confirmPassword);
   };
 
   return (
@@ -86,11 +58,6 @@ export default function Login() {
               </header>
               <div className="gap-4 flex flex-col">
                 <h1 className="text-lg flex flex-row gap-2 items-center">
-                  <CheckCircle
-                    width={24}
-                    height={24}
-                    className="text-green-500"
-                  />
                   Check your inbox to verify account
                 </h1>
 
@@ -102,40 +69,35 @@ export default function Login() {
               <div className="flex flex-col gap-4">
                 {/* Write a form input compoennt */}
                 <form onSubmit={handleSubmit}>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-row items-center gap-2  mt-4">
                     <button
-                      className={`bg-slate-3 text-white text-sm font-medium rounded-md px-4 py-2 gap-3 hover:bg-slate-4 justify-center h-10 items-center mt-4 self-start
+                      className={`bg-slate-3 text-white text-sm font-medium rounded-md px-4 py-2 gap-3 hover:bg-slate-4 justify-center h-10 items-center self-start flex flex-row
                       ${loading ? "opacity-50 hover:bg-blue-600" : ""}`}
                       type="submit"
                       disabled={loading}
                     >
                       {loading ? (
-                        <span className="animate-spin">
-                          <CircleNotch width={20} height={20} />
-                        </span>
+                        <>
+                          <span className="animate-spin">
+                            <CircleNotch width={20} height={20} />
+                          </span>
+                          <span>Sending..</span>
+                        </>
                       ) : (
                         "Send again"
                       )}
                     </button>
                     {emailSent && (
-                      <div className="text-green-9 mt-2 text-xs p-4 flex flex-row gap-2 bg-slate-2 border border-slate-4 items-center rounded-md">
+                      <>
                         <CheckCircle
-                          size={20}
-                          weight="fill"
+                          width={24}
+                          height={24}
                           className="text-green-500"
                         />
-                        <p>
-                          {" "}
-                          Password reset!{" "}
-                          <Link
-                            href="/login"
-                            className="text-blue-500 hover:text-blue-600"
-                          >
-                            Log in
-                          </Link>{" "}
-                          to continue.
+                        <p className="text-sm text-slate-11">
+                          Email sent! Check your inbox.
                         </p>
-                      </div>
+                      </>
                     )}
                   </div>
                 </form>

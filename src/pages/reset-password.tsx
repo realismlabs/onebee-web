@@ -13,8 +13,8 @@ export default function Login() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false); // Add this line
-  const [emailSent, setEmailSent] = useState(false); // Add this line
+  const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const resetPasswordWithDelay = async (
     password: string,
