@@ -84,23 +84,20 @@ export default function Login() {
                   ></Image>
                 </Link>
               </header>
-              <h1 className="text-xl ">Verify email</h1>
-              <h3 className="text-sm text-slate-11">Check your inbox for </h3>
-              <div className="flex flex-col gap-4 mt-8 w-full">
+              <div className="max-w-xs gap-4 flex flex-col">
+                <h1 className="text-xl ">Check your inbox to verify account</h1>
+
+                <p className="text-sm text-slate-11">
+                  Just one more step! Check your email for a link to verify your
+                  account. Then, you can finish logging into Dataland.
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
                 {/* Write a form input compoennt */}
                 <form onSubmit={handleSubmit}>
                   <div className="flex flex-col gap-2">
-                    <div className="mt-2 flex flex-row items-center">
-                      <label
-                        htmlFor="password"
-                        className="text-white text-sm font-medium flex-grow"
-                      >
-                        Check your inbox
-                      </label>
-                    </div>
-
                     <button
-                      className={`bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center mt-4
+                      className={`bg-slate-3 text-white text-sm font-medium rounded-md px-4 py-2 gap-3 hover:bg-slate-4 justify-center h-10 items-center mt-4 self-start
                       ${loading ? "opacity-50 hover:bg-blue-600" : ""}`}
                       type="submit"
                       disabled={loading}

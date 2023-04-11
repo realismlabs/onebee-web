@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import React, { useState } from "react";
 import Link from "next/link";
+import router, { Router } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,12 +13,37 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const registeredEmails = [
+    {
+      email: "unverified@example.com",
+      password: "password",
+      verified: false,
+    },
+    { email: "verified@example.com", password: "password", verified: true },
+  ];
+
   // Mock API call to see if email and password are correct
-  const isEmailAndPasswordCorrect = async (email: string, password: string) => {
+  const isEmailAndPasswordRegistered = async (
+    email: string,
+    password: string,
+    registeredEmails: any
+  ) => {
     // Replace this with your actual API call
-    const registeredEmails = [{ email: "e@example.com", password: "password" }];
+
     return registeredEmails.some(
-      (user) => user.email === email && user.password === password
+      (user: any) => user.email === email && user.password === password
+    );
+  };
+
+  const isEmailAndPasswordVerified = async (
+    email: string,
+    password: string,
+    registeredEmails: any
+  ) => {
+    // Replace this with your actual API call
+    return registeredEmails.some(
+      (user: any) =>
+        user.email === email && user.password === password && user.verified
     );
   };
 
@@ -38,10 +64,19 @@ export default function Login() {
       return;
     }
 
-    if (await isEmailAndPasswordCorrect(email, password)) {
-    } else {
+    if (
+      !(await isEmailAndPasswordRegistered(email, password, registeredEmails))
+    ) {
       setErrorMessage("The email or password is incorrect.");
       return;
+    }
+
+    if (
+      !(await isEmailAndPasswordVerified(email, password, registeredEmails))
+    ) {
+      router.push("/verify-email");
+    } else {
+      router.push("/dashboard");
     }
   };
 
@@ -60,7 +95,7 @@ export default function Login() {
           <div className="w-full flex justify-center border-r border-slate-3">
             <div className="w-[600px] text-white flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
               <header className="fixed top-8">
-                <Link href="/">
+                <Link href="/" tabIndex={-1}>
                   <Image
                     src="/images/logo_darker.svg"
                     width={80}
@@ -131,6 +166,7 @@ export default function Login() {
                         <Link
                           href="/forgot-password"
                           className="text-slate-10 text-xs hover:text-slate-11"
+                          tabIndex={-1}
                         >
                           {" "}
                           Forgot password?
@@ -156,6 +192,7 @@ export default function Login() {
                           className="absolute top-1/2 transform -translate-y-1/2 right-2 px-2 py-1 text-xs text-slate-11  hover:bg-slate-2 rounded-sm"
                           onClick={() => setShowPassword(!showPassword)}
                           type="button"
+                          tabIndex={-1}
                         >
                           {showPassword ? "Hide" : "Show"}
                         </button>
