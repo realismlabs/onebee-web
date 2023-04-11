@@ -20,7 +20,7 @@ export default function Sandbox() {
         className={`overflow-hidden flex h-screen flex-row justify-center items-center min-h-screen bg-slate-1`}
       >
         <div className="w-full flex flex-row flex-grow h-screen">
-          <div className="w-1/2 flex justify-center border-r border-slate-6">
+          <div className="w-full lg:w-1/2 flex justify-center border-r border-slate-3">
             <div className="w-[600px] text-white flex flex-col items-start justify-center left-0 py-3 gap-2 px-24 h-screen">
               <div className="flex flex-col flex-grow justify-end text-center">
                 <h3 className="text-xs text-slate-9"></h3>
@@ -102,9 +102,10 @@ export default function Sandbox() {
             </div>
           </div>
           <div
-            className="w-1/2 z-30 flex flex-col gap-6 items-center top-96 justify-center bg-center h-screen"
+            className="hidden lg:w-1/2 z-30 lg:flex lg:flex-col gap-6 items-center top-96 justify-center bg-center h-screen"
             style={{
-              backgroundImage: "url('/images/signup_render.png')",
+              // backgroundImage: "url('/images/signup_render.png')",
+              backgroundImage: "url('/images/3d_render.svg')",
             }}
           >
             <div
@@ -126,7 +127,7 @@ export default function Sandbox() {
                       alt="Google logo"
                     ></Image>
                   </div>
-                  <p className="text-white">Lightning-fast browsing UX</p>
+                  <p className="text-white">The fastest data browsing UX</p>
                 </div>
                 <div className="flex flex-row gap-4 items-center w-[300px]">
                   <div className="p-3 bg-slate-2 border border-slate-6 rounded-md">
@@ -148,7 +149,7 @@ export default function Sandbox() {
                       alt="Google logo"
                     ></Image>
                   </div>
-                  <p className="text-white">Lightning-fast browsing UX</p>
+                  <p className="text-white">Set up in 45 seconds</p>
                 </div>
               </div>
             </div>
