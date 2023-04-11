@@ -93,6 +93,16 @@ export default function Signup() {
         <div className="w-full flex flex-row flex-grow h-screen">
           <div className="w-full lg:w-1/2 flex justify-center border-r border-slate-3">
             <div className="w-[600px] text-white flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
+              <header className="fixed top-8">
+                <Link href="/">
+                  <Image
+                    src="/images/logo.svg"
+                    width={80}
+                    height={32}
+                    alt="Dataland logo"
+                  ></Image>
+                </Link>
+              </header>
               <h1 className="text-xl ">Try Dataland for free</h1>
               <h3 className="text-sm text-slate-11">Create a new account</h3>
               <div className="flex flex-col gap-4 mt-8 w-full">
@@ -133,7 +143,7 @@ export default function Signup() {
                       </label>
                       <input
                         id="email"
-                        className={`bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9 ${
+                        className={`bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
                           errorMessage && "border-red-9"
                         }`}
                         type="email"
@@ -156,7 +166,7 @@ export default function Signup() {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="•••••••••••••"
                           required
-                          className={`w-full bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9
+                          className={`w-full bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
                           ${errorMessage && "border-red-9"} ${
                             passwordErrorMessage && "border-red-9"
                           }`}

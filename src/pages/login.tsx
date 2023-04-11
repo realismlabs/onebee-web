@@ -10,39 +10,18 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // Mock API call to check if an email address is already registered
-  const isEmailRegistered = async (email: string) => {
-    // Replace this with your actual API call
-    const registeredEmails = ["registered@example.com"];
-    return registeredEmails.includes(email);
-  };
-
-  const isPasswordStrong = (password: string) => {
-    // Replace this with your actual logic
-
-    if (password.length < 8) {
-      return {
-        result: false,
-        message: "Password must be at least 8 characters long.",
-      };
-    } else {
-      return { result: true, message: "" };
-    }
-  };
-
   // Mock API call to see if email and password are correct
-  // const isEmailAndPasswordCorrect = async (email: string, password: string) => {
-  //   // Replace this with your actual API call
-  //   const registeredEmails = [
-  //     { email: "example@example.com", password: "password" },
-  //   ];
-  //   return registeredEmails.some(
-  //     (user) => user.email === email && user.password === password
-  //   );
-  // };
+  const isEmailAndPasswordCorrect = async (email: string, password: string) => {
+    // Replace this with your actual API call
+    const registeredEmails = [
+      { email: "example@example.com", password: "password" },
+    ];
+    return registeredEmails.some(
+      (user) => user.email === email && user.password === password
+    );
+  };
 
   // Handle Sign up
   const handleSubmit = async (event: any) => {
@@ -61,20 +40,9 @@ export default function Login() {
       return;
     }
 
-    if (await isEmailRegistered(email)) {
-      setErrorMessage("The email address is already registered.");
-      return;
-    }
-
-    // if (await isEmailAndPasswordCorrect(email, password)) {
-    // } else {
-    //   setErrorMessage("The email or password is incorrect.");
-    //   return;
-    // }
-
-    const is_password_strong = isPasswordStrong(password);
-    if (!is_password_strong.result) {
-      setPasswordErrorMessage(isPasswordStrong(password).message);
+    if (await isEmailAndPasswordCorrect(email, password)) {
+    } else {
+      setErrorMessage("The email or password is incorrect.");
       return;
     }
   };
@@ -93,6 +61,16 @@ export default function Login() {
         <div className="w-full flex flex-row flex-grow h-screen">
           <div className="w-full flex justify-center border-r border-slate-3">
             <div className="w-[600px] text-white flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
+              <header className="fixed top-8">
+                <Link href="/">
+                  <Image
+                    src="/images/logo.svg"
+                    width={80}
+                    height={32}
+                    alt="Dataland logo"
+                  ></Image>
+                </Link>
+              </header>
               <h1 className="text-xl ">Welcome back</h1>
               <h3 className="text-sm text-slate-11">Log into Dataland</h3>
               <div className="flex flex-col gap-4 mt-8 w-full">
@@ -133,7 +111,7 @@ export default function Login() {
                       </label>
                       <input
                         id="email"
-                        className={`bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9 ${
+                        className={`bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
                           errorMessage && "border-red-9"
                         }`}
                         type="email"
@@ -165,10 +143,9 @@ export default function Login() {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="•••••••••••••"
                           required
-                          className={`w-full bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-4 py-2 placeholder-slate-9
-                          ${errorMessage && "border-red-9"} ${
-                            passwordErrorMessage && "border-red-9"
-                          }`}
+                          className={`w-full bg-slate-3 hover:bg-slate-4 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
+                          ${errorMessage && "border-red-9"} 
+                          `}
                         />
                         <button
                           className="absolute top-1/2 transform -translate-y-1/2 right-2 px-2 py-1 text-xs text-slate-11  hover:bg-slate-2 rounded-sm"
@@ -184,11 +161,7 @@ export default function Login() {
                           {errorMessage}
                         </div>
                       )}
-                      {passwordErrorMessage && (
-                        <div className="text-red-9 mt-2 text-xs pb-2">
-                          {passwordErrorMessage}
-                        </div>
-                      )}
+
                       <button
                         className="bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
                         type="submit"
@@ -205,7 +178,6 @@ export default function Login() {
                   href="/signup"
                   className="text-blue-500 hover:text-blue-600"
                 >
-                  {" "}
                   Sign up here.
                 </Link>
               </h3>
