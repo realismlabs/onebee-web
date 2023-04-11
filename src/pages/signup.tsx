@@ -89,7 +89,10 @@ export default function Sandbox() {
               </div>
               <h3 className="text-sm text-slate-11 mt-8 w-full items-center text-center">
                 Have an account?{" "}
-                <Link href="/login" className="text-blue-500">
+                <Link
+                  href="/login"
+                  className="text-blue-500 hover:text-blue-600"
+                >
                   {" "}
                   Log in here.
                 </Link>
