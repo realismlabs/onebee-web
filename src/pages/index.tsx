@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import InsetButton from "../components/InsetButton";
 import { Lightning } from "@phosphor-icons/react";
@@ -12,8 +11,6 @@ import Header from "../components/Header";
 import LogoSvgAnimation from "../components/LogoSvgAnimation";
 import HeroText from "../components/HeroText";
 import Carousel from "../components/Carousel";
-
-const inter = Inter({ subsets: ["latin"] });
 
 type StatsProps = {
   value: string;

@@ -1,11 +1,8 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "next/font/google";
 import React, { useState } from "react";
 import Link from "next/link";
 import router from "next/router";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Signup() {
   const [email, setEmail] = useState("");
