@@ -68,7 +68,7 @@ export default function Login() {
                 <form onSubmit={handleSubmit}>
                   <div className="flex flex-row items-center gap-2  mt-4">
                     <button
-                      className={`bg-slate-3 text-white text-sm font-medium rounded-md px-4 py-2 gap-3 hover:bg-slate-4 justify-center h-10 items-center self-start flex flex-row
+                      className={`bg-slate-3 text-white text-sm font-medium rounded-md px-4 py-2 gap-3 hover:border-slate-7 justify-center h-10 items-center self-start flex flex-row
                       ${loading ? "opacity-50 hover:bg-blue-600" : ""}`}
                       type="submit"
                       disabled={loading}

@@ -94,7 +94,7 @@ export default function Signup() {
               <h3 className="text-sm text-slate-11">Create a new account</h3>
               <div className="flex flex-col gap-4 mt-8 w-full">
                 <div className="w-full flex flex-col gap-2">
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:border-slate-7 justify-center">
                     <Image
                       src="/images/logo_google.svg"
                       width={24}
@@ -103,7 +103,7 @@ export default function Signup() {
                     ></Image>
                     Sign up with Google
                   </button>
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:border-slate-7 justify-center">
                     <Image
                       src="/images/logo_github.svg"
                       width={24}
@@ -130,11 +130,12 @@ export default function Signup() {
                       </label>
                       <input
                         id="email"
-                        className={`bg-slate-3 hover:bg-slate-4 border text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
+                        className={`bg-slate-3 hover:border-slate-7 border text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
                           emailErrorMessage !== ""
                             ? "border-red-9"
                             : "border-slate-6"
-                        }`}
+                        }
+                        focus:outline-none focus:ring-1 focus:ring-blue-600`}
                         type="email"
                         placeholder="you@company.com"
                         value={email}
@@ -160,12 +161,13 @@ export default function Signup() {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="•••••••••••••"
                           required
-                          className={`w-full bg-slate-3 hover:bg-slate-4 border text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
+                          className={`w-full bg-slate-3 hover:border-slate-7 border text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
                           ${
                             passwordErrorMessage !== ""
                               ? "border-red-9"
                               : "border-slate-6"
                           }
+                          focus:outline-none focus:ring-1 focus:ring-blue-600
                           }`}
                         />
                         <button

@@ -102,12 +102,13 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="•••••••••••••"
                         required
-                        className={`w-full bg-slate-3 hover:bg-slate-4 border  text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
+                        className={`w-full bg-slate-3 hover:border-slate-7 border  text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
                           ${
                             errorMessage !== ""
                               ? "border-red-9"
                               : "border-slate-6"
                           } 
+                          focus:outline-none focus:ring-1 focus:ring-blue-600
                           `}
                       />
                       <button
@@ -134,12 +135,13 @@ export default function Login() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="•••••••••••••"
                         required
-                        className={`w-full bg-slate-3 hover:bg-slate-4 border  text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
+                        className={`w-full bg-slate-3 hover:border-slate-7 border  text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
                           ${
                             errorMessage !== ""
                               ? "border-red-9"
                               : "border-slate-6"
                           } 
+                          focus:outline-none focus:ring-1 focus:ring-blue-600
                           `}
                       />
                       <button
