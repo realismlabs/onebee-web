@@ -3,20 +3,35 @@ import Image from "next/image";
 import React, { useState } from "react";
 import Link from "next/link";
 import router, { Router } from "next/router";
+import { useUser } from "../components/UserContext";
 
 export default function Login() {
+  const { setUser } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const { lo } = router.query;
 
   const registeredEmails = [
     {
       email: "unverified@example.com",
       password: "password",
       verified: false,
+      completed_welcome: false,
     },
-    { email: "verified@example.com", password: "password", verified: true },
+    {
+      email: "verified-and-complete@example.com",
+      password: "password",
+      verified: true,
+      completed_welcome: true,
+    },
+    {
+      email: "verified-and-incomplete@example.com",
+      password: "password",
+      verified: true,
+      completed_welcome: false,
+    },
   ];
 
   // Mock API call to see if email and password are correct
@@ -32,7 +47,7 @@ export default function Login() {
     );
   };
 
-  const isEmailAndPasswordVerified = async (
+  const isEmailAndPasswordVerifiedIncompleteWelcome = async (
     email: string,
     password: string,
     registeredEmails: any
@@ -40,10 +55,41 @@ export default function Login() {
     // Replace this with your actual API call
     return registeredEmails.some(
       (user: any) =>
-        user.email === email && user.password === password && user.verified
+        user.email === email &&
+        user.password === password &&
+        user.verified &&
+        user.completed_welcome === false
     );
   };
 
+  const isEmailAndPasswordVerifiedCompleteWelcome = async (
+    email: string,
+    password: string,
+    registeredEmails: any
+  ) => {
+    // Replace this with your actual API call
+    return registeredEmails.some(
+      (user: any) =>
+        user.email === email &&
+        user.password === password &&
+        user.verified &&
+        user.completed_welcome === true
+    );
+  };
+
+  const isEmailAndPasswordUnverified = async (
+    email: string,
+    password: string,
+    registeredEmails: any
+  ) => {
+    // Replace this with your actual API call
+    return registeredEmails.some(
+      (user: any) =>
+        user.email === email &&
+        user.password === password &&
+        user.verified === false
+    );
+  };
   // Handle Sign up
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -61,19 +107,37 @@ export default function Login() {
       return;
     }
 
-    if (
-      !(await isEmailAndPasswordRegistered(email, password, registeredEmails))
-    ) {
+    const user = registeredEmails.find(
+      (user: any) => user.email === email && user.password === password
+    );
+
+    if (!user) {
       setErrorMessage("The email or password is incorrect.");
       return;
     }
 
+    setUser({ email: user.email });
+
     if (
-      !(await isEmailAndPasswordVerified(email, password, registeredEmails))
+      await isEmailAndPasswordVerifiedCompleteWelcome(
+        email,
+        password,
+        registeredEmails
+      )
     ) {
-      router.push("/verify-email");
-    } else {
-      router.push("/dashboard");
+      router.push("/home");
+    } else if (
+      await isEmailAndPasswordVerifiedIncompleteWelcome(
+        email,
+        password,
+        registeredEmails
+      )
+    ) {
+      router.push("/welcome");
+    } else if (
+      await isEmailAndPasswordUnverified(email, password, registeredEmails)
+    ) {
+      router.push("/verify");
     }
   };
 
@@ -101,11 +165,16 @@ export default function Login() {
                   ></Image>
                 </Link>
               </header>
+              {lo === "true" && (
+                <div className="text-green-500 absolute top-20 px-4 py-2 rounded-md bg-green-900/20">
+                  You have been successfully logged out.
+                </div>
+              )}
               <h1 className="text-xl ">Welcome back</h1>
               <h3 className="text-sm text-slate-11">Log into Dataland</h3>
               <div className="flex flex-col gap-4 mt-8 w-full">
                 <div className="w-full flex flex-col gap-2">
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:border-slate-7 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                     <Image
                       src="/images/logo_google.svg"
                       width={24}
@@ -114,7 +183,7 @@ export default function Login() {
                     ></Image>
                     Log in with Google
                   </button>
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:border-slate-7 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                     <Image
                       src="/images/logo_github.svg"
                       width={24}

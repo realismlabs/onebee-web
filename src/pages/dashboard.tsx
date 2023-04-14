@@ -19,7 +19,7 @@ export default function Sandbox() {
           <div className="text-blue-400 text-sm">
             This playground loads 1.6 billion rows of Hacker News data.
           </div>
-          <Link href="/sign-up" className="text-white text-sm">
+          <Link href="/signup" className="text-white text-sm">
             Try with your data →
           </Link>
         </div>
