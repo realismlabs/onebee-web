@@ -105,95 +105,72 @@ export default function AddSnowflake() {
               />
             </div>
           </div>
-          <div>
-            <label className="text-white text-xs font-medium">
-              Auth method
-            </label>
-
+          <div className="flex flex-row items-center mt-4 gap-4">
+            <label className="text-xs w-[100px]">Auth method</label>
             <select
-              className="mt-2 block text-xs bg-gray-900 w-full rounded-md border-gray-700 py-2 pl-3 pr-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              title="Auth method"
+              className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               onChange={(e) => setSnowflakeAuthMethod(e.target.value)}
             >
               <option value="user_pass">Username / password</option>
               <option value="key_value">Key / value pair</option>
             </select>
           </div>
-          <motion.div
-            animate={{
-              height:
-                snowflakeAuthBounds.height > 0
-                  ? snowflakeAuthBounds.height
-                  : "auto",
-            }}
-            transition={{
-              type: "spring",
-              bounce: 0.2,
-              duration: transition.duration,
-            }}
-          >
-            <div ref={snowflakeAuthRef}>
-              <AnimatePresence mode="popLayout">
-                {snowflake_auth_method === "user_pass" ? (
-                  <motion.div
-                    exit={{ opacity: 0 }}
-                    transition={{
-                      ...transition,
-                      duration: transition.duration / 2,
-                    }}
-                    key="snowflake_auth_form"
-                    className="flex flex-col gap-4"
-                  >
-                    <div>
-                      <label className="text-white text-xs font-medium">
-                        Username
-                      </label>
-                      <input
-                        className="block w-full rounded bg-gray-900 text-white text-xs py-2 px-3 mt-2 border border-gray-700 hover:border-gray-600 focus:border-blue-500"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="text-white text-xs font-medium">
-                        Password
-                      </label>
-                      <input
-                        className="block w-full rounded bg-gray-900 text-white text-xs py-2 px-3 mt-2 border border-gray-700 hover:border-gray-600 focus:border-blue-500"
-                        required
-                      />
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    exit={{ opacity: 0 }}
-                    transition={{
-                      ...transition,
-                      duration: transition.duration / 2,
-                    }}
-                    key="snowflake_auth_form"
-                  >
-                    <div className="mb-4">
-                      <label className="text-white text-xs font-medium">
-                        Key
-                      </label>
-                      <input
-                        className="block w-full rounded bg-gray-900 text-white text-xs py-2 px-3 mt-2 border border-gray-700 hover:border-gray-600 focus:border-blue-500"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="text-white text-xs font-medium">
-                        Value
-                      </label>
-                      <input
-                        className="block w-full rounded bg-gray-900 text-white text-xs py-2 px-3 mt-2 border border-gray-700 hover:border-gray-600 focus:border-blue-500"
-                        required
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+          <div ref={snowflakeAuthRef}>
+            {snowflake_auth_method === "user_pass" ? (
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-row items-center mt-4 gap-4">
+                  <label className="text-xs w-[100px]">Username</label>
+                  <input
+                    className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    required
+                    placeholder="username"
+                  />
+                </div>
+                <div className="flex flex-row items-center gap-4">
+                  <label className="text-xs w-[100px]">Password</label>
+                  <input
+                    className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    required
+                    placeholder=""
+                    title="Password"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-row items-center mt-4 gap-4">
+                    <label className="text-xs w-[100px]">Key</label>
+                    <input
+                      className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      required
+                      placeholder="username"
+                    />
+                  </div>
+                  <div className="flex flex-row items-center gap-4">
+                    <label className="text-xs w-[100px]">Value</label>
+                    <input
+                      className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      required
+                      placeholder=""
+                      title="Value"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-row items-center mt-4 gap-4">
+            <label className="text-xs w-[100px]">Role (optional)</label>
+            <div className="flex flex-row items-center flex-grow">
+              <input
+                className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20"
+                required
+                placeholder="i.e. ACCOUNTADMIN"
+              />
             </div>
-          </motion.div>
+          </div>
         </form>
       </div>
     </div>
