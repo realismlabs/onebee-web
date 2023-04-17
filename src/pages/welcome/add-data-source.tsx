@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import Link from "next/link";
 import { useUser } from "../../components/UserContext";
 import router from "next/router";
+import Image from "next/image";
 
 interface AccountHeaderProps {
   email: string;
@@ -33,101 +34,87 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   );
 };
 
-export default function Welcome() {
+export default function AddDataSource() {
   const { user } = useUser();
   const email = user?.email ?? "placeholder@example.com";
-  const domain = email?.split("@")[1];
-  const domain_without_extension = email?.split("@")[1].split(".")[0];
-  let workspace_name_suggestion = domain_without_extension;
-  if (typeof domain_without_extension === "string") {
-    workspace_name_suggestion =
-      domain_without_extension.charAt(0).toUpperCase() +
-      domain_without_extension.slice(1);
-  }
-  const [errorMessage, setErrorMessage] = React.useState("");
-  const [workspaceName, setWorkspaceName] = React.useState(
-    workspace_name_suggestion ?? null
-  );
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     console.log("clicked");
-    if (workspaceName === "" || workspaceName === null) {
-      setErrorMessage("Workspace name is required.");
-    } else {
-      router.push("/welcome/add-data-source");
-    }
+    // if (workspaceName === "" || workspaceName === null) {
+    //   setErrorMessage("Workspace name is required.");
+    // } else {
+    //   router.push("/welcome/add-data-source");
+    // }
   };
 
-  const [isChecked, setIsChecked] = useState(true);
+  const [allowOthersFromDomainChecked, setAllowOthersFromDomainChecked] =
+    useState(true);
 
-  function handleCheckboxChange() {
-    setIsChecked(!isChecked);
+  function handleAllowOthersFromDomainCheckboxChange() {
+    setAllowOthersFromDomainChecked(!allowOthersFromDomainChecked);
   }
 
-  useEffect(() => {
-    const inputElement = document.getElementById("workspaceNameInput");
-    if (inputElement) {
-      inputElement.focus();
-    }
-  }, []);
+  type ServiceCardProps = {
+    logoSrc: string;
+    serviceName: string;
+    route: string;
+  };
+
+  const ServiceCard: FC<ServiceCardProps> = ({
+    logoSrc,
+    serviceName,
+    route,
+  }) => {
+    return (
+      <Link href={route}>
+        <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+          <Image
+            className="pointer-events-none select-none"
+            src={logoSrc}
+            alt="Logo"
+            draggable={false}
+            width={32}
+            height={32}
+          />
+          <p>{serviceName}</p>
+        </div>
+      </Link>
+    );
+  };
 
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full pt-32">
         <div className="bg-slate-1 text-white text-center text-2xl pb-4">
-          Name your workspace
+          Connect a data source
         </div>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-3 w-[300px] mt-4"
-        >
-          <div className="relative">
-            <input
-              type={"text"}
-              id="workspaceNameInput"
-              value={workspaceName ?? ""}
-              onChange={(e) => {
-                setWorkspaceName(e.target.value);
-                setErrorMessage("");
-              }}
-              placeholder="i.e. Acme organization"
-              className={`w-full bg-slate-3 border text-white text-sm rounded-md px-3 py-2 placeholder-slate-9
-                          ${
-                            errorMessage !== ""
-                              ? "border-red-9"
-                              : "border-slate-6"
-                          } 
-                          focus:outline-none focus:ring-blue-600
-                          `}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
+          <div className="flex gap-4">
+            <ServiceCard
+              logoSrc="../../images/logos/logo_snowflake.svg"
+              serviceName="Snowflake"
+              route="/welcome/add-snowflake"
             />
-            {errorMessage && (
-              <p className="text-red-9 text-xs mt-2">{errorMessage}</p>
-            )}
-          </div>
-          <div className="flex items-start">
-            <input
-              id="allowOthersFromDomain"
-              type="checkbox"
-              className="mt-0.5 w-[18px] h-[18px] text-blue-600 bg-slate-3 border-slate-6 rounded focus:ring-blue-500 focus:ring-1"
-              checked={isChecked}
-              onChange={handleCheckboxChange}
+            <ServiceCard
+              logoSrc="../../images/logos/logo_bigquery.svg"
+              serviceName="BigQuery"
+              route="/welcome/add-bigquery"
             />
-            <label
-              htmlFor="allowOthersFromDomain"
-              className="ml-2 block text-slate-11 text-sm"
-            >
-              Allow anyone with an{" "}
-              <span className="text-white font-medium">{"@" + domain}</span>{" "}
-              email to join this workspace
-            </label>
+            <ServiceCard
+              logoSrc="../../images/logos/logo_postgres.svg"
+              serviceName="Postgres"
+              route="/welcome/add-postgres"
+            />
           </div>
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md mt-4"
-          >
-            Continue
-          </button>
+          <div className="text-sm text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16">
+            <p className="text-slate-10">Don&apos;t have credentials?</p>
+            <p className="text-white">Invite a teammate to help →</p>
+          </div>
+          <div className="text-white text-sm text-center w-full cursor-pointer">
+            Do this later
+          </div>
         </form>
       </div>
     </div>
