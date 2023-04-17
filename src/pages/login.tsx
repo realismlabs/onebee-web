@@ -11,7 +11,12 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { lo } = router.query;
+  // Only use the router object on the client-side
+  let lo = null;
+
+  if (typeof window !== "undefined") {
+    lo = router.query;
+  }
 
   const registeredEmails = [
     {
@@ -165,8 +170,8 @@ export default function Login() {
                   ></Image>
                 </Link>
               </header>
-              {lo === "true" && (
-                <div className="text-green-500 absolute top-20 px-4 py-2 rounded-md bg-green-900/20">
+              {lo !== null && lo.lo === "true" && (
+                <div className="text-green-500 absolute top-24 px-4 py-2 rounded-md bg-green-900/20 text-sm">
                   You have been successfully logged out.
                 </div>
               )}

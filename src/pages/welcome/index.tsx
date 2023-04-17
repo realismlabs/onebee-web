@@ -1,15 +1,19 @@
 import React from "react";
 import Link from "next/link";
-import { useUser } from "../components/UserContext";
-import { useRouter } from "next/router";
+import { useUser } from "../../components/UserContext";
+import router from "next/router";
 
 interface AccountHeaderProps {
   email: string;
 }
 
+const handleSubmit = async () => {
+  console.log("clicked");
+  router.push("/welcome/create-workspace");
+};
+
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   const { user, logout } = useUser();
-  const router = useRouter();
 
   const handleLogout = () => {
     logout();
@@ -19,18 +23,16 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   return (
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
-        <p className="text-sm text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-sm text-white font-medium">{email}</p>
+        <p className="text-xs text-slate-11 mb-1">Logged in as:</p>
+        <p className="text-xs text-white font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
-        <Link href="/">
-          <p
-            className="text-sm text-white hover:text-slate-12 font-medium"
-            onClick={handleLogout}
-          >
-            Logout
-          </p>
-        </Link>
+        <p
+          className="text-xs text-white hover:text-slate-12 font-medium cursor-pointer"
+          onClick={handleLogout}
+        >
+          Logout
+        </p>
       </div>
     </div>
   );
@@ -42,7 +44,7 @@ export default function Welcome() {
 
   return (
     <div className="h-screen bg-slate-1">
-      <AccountHeader email={email ?? "placeholder"} />
+      <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full pt-32">
         <div className="bg-slate-1 text-white text-center text-2xl pb-4">
           Welcome to Dataland, Arthur.
@@ -51,7 +53,10 @@ export default function Welcome() {
           Dataland makes it easy for your whole team to browse data from your
           data warehouse.
         </div>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-lg rounded-md">
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-lg rounded-md"
+          onClick={handleSubmit}
+        >
           Get started
         </button>{" "}
         .

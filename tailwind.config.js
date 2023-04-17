@@ -8,11 +8,12 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require("windy-radix-palette")({
-    colors: {
-      slate: radixColors.slateDark,
-      purple: radixColors.purpleDark,
-      red: radixColors.redDark,
-    },
-  }),],
+  plugins: [
+    require("windy-radix-palette")({
+      colors: {
+        slate: radixColors.slateDark,
+        purple: radixColors.purpleDark,
+        red: radixColors.redDark,
+      },
+    }), require('@tailwindcss/forms'),],
 }
