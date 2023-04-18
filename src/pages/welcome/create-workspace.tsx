@@ -33,7 +33,7 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   );
 };
 
-export default function Welcome() {
+export default function CreateWorkspace() {
   const { user } = useUser();
   const email = user?.email ?? "placeholder@example.com";
   const domain = email?.split("@")[1];
