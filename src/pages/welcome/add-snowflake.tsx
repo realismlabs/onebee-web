@@ -86,9 +86,6 @@ export default function AddSnowflake() {
             <p>Back to sources</p>
           </div>
         </Link>
-        <div>
-          <WordTooltipDemo display_text={"ok"} tooltip_content={"ok"} />
-        </div>
         <div className="flex flex-row items-center gap-4 mt-4">
           <p className="flex-grow text-md">Set up Snowflake connection</p>
           <Link href="/" className="text-xs px-3 py-2 bg-slate-3 rounded-md">
@@ -97,7 +94,26 @@ export default function AddSnowflake() {
         </div>
         <form>
           <div className="flex flex-row w-full items-center mt-4 gap-4">
-            <label className="text-xs w-[100px]">Account</label>
+            <label className="text-xs w-[100px]">
+              <WordTooltipDemo
+                display_text={"Account"}
+                tooltip_content={
+                  <div className="max-w-[280px] space-y-2">
+                    <p>
+                      This can be found in the Snowflake URL, ex:&nbsp;
+                      <span className="bg-blue-900/40 px-1 py-0.5 rounded-md font-mono text-blue-400">
+                        account_name
+                      </span>
+                      .snowflakecomputing.com.
+                    </p>
+                    <p>
+                      If connecting via a proxy, click the proxy toggle, and
+                      specify the full proxy address.
+                    </p>
+                  </div>
+                }
+              />
+            </label>
             <div className="flex flex-row items-center flex-grow">
               {snowflake_custom_host ? (
                 <>
@@ -112,7 +128,7 @@ export default function AddSnowflake() {
                   <input
                     className="rounded-l block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
                     required
-                    placeholder="account_identifier"
+                    placeholder="account_name"
                   />
                   <div className="rounded-r block bg-slate-6 text-white border-t border-r border-b border-slate-6 text-xs py-2 px-3 ">
                     .snowflakecomputing.com

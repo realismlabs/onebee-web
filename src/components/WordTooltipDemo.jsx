@@ -12,11 +12,12 @@ const WordTooltipDemo = ({ display_text, tooltip_content }) => {
         </Tooltip.Trigger>
         <Tooltip.Portal>
           <Tooltip.Content
-            className="text-violet11 rounded-[4px] bg-white px-[15px] py-[10px] text-[15px] leading-none shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity]"
-            sideOffset={5}
+            className="text-white text-[12px] rounded-[4px] bg-slate-3 px-4 py-3"
+            sideOffset={12}
+            side="left"
           >
             {tooltip_content}
-            <Tooltip.Arrow className="fill-white" />
+            <Tooltip.Arrow className="fill-slate-4" />
           </Tooltip.Content>
         </Tooltip.Portal>
       </Tooltip.Root>
