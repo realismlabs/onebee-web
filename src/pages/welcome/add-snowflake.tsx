@@ -66,20 +66,55 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
 export default function AddSnowflake() {
   const { user } = useUser();
   const email = user?.email ?? "placeholder@example.com";
-  let [snowflake_custom_host, setSnowflakeCustomHost] = useState(false);
-  let [snowflake_auth_method, setSnowflakeAuthMethod] = useState("user_pass");
-  let [snowflakeAuthRef, snowflakeAuthBounds] = useMeasure();
-  let transition = { type: "ease", ease: "easeInOut", duration: 0.4 };
+  let [useProxy, setUseProxy] = useState(false);
+  let [snowflakeAuthMethod, setSnowflakeAuthMethod] = useState("user_pass");
+
+  // Snowflake vars
+  const [accountName, setAccountName] = useState<string>("");
+  const [proxyName, setProxyName] = useState<string>("");
+  const [warehouse, setWarehouse] = useState<string>("");
+  const [authUsername, setAuthUsername] = useState<string>("");
+  const [authPassword, setAuthPassword] = useState<string>("");
+  const [authKey, setAuthKey] = useState<string>("");
+  const [authValue, setAuthValue] = useState<string>("");
+  const [role, setRole] = useState<string>("");
+  const [connectionResult, setConnectionResult] = useState<string>("");
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("clicked");
+    // get form data
+    const data = {
+      accountName,
+      warehouse,
+      useProxy,
+      proxyName,
+      snowflakeAuthMethod,
+      authUsername,
+      authPassword,
+      authKey,
+      authValue,
+      role,
+    };
+    console.log("clicked", data);
+  };
+
+  const handleConnectionTest = (e: any) => {
+    const data = {
+      accountName,
+      warehouse,
+      authUsername,
+      authPassword,
+      authKey,
+      authValue,
+      role,
+    };
+    console.log("handleConnectionTest", data);
   };
 
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col mx-auto w-[600px]  text-white gap-2">
+      <div className="flex flex-col mx-auto w-[600px] text-white gap-2 mt-16">
         <Link href="/welcome/add-data-source">
           <div className="flex flex-row items-center gap-2 text-xs text-slate-11">
             <CaretLeft size={16} weight="bold" />
@@ -87,12 +122,19 @@ export default function AddSnowflake() {
           </div>
         </Link>
         <div className="flex flex-row items-center gap-4 mt-4">
+          <Image
+            src="../../images/logos/logo_snowflake.svg"
+            width={24}
+            height={24}
+            alt="Snowflake logo"
+            draggable={false}
+          ></Image>
           <p className="flex-grow text-md">Set up Snowflake connection</p>
           <Link href="/" className="text-xs px-3 py-2 bg-slate-3 rounded-md">
             Snowflake docs
           </Link>
         </div>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="flex flex-row w-full items-center mt-4 gap-4">
             <label className="text-xs w-[100px]">
               <WordTooltipDemo
@@ -115,12 +157,14 @@ export default function AddSnowflake() {
               />
             </label>
             <div className="flex flex-row items-center flex-grow">
-              {snowflake_custom_host ? (
+              {useProxy ? (
                 <>
                   <input
-                    className="rounded-l block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
+                    className="rounded block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
                     required
                     placeholder="Full proxy address"
+                    value={proxyName}
+                    onChange={(e) => setProxyName(e.target.value)}
                   />
                 </>
               ) : (
@@ -128,6 +172,8 @@ export default function AddSnowflake() {
                   <input
                     className="rounded-l block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
                     required
+                    value={accountName}
+                    onChange={(e) => setAccountName(e.target.value)}
                     placeholder="account_name"
                   />
                   <div className="rounded-r block bg-slate-6 text-white border-t border-r border-b border-slate-6 text-xs py-2 px-3 ">
@@ -139,27 +185,41 @@ export default function AddSnowflake() {
             <div className="flex flex-row gap-2 items-center">
               <label className="text-xs">Proxy?</label>
               <Switch
-                checked={snowflake_custom_host}
-                onChange={setSnowflakeCustomHost}
+                checked={useProxy}
+                onChange={setUseProxy}
                 className={`${
-                  snowflake_custom_host ? "bg-blue-600" : "bg-slate-6"
+                  useProxy ? "bg-blue-600" : "bg-slate-6"
                 } relative inline-flex h-6 w-11 items-center rounded-full overflow-hidden`}
               >
                 <span
                   className={`${
-                    snowflake_custom_host ? "translate-x-6" : "translate-x-1"
+                    useProxy ? "translate-x-6" : "translate-x-1"
                   } inline-block h-4 w-4 transform rounded-full bg-white transition`}
                 />
               </Switch>
             </div>
           </div>
           <div className="flex flex-row items-center mt-4 gap-4">
-            <label className="text-xs w-[100px]">Warehouse</label>
+            <label className="text-xs w-[100px]">
+              <WordTooltipDemo
+                display_text={"Warehouse"}
+                tooltip_content={
+                  <div className="max-w-[200px] space-y-2">
+                    <p>
+                      We recommend using at least a small size warehouse. Larger
+                      sizes will speed up ingest time.
+                    </p>
+                  </div>
+                }
+              />
+            </label>
             <div className="flex flex-row items-center flex-grow">
               <input
                 className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
                 required
-                placeholder="i.e. COMPUTE_WH"
+                placeholder="i.e. SMALL_WH"
+                value={warehouse}
+                onChange={(e) => setWarehouse(e.target.value)}
               />
             </div>
           </div>
@@ -174,8 +234,8 @@ export default function AddSnowflake() {
               <option value="key_value">Key / value pair</option>
             </select>
           </div>
-          <div ref={snowflakeAuthRef}>
-            {snowflake_auth_method === "user_pass" ? (
+          <div>
+            {snowflakeAuthMethod === "user_pass" ? (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-row items-center mt-4 gap-4">
                   <label className="text-xs w-[100px]">Username</label>
@@ -184,6 +244,8 @@ export default function AddSnowflake() {
                     required
                     placeholder=""
                     title="Username"
+                    value={authUsername}
+                    onChange={(e) => setAuthUsername(e.target.value)}
                   />
                 </div>
                 <div className="flex flex-row items-center gap-4">
@@ -193,6 +255,8 @@ export default function AddSnowflake() {
                     required
                     placeholder=""
                     title="Password"
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
                   />
                 </div>
               </div>
@@ -206,6 +270,8 @@ export default function AddSnowflake() {
                       required
                       placeholder=""
                       title="Key"
+                      value={authKey}
+                      onChange={(e) => setAuthKey(e.target.value)}
                     />
                   </div>
                   <div className="flex flex-row items-center gap-4">
@@ -215,6 +281,8 @@ export default function AddSnowflake() {
                       required
                       placeholder=""
                       title="Value"
+                      value={authValue}
+                      onChange={(e) => setAuthValue(e.target.value)}
                     />
                   </div>
                 </div>
@@ -227,7 +295,9 @@ export default function AddSnowflake() {
               <input
                 className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
                 required
-                placeholder="i.e. ACCOUNTADMIN"
+                placeholder="i.e. PUBLIC"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
               />
             </div>
           </div>
@@ -253,7 +323,12 @@ export default function AddSnowflake() {
             </div>
           </div>
           <div className="flex flex-row justify-end mt-8 gap-4 text-xs">
-            <button>Test connection</button>
+            <button
+              onClick={handleConnectionTest}
+              className="text-xs px-3 py-2 bg-slate-3 rounded-md"
+            >
+              Test connection
+            </button>
             <button>Add source</button>
           </div>
         </form>
