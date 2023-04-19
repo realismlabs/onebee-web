@@ -4,7 +4,14 @@ import { useUser } from "../../components/UserContext";
 import useCopyToClipboard from "../../components/useCopyToClipboard";
 import router from "next/router";
 import Image from "next/image";
-import { CaretLeft, CopySimple, Check } from "@phosphor-icons/react";
+import {
+  CaretLeft,
+  CopySimple,
+  Check,
+  CircleNotch,
+  CheckCircle,
+  XCircle,
+} from "@phosphor-icons/react";
 import { Switch } from "@headlessui/react";
 import useMeasure from "react-use-measure";
 import WordTooltipDemo from "../../components/WordTooltipDemo";
@@ -73,48 +80,120 @@ export default function AddSnowflake() {
   const [accountName, setAccountName] = useState<string>("");
   const [proxyName, setProxyName] = useState<string>("");
   const [warehouse, setWarehouse] = useState<string>("");
-  const [authUsername, setAuthUsername] = useState<string>("");
-  const [authPassword, setAuthPassword] = useState<string>("");
-  const [authKey, setAuthKey] = useState<string>("");
-  const [authValue, setAuthValue] = useState<string>("");
+  const [basicAuthUsername, setBasicAuthUsername] = useState<string>("");
+  const [basicAuthPassword, setBasicAuthPassword] = useState<string>("");
+  const [keyPairAuthPrivateKey, setKeyPairAuthPrivateKey] =
+    useState<string>("");
+  const [keyPairAuthPrivateKeyPassphrase, setKeyPairAuthPrivateKeyPassphrase] =
+    useState<string>("");
+  const [keyPairAuthUsername, setKeyPairAuthUsername] = useState<string>("");
   const [role, setRole] = useState<string>("");
-  const [connectionResult, setConnectionResult] = useState<string>("");
+  const [connectionResult, setConnectionResult] = useState({
+    status: "",
+    title: "",
+    description: "",
+  });
+  const [connectionTestInProgress, setConnectionTestInProgress] =
+    useState<boolean>(false);
+  const [showTestPanel, setShowTestPanel] = useState<boolean>(false);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     // get form data
-    const data = {
-      accountName,
-      warehouse,
-      useProxy,
-      proxyName,
-      snowflakeAuthMethod,
-      authUsername,
-      authPassword,
-      authKey,
-      authValue,
-      role,
-    };
-    console.log("clicked", data);
+    console.log("clicked");
   };
 
-  const handleConnectionTest = (e: any) => {
+  const handleConnectionTest = async (e: any) => {
+    setShowTestPanel(true);
+    setConnectionTestInProgress(true);
+    setConnectionResult({
+      status: "",
+      title: "",
+      description: "",
+    });
     const data = {
       accountName,
       warehouse,
-      authUsername,
-      authPassword,
-      authKey,
-      authValue,
+      basicAuthUsername,
+      basicAuthPassword,
+      keyPairAuthUsername,
+      keyPairAuthPrivateKey,
+      keyPairAuthPrivateKeyPassphrase,
       role,
     };
     console.log("handleConnectionTest", data);
+
+    const endpoint =
+      "https://us-central1-dataland-demo-995df.cloudfunctions.net/dataland-1b-connection-testing/test-connection";
+
+    interface SnowflakeData {
+      user: string;
+      password: string;
+      account: string;
+      warehouse: string;
+    }
+
+    const requestBody: SnowflakeData = {
+      user: basicAuthUsername,
+      password: basicAuthPassword,
+      account: accountName,
+      warehouse: warehouse,
+    };
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      console.log("response:", JSON.stringify(response));
+      const data = await response.json();
+      console.log("data", data);
+      setConnectionTestInProgress(false);
+      setConnectionResult({
+        status: data.status,
+        title:
+          data.status === "success"
+            ? "Connection successful"
+            : "Connection failed",
+        description: data.message,
+      });
+    } catch (error) {
+      console.error("error!", error);
+      setConnectionTestInProgress(false);
+      setConnectionResult({
+        status: "error",
+        title: "Connection failed",
+        description: JSON.stringify(error),
+      });
+    }
+
+    //  call this endpoint
+    // https://us-central1-dataland-demo-995df.cloudfunctions.net/dataland-1b-connection-testing
+    // with the data above
+    // and set the result to connectionResult
   };
+
+  async function fetchPlaceholderData() {
+    const endpoint =
+      "https://us-central1-dataland-demo-995df.cloudfunctions.net/test-2";
+
+    try {
+      const response = await fetch(endpoint);
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col mx-auto w-[600px] text-white gap-2 mt-16">
+      <div className="flex flex-col mx-auto w-[600px] text-white gap-2 mt-4">
         <Link href="/welcome/add-data-source">
           <div className="flex flex-row items-center gap-2 text-xs text-slate-11">
             <CaretLeft size={16} weight="bold" />
@@ -134,17 +213,18 @@ export default function AddSnowflake() {
             Snowflake docs
           </Link>
         </div>
+        <div className="border-t border-slate-3 mt-2"></div>
         <form onSubmit={handleSubmit}>
           <div className="flex flex-row w-full items-center mt-4 gap-4">
-            <label className="text-xs w-[100px]">
+            <label className="text-xs w-[120px]">
               <WordTooltipDemo
-                display_text={"Account"}
+                display_text={"Account identifier"}
                 tooltip_content={
-                  <div className="max-w-[280px] space-y-2">
+                  <div className="max-w-[240px] space-y-2">
                     <p>
                       This can be found in the Snowflake URL, ex:&nbsp;
                       <span className="bg-blue-900/40 px-1 py-0.5 rounded-md font-mono text-blue-400">
-                        account_name
+                        acct_id
                       </span>
                       .snowflakecomputing.com.
                     </p>
@@ -174,7 +254,7 @@ export default function AddSnowflake() {
                     required
                     value={accountName}
                     onChange={(e) => setAccountName(e.target.value)}
-                    placeholder="account_name"
+                    placeholder="account_identifier"
                   />
                   <div className="rounded-r block bg-slate-6 text-white border-t border-r border-b border-slate-6 text-xs py-2 px-3 ">
                     .snowflakecomputing.com
@@ -200,7 +280,7 @@ export default function AddSnowflake() {
             </div>
           </div>
           <div className="flex flex-row items-center mt-4 gap-4">
-            <label className="text-xs w-[100px]">
+            <label className="text-xs w-[120px]">
               <WordTooltipDemo
                 display_text={"Warehouse"}
                 tooltip_content={
@@ -224,39 +304,39 @@ export default function AddSnowflake() {
             </div>
           </div>
           <div className="flex flex-row items-center mt-4 gap-4">
-            <label className="text-xs w-[100px]">Auth method</label>
+            <label className="text-xs w-[120px]">Auth method</label>
             <select
               title="Auth method"
               className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
               onChange={(e) => setSnowflakeAuthMethod(e.target.value)}
             >
               <option value="user_pass">Username / password</option>
-              <option value="key_value">Key / value pair</option>
+              <option value="key_value">Key pair</option>
             </select>
           </div>
           <div>
             {snowflakeAuthMethod === "user_pass" ? (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-row items-center mt-4 gap-4">
-                  <label className="text-xs w-[100px]">Username</label>
+                  <label className="text-xs w-[120px]">Username</label>
                   <input
                     className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     placeholder=""
                     title="Username"
-                    value={authUsername}
-                    onChange={(e) => setAuthUsername(e.target.value)}
+                    value={basicAuthUsername}
+                    onChange={(e) => setBasicAuthUsername(e.target.value)}
                   />
                 </div>
                 <div className="flex flex-row items-center gap-4">
-                  <label className="text-xs w-[100px]">Password</label>
+                  <label className="text-xs w-[120px]">Password</label>
                   <input
                     className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     placeholder=""
                     title="Password"
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
+                    value={basicAuthPassword}
+                    onChange={(e) => setBasicAuthPassword(e.target.value)}
                   />
                 </div>
               </div>
@@ -264,25 +344,85 @@ export default function AddSnowflake() {
               <div>
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-row items-center mt-4 gap-4">
-                    <label className="text-xs w-[100px]">Key</label>
+                    <label className="text-xs w-[120px]">Username</label>
                     <input
                       className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                       required
                       placeholder=""
-                      title="Key"
-                      value={authKey}
-                      onChange={(e) => setAuthKey(e.target.value)}
+                      title="Key Pair Username"
+                      value={keyPairAuthUsername}
+                      onChange={(e) => setKeyPairAuthUsername(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-row items-start gap-4">
+                    <label className="text-xs w-[120px] mt-2">
+                      <WordTooltipDemo
+                        display_text={"Private key"}
+                        tooltip_content={
+                          <div className="max-w-[210px] space-y-2">
+                            <p>
+                              The private key (in PEM format) for key pair
+                              authentication. See Snowflake docs on{" "}
+                              <Link
+                                href="https://docs.snowflake.com/en/user-guide/key-pair-auth"
+                                target="_blank"
+                                className="text-blue-500"
+                              >
+                                key pair auth.
+                              </Link>
+                            </p>
+                          </div>
+                        }
+                      />
+                    </label>
+                    <textarea
+                      className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 h-20 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                      required
+                      placeholder={`-----BEGIN ENCRYPTED PRIVATE KEY-----
+{{private_key_value}}
+-----END ENCRYPTED PRIVATE KEY-----`}
+                      title="Private key"
+                      value={keyPairAuthPrivateKey}
+                      onChange={(e) => setKeyPairAuthPrivateKey(e.target.value)}
                     />
                   </div>
                   <div className="flex flex-row items-center gap-4">
-                    <label className="text-xs w-[100px]">Value</label>
+                    <label className="text-xs w-[120px]">
+                      <WordTooltipDemo
+                        display_text={
+                          <>
+                            <div className=" border-b border-white border-dotted">
+                              Private key{" "}
+                            </div>
+                            <div>passphrase</div>
+                          </>
+                        }
+                        tooltip_content={
+                          <div className="max-w-[210px] space-y-2">
+                            <p>
+                              The passphrase to decrypt the private key, if the
+                              key is encrypted. See Snowflake docs on{" "}
+                              <Link
+                                href="https://docs.snowflake.com/en/user-guide/key-pair-auth"
+                                target="_blank"
+                                className="text-blue-500"
+                              >
+                                key pair auth.
+                              </Link>
+                            </p>
+                          </div>
+                        }
+                      />
+                    </label>
                     <input
                       className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                       required
-                      placeholder=""
-                      title="Value"
-                      value={authValue}
-                      onChange={(e) => setAuthValue(e.target.value)}
+                      placeholder="•••••••••••"
+                      title="Private key passphrase"
+                      value={keyPairAuthPrivateKeyPassphrase}
+                      onChange={(e) =>
+                        setKeyPairAuthPrivateKeyPassphrase(e.target.value)
+                      }
                     />
                   </div>
                 </div>
@@ -290,11 +430,10 @@ export default function AddSnowflake() {
             )}
           </div>
           <div className="flex flex-row items-center mt-4 gap-4">
-            <label className="text-xs w-[100px]">Role (optional)</label>
+            <label className="text-xs w-[120px]">Role (optional)</label>
             <div className="flex flex-row items-center flex-grow">
               <input
                 className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
-                required
                 placeholder="i.e. PUBLIC"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -302,7 +441,7 @@ export default function AddSnowflake() {
             </div>
           </div>
           <div className="flex flex-row mt-4 gap-4">
-            <label className="text-xs w-[100px] pt-2">Whitelist IPs</label>
+            <label className="text-xs w-[120px] pt-2">Whitelist IPs</label>
             <div className="flex flex-col gap-2 px-4 py-3 border border-slate-4 rounded-md flex-grow text-xs">
               <div className="flex flex-row flex-grow text-xs text-slate-11">
                 <p>
@@ -329,8 +468,72 @@ export default function AddSnowflake() {
             >
               Test connection
             </button>
-            <button>Add source</button>
+            <button
+              onClick={fetchPlaceholderData}
+              className="text-xs px-3 py-2 bg-blue-600 rounded-md"
+            >
+              Add source
+            </button>
           </div>
+          {showTestPanel && (
+            <>
+              <div className="flex flex-row gap-4 mt-4">
+                <label className="text-xs w-[120px]"></label>
+                <div
+                  className={`bg-slate-3 text-white p-4 mt-4 rounded-md flex-grow ${
+                    connectionResult.status === "error" ? "bg-red-900/20" : ""
+                  } ${
+                    connectionResult.status === "success"
+                      ? "bg-green-900/50"
+                      : ""
+                  }`}
+                >
+                  {connectionTestInProgress && (
+                    <div className="flex flex-row gap-2 items-center">
+                      <div className="relative inline-block">
+                        <CircleNotch
+                          width={16}
+                          height={16}
+                          weight="bold"
+                          className="animate-spin"
+                        />
+                      </div>
+                      <p className="text-xs">In progress..</p>
+                    </div>
+                  )}
+                  {connectionResult.description &&
+                    connectionResult.title &&
+                    connectionResult.status &&
+                    connectionTestInProgress === false && (
+                      <div className={`flex flex-col gap-2`}>
+                        <div className="flex flex-row gap-2">
+                          {connectionResult.status === "error" && (
+                            <XCircle
+                              width={16}
+                              height={16}
+                              className="text-red-500"
+                            />
+                          )}
+                          {connectionResult.status === "success" && (
+                            <CheckCircle
+                              width={16}
+                              height={16}
+                              className="text-green-500"
+                            />
+                          )}
+                          <p className="text-xs">{connectionResult.title}</p>
+                        </div>
+                        {connectionResult.status === "error" && (
+                          <p className="text-xs">
+                            {connectionResult.description}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                </div>
+              </div>
+            </>
+          )}
         </form>
       </div>
     </div>
