@@ -106,6 +106,10 @@ export default function AddSnowflake() {
   };
 
   const handleConnectionTest = async (e: any) => {
+    e.preventDefault();
+    //  first validate the form
+    //  define valid form states
+
     setShowTestPanel(true);
     setConnectionTestInProgress(true);
     setConnectionResult({
@@ -152,8 +156,20 @@ export default function AddSnowflake() {
       });
 
       console.log("response:", JSON.stringify(response));
+
+      if (response.status === 408) {
+        throw new Error("Request Timeout");
+      }
+
       const data = await response.json();
       console.log("data", data);
+      let message = data.message;
+      if (message.includes("Contact your local security")) {
+        message = message.replace(
+          "Contact your local security administrator or please create a case with Snowflake Support or reach us on our support line: \n USA: +1 855 877 7505  \n Netherlands: +31 20 809 8018 \n Germany: +49 30 7675 8326 \n UK: +44 1207 710140 \n France: +33 18 652 9998 \n Australia: +61 1800 921 245 \n Japan: +81 50 1791 5447",
+          ""
+        );
+      }
       setConnectionTestInProgress(false);
       setConnectionResult({
         status: data.status,
@@ -161,15 +177,21 @@ export default function AddSnowflake() {
           data.status === "success"
             ? "Connection successful"
             : "Connection failed",
-        description: data.message,
+        description: message,
       });
     } catch (error) {
       console.error("error!", error);
+      console.log("error", error);
+      console.log("error_string", JSON.stringify(error));
+
       setConnectionTestInProgress(false);
       setConnectionResult({
         status: "error",
         title: "Connection failed",
-        description: JSON.stringify(error),
+        description:
+          JSON.stringify(error) === "{}"
+            ? "Check if the account identifier is correct, and try again."
+            : JSON.stringify(error),
       });
     }
 
@@ -216,7 +238,7 @@ export default function AddSnowflake() {
           </Link>
         </div>
         <div className="border-t border-slate-3 mt-2"></div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleConnectionTest}>
           {useCustomHost === false ? (
             <>
               <div className="flex flex-row w-full items-center mt-4 gap-4">
@@ -508,8 +530,8 @@ export default function AddSnowflake() {
           </div>
           <div className="flex flex-row justify-end mt-8 gap-4 text-xs">
             <button
-              onClick={handleConnectionTest}
               className="text-xs px-3 py-2 bg-slate-3 rounded-md"
+              type={"submit"}
             >
               Test connection
             </button>
@@ -523,7 +545,7 @@ export default function AddSnowflake() {
           {showTestPanel && (
             <>
               <div className="flex flex-row gap-4 mt-4">
-                <label className="text-xs w-[120px]"></label>
+                <label className="text-xs min-w-[120px]"></label>
                 <div
                   className={`bg-slate-3 text-white p-4 mt-4 rounded-md flex-grow ${
                     connectionResult.status === "error" ? "bg-red-900/20" : ""
@@ -572,6 +594,24 @@ export default function AddSnowflake() {
                           <p className="text-xs">
                             {connectionResult.description}
                           </p>
+                        )}
+                        {connectionResult.description.includes("IP") && (
+                          <>
+                            <div className="inline relative text-xs text-red-200">
+                              <p className="inline">
+                                Please allow Dataland to connect to Snowflake
+                                via IPs: 000.000.00.00, 111.111.111.11, and
+                                222.222.22&nbsp;
+                              </p>
+                              <Link
+                                href="https://docs.snowflake.com/en/user-guide/network-policies#creating-network-policies"
+                                target="_blank"
+                                className="inline"
+                              >
+                                (<span className="underline">see docs</span>)
+                              </Link>
+                            </div>
+                          </>
                         )}
                       </div>
                     )}
