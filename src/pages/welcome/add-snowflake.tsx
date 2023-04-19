@@ -73,12 +73,14 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
 export default function AddSnowflake() {
   const { user } = useUser();
   const email = user?.email ?? "placeholder@example.com";
-  let [useProxy, setUseProxy] = useState(false);
-  let [snowflakeAuthMethod, setSnowflakeAuthMethod] = useState("user_pass");
+  const [useCustomHost, setUseCustomHost] = useState(false);
+  const [customHostAccountIdentifier, setCustomHostAccountIdentifier] =
+    useState("");
+  const [snowflakeAuthMethod, setSnowflakeAuthMethod] = useState("user_pass");
 
   // Snowflake vars
-  const [accountName, setAccountName] = useState<string>("");
-  const [proxyName, setProxyName] = useState<string>("");
+  const [accountIdentifier, setAccountIdentifier] = useState<string>("");
+  const [customHost, setCustomHost] = useState<string>("");
   const [warehouse, setWarehouse] = useState<string>("");
   const [basicAuthUsername, setBasicAuthUsername] = useState<string>("");
   const [basicAuthPassword, setBasicAuthPassword] = useState<string>("");
@@ -112,7 +114,7 @@ export default function AddSnowflake() {
       description: "",
     });
     const data = {
-      accountName,
+      accountIdentifier,
       warehouse,
       basicAuthUsername,
       basicAuthPassword,
@@ -136,7 +138,7 @@ export default function AddSnowflake() {
     const requestBody: SnowflakeData = {
       user: basicAuthUsername,
       password: basicAuthPassword,
-      account: accountName,
+      account: accountIdentifier,
       warehouse: warehouse,
     };
 
@@ -215,70 +217,113 @@ export default function AddSnowflake() {
         </div>
         <div className="border-t border-slate-3 mt-2"></div>
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-row w-full items-center mt-4 gap-4">
-            <label className="text-xs w-[120px]">
-              <WordTooltipDemo
-                display_text={"Account identifier"}
-                tooltip_content={
-                  <div className="max-w-[240px] space-y-2">
-                    <p>
-                      This can be found in the Snowflake URL, ex:&nbsp;
-                      <span className="bg-blue-900/40 px-1 py-0.5 rounded-md font-mono text-blue-400">
-                        acct_id
-                      </span>
-                      .snowflakecomputing.com.
-                    </p>
-                    <p>
-                      If connecting via a proxy, click the proxy toggle, and
-                      specify the full proxy address.
-                    </p>
-                  </div>
-                }
-              />
-            </label>
-            <div className="flex flex-row items-center flex-grow">
-              {useProxy ? (
-                <>
-                  <input
-                    className="rounded block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
-                    required
-                    placeholder="Full proxy address"
-                    value={proxyName}
-                    onChange={(e) => setProxyName(e.target.value)}
+          {useCustomHost === false ? (
+            <>
+              <div className="flex flex-row w-full items-center mt-4 gap-4">
+                <label className="text-xs min-w-[120px]">
+                  <WordTooltipDemo
+                    display_text={"Account identifier"}
+                    tooltip_content={
+                      <div className="max-w-[240px] space-y-2">
+                        <p>
+                          This can be found in the Snowflake URL, ex:&nbsp;
+                          <span className="bg-blue-900/40 px-1 py-0.5 rounded-md font-mono text-blue-400">
+                            acct_id
+                          </span>
+                          .snowflakecomputing.com.
+                        </p>
+                      </div>
+                    }
                   />
-                </>
-              ) : (
-                <>
+                </label>
+                <div className="flex flex-row items-center flex-grow">
                   <input
                     className="rounded-l block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
                     required
-                    value={accountName}
-                    onChange={(e) => setAccountName(e.target.value)}
+                    value={accountIdentifier}
+                    onChange={(e) => setAccountIdentifier(e.target.value)}
                     placeholder="account_identifier"
                   />
-                  <div className="rounded-r block bg-slate-6 text-white border-t border-r border-b border-slate-6 text-xs py-2 px-3 ">
+                  <div className="rounded-r block bg-slate-6 text-white border-t border-r border-b border-slate-6 text-xs py-2 px-2 ">
                     .snowflakecomputing.com
                   </div>
-                </>
-              )}
-            </div>
-            <div className="flex flex-row gap-2 items-center">
-              <label className="text-xs">Proxy?</label>
-              <Switch
-                checked={useProxy}
-                onChange={setUseProxy}
-                className={`${
-                  useProxy ? "bg-blue-600" : "bg-slate-6"
-                } relative inline-flex h-6 w-11 items-center rounded-full overflow-hidden`}
-              >
-                <span
-                  className={`${
-                    useProxy ? "translate-x-6" : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                />
-              </Switch>
-            </div>
-          </div>
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <label className="text-xs w-20">Custom host?</label>
+                  <Switch
+                    checked={useCustomHost}
+                    onChange={setUseCustomHost}
+                    className={`${
+                      useCustomHost ? "bg-blue-600" : "bg-slate-6"
+                    } relative inline-flex h-6 w-11 items-center rounded-full overflow-hidden`}
+                  >
+                    <span
+                      className={`${
+                        useCustomHost ? "translate-x-6" : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                    />
+                  </Switch>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex flex-row w-full items-center mt-4 gap-4">
+                <label className="text-xs w-[120px]">Custom host</label>
+                <div className="flex flex-row items-center flex-grow">
+                  <input
+                    className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
+                    required
+                    value={customHost}
+                    onChange={(e) => setCustomHost(e.target.value)}
+                    placeholder="Snowflake custom host"
+                  />
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <label className="text-xs w-20">Custom host?</label>
+                  <Switch
+                    checked={useCustomHost}
+                    onChange={setUseCustomHost}
+                    className={`${
+                      useCustomHost ? "bg-blue-600" : "bg-slate-6"
+                    } relative inline-flex h-6 w-11 items-center rounded-full overflow-hidden`}
+                  >
+                    <span
+                      className={`${
+                        useCustomHost ? "translate-x-6" : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                    />
+                  </Switch>
+                </div>
+              </div>
+              <div className="flex flex-row w-full items-center mt-4 gap-4">
+                <label className="text-xs w-[120px]">
+                  <WordTooltipDemo
+                    display_text={"Account identifier"}
+                    tooltip_content={
+                      <div className="max-w-[240px] space-y-2">
+                        <p>
+                          The account identifier associated with your custom
+                          host.
+                        </p>
+                      </div>
+                    }
+                  />
+                </label>
+                <div className="flex flex-row items-center flex-grow">
+                  <input
+                    className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
+                    required
+                    value={customHostAccountIdentifier}
+                    onChange={(e) =>
+                      setCustomHostAccountIdentifier(e.target.value)
+                    }
+                    placeholder="account_identifier"
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <div className="flex flex-row items-center mt-4 gap-4">
             <label className="text-xs w-[120px]">
               <WordTooltipDemo
@@ -391,7 +436,7 @@ export default function AddSnowflake() {
                       <WordTooltipDemo
                         display_text={
                           <>
-                            <div className=" border-b border-white border-dotted">
+                            <div className=" border-b border-slate-11 border-dotted">
                               Private key{" "}
                             </div>
                             <div>passphrase</div>
@@ -448,7 +493,7 @@ export default function AddSnowflake() {
                   Allow Dataland to connect to Snowflake via these IPs&nbsp;
                 </p>
                 <Link
-                  href="https://dataland-io.notion.site/Dataland-1B-Docs-183938a2184e4e95ab7b815109784029"
+                  href="https://docs.snowflake.com/en/user-guide/network-policies#creating-network-policies"
                   target="_blank"
                 >
                   (<span className="underline">see docs</span>)
