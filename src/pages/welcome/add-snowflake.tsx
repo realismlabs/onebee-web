@@ -11,10 +11,12 @@ import {
   CircleNotch,
   CheckCircle,
   XCircle,
+  X,
 } from "@phosphor-icons/react";
 import { Switch } from "@headlessui/react";
-import useMeasure from "react-use-measure";
+import DataTable, { createTheme } from "react-data-table-component";
 import WordTooltipDemo from "../../components/WordTooltipDemo";
+import * as Dialog from "@radix-ui/react-dialog";
 
 interface AccountHeaderProps {
   email: string;
@@ -48,6 +50,124 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
 
 type IPProps = {
   ip: string;
+};
+
+const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
+  const columns = [
+    {
+      name: "Database name",
+      selector: (row: any) => row.database_name,
+      sortable: true,
+    },
+    {
+      name: "Schema name",
+      selector: (row: any) => row.database_schema,
+      sortable: true,
+    },
+    {
+      name: "Table name",
+      selector: (row: any) => row.table_name,
+      sortable: true,
+    },
+    {
+      name: "Row count",
+      selector: (row: any) => row.row_count,
+      sortable: true,
+      right: true,
+    },
+  ];
+
+  // .slateDark {
+  //   --slate1: hsl(200, 7.0%, 8.8%);
+  //   --slate2: hsl(195, 7.1%, 11.0%);
+  //   --slate3: hsl(197, 6.8%, 13.6%);
+  //   --slate4: hsl(198, 6.6%, 15.8%);
+  //   --slate5: hsl(199, 6.4%, 17.9%);
+  //   --slate6: hsl(201, 6.2%, 20.5%);
+  //   --slate7: hsl(203, 6.0%, 24.3%);
+  //   --slate8: hsl(207, 5.6%, 31.6%);
+  //   --slate9: hsl(206, 6.0%, 43.9%);
+  //   --slate10: hsl(206, 5.2%, 49.5%);
+  //   --slate11: hsl(206, 6.0%, 63.0%);
+  //   --slate12: hsl(210, 6.0%, 93.0%);
+  // }
+
+  createTheme("dark", {
+    background: {
+      default: `var(--slate2)`,
+    },
+  });
+
+  const customStyles = {
+    headRow: {
+      style: {
+        backgroundColor: `var(--slate3)`,
+        borderBottomColor: `var(--slate6)`,
+      },
+    },
+    rows: {
+      style: {
+        "&:not(:last-of-type)": {
+          borderBottomColor: `var(--slate4)`,
+        },
+      },
+    },
+    cells: {
+      style: {
+        fontVariantNumeric: "tabular-nums",
+      },
+    },
+  };
+
+  const data = tables;
+
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>
+        <div
+          className="text-xs px-2 py-1 bg-green-900/20 hover:bg-green-900/40 w-28 rounded-md"
+          tabIndex={-1}
+        >
+          See full table list
+        </div>
+      </Dialog.Trigger>
+      <Dialog.Portal className="z-100">
+        <Dialog.Overlay className="bg-slate-1 opacity-75 data-[state=open]:animate-overlayShow fixed inset-0" />
+        <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] max-w-[90vw] w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
+          <Dialog.Title className="m-0 text-[14px] font-medium">
+            Full table list
+          </Dialog.Title>
+          <div className="max-h-[85vh] overflow-scroll mt-4 rounded-sm">
+            <DataTable
+              dense
+              columns={columns}
+              data={data}
+              fixedHeader
+              fixedHeaderScrollHeight="600px"
+              theme="dark"
+              customStyles={customStyles}
+              className="border border-slate-6"
+            />
+          </div>
+          <div className="mt-5 flex justify-end">
+            <Dialog.Close asChild>
+              <button className="px-4 py-3 bg-slate-3 rounded-md text-xs font-medium leading-none focus:outline-none hover:bg-slate-4">
+                Close preview
+              </button>
+            </Dialog.Close>
+          </div>
+          <Dialog.Close asChild>
+            <button
+              className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+              aria-label="Close"
+            >
+              <X size={16} weight="bold" />
+            </button>
+          </Dialog.Close>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
 };
 
 const CopyableIP: FC<IPProps> = ({ ip }) => {
@@ -188,6 +308,11 @@ export default function AddSnowflake() {
         listed_tables: data.listed_tables ?? null,
         listed_databases: data.listed_databases ?? null,
       });
+      if (data.status === "success") {
+        return true;
+      } else {
+        return false;
+      }
     } catch (error) {
       console.error("error!", error);
       console.log("error", error);
@@ -202,6 +327,7 @@ export default function AddSnowflake() {
             ? "Request timed out. Check if the account identifier is correct, and try again."
             : JSON.stringify(error),
       });
+      return false;
     }
 
     //  call this endpoint
@@ -210,18 +336,22 @@ export default function AddSnowflake() {
     // and set the result to connectionResult
   };
 
-  async function fetchPlaceholderData() {
-    const endpoint =
-      "https://us-central1-dataland-demo-995df.cloudfunctions.net/test-2";
-
-    try {
-      const response = await fetch(endpoint);
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
+  const handleContinue = async (e: any) => {
+    e.preventDefault();
+    // get form data
+    console.log("clicked");
+    const connectionTestResultSuccessful = await handleConnectionTest(e);
+    if (connectionTestResultSuccessful === true) {
+      console.log("success");
+      // wait 2 seconds
+      // then redirect to next page
+      setTimeout(() => {
+        router.push("/welcome/add-data-source/2");
+      }, 2000);
+    } else {
+      return;
     }
-  }
+  };
 
   return (
     <div className="h-screen bg-slate-1">
@@ -269,7 +399,7 @@ export default function AddSnowflake() {
                 </label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-l block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
+                    className="rounded-l block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={accountIdentifier}
                     onChange={(e) => setAccountIdentifier(e.target.value)}
@@ -303,7 +433,7 @@ export default function AddSnowflake() {
                 <label className="text-xs w-[120px]">Custom host</label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
+                    className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={customHost}
                     onChange={(e) => setCustomHost(e.target.value)}
@@ -343,7 +473,7 @@ export default function AddSnowflake() {
                 </label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
+                    className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={customHostAccountIdentifier}
                     onChange={(e) =>
@@ -371,7 +501,7 @@ export default function AddSnowflake() {
             </label>
             <div className="flex flex-row items-center flex-grow">
               <input
-                className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
+                className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                 required
                 placeholder="i.e. SMALL_WH"
                 value={warehouse}
@@ -534,7 +664,7 @@ export default function AddSnowflake() {
             </label>
             <div className="flex flex-row items-center flex-grow">
               <input
-                className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
+                className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                 placeholder="i.e. PUBLIC"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -564,16 +694,16 @@ export default function AddSnowflake() {
           </div>
           <div className="flex flex-row justify-end mt-8 gap-4 text-xs">
             <button
-              className="text-xs px-3 py-2 bg-slate-3 rounded-md"
+              className="text-xs px-3 py-2 bg-slate-3 rounded-md hover:bg-slate-4"
               type={"submit"}
             >
               Test connection
             </button>
             <button
-              onClick={fetchPlaceholderData}
+              onClick={handleContinue}
               className="text-xs px-3 py-2 bg-blue-600 rounded-md"
             >
-              Add source
+              Continue
             </button>
           </div>
           {showTestPanel && (
@@ -581,13 +711,19 @@ export default function AddSnowflake() {
               <div className="flex flex-row gap-4 mt-4">
                 <label className="text-xs min-w-[120px]"></label>
                 <div
-                  className={`bg-slate-3 text-white p-4 mt-4 rounded-md flex-grow ${
+                  className={` text-white p-4 mt-4 rounded-md flex-grow ${
                     connectionResult.status === "error"
                       ? "bg-red-900/10  border-red-900 border"
                       : ""
                   } ${
                     connectionResult.status === "success"
                       ? "bg-green-900/10 border-green-900 border"
+                      : ""
+                  }
+                  ${
+                    connectionResult.status !== "success" &&
+                    connectionResult.status !== "error"
+                      ? "bg-slate-3"
                       : ""
                   }`}
                 >
@@ -633,22 +769,25 @@ export default function AddSnowflake() {
                               from {connectionResult.listed_databases.length}{" "}
                               databases.
                             </p>
-                            <button
-                              className="text-xs px-2 py-1 bg-green-900/40 self-start rounded-md"
-                              type="button"
-                            >
-                              See full table list
-                            </button>
+                            <PreviewTablesDialog
+                              tables={connectionResult.listed_tables}
+                            />
                           </>
                         )}
                         {connectionResult.status === "error" && (
                           <>
-                            <p className="text-xs">
-                              {connectionResult.message}
+                            <p className="text-[11px]">
+                              <pre className="px-3 py-2 bg-black/40 rounded-md  whitespace-pre-wrap break-words overflow-x-auto">
+                                {connectionResult.snowflake_error}
+                              </pre>
                             </p>
-                            <p className="text-xs">
-                              {connectionResult.snowflake_error}
-                            </p>
+                            {/* Don't show if error message is generic */}
+                            {connectionResult.message !==
+                              "Connection failed" && (
+                              <p className="text-xs">
+                                {connectionResult.message}
+                              </p>
+                            )}
                           </>
                         )}
                         {connectionResult.snowflake_error?.includes("IP") && (
