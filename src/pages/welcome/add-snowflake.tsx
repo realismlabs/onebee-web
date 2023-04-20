@@ -132,8 +132,8 @@ const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
         </div>
       </Dialog.Trigger>
       <Dialog.Portal className="z-100">
-        <Dialog.Overlay className="bg-slate-1 opacity-75 data-[state=open]:animate-overlayShow fixed inset-0" />
-        <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] max-w-[90vw] w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
+        <Dialog.Overlay className="z-20 bg-slate-1 opacity-75 data-[state=open]:animate-overlayShow fixed inset-0" />
+        <Dialog.Content className="z-30 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh]  max-w-[90vw] w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
           <Dialog.Title className="m-0 text-[14px] font-medium">
             Full table list
           </Dialog.Title>
@@ -190,27 +190,68 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
   );
 };
 
+const useLocalStorageState = (key: any, defaultValue: any) => {
+  const [state, setState] = React.useState(() => {
+    try {
+      const storedValue = localStorage.getItem(key);
+      return storedValue ? JSON.parse(storedValue) : defaultValue;
+    } catch (error) {
+      console.warn("Error accessing localStorage:", error);
+      return defaultValue;
+    }
+  });
+
+  React.useEffect(() => {
+    try {
+      localStorage.setItem(key, JSON.stringify(state));
+    } catch (error) {
+      console.warn("Error accessing localStorage:", error);
+    }
+  }, [key, state]);
+
+  return [state, setState];
+};
+
 export default function AddSnowflake() {
   const { user } = useUser();
   const email = user?.email ?? "placeholder@example.com";
-  const [useCustomHost, setUseCustomHost] = useState(false);
-  const [customHostAccountIdentifier, setCustomHostAccountIdentifier] =
-    useState("");
-  const [snowflakeAuthMethod, setSnowflakeAuthMethod] = useState("user_pass");
 
   // Snowflake vars
-  const [accountIdentifier, setAccountIdentifier] = useState<string>("");
-  const [customHost, setCustomHost] = useState<string>("");
-  const [warehouse, setWarehouse] = useState<string>("");
-  const [basicAuthUsername, setBasicAuthUsername] = useState<string>("");
-  const [basicAuthPassword, setBasicAuthPassword] = useState<string>("");
+  const [useCustomHost, setUseCustomHost] = useLocalStorageState(
+    "useCustomHost",
+    false
+  );
+  const [customHostAccountIdentifier, setCustomHostAccountIdentifier] =
+    useLocalStorageState("customHostAccountIdentifier", "");
+  const [snowflakeAuthMethod, setSnowflakeAuthMethod] = useLocalStorageState(
+    "snowflakeAuthMethod",
+    "user_pass"
+  );
+  const [accountIdentifier, setAccountIdentifier] = useLocalStorageState(
+    "accountIdentifier",
+    ""
+  );
+  const [customHost, setCustomHost] = useLocalStorageState("customHost", "");
+  const [warehouse, setWarehouse] = useLocalStorageState("warehouse", "");
+  const [basicAuthUsername, setBasicAuthUsername] = useLocalStorageState(
+    "basicAuthUsername",
+    ""
+  );
+  const [basicAuthPassword, setBasicAuthPassword] = useLocalStorageState(
+    "basicAuthPassword",
+    ""
+  );
   const [keyPairAuthPrivateKey, setKeyPairAuthPrivateKey] =
-    useState<string>("");
+    useLocalStorageState("keyPairAuthPrivateKey", "");
   const [keyPairAuthPrivateKeyPassphrase, setKeyPairAuthPrivateKeyPassphrase] =
-    useState<string>("");
-  const [keyPairAuthUsername, setKeyPairAuthUsername] = useState<string>("");
-  const [role, setRole] = useState<string>("");
+    useLocalStorageState("keyPairAuthPrivateKeyPassphrase", "");
+  const [keyPairAuthUsername, setKeyPairAuthUsername] = useLocalStorageState(
+    "keyPairAuthUsername",
+    ""
+  );
+  const [role, setRole] = useLocalStorageState("role", "");
 
+  // Connection test vars
   const [connectionResult, setConnectionResult] = useState<any>({
     status: null,
     title: null,
@@ -219,7 +260,6 @@ export default function AddSnowflake() {
     listed_tables: null,
     listed_databases: null,
   });
-
   const [connectionTestInProgress, setConnectionTestInProgress] =
     useState<boolean>(false);
   const [showTestPanel, setShowTestPanel] = useState<boolean>(false);
@@ -401,7 +441,7 @@ export default function AddSnowflake() {
                 </label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-l block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="rounded-l block w-full bg-slate-3 z-10 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={accountIdentifier}
                     onChange={(e) => setAccountIdentifier(e.target.value)}
@@ -711,114 +751,112 @@ export default function AddSnowflake() {
               Continue
             </button>
           </div>
-          {showTestPanel && (
-            <>
-              <div className="flex flex-row gap-4 mt-4">
-                <label className="text-xs min-w-[120px]"></label>
-                <div
-                  className={` text-white p-4 mt-4 rounded-md flex-grow ${
-                    connectionResult.status === "error"
-                      ? "bg-red-900/10  border-red-900 border"
-                      : ""
-                  } ${
-                    connectionResult.status === "success"
-                      ? "bg-green-900/10 border-green-900 border"
-                      : ""
-                  }
+        </form>
+        {showTestPanel && (
+          <>
+            <div className="flex flex-row gap-4 mt-4">
+              <label className="text-xs min-w-[120px]"></label>
+              <div
+                className={` text-white p-4 mt-4 rounded-md flex-grow ${
+                  connectionResult.status === "error"
+                    ? "bg-red-900/10  border-red-900 border"
+                    : ""
+                } ${
+                  connectionResult.status === "success"
+                    ? "bg-green-900/10 border-green-900 border"
+                    : ""
+                }
                   ${
                     connectionResult.status !== "success" &&
                     connectionResult.status !== "error"
                       ? "bg-slate-3"
                       : ""
                   }`}
-                >
-                  {connectionTestInProgress && (
-                    <div className="flex flex-row gap-2 items-center">
-                      <div className="relative inline-block">
-                        <CircleNotch
-                          width={16}
-                          height={16}
-                          weight="bold"
-                          className="animate-spin"
-                        />
+              >
+                {connectionTestInProgress && (
+                  <div className="flex flex-row gap-2 items-center">
+                    <div className="relative inline-block">
+                      <CircleNotch
+                        width={16}
+                        height={16}
+                        weight="bold"
+                        className="animate-spin"
+                      />
+                    </div>
+                    <p className="text-xs">In progress..</p>
+                  </div>
+                )}
+                {connectionResult.message &&
+                  connectionResult.title &&
+                  connectionResult.status &&
+                  connectionTestInProgress === false && (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex flex-row gap-2">
+                        {connectionResult.status === "error" ? (
+                          <XCircle
+                            width={16}
+                            height={16}
+                            className="text-red-500"
+                          />
+                        ) : connectionResult.status === "success" ? (
+                          <CheckCircle
+                            width={16}
+                            height={16}
+                            className="text-green-500"
+                          />
+                        ) : null}
+                        <p className="text-xs">{connectionResult.title}</p>
                       </div>
-                      <p className="text-xs">In progress..</p>
+                      {connectionResult.status === "success" && (
+                        <>
+                          <p className="text-xs">
+                            This connection can access{" "}
+                            {connectionResult.listed_tables.length} tables from{" "}
+                            {connectionResult.listed_databases.length}{" "}
+                            databases.
+                          </p>
+                          <PreviewTablesDialog
+                            tables={connectionResult.listed_tables}
+                          />
+                        </>
+                      )}
+                      {connectionResult.status === "error" && (
+                        <>
+                          <p className="text-[11px]">
+                            <pre className="px-3 py-2 bg-black/40 rounded-md  whitespace-pre-wrap break-words overflow-x-auto">
+                              {connectionResult.snowflake_error}
+                            </pre>
+                          </p>
+                          {/* Don't show if error message is generic */}
+                          {connectionResult.message !== "Connection failed" && (
+                            <p className="text-xs">
+                              {connectionResult.message}
+                            </p>
+                          )}
+                        </>
+                      )}
+                      {connectionResult.snowflake_error?.includes("IP") && (
+                        <div className="inline relative text-xs text-red-200">
+                          <p className="inline">
+                            Please allow Dataland to connect to Snowflake via
+                            IPs: <br />
+                            000.000.00.00, 111.111.111.11, and 222.222.22&nbsp;
+                          </p>
+                          <Link
+                            href="https://docs.snowflake.com/en/user-guide/network-policies#creating-network-policies"
+                            target="_blank"
+                            className="inline underline"
+                          >
+                            (see docs)
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   )}
-                  {connectionResult.message &&
-                    connectionResult.title &&
-                    connectionResult.status &&
-                    connectionTestInProgress === false && (
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-row gap-2">
-                          {connectionResult.status === "error" ? (
-                            <XCircle
-                              width={16}
-                              height={16}
-                              className="text-red-500"
-                            />
-                          ) : connectionResult.status === "success" ? (
-                            <CheckCircle
-                              width={16}
-                              height={16}
-                              className="text-green-500"
-                            />
-                          ) : null}
-                          <p className="text-xs">{connectionResult.title}</p>
-                        </div>
-                        {connectionResult.status === "success" && (
-                          <>
-                            <p className="text-xs">
-                              This connection can access{" "}
-                              {connectionResult.listed_tables.length} tables
-                              from {connectionResult.listed_databases.length}{" "}
-                              databases.
-                            </p>
-                            <PreviewTablesDialog
-                              tables={connectionResult.listed_tables}
-                            />
-                          </>
-                        )}
-                        {connectionResult.status === "error" && (
-                          <>
-                            <p className="text-[11px]">
-                              <pre className="px-3 py-2 bg-black/40 rounded-md  whitespace-pre-wrap break-words overflow-x-auto">
-                                {connectionResult.snowflake_error}
-                              </pre>
-                            </p>
-                            {/* Don't show if error message is generic */}
-                            {connectionResult.message !==
-                              "Connection failed" && (
-                              <p className="text-xs">
-                                {connectionResult.message}
-                              </p>
-                            )}
-                          </>
-                        )}
-                        {connectionResult.snowflake_error?.includes("IP") && (
-                          <div className="inline relative text-xs text-red-200">
-                            <p className="inline">
-                              Please allow Dataland to connect to Snowflake via
-                              IPs: <br />
-                              000.000.00.00, 111.111.111.11, and
-                              222.222.22&nbsp;
-                            </p>
-                            <Link
-                              href="https://docs.snowflake.com/en/user-guide/network-policies#creating-network-policies"
-                              target="_blank"
-                              className="inline underline"
-                            >
-                              (see docs)
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                </div>
               </div>
-            </>
-          )}
-        </form>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
