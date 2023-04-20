@@ -301,7 +301,7 @@ export default function AddSnowflake() {
         status: data.status,
         title:
           data.status === "success"
-            ? "Connection successful"
+            ? "Success! You can continue to the next step."
             : "Connection failed",
         message: message,
         snowflake_error: data.snowflake_error ?? null,
@@ -338,18 +338,20 @@ export default function AddSnowflake() {
 
   const handleContinue = async (e: any) => {
     e.preventDefault();
-    // get form data
-    console.log("clicked");
-    const connectionTestResultSuccessful = await handleConnectionTest(e);
-    if (connectionTestResultSuccessful === true) {
-      console.log("success");
-      // wait 2 seconds
-      // then redirect to next page
-      setTimeout(() => {
-        router.push("/welcome/add-data-source/2");
-      }, 2000);
+    console.log("clicked Continue button");
+    if (connectionResult.status === "success") {
+      router.push("/welcome/create-table");
     } else {
-      return;
+      // test connection
+      const connectionTestResultSuccessful = await handleConnectionTest(e);
+      if (connectionTestResultSuccessful === true) {
+        console.log("success");
+        setTimeout(() => {
+          router.push("/welcome/create-table");
+        }, 2000);
+      } else {
+        return;
+      }
     }
   };
 
@@ -701,7 +703,10 @@ export default function AddSnowflake() {
             </button>
             <button
               onClick={handleContinue}
-              className="text-xs px-3 py-2 bg-blue-600 rounded-md"
+              className={`text-xs px-3 py-2 bg-blue-600 rounded-md ${
+                connectionResult.status !== "success" &&
+                "opacity-50 pointer-events-none disabled"
+              }`}
             >
               Continue
             </button>
