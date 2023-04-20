@@ -264,6 +264,11 @@ export default function AddSnowflake() {
     useState<boolean>(false);
   const [showTestPanel, setShowTestPanel] = useState<boolean>(false);
 
+  // UI vars
+  const [isHoveringOnContinueButton, setIsHoveringOnContinueButton] =
+    useState(false);
+
+  // event handlers
   const handleSubmit = (e: any) => {
     e.preventDefault();
     // get form data
@@ -383,15 +388,15 @@ export default function AddSnowflake() {
       router.push("/welcome/create-table");
     } else {
       // test connection
-      const connectionTestResultSuccessful = await handleConnectionTest(e);
-      if (connectionTestResultSuccessful === true) {
-        console.log("success");
-        setTimeout(() => {
-          router.push("/welcome/create-table");
-        }, 2000);
-      } else {
-        return;
-      }
+      // const connectionTestResultSuccessful = await handleConnectionTest(e);
+      // if (connectionTestResultSuccessful === true) {
+      //   console.log("success");
+      //   setTimeout(() => {
+      //     router.push("/welcome/create-table");
+      //   }, 2000);
+      // } else {
+      //   return;
+      // }
     }
   };
 
@@ -741,15 +746,33 @@ export default function AddSnowflake() {
             >
               Test connection
             </button>
-            <button
-              onClick={handleContinue}
-              className={`text-xs px-3 py-2 bg-blue-600 rounded-md ${
-                connectionResult.status !== "success" &&
-                "opacity-50 pointer-events-none disabled"
-              }`}
-            >
-              Continue
-            </button>
+            <div className="relative inline-block">
+              <button
+                onClick={handleContinue}
+                onMouseEnter={() => setIsHoveringOnContinueButton(true)}
+                onMouseLeave={() => setIsHoveringOnContinueButton(false)}
+                className={`text-xs px-3 py-2 bg-blue-600 rounded-md ${
+                  connectionResult.status !== "success" &&
+                  "opacity-50 cursor-not-allowed "
+                }`}
+              >
+                Continue
+              </button>
+              {connectionResult.status !== "success" && (
+                <div
+                  className="absolute left-0 bottom-full mb-2 w-max bg-black text-white text-[11px] py-1 px-2 rounded"
+                  style={{
+                    visibility: isHoveringOnContinueButton
+                      ? "visible"
+                      : "hidden",
+                    opacity: isHoveringOnContinueButton ? 1 : 0,
+                  }}
+                >
+                  You must have a successful <br></br>connection test to
+                  continue
+                </div>
+              )}
+            </div>
           </div>
         </form>
         {showTestPanel && (
@@ -823,9 +846,11 @@ export default function AddSnowflake() {
                       {connectionResult.status === "error" && (
                         <>
                           <p className="text-[11px]">
-                            <pre className="px-3 py-2 bg-black/40 rounded-md  whitespace-pre-wrap break-words overflow-x-auto">
-                              {connectionResult.snowflake_error}
-                            </pre>
+                            {connectionResult.snowflake_error && (
+                              <pre className="px-3 py-2 bg-black/40 rounded-md  whitespace-pre-wrap break-words overflow-x-auto">
+                                {connectionResult.snowflake_error}
+                              </pre>
+                            )}
                           </p>
                           {/* Don't show if error message is generic */}
                           {connectionResult.message !== "Connection failed" && (
