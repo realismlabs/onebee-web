@@ -90,11 +90,16 @@ export default function AddSnowflake() {
     useState<string>("");
   const [keyPairAuthUsername, setKeyPairAuthUsername] = useState<string>("");
   const [role, setRole] = useState<string>("");
-  const [connectionResult, setConnectionResult] = useState({
-    status: "",
-    title: "",
-    description: "",
+
+  const [connectionResult, setConnectionResult] = useState<any>({
+    status: null,
+    title: null,
+    message: null,
+    snowflake_error: null,
+    listed_tables: null,
+    listed_databases: null,
   });
+
   const [connectionTestInProgress, setConnectionTestInProgress] =
     useState<boolean>(false);
   const [showTestPanel, setShowTestPanel] = useState<boolean>(false);
@@ -107,16 +112,19 @@ export default function AddSnowflake() {
 
   const handleConnectionTest = async (e: any) => {
     e.preventDefault();
-    //  first validate the form
-    //  define valid form states
 
+    // Reset connection result
     setShowTestPanel(true);
     setConnectionTestInProgress(true);
     setConnectionResult({
-      status: "",
-      title: "",
-      description: "",
+      status: null,
+      title: null,
+      message: null,
+      snowflake_error: null,
+      listed_tables: null,
+      listed_databases: null,
     });
+
     const data = {
       accountIdentifier,
       warehouse,
@@ -127,7 +135,7 @@ export default function AddSnowflake() {
       keyPairAuthPrivateKeyPassphrase,
       role,
     };
-    console.log("handleConnectionTest", data);
+    console.log("begin handleConnectionTest", data);
 
     const endpoint =
       "https://us-central1-dataland-demo-995df.cloudfunctions.net/dataland-1b-connection-testing/test-connection";
@@ -137,6 +145,7 @@ export default function AddSnowflake() {
       password: string;
       account: string;
       warehouse: string;
+      role: string | null;
     }
 
     const requestBody: SnowflakeData = {
@@ -144,6 +153,7 @@ export default function AddSnowflake() {
       password: basicAuthPassword,
       account: accountIdentifier,
       warehouse: warehouse,
+      role: role,
     };
 
     try {
@@ -156,20 +166,16 @@ export default function AddSnowflake() {
       });
 
       console.log("response:", JSON.stringify(response));
-
-      if (response.status === 408) {
-        throw new Error("Request Timeout");
-      }
-
       const data = await response.json();
+
       console.log("data", data);
       let message = data.message;
-      if (message.includes("Contact your local security")) {
-        message = message.replace(
-          "Contact your local security administrator or please create a case with Snowflake Support or reach us on our support line: \n USA: +1 855 877 7505  \n Netherlands: +31 20 809 8018 \n Germany: +49 30 7675 8326 \n UK: +44 1207 710140 \n France: +33 18 652 9998 \n Australia: +61 1800 921 245 \n Japan: +81 50 1791 5447",
-          ""
-        );
-      }
+      // if (message.includes("Contact your local security")) {
+      //   message = message.replace(
+      //     "Contact your local security administrator or please create a case with Snowflake Support or reach us on our support line: \n USA: +1 855 877 7505  \n Netherlands: +31 20 809 8018 \n Germany: +49 30 7675 8326 \n UK: +44 1207 710140 \n France: +33 18 652 9998 \n Australia: +61 1800 921 245 \n Japan: +81 50 1791 5447",
+      //     ""
+      //   );
+      // }
       setConnectionTestInProgress(false);
       setConnectionResult({
         status: data.status,
@@ -177,7 +183,10 @@ export default function AddSnowflake() {
           data.status === "success"
             ? "Connection successful"
             : "Connection failed",
-        description: message,
+        message: message,
+        snowflake_error: data.snowflake_error ?? null,
+        listed_tables: data.listed_tables ?? null,
+        listed_databases: data.listed_databases ?? null,
       });
     } catch (error) {
       console.error("error!", error);
@@ -188,9 +197,9 @@ export default function AddSnowflake() {
       setConnectionResult({
         status: "error",
         title: "Connection failed",
-        description:
+        message:
           JSON.stringify(error) === "{}"
-            ? "Check if the account identifier is correct, and try again."
+            ? "Request timed out. Check if the account identifier is correct, and try again."
             : JSON.stringify(error),
       });
     }
@@ -497,7 +506,32 @@ export default function AddSnowflake() {
             )}
           </div>
           <div className="flex flex-row items-center mt-4 gap-4">
-            <label className="text-xs w-[120px]">Role (optional)</label>
+            <label className="text-xs w-[120px]">
+              <WordTooltipDemo
+                display_text={"Role (optional)"}
+                tooltip_content={
+                  <div className="max-w-[200px] space-y-2">
+                    <p>Dataland only needs a read-only role to sync tables. </p>
+                    <p>
+                      You can create a read-only role in Snowflake, and grant it
+                      your specified username/password. See{" "}
+                      <Link
+                        href="https://docs.snowflake.com/en/user-guide/security-access-control-configure#creating-custom-roles"
+                        target="_blank"
+                        className="text-blue-500"
+                      >
+                        Snowflake docs on roles.
+                      </Link>
+                    </p>
+                    <p>
+                      If no role is specified, the user&apos;s default role will
+                      be used. You can see the default role used when clicking
+                      `Test connection`.&nbsp;
+                    </p>
+                  </div>
+                }
+              />
+            </label>
             <div className="flex flex-row items-center flex-grow">
               <input
                 className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 z-20 placeholder-slate-10"
@@ -548,10 +582,12 @@ export default function AddSnowflake() {
                 <label className="text-xs min-w-[120px]"></label>
                 <div
                   className={`bg-slate-3 text-white p-4 mt-4 rounded-md flex-grow ${
-                    connectionResult.status === "error" ? "bg-red-900/20" : ""
+                    connectionResult.status === "error"
+                      ? "bg-red-900/10  border-red-900 border"
+                      : ""
                   } ${
                     connectionResult.status === "success"
-                      ? "bg-green-900/50"
+                      ? "bg-green-900/10 border-green-900 border"
                       : ""
                   }`}
                 >
@@ -568,50 +604,69 @@ export default function AddSnowflake() {
                       <p className="text-xs">In progress..</p>
                     </div>
                   )}
-                  {connectionResult.description &&
+                  {connectionResult.message &&
                     connectionResult.title &&
                     connectionResult.status &&
                     connectionTestInProgress === false && (
-                      <div className={`flex flex-col gap-2`}>
+                      <div className="flex flex-col gap-2">
                         <div className="flex flex-row gap-2">
-                          {connectionResult.status === "error" && (
+                          {connectionResult.status === "error" ? (
                             <XCircle
                               width={16}
                               height={16}
                               className="text-red-500"
                             />
-                          )}
-                          {connectionResult.status === "success" && (
+                          ) : connectionResult.status === "success" ? (
                             <CheckCircle
                               width={16}
                               height={16}
                               className="text-green-500"
                             />
-                          )}
+                          ) : null}
                           <p className="text-xs">{connectionResult.title}</p>
                         </div>
-                        {connectionResult.status === "error" && (
-                          <p className="text-xs">
-                            {connectionResult.description}
-                          </p>
-                        )}
-                        {connectionResult.description.includes("IP") && (
+                        {connectionResult.status === "success" && (
                           <>
-                            <div className="inline relative text-xs text-red-200">
-                              <p className="inline">
-                                Please allow Dataland to connect to Snowflake
-                                via IPs: 000.000.00.00, 111.111.111.11, and
-                                222.222.22&nbsp;
-                              </p>
-                              <Link
-                                href="https://docs.snowflake.com/en/user-guide/network-policies#creating-network-policies"
-                                target="_blank"
-                                className="inline"
-                              >
-                                (<span className="underline">see docs</span>)
-                              </Link>
-                            </div>
+                            <p className="text-xs">
+                              This connection can access{" "}
+                              {connectionResult.listed_tables.length} tables
+                              from {connectionResult.listed_databases.length}{" "}
+                              databases.
+                            </p>
+                            <button
+                              className="text-xs px-2 py-1 bg-green-900/40 self-start rounded-md"
+                              type="button"
+                            >
+                              See full table list
+                            </button>
                           </>
+                        )}
+                        {connectionResult.status === "error" && (
+                          <>
+                            <p className="text-xs">
+                              {connectionResult.message}
+                            </p>
+                            <p className="text-xs">
+                              {connectionResult.snowflake_error}
+                            </p>
+                          </>
+                        )}
+                        {connectionResult.snowflake_error?.includes("IP") && (
+                          <div className="inline relative text-xs text-red-200">
+                            <p className="inline">
+                              Please allow Dataland to connect to Snowflake via
+                              IPs: <br />
+                              000.000.00.00, 111.111.111.11, and
+                              222.222.22&nbsp;
+                            </p>
+                            <Link
+                              href="https://docs.snowflake.com/en/user-guide/network-policies#creating-network-policies"
+                              target="_blank"
+                              className="inline underline"
+                            >
+                              (see docs)
+                            </Link>
+                          </div>
                         )}
                       </div>
                     )}
