@@ -58,12 +58,12 @@ const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
 
   return (
     <Dialog.Root>
-      <Dialog.Trigger>
+      <Dialog.Trigger tabIndex={-1}>
         <div
-          className="text-xs px-2 py-1 bg-green-900/20 hover:bg-green-900/40 w-28 rounded-md"
+          className="text-xs px-2 py-1 bg-green-900/40 hover:bg-green-900/60 w-32 rounded-md"
           tabIndex={-1}
         >
-          See full table list
+          See full table list →
         </div>
       </Dialog.Trigger>
       <Dialog.Portal className="z-100">

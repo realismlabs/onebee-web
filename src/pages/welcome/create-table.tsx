@@ -70,7 +70,7 @@ const FetchDatabasePreview: React.FC<FetchDatabasePreviewProps> = ({
     return (
       <div>
         <p>Database preview:</p>
-        <pre className="text-white">{JSON.stringify(cachedData, null, 2)}</pre>
+        {/* <FileTree data={cachedData} /> */}
       </div>
     );
   }
@@ -93,6 +93,72 @@ const FetchDatabasePreview: React.FC<FetchDatabasePreviewProps> = ({
   }
 
   return null;
+};
+
+// helpers.ts
+interface databasePreviewTableItem {
+  database_name: string;
+  database_schema: string;
+  row_count: number;
+  table_name: string;
+}
+
+interface NestedStructure {
+  [dbName: string]: {
+    [schema: string]: string[];
+  };
+}
+
+interface FileTreeProps {
+  data: databasePreviewTableItem[];
+}
+
+export function createNestedStructure(
+  data: databasePreviewTableItem[]
+): NestedStructure {
+  const nestedStructure: NestedStructure = {};
+
+  data.forEach((item) => {
+    const { database_name, database_schema, table_name } = item;
+
+    if (!nestedStructure[database_name]) {
+      nestedStructure[database_name] = {};
+    }
+
+    if (!nestedStructure[database_name][database_schema]) {
+      nestedStructure[database_name][database_schema] = [];
+    }
+
+    nestedStructure[database_name][database_schema].push(table_name);
+  });
+
+  return nestedStructure;
+}
+
+const FileTree: React.FC<FileTreeProps> = ({ data }) => {
+  const nestedData = createNestedStructure(data);
+
+  return (
+    <div className="p-4">
+      {Object.entries(nestedData).map(([dbName, schemas]) => (
+        <div key={dbName} className="mb-4">
+          <h2 className="text-xl font-bold">{dbName}</h2>
+          <div className="ml-4">
+            {Object.entries(schemas).map(([schemaName, tables]) => (
+              <div key={schemaName} className="mb-2">
+                <h3 className="text-lg font-medium">{schemaName}</h3>
+                <ul className="ml-4 list-disc">
+                  {tables.map((tableName) => (
+                    <li key={tableName}>{tableName}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default function AddDataSource() {
