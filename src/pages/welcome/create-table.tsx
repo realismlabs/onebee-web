@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect, useRef, FC } from "react";
 import Link from "next/link";
 import { useUser } from "../../components/UserContext";
 import router from "next/router";
@@ -6,6 +6,7 @@ import Image from "next/image";
 import { CaretRight, Table } from "@phosphor-icons/react";
 import { useQueryClient, QueryClient, useQuery } from "react-query";
 import { AnimatePresence, motion } from "framer-motion";
+import { abbreviateNumber } from "@/utils/util";
 
 interface AccountHeaderProps {
   email: string;
@@ -51,533 +52,112 @@ const FetchDatabasePreview: React.FC<FetchDatabasePreviewProps> = ({
   let cachedData =
     queryClient.getQueryData<DatabasePreviewResponse>("databasePreview");
 
-  // loading to make DX easier
-  cachedData = {
-    listed_tables: [
-      {
-        database_name: "ARTHUR_TEST",
-        database_schema: "DBT_AWU",
-        row_count: 100,
-        table_name: "DIM_CUSTOMERS",
-      },
-      {
-        database_name: "ARTHUR_TEST",
-        database_schema: "DBT_AWU",
-        row_count: 120,
-        table_name: "FCT_ORDERS",
-      },
-      {
-        database_name: "ARTHUR_TEST",
-        database_schema: "DBT_AWU",
-        row_count: 2,
-        table_name: "MY_FIRST_DBT_MODEL",
-      },
-      {
-        database_name: "ARTHUR_TEST",
-        database_schema: "DBT_SSOFTWARE",
-        row_count: 2,
-        table_name: "MY_FIRST_DBT_MODEL",
-      },
-      {
-        database_name: "ARTHUR_TEST",
-        database_schema: "PUBLIC",
-        row_count: 150000000,
-        table_name: "CUSTOMER_150M",
-      },
-      {
-        database_name: "ARTHUR_TEST",
-        database_schema: "PUBLIC",
-        row_count: 1500000000,
-        table_name: "ORDERS_1500M",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 60,
-        table_name: "CALL_CENTER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 50000,
-        table_name: "CATALOG_PAGE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 14405363575,
-        table_name: "CATALOG_RETURNS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 144006767158,
-        table_name: "CATALOG_SALES",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 100000000,
-        table_name: "CUSTOMER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 50000000,
-        table_name: "CUSTOMER_ADDRESS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 1920800,
-        table_name: "CUSTOMER_DEMOGRAPHICS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 73049,
-        table_name: "DATE_DIM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 7200,
-        table_name: "HOUSEHOLD_DEMOGRAPHICS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 20,
-        table_name: "INCOME_BAND",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 1965337830,
-        table_name: "INVENTORY",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 502000,
-        table_name: "ITEM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 2500,
-        table_name: "PROMOTION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 75,
-        table_name: "REASON",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 20,
-        table_name: "SHIP_MODE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 1902,
-        table_name: "STORE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 28794603867,
-        table_name: "STORE_RETURNS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 288010550524,
-        table_name: "STORE_SALES",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 86400,
-        table_name: "TIME_DIM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 30,
-        table_name: "WAREHOUSE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 5004,
-        table_name: "WEB_PAGE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 7200334357,
-        table_name: "WEB_RETURNS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 71997815522,
-        table_name: "WEB_SALES",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF100TCL",
-        row_count: 96,
-        table_name: "WEB_SITE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 54,
-        table_name: "CALL_CENTER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 40000,
-        table_name: "CATALOG_PAGE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 1440033112,
-        table_name: "CATALOG_RETURNS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 14399964710,
-        table_name: "CATALOG_SALES",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 65000000,
-        table_name: "CUSTOMER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 32500000,
-        table_name: "CUSTOMER_ADDRESS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 1920800,
-        table_name: "CUSTOMER_DEMOGRAPHICS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 73049,
-        table_name: "DATE_DIM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 1,
-        table_name: "DBGEN_VERSION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 7200,
-        table_name: "HOUSEHOLD_DEMOGRAPHICS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 20,
-        table_name: "INCOME_BAND",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 1311525000,
-        table_name: "INVENTORY",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 402000,
-        table_name: "ITEM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 2000,
-        table_name: "PROMOTION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 70,
-        table_name: "REASON",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 20,
-        table_name: "SHIP_MODE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 1500,
-        table_name: "STORE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 2879898629,
-        table_name: "STORE_RETURNS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 28800239865,
-        table_name: "STORE_SALES",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 86400,
-        table_name: "TIME_DIM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 25,
-        table_name: "WAREHOUSE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 4002,
-        table_name: "WEB_PAGE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 720020485,
-        table_name: "WEB_RETURNS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 7199963324,
-        table_name: "WEB_SALES",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCDS_SF10TCL",
-        row_count: 78,
-        table_name: "WEB_SITE",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1",
-        row_count: 150000,
-        table_name: "CUSTOMER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1",
-        row_count: 6001215,
-        table_name: "LINEITEM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1",
-        row_count: 25,
-        table_name: "NATION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1",
-        row_count: 1500000,
-        table_name: "ORDERS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1",
-        row_count: 200000,
-        table_name: "PART",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1",
-        row_count: 800000,
-        table_name: "PARTSUPP",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1",
-        row_count: 5,
-        table_name: "REGION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1",
-        row_count: 10000,
-        table_name: "SUPPLIER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF10",
-        row_count: 1500000,
-        table_name: "CUSTOMER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF10",
-        row_count: 59986052,
-        table_name: "LINEITEM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF10",
-        row_count: 25,
-        table_name: "NATION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF10",
-        row_count: 15000000,
-        table_name: "ORDERS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF10",
-        row_count: 2000000,
-        table_name: "PART",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF10",
-        row_count: 8000000,
-        table_name: "PARTSUPP",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF10",
-        row_count: 5,
-        table_name: "REGION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF10",
-        row_count: 100000,
-        table_name: "SUPPLIER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF100",
-        row_count: 15000000,
-        table_name: "CUSTOMER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF100",
-        row_count: 600037902,
-        table_name: "LINEITEM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF100",
-        row_count: 25,
-        table_name: "NATION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF100",
-        row_count: 150000000,
-        table_name: "ORDERS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF100",
-        row_count: 20000000,
-        table_name: "PART",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF100",
-        row_count: 80000000,
-        table_name: "PARTSUPP",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF100",
-        row_count: 5,
-        table_name: "REGION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF100",
-        row_count: 1000000,
-        table_name: "SUPPLIER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1000",
-        row_count: 150000000,
-        table_name: "CUSTOMER",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1000",
-        row_count: 5999989709,
-        table_name: "LINEITEM",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1000",
-        row_count: 25,
-        table_name: "NATION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1000",
-        row_count: 1500000000,
-        table_name: "ORDERS",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1000",
-        row_count: 200000000,
-        table_name: "PART",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1000",
-        row_count: 800000000,
-        table_name: "PARTSUPP",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1000",
-        row_count: 5,
-        table_name: "REGION",
-      },
-      {
-        database_name: "SNOWFLAKE_SAMPLE_DATA",
-        database_schema: "TPCH_SF1000",
-        row_count: 10000000,
-        table_name: "SUPPLIER",
-      },
-    ],
-  };
+  // fake data to make DX easier
+  if (!cachedData) {
+    cachedData = {
+      listed_tables: [
+        {
+          database_name: "ARTHUR_TEST",
+          database_schema: "DBT_AWU",
+          row_count: 100,
+          table_name: "DIM_CUSTOMERS",
+        },
+        {
+          database_name: "ARTHUR_TEST",
+          database_schema: "DBT_AWU",
+          row_count: 120,
+          table_name: "FCT_ORDERS",
+        },
+        {
+          database_name: "ARTHUR_TEST",
+          database_schema: "DBT_AWU",
+          row_count: 2,
+          table_name: "MY_FIRST_DBT_MODEL",
+        },
+        {
+          database_name: "ARTHUR_TEST",
+          database_schema: "DBT_SSOFTWARE",
+          row_count: 2,
+          table_name: "MY_FIRST_DBT_MODEL",
+        },
+        {
+          database_name: "ARTHUR_TEST",
+          database_schema: "PUBLIC",
+          row_count: 150000000,
+          table_name: "CUSTOMER_150M",
+        },
+        {
+          database_name: "ARTHUR_TEST",
+          database_schema: "PUBLIC",
+          row_count: 1500000000,
+          table_name: "ORDERS_1500M",
+        },
+        {
+          database_name: "SNOWFLAKE_SAMPLE_DATA",
+          database_schema: "TPCDS_SF100TCL",
+          row_count: 60,
+          table_name: "CALL_CENTER",
+        },
+        {
+          database_name: "SNOWFLAKE_SAMPLE_DATA",
+          database_schema: "TPCDS_SF100TCL",
+          row_count: 50000,
+          table_name: "CATALOG_PAGE",
+        },
+        {
+          database_name: "SNOWFLAKE_SAMPLE_DATA",
+          database_schema: "TPCDS_SF100TCL",
+          row_count: 14405363575,
+          table_name: "CATALOG_RETURNS",
+        },
+        {
+          database_name: "SNOWFLAKE_SAMPLE_DATA",
+          database_schema: "TPCDS_SF100TCL",
+          row_count: 144006767158,
+          table_name: "CATALOG_SALES",
+        },
+        {
+          database_name: "SNOWFLAKE_SAMPLE_DATA",
+          database_schema: "TPCDS_SF100TCL",
+          row_count: 100000000,
+          table_name: "CUSTOMER",
+        },
+        {
+          database_name: "SNOWFLAKE_SAMPLE_DATA",
+          database_schema: "TPCDS_SF100TCL",
+          row_count: 50000000,
+          table_name: "CUSTOMER_ADDRESS",
+        },
+        {
+          database_name: "SNOWFLAKE_SAMPLE_DATA",
+          database_schema: "TPCDS_SF100TCL",
+          row_count: 1920800,
+          table_name: "CUSTOMER_DEMOGRAPHICS",
+        },
+        {
+          database_name: "SNOWFLAKE_SAMPLE_DATA",
+          database_schema: "TPCDS_SF100TCL",
+          row_count: 73049,
+          table_name: "DATE_DIM",
+        },
+      ],
+    };
+  }
+
+  // By default, choose the first table in the list
+
+  const first_table_id = createUniqueId(
+    cachedData?.listed_tables[0].database_name,
+    cachedData?.listed_tables[0].database_schema,
+    cachedData?.listed_tables[0].table_name
+  );
+
+  const [selectedTable, setSelectedTable] = useState<string | null>(
+    first_table_id ?? null
+  );
+  const [selectedTableRowCount, setSelectedTableRowCount] = useState<
+    number | null
+  >(cachedData?.listed_tables[0].row_count ?? null);
 
   const { data, isLoading, isError, error } = useQuery<DatabasePreviewResponse>(
     "databasePreview",
@@ -603,10 +183,59 @@ const FetchDatabasePreview: React.FC<FetchDatabasePreviewProps> = ({
   if (cachedData) {
     console.log("Using cached data:", cachedData);
     return (
-      <div>
-        <p className="text-white">Database preview:</p>
-        <FileTree data={cachedData.listed_tables} />
-      </div>
+      <>
+        <div className="flex flex-row gap-6 w-full px-12">
+          <div>
+            <p className="text-white text-[14px]">Choose a table</p>
+            <FileTree
+              data={cachedData.listed_tables}
+              selectedTable={selectedTable}
+              setSelectedTable={setSelectedTable}
+              selectedTableRowCount={selectedTableRowCount}
+              setSelectedTableRowCount={setSelectedTableRowCount}
+            />
+          </div>
+          <div className="flex-grow">
+            <p className="text-white text-[14px]">Preview</p>
+            <div className="relative bg-slate-2 rounded-md mt-4 h-[80vh] border border-slate-4">
+              {selectedTable ? (
+                <>
+                  <div className="flex flex-row gap-2 items-center px-4 py-2 border-b border-slate-4">
+                    <p className="text-white text-[14px]">{selectedTable}</p>
+                    <pre className="px-2 py-1.5 bg-slate-4 rounded-sm text-white text-[12px]">
+                      {abbreviateNumber(selectedTableRowCount) + " rows"}
+                    </pre>
+                  </div>
+                  <div className="w-full">
+                    <Image
+                      src="../images/data-example-preview.svg"
+                      alt="preview"
+                      width={1400}
+                      height={700}
+                      objectFit="contain"
+                    />
+                  </div>
+                  <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-white flex items-center justify-center">
+                    <button
+                      className={`text-md px-4 py-2 bg-blue-600 rounded-md`}
+                    >
+                      Create table
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="pl-24 flex items-center justify-center text-white h-full flex-col gap-2">
+                  <p className="text-[14px]"> No table selected </p>
+                  <p className="text-[13px] text-slate-11">
+                    {" "}
+                    Please select a table to continue.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </>
     );
   }
 
@@ -646,6 +275,10 @@ interface NestedStructure {
 
 interface FileTreeProps {
   data: databasePreviewTableItem[];
+  selectedTable: string | null;
+  setSelectedTable: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedTableRowCount: number | null;
+  setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 function createUniqueId(
@@ -680,7 +313,13 @@ function createNestedStructure(
   return nestedStructure;
 }
 
-const FileTree: React.FC<FileTreeProps> = ({ data }) => {
+const FileTree: React.FC<FileTreeProps> = ({
+  data,
+  selectedTable,
+  setSelectedTable,
+  selectedTableRowCount,
+  setSelectedTableRowCount,
+}) => {
   const nestedData = createNestedStructure(data);
 
   const allDbNames = Object.keys(nestedData);
@@ -689,7 +328,6 @@ const FileTree: React.FC<FileTreeProps> = ({ data }) => {
   );
 
   // Update selectedTable to use the unique table ID
-  const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [expandedDbs, setExpandedDbs] = useState<string[]>(allDbNames);
   const [expandedSchemas, setExpandedSchemas] =
     useState<string[]>(allSchemaNames);
@@ -717,10 +355,18 @@ const FileTree: React.FC<FileTreeProps> = ({ data }) => {
   ) => {
     const uniqueId = createUniqueId(dbName, schemaName, tableName);
     setSelectedTable((prev) => (prev === uniqueId ? null : uniqueId));
+    // find row count for table
+    const table = data.find(
+      (item) =>
+        item.database_name === dbName &&
+        item.database_schema === schemaName &&
+        item.table_name === tableName
+    );
+    setSelectedTableRowCount(table?.row_count ?? null);
   };
 
   return (
-    <div className="p-4 text-slate-11 h-[80vh] overflow-y-auto bg-slate-3 rounded-lg w-96 mt-4">
+    <div className="p-2 text-slate-11 h-[80vh] overflow-y-auto bg-slate-2 border border-slate-4 rounded-lg w-96 mt-4">
       {Object.entries(nestedData).map(([dbName, schemas]) => (
         <div key={dbName} className="">
           <div
@@ -750,7 +396,7 @@ const FileTree: React.FC<FileTreeProps> = ({ data }) => {
                   className="ml-[14px] overflow-hidden"
                 >
                   {Object.entries(schemas).map(([schemaName, tables]) => (
-                    <div key={schemaName} className="border-l border-slate-8">
+                    <div key={schemaName} className="border-l border-slate-6">
                       <div className="pl-2">
                         <div
                           className="flex flex-row pr-[3px] items-center p-1.5 cursor-pointer hover:bg-slate-4 active:bg-slate-5 rounded-md"
@@ -779,7 +425,7 @@ const FileTree: React.FC<FileTreeProps> = ({ data }) => {
                           {tables.map((tableName) => (
                             <div
                               key={tableName}
-                              className={`ml-[14px] border-l border-slate-8 flex flex-row items-center`}
+                              className={`ml-[14px] border-l border-slate-6 flex flex-row items-center`}
                               onClick={() =>
                                 toggleTable(dbName, schemaName, tableName)
                               }
