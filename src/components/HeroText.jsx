@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import styles from "../styles/Home.module.css";
 
 const TextCycler = () => {
   const [title, setTitle] = useState('everyone');
-  const roles = ['everyone', 'operations', 'support', 'customer success'];
+
+  // wrap initialization of roles in useMemo to avoid re-creating the array on every render
+  const roles = useMemo(() => ['everyone', 'operations', 'support', 'customer success'], []);
+
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [action, setAction] = useState('deleting');
 
