@@ -40,6 +40,7 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
 export default function AddDataSource() {
   const { user } = useUser();
   const email = user?.email ?? "placeholder@example.com";
+  const workspace_name = "My Workspace";
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -111,7 +112,7 @@ export default function AddDataSource() {
               route="/welcome/add-postgres"
             />
           </div>
-          <InviteTeammateDialog />
+          <InviteTeammateDialog email={email} workspace={workspace_name} />
           <div className="text-white text-sm text-center w-full cursor-pointer">
             Do this later
           </div>
@@ -121,7 +122,16 @@ export default function AddDataSource() {
   );
 }
 
-const InviteTeammateDialog = () => {
+const InviteTeammateDialog = ({
+  email,
+  workspace,
+}: {
+  email: any;
+  workspace: any;
+}) => {
+  let sender_email = email;
+  let workspacee_name = workspace;
+  console.log("sender_email", sender_email);
   const [emailAddresses, setEmailAddresses] = useState<string>("");
   const [isValid, setIsValid] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -156,6 +166,42 @@ const InviteTeammateDialog = () => {
     console.log("clicked");
     // call validateEmailAddresses
     validateEmailAddresses();
+  };
+
+  // define email preview
+  const EmailPreview = ({
+    sender_email,
+    workspace,
+    message,
+  }: {
+    sender_email: any;
+    workspace: any;
+    message: any;
+  }) => {
+    console.log("sender_email", sender_email);
+    console.log("workspace", workspace);
+    return (
+      <div className="mt-4 h-48 overflow-y-scroll p-4 bg-white text-black rounded-md">
+        <Image
+          src="/images/logo-icon-only.png"
+          width="42"
+          height="38"
+          alt="Dataland"
+        />
+        <h1>
+          {sender_email} invited you to join them at Dataland workspace{" "}
+          {workspace}
+        </h1>
+        <p>{message}</p>
+        <button className="">Verify account</button>
+        <p>You can also copy + paste this link into your browser:</p>
+        <Link href="https://dataland.io"></Link>
+        <hr />
+        <Link href="https://dataland.io">
+          Dataland.io: the ultimate data browser
+        </Link>
+      </div>
+    );
   };
 
   return (
@@ -222,7 +268,13 @@ const InviteTeammateDialog = () => {
                         />
                         <span>Toggle email preview</span>
                       </Disclosure.Button>
-                      <Disclosure.Panel className="">No.</Disclosure.Panel>
+                      <Disclosure.Panel className="">
+                        <EmailPreview
+                          sender_email={sender_email}
+                          workspace={workspace}
+                          message={customMessage}
+                        />
+                      </Disclosure.Panel>
                     </>
                   )}
                 </Disclosure>
