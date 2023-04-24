@@ -3,6 +3,9 @@ import Link from "next/link";
 import { useUser } from "../../components/UserContext";
 import router from "next/router";
 import Image from "next/image";
+import * as Dialog from "@radix-ui/react-dialog";
+import { X, CaretRight } from "@phosphor-icons/react";
+import { Disclosure, Transition } from "@headlessui/react";
 
 interface AccountHeaderProps {
   email: string;
@@ -108,10 +111,7 @@ export default function AddDataSource() {
               route="/welcome/add-postgres"
             />
           </div>
-          <div className="text-sm text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16">
-            <p className="text-slate-10">Don&apos;t have credentials?</p>
-            <p className="text-white">Invite a teammate to help →</p>
-          </div>
+          <InviteTeammateDialog />
           <div className="text-white text-sm text-center w-full cursor-pointer">
             Do this later
           </div>
@@ -120,3 +120,137 @@ export default function AddDataSource() {
     </div>
   );
 }
+
+const InviteTeammateDialog = () => {
+  const [emailAddresses, setEmailAddresses] = useState<string>("");
+  const [isValid, setIsValid] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [customMessage, setCustomMessage] = useState<string>(
+    "Hi there, \n\nI'd like to use Dataland.io as an easy and fast way to browse data from our data warehouse. Can you help me set up a read-only data source connection? \n\nPlease click the link below to get started. Thanks!"
+  );
+
+  const handleEmailAddressChange = (e: any) => {
+    setEmailAddresses(e.target.value);
+    setErrorMessage("");
+    setIsValid(true);
+  };
+  const validateEmailAddresses = () => {
+    if (emailAddresses === "") {
+      setIsValid(false);
+      setErrorMessage("Email address is required.");
+    } else {
+      const regex =
+        /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]+(,\s*[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]+)*$/;
+      setIsValid(regex.test(emailAddresses));
+      console.log("isValid", isValid);
+      if (isValid === false) {
+        setErrorMessage(
+          "Error: Invalid email format. Please check your input, then try again."
+        );
+      }
+    }
+  };
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log("clicked");
+    // call validateEmailAddresses
+    validateEmailAddresses();
+  };
+
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger tabIndex={-1}>
+        <div className="text-sm text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16">
+          <p className="text-slate-10">Don&apos;t have credentials?</p>
+          <p className="text-white">Invite a teammate to help →</p>
+        </div>
+      </Dialog.Trigger>
+      <Dialog.Portal className="z-100">
+        <Dialog.Overlay className="z-20 bg-slate-1 opacity-75 fixed inset-0" />
+        <div className="fixed inset-0 flex items-start justify-center z-30">
+          <Dialog.Content className="data-[state=open]:animate-contentShow fixed mx-auto max-h-[85vh] top-24 max-w-[90vw] w-[480px] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
+            <Dialog.Title className="m-0 text-[14px] font-medium">
+              Invite a teammate to help
+            </Dialog.Title>
+            <div className="flex flex-col gap-4 mt-6">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col flex-grow gap-1">
+                  <label className="text-xs w-[120px]">Email address(es)</label>
+                  <p className="text-[11px] text-slate-11">
+                    Enter multiple email addresses separated by commas.
+                  </p>
+                  <input
+                    className={`rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
+                    ${
+                      isValid === false
+                        ? "border-red-500"
+                        : "border-slate-6 hover:border-slate-7"
+                    }`}
+                    required
+                    value={emailAddresses}
+                    onChange={(e) => handleEmailAddressChange(e)}
+                    placeholder="teammate@example.com"
+                  />
+                  {errorMessage && (
+                    <p className="text-[11px] text-red-500">{errorMessage}</p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs w-[120px]">Message</label>
+                  <textarea
+                    className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 h-36 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    required
+                    title="Custom message"
+                    value={customMessage}
+                    onChange={(e) => setCustomMessage(e.target.value)}
+                  />
+                </div>
+              </div>
+              {/* Toggle preview */}
+              <div className="mx-auto w-full">
+                <Disclosure as="div" className="mt-2">
+                  {({ open }) => (
+                    <>
+                      <Disclosure.Button className="flex w-full rounded-sm text-left text-[12px] text-white gap-1 items-center">
+                        <CaretRight
+                          size={12}
+                          weight="fill"
+                          className={`${
+                            open ? "rotate-90 transform" : ""
+                          } text-slate-12`}
+                        />
+                        <span>Toggle email preview</span>
+                      </Disclosure.Button>
+                      <Disclosure.Panel className="">No.</Disclosure.Panel>
+                    </>
+                  )}
+                </Disclosure>
+              </div>
+            </div>
+            <div className="mt-5 flex justify-end gap-2">
+              <Dialog.Close asChild>
+                <button className="px-4 py-3 bg-slate-3 rounded-md text-xs font-medium leading-none focus:outline-none hover:bg-slate-4">
+                  Cancel
+                </button>
+              </Dialog.Close>
+              <button
+                className="px-4 py-3 bg-blue-600 rounded-md text-xs font-medium leading-none focus:outline-none hover:bg-blue-700"
+                onClick={handleSubmit}
+              >
+                Send invite
+              </button>
+            </div>
+            <button
+              className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+              aria-label="Close"
+              onClick={handleSubmit}
+            >
+              <X size={16} weight="bold" />
+            </button>
+          </Dialog.Content>
+        </div>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+};
