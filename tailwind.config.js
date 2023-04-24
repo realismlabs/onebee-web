@@ -13,8 +13,8 @@ module.exports = {
           to: { opacity: 1 },
         },
         contentShow: {
-          from: { opacity: 0, transform: 'scale(0.96)' },
-          to: { opacity: 1, transform: 'scale(1)' },
+          from: { opacity: 0, transform: 'translate(-50%, -50%) scale(0.96)' },
+          to: { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
         },
       },
       animation: {

@@ -187,7 +187,7 @@ const InviteTeammateDialog = ({
         <Dialog.Portal className="z-100">
           <Dialog.Overlay className="z-20 bg-slate-1 opacity-[90%] fixed inset-0" />
           <div className="fixed inset-0 flex items-start justify-center z-30">
-            <Dialog.Content className="data-[state=open]:animate-contentShow fixed mx-auto max-h-[85vh] top-[60px] max-w-[90vw] w-[480px] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
+            <Dialog.Content className="fixed mx-auto max-h-[85vh] top-[60px] max-w-[90vw] w-[480px] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
               <Dialog.Title className="m-0 text-[14px] font-medium">
                 Invite a teammate to help
               </Dialog.Title>
@@ -301,9 +301,6 @@ const InviteTeammateDialog = ({
         enter="transition-all ease-in-out duration-300"
         enterFrom="opacity-0 -translate-y-5"
         enterTo="opacity-100 translate-y-0"
-        leave="transition-all ease-in-out duration-300"
-        leaveFrom="opacity-100 translate-y-0"
-        leaveTo="opacity-0 -translate-y-5"
         className="fixed top-0 left-1/2 -translate-x-1/2"
       >
         <div className=" text-white rounded-md shadow-lg transform -translate-y-25 transition-transform">
