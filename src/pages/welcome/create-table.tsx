@@ -197,7 +197,7 @@ const FetchDatabasePreview: React.FC<FetchDatabasePreviewProps> = ({
           </div>
           <div className="flex-grow">
             <p className="text-white text-[14px]">Preview</p>
-            <div className="relative bg-slate-2 rounded-md mt-4 h-[80vh] border border-slate-4">
+            <div className="relative bg-slate-2 rounded-md mt-4 h-[80vh] border border-slate-4 flex flex-col">
               {selectedTable ? (
                 <>
                   <div className="flex flex-row gap-2 items-center px-4 py-2 border-b border-slate-4">
@@ -206,13 +206,13 @@ const FetchDatabasePreview: React.FC<FetchDatabasePreviewProps> = ({
                       {abbreviateNumber(selectedTableRowCount) + " rows"}
                     </pre>
                   </div>
-                  <div className="w-full">
+                  <div className="w-full flex-grow-0 overflow-scroll">
                     <Image
                       src="../images/data-example-preview.svg"
                       alt="preview"
                       width={1400}
                       height={700}
-                      objectFit="contain"
+                      draggable={false}
                     />
                   </div>
                   <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-white flex items-center justify-center">

@@ -15,6 +15,7 @@ import {
 } from "@phosphor-icons/react";
 import { Switch } from "@headlessui/react";
 import WordTooltipDemo from "../../components/WordTooltipDemo";
+import { useLocalStorageState } from "../../utils/util";
 
 const PreviewTablesDialog = lazy(
   () => import("../../components/PreviewTablesDialog")
@@ -72,28 +73,6 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
       )}
     </div>
   );
-};
-
-const useLocalStorageState = (key: any, defaultValue: any) => {
-  const [state, setState] = React.useState(() => {
-    try {
-      const storedValue = localStorage.getItem(key);
-      return storedValue ? JSON.parse(storedValue) : defaultValue;
-    } catch (error) {
-      console.warn("Error accessing localStorage:", error);
-      return defaultValue;
-    }
-  });
-
-  React.useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(state));
-    } catch (error) {
-      console.warn("Error accessing localStorage:", error);
-    }
-  }, [key, state]);
-
-  return [state, setState];
 };
 
 export default function AddSnowflake() {
