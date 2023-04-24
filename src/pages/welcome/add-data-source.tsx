@@ -6,6 +6,9 @@ import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X, CaretRight } from "@phosphor-icons/react";
 import { Disclosure, Transition } from "@headlessui/react";
+import LogoSnowflake from "../../components/LogoSnowflake";
+import LogoBigQuery from "../../components/LogoBigQuery";
+import LogoPostgres from "../../components/LogoPostgres";
 
 interface AccountHeaderProps {
   email: string;
@@ -59,34 +62,6 @@ export default function AddDataSource() {
     setAllowOthersFromDomainChecked(!allowOthersFromDomainChecked);
   }
 
-  type ServiceCardProps = {
-    logoSrc: string;
-    serviceName: string;
-    route: string;
-  };
-
-  const ServiceCard: FC<ServiceCardProps> = ({
-    logoSrc,
-    serviceName,
-    route,
-  }) => {
-    return (
-      <Link href={route}>
-        <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
-          <Image
-            className="pointer-events-none select-none"
-            src={logoSrc}
-            alt="Logo"
-            draggable={false}
-            width={32}
-            height={32}
-          />
-          <p>{serviceName}</p>
-        </div>
-      </Link>
-    );
-  };
-
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
@@ -96,21 +71,30 @@ export default function AddDataSource() {
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
           <div className="flex gap-4">
-            <ServiceCard
-              logoSrc="../../images/logos/logo_snowflake.svg"
-              serviceName="Snowflake"
-              route="/welcome/add-snowflake"
-            />
-            <ServiceCard
-              logoSrc="../../images/logos/logo_bigquery.svg"
-              serviceName="BigQuery"
-              route="/welcome/add-bigquery"
-            />
-            <ServiceCard
-              logoSrc="../../images/logos/logo_postgres.svg"
-              serviceName="Postgres"
-              route="/welcome/add-postgres"
-            />
+            <Link href="/welcome/add-snowflake">
+              <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+                <div className="h-[32px] w-[32px]">
+                  <LogoSnowflake />
+                </div>
+                <p>Snowflake</p>
+              </div>
+            </Link>
+            <Link href="/welcome/add-bigquery">
+              <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+                <div className="h-[32px] w-[32px]">
+                  <LogoBigQuery />
+                </div>
+                <p>BigQuery</p>
+              </div>
+            </Link>
+            <Link href="/welcome/add-postgres">
+              <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+                <div className="h-[32px] w-[32px]">
+                  <LogoPostgres />
+                </div>
+                <p>Postgres</p>
+              </div>
+            </Link>
           </div>
           <InviteTeammateDialog email={email} workspace={workspace_name} />
           <div className="text-white text-sm text-center w-full cursor-pointer">
