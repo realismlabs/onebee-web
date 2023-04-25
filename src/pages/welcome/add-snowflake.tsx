@@ -1,5 +1,5 @@
 import React, { useState, FC, lazy } from "react";
-import { useQueryClient, QueryClient } from "react-query";
+import { useQueryClient, QueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useUser } from "../../components/UserContext";
 import useCopyToClipboard from "../../components/useCopyToClipboard";
@@ -240,10 +240,10 @@ export default function AddSnowflake() {
       });
       if (data.status === "success") {
         console.log("success!!", data);
-        queryClient.setQueryData("databasePreview", data);
+        // queryClient.setQueryData(["databasePreview"], data);
         console.log(
-          "queryClient get data",
-          queryClient.getQueryData("databasePreview")
+          "queryClient get data"
+          // queryClient.getQueryData("databasePreview")
         );
         return true;
       } else {
