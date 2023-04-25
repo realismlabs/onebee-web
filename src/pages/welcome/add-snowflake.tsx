@@ -144,51 +144,6 @@ export default function AddSnowflake() {
     }
   };
 
-  function useTestConnection(requestBody: any) {
-    return useQuery(
-      ["connectionResult", requestBody],
-      async () => {
-        const response = await fetch("/api/test-snowflake-connection", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        });
-
-        return await response.json();
-      },
-      {
-        enabled: false,
-        onSuccess: (data) => {
-          setConnectionTestInProgress(false);
-          setConnectionResult({
-            status: data.status,
-            title:
-              data.status === "success"
-                ? "Success! You can continue to the next step."
-                : "Connection failed",
-            message: data.message,
-            snowflake_error: data.snowflake_error ?? null,
-            listed_tables: data.listed_tables ?? null,
-            listed_databases: data.listed_databases ?? null,
-          });
-        },
-        onError: (error) => {
-          setConnectionTestInProgress(false);
-          setConnectionResult({
-            status: "error",
-            title: "Connection failed",
-            message:
-              JSON.stringify(error) === "{}"
-                ? "Request timed out. Check if the account identifier is correct, and try again."
-                : JSON.stringify(error),
-          });
-        },
-      }
-    );
-  }
-
   const requestBody = {
     accountIdentifier,
     warehouse,
@@ -200,7 +155,45 @@ export default function AddSnowflake() {
     role,
   };
 
-  const connectionTestQuery = useTestConnection(requestBody);
+  const connectionTestQuery = useQuery({
+    queryKey: ["connectionResult"],
+    queryFn: async () => {
+      const response = await fetch("/api/test-snowflake-connection", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+      return await response.json();
+    },
+    enabled: false,
+    onSuccess: (data) => {
+      setConnectionTestInProgress(false);
+      setConnectionResult({
+        status: data.status,
+        title:
+          data.status === "success"
+            ? "Success! You can continue to the next step."
+            : "Connection failed",
+        message: data.message,
+        snowflake_error: data.snowflake_error ?? null,
+        listed_tables: data.listed_tables ?? null,
+        listed_databases: data.listed_databases ?? null,
+      });
+    },
+    onError: (error) => {
+      setConnectionTestInProgress(false);
+      setConnectionResult({
+        status: "error",
+        title: "Connection failed",
+        message:
+          JSON.stringify(error) === "{}"
+            ? "Request timed out. Check if the account identifier is correct, and try again."
+            : JSON.stringify(error),
+      });
+    },
+  });
 
   const handleConnectionTest = async (e: any) => {
     e.preventDefault();

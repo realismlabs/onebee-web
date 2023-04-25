@@ -26,10 +26,8 @@ function getPersister(): Persister {
 
 const customPersister: Persister = {
   persistClient: (client) => getPersister().persistClient(client),
-
   restoreClient: (): Promise<PersistedClient | undefined> =>
     getPersister().restoreClient() as Promise<PersistedClient | undefined>,
-
   removeClient: () => getPersister().removeClient(),
 };
 
