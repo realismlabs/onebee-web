@@ -4,7 +4,7 @@ import { useUser } from "../../components/UserContext";
 import router from "next/router";
 import Image from "next/image";
 import { CaretRight, Table } from "@phosphor-icons/react";
-import { useQueryClient, QueryClient, useQuery } from "react-query";
+import { useQueryClient, QueryClient, useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber } from "@/utils/util";
 

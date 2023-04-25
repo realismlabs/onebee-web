@@ -134,12 +134,6 @@ export default function AddSnowflake() {
   // event handlers
   const queryClient = useQueryClient();
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    // get form data
-    console.log("clicked");
-  };
-
   const handleContinue = async (e: any) => {
     e.preventDefault();
     console.log("clicked Continue button");
@@ -150,12 +144,11 @@ export default function AddSnowflake() {
     }
   };
 
-  // new stuff
   function useTestConnection(requestBody: any) {
     return useQuery(
       ["connectionResult", requestBody],
       async () => {
-        const response = await fetch("/api/test-connection", {
+        const response = await fetch("/api/test-snowflake-connection", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

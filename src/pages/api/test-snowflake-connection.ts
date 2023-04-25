@@ -11,23 +11,18 @@ interface SnowflakeData {
   role: string;
 }
 
-const testConnectionEndpoint =
+const endpoint =
   "https://us-central1-dataland-demo-995df.cloudfunctions.net/dataland-1b-connection-testing/test-connection";
 
 async function testConnection(requestBody: SnowflakeData) {
   try {
-    console.log("testConnection requestBody:", requestBody);
-    const response = await fetch(testConnectionEndpoint, {
+    const response = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(requestBody),
     });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status} ${response.statusText}`);
-    }
 
     return await response.json();
   } catch (error) {
@@ -44,6 +39,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Set CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  console.log("hi", req);
+
   if (req.method === "POST") {
     try {
       const data = await testConnection(req.body);
