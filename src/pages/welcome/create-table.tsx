@@ -7,6 +7,7 @@ import { CaretRight, Table } from "@phosphor-icons/react";
 import { useQueryClient, QueryClient, useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
+import { request } from "http";
 
 interface AccountHeaderProps {
   email: string;
@@ -144,7 +145,7 @@ const PreviewTableUI = () => {
   };
 
   const tablesQuery = useQuery({
-    queryKey: ["connectionResult"],
+    queryKey: ["connectionResult", requestBody],
     queryFn: async () => {
       console.log("test");
       const response = await fetch("/api/test-snowflake-connection", {

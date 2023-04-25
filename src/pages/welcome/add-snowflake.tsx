@@ -156,7 +156,7 @@ export default function AddSnowflake() {
   };
 
   const connectionTestQuery = useQuery({
-    queryKey: ["connectionResult"],
+    queryKey: ["connectionResult", requestBody],
     queryFn: async () => {
       const response = await fetch("/api/test-snowflake-connection", {
         method: "POST",
