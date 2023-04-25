@@ -16,6 +16,7 @@ const testConnectionEndpoint =
 
 async function testConnection(requestBody: SnowflakeData) {
   try {
+    console.log("testConnection requestBody:", requestBody);
     const response = await fetch(testConnectionEndpoint, {
       method: "POST",
       headers: {
