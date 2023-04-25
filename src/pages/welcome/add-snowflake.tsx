@@ -199,12 +199,7 @@ export default function AddSnowflake() {
 
       console.log("data", data);
       let message = data.message;
-      // if (message.includes("Contact your local security")) {
-      //   message = message.replace(
-      //     "Contact your local security administrator or please create a case with Snowflake Support or reach us on our support line: \n USA: +1 855 877 7505  \n Netherlands: +31 20 809 8018 \n Germany: +49 30 7675 8326 \n UK: +44 1207 710140 \n France: +33 18 652 9998 \n Australia: +61 1800 921 245 \n Japan: +81 50 1791 5447",
-      //     ""
-      //   );
-      // }
+
       setConnectionTestInProgress(false);
       setConnectionResult({
         status: data.status,
@@ -257,16 +252,7 @@ export default function AddSnowflake() {
     if (connectionResult.status === "success") {
       router.push("/welcome/create-table");
     } else {
-      // test connection
-      // const connectionTestResultSuccessful = await handleConnectionTest(e);
-      // if (connectionTestResultSuccessful === true) {
-      //   console.log("success");
-      //   setTimeout(() => {
-      //     router.push("/welcome/create-table");
-      //   }, 2000);
-      // } else {
-      //   return;
-      // }
+      console.log("Connection failed, try again");
     }
   };
 
