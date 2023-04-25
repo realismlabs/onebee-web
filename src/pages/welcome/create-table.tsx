@@ -12,6 +12,60 @@ interface AccountHeaderProps {
   email: string;
 }
 
+interface databasePreviewTableItem {
+  database_name: string;
+  database_schema: string;
+  row_count: number;
+  table_name: string;
+}
+
+interface NestedStructure {
+  [dbName: string]: {
+    [schema: string]: string[];
+  };
+}
+
+interface FileTreeProps {
+  data: databasePreviewTableItem[];
+  selectedTable: string | null;
+  setSelectedTable: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedTableRowCount: number | null;
+  setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
+}
+
+// helper functions
+function createUniqueId(
+  dbName: string,
+  schemaName: string,
+  tableName?: string
+): string {
+  return tableName
+    ? `${dbName}.${schemaName}.${tableName}`
+    : `${dbName}.${schemaName}`;
+}
+
+function createNestedStructure(
+  data: databasePreviewTableItem[]
+): NestedStructure {
+  const nestedStructure: NestedStructure = {};
+
+  data.forEach((item) => {
+    const { database_name, database_schema, table_name } = item;
+
+    if (!nestedStructure[database_name]) {
+      nestedStructure[database_name] = {};
+    }
+
+    if (!nestedStructure[database_name][database_schema]) {
+      nestedStructure[database_name][database_schema] = [];
+    }
+
+    nestedStructure[database_name][database_schema].push(table_name);
+  });
+
+  return nestedStructure;
+}
+
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   const { user, logout } = useUser();
 
@@ -38,7 +92,7 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   );
 };
 
-const FetchDatabasePreview = () => {
+const PreviewTableUI = () => {
   const [useCustomHost, setUseCustomHost] = useLocalStorageState(
     "useCustomHost",
     false
@@ -184,60 +238,6 @@ const FetchDatabasePreview = () => {
     </>
   );
 };
-
-// helpers.ts
-interface databasePreviewTableItem {
-  database_name: string;
-  database_schema: string;
-  row_count: number;
-  table_name: string;
-}
-
-interface NestedStructure {
-  [dbName: string]: {
-    [schema: string]: string[];
-  };
-}
-
-interface FileTreeProps {
-  data: databasePreviewTableItem[];
-  selectedTable: string | null;
-  setSelectedTable: React.Dispatch<React.SetStateAction<string | null>>;
-  selectedTableRowCount: number | null;
-  setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
-}
-
-function createUniqueId(
-  dbName: string,
-  schemaName: string,
-  tableName?: string
-): string {
-  return tableName
-    ? `${dbName}.${schemaName}.${tableName}`
-    : `${dbName}.${schemaName}`;
-}
-
-function createNestedStructure(
-  data: databasePreviewTableItem[]
-): NestedStructure {
-  const nestedStructure: NestedStructure = {};
-
-  data.forEach((item) => {
-    const { database_name, database_schema, table_name } = item;
-
-    if (!nestedStructure[database_name]) {
-      nestedStructure[database_name] = {};
-    }
-
-    if (!nestedStructure[database_name][database_schema]) {
-      nestedStructure[database_name][database_schema] = [];
-    }
-
-    nestedStructure[database_name][database_schema].push(table_name);
-  });
-
-  return nestedStructure;
-}
 
 const FileTree: React.FC<FileTreeProps> = ({
   data,
@@ -413,7 +413,7 @@ export default function AddDataSource() {
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full">
         <div className="bg-slate-1 text-white text-center text-2xl pb-4"></div>
-        <FetchDatabasePreview />
+        <PreviewTableUI />
       </div>
     </div>
   );
