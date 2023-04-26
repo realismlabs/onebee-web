@@ -9,6 +9,86 @@
       "id": 2,
       "email": "howard@dataland.io",
       "emailVerified": false
+    },
+    {
+      "email": "s@s.com",
+      "password": "sdfsdfasdfafdasdf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T02:52:46.736Z",
+      "updatedAt": "2023-04-26T02:52:46.736Z",
+      "id": 3
+    },
+    {
+      "email": "ss@s.com",
+      "password": "sdfsdfasdfafdasdf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T02:57:11.384Z",
+      "updatedAt": "2023-04-26T02:57:11.384Z",
+      "id": 4
+    },
+    {
+      "email": "sdsdfss@s.com",
+      "password": "sdfsdfasdfafdasdf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T02:57:20.616Z",
+      "updatedAt": "2023-04-26T02:57:20.616Z",
+      "id": 5
+    },
+    {
+      "email": "sdsdsssfss@s.com",
+      "password": "sdfsdfasdfafdasdf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T02:58:17.571Z",
+      "updatedAt": "2023-04-26T02:58:17.571Z",
+      "id": 6
+    },
+    {
+      "email": "sdfsfs@sdfsf.com",
+      "password": "sdfsadf;kadklfjasf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T03:00:24.727Z",
+      "updatedAt": "2023-04-26T03:00:24.727Z",
+      "id": 7
+    },
+    {
+      "email": "unverified@a.com",
+      "password": "RGR5dpe4mjd.dwf*buv",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T14:17:49.087Z",
+      "updatedAt": "2023-04-26T14:17:49.087Z",
+      "id": 8
+    },
+    {
+      "email": "arthur+1@dataland.io",
+      "password": "sldkfjsldfkjslfkjslkdfjsf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T18:08:36.320Z",
+      "updatedAt": "2023-04-26T18:08:36.320Z",
+      "id": 9
+    },
+    {
+      "email": "arthur+11@dataland.io",
+      "password": "sldkfjsldfkjslfkjslkdfjsf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T18:09:16.325Z",
+      "updatedAt": "2023-04-26T18:09:16.325Z",
+      "id": 10
+    },
+    {
+      "email": "arthur+112@dataland.io",
+      "password": "sldkfjsldfkjslfkjslkdfjsf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T18:13:04.435Z",
+      "updatedAt": "2023-04-26T18:13:04.435Z",
+      "id": 11
+    },
+    {
+      "email": "arthur+12@dataland.io",
+      "password": "password",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T18:16:59.858Z",
+      "updatedAt": "2023-04-26T18:16:59.858Z",
+      "id": 12
     }
   ],
   "workspaces": [
@@ -50,6 +130,42 @@
       "userId": 2,
       "token": "7ec0d6b1-d6c7-492a-937f-c2e5d5e9c1ab",
       "expiresAt": "2023-04-27T12:30:00Z"
+    },
+    {
+      "userId": 7,
+      "token": "2cd149cf-2e15-41bb-87cf-2e9e99c99a97",
+      "expiresAt": "2023-04-27T03:00:24.754Z",
+      "id": 3
+    },
+    {
+      "userId": 8,
+      "token": "27195dae-3564-4107-832e-79f7a07180ea",
+      "expiresAt": "2023-04-27T14:17:49.110Z",
+      "id": 4
+    },
+    {
+      "userId": 9,
+      "token": "464fcfa7-c1e2-47c3-965e-8d1579dd8ff5",
+      "expiresAt": "2023-04-27T18:08:36.353Z",
+      "id": 5
+    },
+    {
+      "userId": 10,
+      "token": "8ed781d9-ae83-4e0f-9eba-1a00ec621af2",
+      "expiresAt": "2023-04-27T18:09:16.336Z",
+      "id": 6
+    },
+    {
+      "userId": 11,
+      "token": "de2cbb34-5993-4cc4-9cfd-a16fef10854f",
+      "expiresAt": "2023-04-27T18:13:04.447Z",
+      "id": 7
+    },
+    {
+      "userId": 12,
+      "token": "04825137-2113-4cb9-91cc-3f75ca3dfd28",
+      "expiresAt": "2023-04-27T18:16:59.870Z",
+      "id": 8
     }
   ]
 }
