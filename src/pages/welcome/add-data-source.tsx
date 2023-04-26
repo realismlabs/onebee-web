@@ -68,7 +68,7 @@ const InviteTeammateDialog = ({
     const api_url = process.env.NEXT_PUBLIC_API_URL;
     try {
       const response = await fetch(
-        `${api_url}/api/workspaces/${workspaceId}/invite`,
+        `${api_url}/api/workspaces/${workspaceId}/invites`,
         {
           method: "POST",
           headers: {
