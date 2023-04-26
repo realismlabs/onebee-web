@@ -12,7 +12,7 @@ interface SnowflakeData {
 }
 
 const endpoint =
-  "https://us-central1-dataland-demo-995df.cloudfunctions.net/dataland-1b-connection-testing/test-connection";
+  "https://us-central1-dataland-demo-995df.cloudfunctions.net/test_snowflake_connection";
 
 async function testConnection(requestBody: SnowflakeData) {
   try {

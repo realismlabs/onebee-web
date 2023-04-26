@@ -49,6 +49,14 @@
       "createdAt": "2023-04-26T03:00:24.727Z",
       "updatedAt": "2023-04-26T03:00:24.727Z",
       "id": 7
+    },
+    {
+      "email": "unverified@a.com",
+      "password": "RGR5dpe4mjd.dwf*buv",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T14:17:49.087Z",
+      "updatedAt": "2023-04-26T14:17:49.087Z",
+      "id": 8
     }
   ],
   "workspaces": [
@@ -96,6 +104,12 @@
       "token": "2cd149cf-2e15-41bb-87cf-2e9e99c99a97",
       "expiresAt": "2023-04-27T03:00:24.754Z",
       "id": 3
+    },
+    {
+      "userId": 8,
+      "token": "27195dae-3564-4107-832e-79f7a07180ea",
+      "expiresAt": "2023-04-27T14:17:49.110Z",
+      "id": 4
     }
   ]
 }
