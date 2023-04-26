@@ -1,6 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
 import Link from "next/link";
-import { useUser } from "../../components/UserContext";
 import router from "next/router";
 import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -9,16 +8,15 @@ import { Disclosure, Transition } from "@headlessui/react";
 import LogoSnowflake from "../../components/LogoSnowflake";
 import LogoBigQuery from "../../components/LogoBigQuery";
 import LogoPostgres from "../../components/LogoPostgres";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useCurrentWorkspace } from "../../hooks/useCurrentWorkspace";
 
 interface AccountHeaderProps {
   email: string;
 }
 
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const { user, logout } = useUser();
-
   const handleLogout = () => {
-    logout();
     router.push("/login?lo=true");
   };
 
@@ -201,7 +199,7 @@ const InviteTeammateDialog = ({
           href="https://dataland.io"
           className="text-blue-500 underline mb-2"
         >
-          dataland.io/example-join
+          dataland.io/join-workspace/workspace-id
         </Link>
         <hr className="pb-2" />
         <Link href="https://dataland.io">
@@ -380,16 +378,32 @@ const Toast: React.FC<ToastProps> = ({ message, duration }) => {
 };
 
 export default function AddDataSource() {
-  const { user } = useUser();
-  const email = user?.email ?? "placeholder@example.com";
-  const workspace_name = "Acme";
+  const {
+    data: currentUser,
+    isLoading: isUserLoading,
+    error: userError,
+  } = useCurrentUser();
 
-  const [allowOthersFromDomainChecked, setAllowOthersFromDomainChecked] =
-    useState(true);
+  const {
+    data: currentWorkspace,
+    isLoading: isWorkspaceLoading,
+    error: workspaceError,
+  } = useCurrentWorkspace();
 
-  function handleAllowOthersFromDomainCheckboxChange() {
-    setAllowOthersFromDomainChecked(!allowOthersFromDomainChecked);
+  if (isUserLoading || isWorkspaceLoading) {
+    return <div className="h-screen bg-slate-1"></div>;
   }
+
+  if (userError || workspaceError) {
+    return (
+      <div>
+        Error: {JSON.stringify(userError)} {JSON.stringify(workspaceError)}
+      </div>
+    );
+  }
+
+  const email = currentUser.email;
+  const workspace_name = currentWorkspace.name;
 
   return (
     <div className="h-screen bg-slate-1">

@@ -218,6 +218,20 @@
       "accepted": false,
       "workspaceId": 1,
       "id": 4
+    },
+    {
+      "inviter_email": "arthur@dataland.io",
+      "recipient_email": "a@a.com",
+      "accepted": false,
+      "workspaceId": 1,
+      "id": 5
+    },
+    {
+      "inviter_email": "arthur@dataland.io",
+      "recipient_email": "a@a.com",
+      "accepted": false,
+      "workspaceId": 1,
+      "id": 6
     }
   ]
 }

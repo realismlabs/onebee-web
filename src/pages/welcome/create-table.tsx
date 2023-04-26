@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, FC } from "react";
-import { useUser } from "../../components/UserContext";
 import router from "next/router";
 import Image from "next/image";
 import { CaretRight, Table } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 interface AccountHeaderProps {
   email: string;
@@ -66,10 +66,7 @@ function createNestedStructure(
 }
 
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const { user, logout } = useUser();
-
   const handleLogout = () => {
-    logout();
     router.push("/login?lo=true");
   };
 
@@ -404,8 +401,21 @@ const FileTree: React.FC<FileTreeProps> = ({
 };
 
 export default function AddDataSource() {
-  const { user } = useUser();
-  const email = user?.email ?? "placeholder@example.com";
+  const {
+    data: currentUser,
+    isLoading: isUserLoading,
+    error: userError,
+  } = useCurrentUser();
+
+  if (isUserLoading) {
+    return <div className="h-screen bg-slate-1"></div>;
+  }
+
+  if (userError) {
+    return <div>Error: {JSON.stringify(userError)}</div>;
+  }
+
+  const email = currentUser.email;
 
   return (
     <div className="h-screen bg-slate-1">

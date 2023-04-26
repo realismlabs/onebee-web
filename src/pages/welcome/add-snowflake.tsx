@@ -1,7 +1,6 @@
 import React, { useState, FC, lazy } from "react";
 import { useQueryClient, QueryClient, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useUser } from "../../components/UserContext";
 import useCopyToClipboard from "../../components/useCopyToClipboard";
 import router from "next/router";
 import Image from "next/image";
@@ -16,6 +15,7 @@ import {
 import { Switch } from "@headlessui/react";
 import WordTooltipDemo from "../../components/WordTooltipDemo";
 import { useLocalStorageState } from "../../utils/util";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 const PreviewTablesDialog = lazy(
   () => import("../../components/PreviewTablesDialog")
@@ -26,10 +26,7 @@ interface AccountHeaderProps {
 }
 
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const { user, logout } = useUser();
-
   const handleLogout = () => {
-    logout();
     router.push("/login?lo=true");
   };
 
@@ -76,9 +73,6 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
 };
 
 export default function AddSnowflake() {
-  const { user } = useUser();
-  const email = user?.email ?? "placeholder@example.com";
-
   // Snowflake vars
   const [useCustomHost, setUseCustomHost] = useLocalStorageState(
     "useCustomHost",
@@ -214,6 +208,21 @@ export default function AddSnowflake() {
   };
 
   //
+  const {
+    data: currentUser,
+    isLoading: isUserLoading,
+    error: userError,
+  } = useCurrentUser();
+
+  if (isUserLoading) {
+    return <div className="h-screen bg-slate-1"></div>;
+  }
+
+  if (userError) {
+    return <div>Error: {JSON.stringify(userError)}</div>;
+  }
+
+  const email = currentUser.email;
 
   return (
     <div className="h-screen bg-slate-1">

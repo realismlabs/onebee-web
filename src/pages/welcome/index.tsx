@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { useUser } from "../../components/UserContext";
 import router from "next/router";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 interface AccountHeaderProps {
   email: string;
@@ -13,10 +13,7 @@ const handleSubmit = async () => {
 };
 
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const { user, logout } = useUser();
-
   const handleLogout = () => {
-    logout();
     router.push("/login?lo=true");
   };
 
@@ -39,8 +36,21 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
 };
 
 export default function Welcome() {
-  const { user } = useUser();
-  const email = user?.email;
+  const {
+    data: currentUser,
+    isLoading: isUserLoading,
+    error: userError,
+  } = useCurrentUser();
+
+  if (isUserLoading) {
+    return <div className="h-screen bg-slate-1"></div>;
+  }
+
+  if (userError) {
+    return <div>Error: {JSON.stringify(userError)}</div>;
+  }
+
+  const email = currentUser.email;
 
   return (
     <div className="h-screen bg-slate-1">

@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useUser } from "../../components/UserContext";
 import router from "next/router";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 interface AccountHeaderProps {
   email: string;
 }
 
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const { user, logout } = useUser();
-
   const handleLogout = () => {
-    logout();
     router.push("/login?lo=true");
   };
 
@@ -34,20 +31,10 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
 };
 
 export default function CreateWorkspace() {
-  const { user } = useUser();
-  const email = user?.email ?? "placeholder@example.com";
-  const domain = email?.split("@")[1];
-  const domain_without_extension = email?.split("@")[1].split(".")[0];
-  let workspace_name_suggestion = domain_without_extension;
-  if (typeof domain_without_extension === "string") {
-    workspace_name_suggestion =
-      domain_without_extension.charAt(0).toUpperCase() +
-      domain_without_extension.slice(1);
-  }
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [workspaceName, setWorkspaceName] = React.useState(
-    workspace_name_suggestion ?? null
-  );
+  const [workspaceName, setWorkspaceName] = React.useState("");
+  const [domain, setDomain] = React.useState("");
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     console.log("clicked");
@@ -73,12 +60,38 @@ export default function CreateWorkspace() {
     setAllowOthersFromDomainChecked(!allowOthersFromDomainChecked);
   }
 
+  const {
+    data: currentUser,
+    isLoading: isUserLoading,
+    error: userError,
+  } = useCurrentUser();
+
   useEffect(() => {
-    const inputElement = document.getElementById("workspaceNameInput");
-    if (inputElement) {
-      inputElement.focus();
+    if (currentUser?.email) {
+      const email = currentUser.email;
+      const domain = email.split("@")[1];
+      const domain_without_extension = email.split("@")[1].split(".")[0];
+      let workspace_name_suggestion = domain_without_extension;
+      if (typeof domain_without_extension === "string") {
+        workspace_name_suggestion =
+          domain_without_extension.charAt(0).toUpperCase() +
+          domain_without_extension.slice(1);
+      }
+
+      setWorkspaceName(workspace_name_suggestion);
+      setDomain(domain);
     }
-  }, []);
+  }, [currentUser]);
+
+  if (isUserLoading) {
+    return <div className="h-screen bg-slate-1"></div>;
+  }
+
+  if (userError) {
+    return <div>Error: {JSON.stringify(userError)}</div>;
+  }
+
+  const email = currentUser.email;
 
   return (
     <div className="h-screen bg-slate-1">
@@ -95,21 +108,18 @@ export default function CreateWorkspace() {
             <input
               type={"text"}
               id="workspaceNameInput"
-              value={workspaceName ?? ""}
+              value={workspaceName}
               onChange={(e) => {
                 setWorkspaceName(e.target.value);
                 setErrorMessage("");
               }}
               placeholder="i.e. Acme organization"
               className={`w-full bg-slate-3 border text-white text-sm rounded-md px-3 py-2 placeholder-slate-9
-                          ${
-                            errorMessage !== ""
-                              ? "border-red-9"
-                              : "border-slate-6"
-                          } 
-                          focus:outline-none focus:ring-blue-600
-                          `}
+              ${errorMessage !== "" ? "border-red-9" : "border-slate-6"} 
+              focus:outline-none focus:ring-blue-600
+              `}
             />
+
             {errorMessage && (
               <p className="text-red-9 text-xs mt-2">{errorMessage}</p>
             )}

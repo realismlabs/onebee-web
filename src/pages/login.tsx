@@ -3,10 +3,8 @@ import Image from "next/image";
 import React, { useState } from "react";
 import Link from "next/link";
 import router, { Router } from "next/router";
-import { useUser } from "../components/UserContext";
 
 export default function Login() {
-  const { setUser } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -120,8 +118,6 @@ export default function Login() {
       setErrorMessage("The email or password is incorrect.");
       return;
     }
-
-    setUser({ email: user.email });
 
     if (
       await isEmailAndPasswordVerifiedCompleteWelcome(
