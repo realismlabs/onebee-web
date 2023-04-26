@@ -1,6 +1,39 @@
 {
-  "users": [],
-  "workspaces": [],
-  "workspaceMembers": [],
-  "tables": []
+  "users": [
+    {
+      "id": 1,
+      "email": "arthur@dataland.io"
+    },
+    {
+      "id": 2,
+      "email": "howard@dataland.io"
+    }
+  ],
+  "workspaces": [
+    {
+      "id": 1,
+      "name": "Dataland",
+      "ownerId": 1
+    }
+  ],
+  "workspaceMembers": [
+    {
+      "id": 1,
+      "workspaceId": 1,
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "workspaceId": 1,
+      "userId": 2
+    }
+  ],
+  "tables": [
+    {
+      "id": 1,
+      "name": "Users Table",
+      "connectionPath": "SNOWFLAKE_SAMPLE_DATA.TCFS.USERS",
+      "workspaceId": 1
+    }
+  ]
 }
