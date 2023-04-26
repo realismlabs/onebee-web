@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "mock-api": "json-server --watch db.json --routes routes.json --port 5000"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
@@ -38,6 +39,7 @@
   "devDependencies": {
     "@radix-ui/colors": "^0.1.8",
     "autoprefixer": "^10.4.14",
+    "json-server": "^0.17.3",
     "postcss": "^8.4.21",
     "prettier": "^2.8.7",
     "tailwindcss": "^3.3.1",

@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef, FC } from "react";
-import Link from "next/link";
 import { useUser } from "../../components/UserContext";
 import router from "next/router";
 import Image from "next/image";
 import { CaretRight, Table } from "@phosphor-icons/react";
-import { useQueryClient, QueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
-import { request } from "http";
 
 interface AccountHeaderProps {
   email: string;
