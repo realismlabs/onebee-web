@@ -6,6 +6,10 @@ const middlewares = jsonServer.defaults();
 const rewriter = jsonServer.rewriter(require('./routes.json'));
 
 server.use(middlewares);
+server.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 server.use(rewriter);
 server.use(router);
 server.listen(5001, () => {

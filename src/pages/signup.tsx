@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import Link from "next/link";
 import router from "next/router";
+import { callApi } from "../utils/util";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -14,8 +15,12 @@ export default function Signup() {
   // Mock API call to check if an email address is already registered
   const isEmailRegistered = async (email: string) => {
     // Replace this with your actual API call
-    const registeredEmails = ["r@example.com"];
-    return registeredEmails.includes(email);
+    const response = await callApi({
+      method: "GET",
+      url: "/users?email=" + encodeURIComponent(email),
+    });
+    console.log("isEmailRegistered response:", response);
+    return response.length > 0;
   };
 
   const isPasswordStrong = (password: string) => {
@@ -61,8 +66,46 @@ export default function Signup() {
       return;
     }
 
-    // if it passes all tests, re-route to verify screen
-    // TODO: Re-route to verify screen only if email is not verified
+    // If it passes all tests, create the new user
+    const newUser = {
+      email,
+      password, // You should hash the password before storing it
+      emailVerified: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Call the API to create a new user
+    const createdUser = await callApi({
+      method: "POST",
+      url: "/users",
+      data: newUser,
+    });
+
+    console.log("createdUser", createdUser);
+    console.log("createdUser.id", createdUser.id);
+
+    // Generate a unique token and expiration time for email verification
+    const emailVerificationData = {
+      userId: createdUser.id,
+      token: crypto.randomUUID(), // Replace with a function that generates a unique token
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Token expires in 24 hours
+    };
+
+    console.log("emailVerificationData:", emailVerificationData);
+
+    // Call the API to create a new email verification entry
+    await callApi({
+      method: "POST",
+      url: "/api/auth/verify-email",
+      data: emailVerificationData,
+    });
+
+    console.log("emailVerificationData created");
+    // Send an email to the user with the verification link (not possible with JSON Server)
+    // In a real scenario, this would be done on your backend.
+
+    // Re-route to verify screen
     router.push("/verify-email");
   };
 

@@ -2,11 +2,53 @@
   "users": [
     {
       "id": 1,
-      "email": "arthur@dataland.io"
+      "email": "arthur@dataland.io",
+      "emailVerified": false
     },
     {
       "id": 2,
-      "email": "howard@dataland.io"
+      "email": "howard@dataland.io",
+      "emailVerified": false
+    },
+    {
+      "email": "s@s.com",
+      "password": "sdfsdfasdfafdasdf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T02:52:46.736Z",
+      "updatedAt": "2023-04-26T02:52:46.736Z",
+      "id": 3
+    },
+    {
+      "email": "ss@s.com",
+      "password": "sdfsdfasdfafdasdf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T02:57:11.384Z",
+      "updatedAt": "2023-04-26T02:57:11.384Z",
+      "id": 4
+    },
+    {
+      "email": "sdsdfss@s.com",
+      "password": "sdfsdfasdfafdasdf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T02:57:20.616Z",
+      "updatedAt": "2023-04-26T02:57:20.616Z",
+      "id": 5
+    },
+    {
+      "email": "sdsdsssfss@s.com",
+      "password": "sdfsdfasdfafdasdf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T02:58:17.571Z",
+      "updatedAt": "2023-04-26T02:58:17.571Z",
+      "id": 6
+    },
+    {
+      "email": "sdfsfs@sdfsf.com",
+      "password": "sdfsadf;kadklfjasf",
+      "emailVerified": false,
+      "createdAt": "2023-04-26T03:00:24.727Z",
+      "updatedAt": "2023-04-26T03:00:24.727Z",
+      "id": 7
     }
   ],
   "workspaces": [
@@ -34,6 +76,26 @@
       "name": "Users Table",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA.TCFS.USERS",
       "workspaceId": 1
+    }
+  ],
+  "verifyEmail": [
+    {
+      "id": 1,
+      "userId": 1,
+      "token": "4a8c94e3-3a3c-42c8-8e89-df3e3b3e9ec9",
+      "expiresAt": "2023-04-26T10:45:00Z"
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "token": "7ec0d6b1-d6c7-492a-937f-c2e5d5e9c1ab",
+      "expiresAt": "2023-04-27T12:30:00Z"
+    },
+    {
+      "userId": 7,
+      "token": "2cd149cf-2e15-41bb-87cf-2e9e99c99a97",
+      "expiresAt": "2023-04-27T03:00:24.754Z",
+      "id": 3
     }
   ]
 }

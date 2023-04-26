@@ -42,3 +42,34 @@ export const useLocalStorageState = (key: any, defaultValue: any) => {
 
   return [state, setState];
 };
+
+type Method = "GET" | "POST" | "PUT" | "DELETE";
+
+interface CallApiOptions {
+  method: Method;
+  url: string;
+  data?: object;
+}
+
+export const callApi = async ({
+  method,
+  url,
+  data,
+}: CallApiOptions): Promise<any> => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const response = await fetch(`${apiUrl}${url}`, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: data ? JSON.stringify(data) : undefined,
+  });
+
+  console.log("response from callApi", response);
+
+  if (!response.ok) {
+    throw new Error(`API call failed with status ${response.status}`);
+  }
+
+  return await response.json();
+};
