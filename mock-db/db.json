@@ -108,6 +108,32 @@
       "id": 2,
       "workspaceId": 1,
       "userId": 2
+    },
+    {
+      "email": "c@c.com",
+      "id": 3
+    },
+    {
+      "email": " b@b.com",
+      "id": 4
+    },
+    {
+      "inviter_email": "placeholder@example.com",
+      "recipient_email": "c@c.com",
+      "accepted": false,
+      "id": 5
+    },
+    {
+      "inviter_email": "placeholder@example.com",
+      "recipient_email": " b@b.com",
+      "accepted": false,
+      "id": 6
+    },
+    {
+      "inviter_email": "placeholder@example.com",
+      "recipient_email": "d@d.com",
+      "accepted": false,
+      "id": 7
     }
   ],
   "tables": [
@@ -176,6 +202,19 @@
     {
       "email": " b@b.com",
       "id": 2
+    },
+    {
+      "inviter_email": "placeholder@example.com",
+      "recipient_email": "kjkjhk@sdlkjfsf.com",
+      "accepted": false,
+      "id": 3
+    },
+    {
+      "inviter_email": "placeholder@example.com",
+      "recipient_email": "kjkjhk@sdlkjfsf.com",
+      "accepted": false,
+      "workspaceId": 1,
+      "id": 4
     }
   ]
 }

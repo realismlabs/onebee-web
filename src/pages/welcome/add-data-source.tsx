@@ -64,17 +64,26 @@ const InviteTeammateDialog = ({
     setIsValid(true);
   };
 
-  const createInvite = async (workspaceId: number, email: string) => {
+  const createInvite = async (
+    workspaceId: number,
+    inviter_email: string,
+    recipient_email: string
+  ) => {
     const api_url = process.env.NEXT_PUBLIC_API_URL;
     try {
       const response = await fetch(
-        `${api_url}/api/workspaces/${workspaceId}/invites`,
+        `${api_url}/api/workspaces/${workspaceId}/invite`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({
+            inviter_email,
+            recipient_email,
+            accepted: false,
+            workspaceId: workspaceId,
+          }),
         }
       );
 
@@ -124,9 +133,9 @@ const InviteTeammateDialog = ({
         const inviteAllTeammates = async () => {
           console.log("emailAddressesArray: ", emailAddressesArray);
           const workspaceId = 1;
-          for (const email of emailAddressesArray) {
-            console.log("starting to invite: ", email);
-            await createInvite(workspaceId, email);
+          for (const recipient_email of emailAddressesArray) {
+            console.log("starting to invite: ", recipient_email);
+            await createInvite(workspaceId, sender_email, recipient_email);
           }
         };
 
