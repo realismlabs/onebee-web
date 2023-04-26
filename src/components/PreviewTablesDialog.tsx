@@ -1,6 +1,7 @@
 import DataTable, { createTheme } from "react-data-table-component";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "@phosphor-icons/react";
+import React from "react";
 
 const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
   const columns = [
@@ -56,8 +57,10 @@ const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
 
   const data = tables;
 
+  const [open, setOpen] = React.useState(false);
+
   return (
-    <Dialog.Root>
+    <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger tabIndex={-1}>
         <div
           className="text-xs px-2 py-1 bg-green-900/40 hover:bg-green-900/60 w-32 rounded-md"
@@ -67,8 +70,8 @@ const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
         </div>
       </Dialog.Trigger>
       <Dialog.Portal className="z-100">
-        <Dialog.Overlay className="z-20 bg-slate-1 opacity-75 data-[state=open]:animate-overlayShow fixed inset-0" />
-        <Dialog.Content className="z-30 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh]  max-w-[90vw] w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
+        <Dialog.Overlay className="z-20 bg-slate-1 opacity-75 fixed inset-0" />
+        <Dialog.Content className="z-30 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] max-w-[90vw] w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
           <Dialog.Title className="m-0 text-[14px] font-medium">
             Full table list
           </Dialog.Title>

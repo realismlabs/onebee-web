@@ -1,5 +1,5 @@
 import React, { useState, FC, lazy } from "react";
-import { useQueryClient, QueryClient } from "@tanstack/react-query";
+import { useQueryClient, QueryClient, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useUser } from "../../components/UserContext";
 import useCopyToClipboard from "../../components/useCopyToClipboard";
@@ -15,6 +15,7 @@ import {
 } from "@phosphor-icons/react";
 import { Switch } from "@headlessui/react";
 import WordTooltipDemo from "../../components/WordTooltipDemo";
+import { useLocalStorageState } from "../../utils/util";
 
 const PreviewTablesDialog = lazy(
   () => import("../../components/PreviewTablesDialog")
@@ -72,28 +73,6 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
       )}
     </div>
   );
-};
-
-const useLocalStorageState = (key: any, defaultValue: any) => {
-  const [state, setState] = React.useState(() => {
-    try {
-      const storedValue = localStorage.getItem(key);
-      return storedValue ? JSON.parse(storedValue) : defaultValue;
-    } catch (error) {
-      console.warn("Error accessing localStorage:", error);
-      return defaultValue;
-    }
-  });
-
-  React.useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(state));
-    } catch (error) {
-      console.warn("Error accessing localStorage:", error);
-    }
-  }, [key, state]);
-
-  return [state, setState];
 };
 
 export default function AddSnowflake() {
@@ -155,14 +134,70 @@ export default function AddSnowflake() {
   // event handlers
   const queryClient = useQueryClient();
 
-  const handleSubmit = (e: any) => {
+  const handleContinue = async (e: any) => {
     e.preventDefault();
-    // get form data
-    console.log("clicked");
+    console.log("clicked Continue button");
+    if (connectionResult.status === "success") {
+      router.push("/welcome/create-table");
+    } else {
+      console.log("Connection failed, try again");
+    }
   };
 
-  const handleConnectionTest = async (e: any, queryClient: QueryClient) => {
+  const requestBody = {
+    accountIdentifier,
+    warehouse,
+    basicAuthUsername,
+    basicAuthPassword,
+    keyPairAuthUsername,
+    keyPairAuthPrivateKey,
+    keyPairAuthPrivateKeyPassphrase,
+    role,
+  };
+
+  const connectionTestQuery = useQuery({
+    queryKey: ["connectionResult", requestBody],
+    queryFn: async () => {
+      const response = await fetch("/api/test-snowflake-connection", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+      return await response.json();
+    },
+    enabled: false,
+    onSuccess: (data) => {
+      setConnectionTestInProgress(false);
+      setConnectionResult({
+        status: data.status,
+        title:
+          data.status === "success"
+            ? "Success! You can continue to the next step."
+            : "Connection failed",
+        message: data.message,
+        snowflake_error: data.snowflake_error ?? null,
+        listed_tables: data.listed_tables ?? null,
+        listed_databases: data.listed_databases ?? null,
+      });
+    },
+    onError: (error) => {
+      setConnectionTestInProgress(false);
+      setConnectionResult({
+        status: "error",
+        title: "Connection failed",
+        message:
+          JSON.stringify(error) === "{}"
+            ? "Request timed out. Check if the account identifier is correct, and try again."
+            : JSON.stringify(error),
+      });
+    },
+  });
+
+  const handleConnectionTest = async (e: any) => {
     e.preventDefault();
+
     // Reset connection result
     setShowTestPanel(true);
     setConnectionTestInProgress(true);
@@ -175,121 +210,10 @@ export default function AddSnowflake() {
       listed_databases: null,
     });
 
-    const data = {
-      accountIdentifier,
-      warehouse,
-      basicAuthUsername,
-      basicAuthPassword,
-      keyPairAuthUsername,
-      keyPairAuthPrivateKey,
-      keyPairAuthPrivateKeyPassphrase,
-      role,
-    };
-    console.log("begin handleConnectionTest", data);
-
-    const endpoint =
-      "https://us-central1-dataland-demo-995df.cloudfunctions.net/dataland-1b-connection-testing/test-connection";
-
-    interface SnowflakeData {
-      user: string;
-      password: string;
-      account: string;
-      warehouse: string;
-      role: string | null;
-    }
-
-    const requestBody: SnowflakeData = {
-      user: basicAuthUsername,
-      password: basicAuthPassword,
-      account: accountIdentifier,
-      warehouse: warehouse,
-      role: role,
-    };
-
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      console.log("response:", JSON.stringify(response));
-      const data = await response.json();
-
-      console.log("data", data);
-      let message = data.message;
-      // if (message.includes("Contact your local security")) {
-      //   message = message.replace(
-      //     "Contact your local security administrator or please create a case with Snowflake Support or reach us on our support line: \n USA: +1 855 877 7505  \n Netherlands: +31 20 809 8018 \n Germany: +49 30 7675 8326 \n UK: +44 1207 710140 \n France: +33 18 652 9998 \n Australia: +61 1800 921 245 \n Japan: +81 50 1791 5447",
-      //     ""
-      //   );
-      // }
-      setConnectionTestInProgress(false);
-      setConnectionResult({
-        status: data.status,
-        title:
-          data.status === "success"
-            ? "Success! You can continue to the next step."
-            : "Connection failed",
-        message: message,
-        snowflake_error: data.snowflake_error ?? null,
-        listed_tables: data.listed_tables ?? null,
-        listed_databases: data.listed_databases ?? null,
-      });
-      if (data.status === "success") {
-        console.log("success!!", data);
-        // queryClient.setQueryData(["databasePreview"], data);
-        console.log(
-          "queryClient get data"
-          // queryClient.getQueryData("databasePreview")
-        );
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.error("error!", error);
-      console.log("error", error);
-      console.log("error_string", JSON.stringify(error));
-
-      setConnectionTestInProgress(false);
-      setConnectionResult({
-        status: "error",
-        title: "Connection failed",
-        message:
-          JSON.stringify(error) === "{}"
-            ? "Request timed out. Check if the account identifier is correct, and try again."
-            : JSON.stringify(error),
-      });
-      return false;
-    }
-
-    //  call this endpoint
-    // https://us-central1-dataland-demo-995df.cloudfunctions.net/dataland-1b-connection-testing
-    // with the data above
-    // and set the result to connectionResult
+    connectionTestQuery.refetch();
   };
 
-  const handleContinue = async (e: any) => {
-    e.preventDefault();
-    console.log("clicked Continue button");
-    if (connectionResult.status === "success") {
-      router.push("/welcome/create-table");
-    } else {
-      // test connection
-      // const connectionTestResultSuccessful = await handleConnectionTest(e);
-      // if (connectionTestResultSuccessful === true) {
-      //   console.log("success");
-      //   setTimeout(() => {
-      //     router.push("/welcome/create-table");
-      //   }, 2000);
-      // } else {
-      //   return;
-      // }
-    }
-  };
+  //
 
   return (
     <div className="h-screen bg-slate-1">
@@ -315,7 +239,7 @@ export default function AddSnowflake() {
           </Link>
         </div>
         <div className="border-t border-slate-3 mt-2"></div>
-        <form onSubmit={(e) => handleConnectionTest(e, queryClient)}>
+        <form onSubmit={handleConnectionTest}>
           {useCustomHost === false ? (
             <>
               <div className="flex flex-row w-full items-center mt-4 gap-4">

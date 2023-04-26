@@ -54,12 +54,12 @@ export default function Welcome() {
           data warehouse.
         </div>
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-lg rounded-md"
+          type="button"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md"
           onClick={handleSubmit}
         >
           Get started
-        </button>{" "}
-        .
+        </button>
       </div>
     </div>
   );

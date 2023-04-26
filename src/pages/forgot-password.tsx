@@ -103,7 +103,7 @@ export default function Login() {
                     )}
                     <button
                       className={`bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center mt-4
-                      ${loading ? "opacity-50 hover:bg-blue-600" : ""}`}
+                      ${loading ? "opacity-50" : ""}`}
                       type="submit"
                       disabled={loading}
                     >
