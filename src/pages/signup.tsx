@@ -49,7 +49,9 @@ export default function Signup() {
       return;
     }
 
-    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    const emailRegex =
+      /^[\w-]+(\.[\w-]+)*(\+[a-zA-Z0-9-_.+]+)?@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+
     if (!emailRegex.test(email)) {
       setEmailErrorMessage("Please enter a valid email address.");
       return;
@@ -102,8 +104,27 @@ export default function Signup() {
     });
 
     console.log("emailVerificationData created");
-    // Send an email to the user with the verification link (not possible with JSON Server)
-    // In a real scenario, this would be done on your backend.
+    // Send an email to the user with the verification link
+
+    const send_verification_email_response = await fetch(
+      "/api/send-verification-email",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          verification_token: emailVerificationData.token,
+        }),
+      }
+    );
+    const send_verification_email_result =
+      await send_verification_email_response.json();
+    console.log(
+      "send_verification_email_result",
+      send_verification_email_result
+    );
 
     // Re-route to verify screen
     router.push("/verify-email");
