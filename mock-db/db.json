@@ -108,6 +108,22 @@
       "id": 2,
       "workspaceId": 1,
       "userId": 2
+    },
+    {
+      "email": "a@a.com",
+      "id": 3
+    },
+    {
+      "email": " b@b.com",
+      "id": 4
+    },
+    {
+      "email": "a@a.com",
+      "id": 5
+    },
+    {
+      "email": " b@b.com",
+      "id": 6
     }
   ],
   "tables": [
@@ -167,5 +183,6 @@
       "expiresAt": "2023-04-27T18:16:59.870Z",
       "id": 8
     }
-  ]
+  ],
+  "invites": []
 }

@@ -8,6 +8,7 @@
   "/api/auth/change-password": "/changePassword",
   "/api/workspaces": "/workspaces",
   "/api/workspaces/:workspaceId/invite": "/workspaceMembers",
+  "/api/workspaces/:workspaceId/invites": "/invites",
   "/api/workspaces/:workspaceId/leave": "/workspaceMembers/:id",
   "/api/workspaces/:workspaceId": "/workspaces/:workspaceId",
   "/api/workspaces/:workspaceId/tables": "/tables",

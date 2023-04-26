@@ -64,6 +64,32 @@ const InviteTeammateDialog = ({
     setIsValid(true);
   };
 
+  const createInvite = async (workspaceId: number, email: string) => {
+    const api_url = process.env.NEXT_PUBLIC_API_URL;
+    try {
+      const response = await fetch(
+        `${api_url}/api/workspaces/${workspaceId}/invite`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      if (response.ok) {
+        const invite = await response.json();
+        console.log("Invite created:", invite);
+      } else {
+        const error = await response.json();
+        console.error("Error creating invite:", error.message);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (emailAddresses === "") {
@@ -84,13 +110,6 @@ const InviteTeammateDialog = ({
         setLoading(true);
         setShowToast(false);
 
-        const mockApiCall = new Promise<void>((resolve) => {
-          setTimeout(() => {
-            console.log("sending email to ", emailAddresses);
-            resolve();
-          }, 1000);
-        });
-
         const delay = new Promise<void>((resolve) => setTimeout(resolve, 2000));
 
         // count the number of elements in csv string emailAddresses
@@ -100,7 +119,18 @@ const InviteTeammateDialog = ({
           emailAddressesCount === 1 ? "teammate" : "teammates"
         }!`;
 
-        Promise.all([mockApiCall, delay]).then(() => {
+        console.log("hello");
+
+        const inviteAllTeammates = async () => {
+          console.log("emailAddressesArray: ", emailAddressesArray);
+          const workspaceId = 1;
+          for (const email of emailAddressesArray) {
+            console.log("starting to invite: ", email);
+            await createInvite(workspaceId, email);
+          }
+        };
+
+        Promise.all([inviteAllTeammates(), delay]).then(() => {
           setLoading(false);
           setOpen(false);
           setToastMessage(inviteResultMessage);
