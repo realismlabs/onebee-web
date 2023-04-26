@@ -3,6 +3,9 @@
     {
       "id": 1,
       "email": "arthur@dataland.io",
+      "password": "password",
+      "createdAt": "2023-04-26T02:52:46.736Z",
+      "updatedAt": "2023-04-26T02:52:46.736Z",
       "emailVerified": false
     },
     {
