@@ -95,7 +95,7 @@ export default function Login() {
         user.verified === false
     );
   };
-  // Handle Sign up
+  // Handle login
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     console.log("Signup submit data:", { email, password });
