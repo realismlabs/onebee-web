@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, FC } from "react";
 import router from "next/router";
 import Image from "next/image";
 import { CaretRight, Table } from "@phosphor-icons/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
@@ -88,95 +88,13 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   );
 };
 
-const PreviewTableUI = () => {
-  const [useCustomHost, setUseCustomHost] = useLocalStorageState(
-    "useCustomHost",
-    false
-  );
-  const [customHostAccountIdentifier, setCustomHostAccountIdentifier] =
-    useLocalStorageState("customHostAccountIdentifier", "");
-  const [snowflakeAuthMethod, setSnowflakeAuthMethod] = useLocalStorageState(
-    "snowflakeAuthMethod",
-    "user_pass"
-  );
-  const [accountIdentifier, setAccountIdentifier] = useLocalStorageState(
-    "accountIdentifier",
-    ""
-  );
-  const [customHost, setCustomHost] = useLocalStorageState("customHost", "");
-  const [warehouse, setWarehouse] = useLocalStorageState("warehouse", "");
-  const [basicAuthUsername, setBasicAuthUsername] = useLocalStorageState(
-    "basicAuthUsername",
-    ""
-  );
-  const [basicAuthPassword, setBasicAuthPassword] = useLocalStorageState(
-    "basicAuthPassword",
-    ""
-  );
-  const [keyPairAuthPrivateKey, setKeyPairAuthPrivateKey] =
-    useLocalStorageState("keyPairAuthPrivateKey", "");
-  const [keyPairAuthPrivateKeyPassphrase, setKeyPairAuthPrivateKeyPassphrase] =
-    useLocalStorageState("keyPairAuthPrivateKeyPassphrase", "");
-  const [keyPairAuthUsername, setKeyPairAuthUsername] = useLocalStorageState(
-    "keyPairAuthUsername",
-    ""
-  );
-  const [role, setRole] = useLocalStorageState("role", "");
-
+const PreviewTableUI = ({ tablesQueryData }: { tablesQueryData: any }) => {
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [selectedTableRowCount, setSelectedTableRowCount] = useState<
     number | null
   >(null);
 
-  const requestBody = {
-    accountIdentifier,
-    warehouse,
-    basicAuthUsername,
-    basicAuthPassword,
-    keyPairAuthUsername,
-    keyPairAuthPrivateKey,
-    keyPairAuthPrivateKeyPassphrase,
-    role,
-  };
-
-  const tablesQuery = useQuery({
-    queryKey: ["connectionResult", requestBody],
-    queryFn: async () => {
-      console.log("test");
-      const response = await fetch("/api/test-snowflake-connection", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-      return await response.json();
-    },
-    placeholderData: {
-      listed_tables: [
-        {
-          database_name: "Loading",
-          database_schema: "Loading",
-          table_name: "Loading",
-          row_count: 0,
-        },
-      ],
-    },
-  });
-
-  if (tablesQuery.status === "loading") return <h1>Loading...</h1>;
-  if (tablesQuery.status === "error") {
-    return <h1>{JSON.stringify(tablesQuery.error)}</h1>;
-  }
-
-  console.log("tablesQuery data", tablesQuery.data.listed_tables);
-  let data = tablesQuery.data.listed_tables;
-
-  const first_table_id = createUniqueId(
-    data[0].database_name,
-    data[0].database_schema,
-    data[0].table_name
-  );
+  const data = tablesQueryData.listed_tables;
 
   return (
     <>
@@ -400,29 +318,101 @@ const FileTree: React.FC<FileTreeProps> = ({
   );
 };
 
-export default function AddDataSource() {
+export default function CreateTable() {
+  const [useCustomHost, setUseCustomHost] = useLocalStorageState(
+    "useCustomHost",
+    false
+  );
+  const [customHostAccountIdentifier, setCustomHostAccountIdentifier] =
+    useLocalStorageState("customHostAccountIdentifier", "");
+  const [snowflakeAuthMethod, setSnowflakeAuthMethod] = useLocalStorageState(
+    "snowflakeAuthMethod",
+    "user_pass"
+  );
+  const [accountIdentifier, setAccountIdentifier] = useLocalStorageState(
+    "accountIdentifier",
+    ""
+  );
+  const [customHost, setCustomHost] = useLocalStorageState("customHost", "");
+  const [warehouse, setWarehouse] = useLocalStorageState("warehouse", "");
+  const [basicAuthUsername, setBasicAuthUsername] = useLocalStorageState(
+    "basicAuthUsername",
+    ""
+  );
+  const [basicAuthPassword, setBasicAuthPassword] = useLocalStorageState(
+    "basicAuthPassword",
+    ""
+  );
+  const [keyPairAuthPrivateKey, setKeyPairAuthPrivateKey] =
+    useLocalStorageState("keyPairAuthPrivateKey", "");
+  const [keyPairAuthPrivateKeyPassphrase, setKeyPairAuthPrivateKeyPassphrase] =
+    useLocalStorageState("keyPairAuthPrivateKeyPassphrase", "");
+  const [keyPairAuthUsername, setKeyPairAuthUsername] = useLocalStorageState(
+    "keyPairAuthUsername",
+    ""
+  );
+  const [role, setRole] = useLocalStorageState("role", "");
+
+  const requestBody = {
+    accountIdentifier,
+    warehouse,
+    basicAuthUsername,
+    basicAuthPassword,
+    keyPairAuthUsername,
+    keyPairAuthPrivateKey,
+    keyPairAuthPrivateKeyPassphrase,
+    role,
+  };
+
+  const {
+    data: tablesQueryData,
+    isLoading: isTablesQueryLoading,
+    error: tablesQueryError,
+  } = useQuery({
+    queryKey: ["connectionResult", requestBody],
+    queryFn: async () => {
+      console.log("test");
+      const response = await fetch("/api/test-snowflake-connection", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+      return await response.json();
+    },
+  });
+
   const {
     data: currentUser,
     isLoading: isUserLoading,
     error: userError,
   } = useCurrentUser();
 
-  if (isUserLoading) {
-    return <div className="h-screen bg-slate-1"></div>;
+  if (isUserLoading || isTablesQueryLoading) {
+    return (
+      <div className="h-screen bg-slate-1">
+        <div className="h-screen flex flex-col items-center justify-center text-white text-[13px]">
+          Loading...
+        </div>
+      </div>
+    );
   }
 
-  if (userError) {
+  if (userError || tablesQueryError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
   const email = currentUser.email;
+
+  console.log("first tablesQuery", tablesQueryData);
 
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full">
         <div className="bg-slate-1 text-white text-center text-2xl pb-4"></div>
-        <PreviewTableUI />
+        <PreviewTableUI tablesQueryData={tablesQueryData} />
       </div>
     </div>
   );
