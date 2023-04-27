@@ -13,7 +13,6 @@ export const fetchCurrentUser = async () => {
 };
 
 export const fetchCurrentWorkspace = async () => {
-  s
   const response = await fetch(`${API_BASE_URL}/api/workspaces/1`);
 
   if (!response.ok) {
@@ -25,6 +24,7 @@ export const fetchCurrentWorkspace = async () => {
 
 
 export const getInvitesForUserEmail = async (recipientEmail) => {
+  console.log('getInvitesForUserEmail', recipientEmail)
   const response = await fetch(`${API_BASE_URL}/api/invites/recipient/${recipientEmail}`);
   // const response = await fetch(`${API_BASE_URL}/invites?recipient_email=${recipientEmail}`);
 
@@ -39,6 +39,15 @@ export const getWorkspaceDetails = async (workspaceId) => {
 
   if (!response.ok) {
     throw new Error(`Failed to fetch workspace details for id: ${workspaceId}`);
+  }
+  return await response.json();
+};
+
+export const getUsers = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/users/`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch users`);
   }
   return await response.json();
 };

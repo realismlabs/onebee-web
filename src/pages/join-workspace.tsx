@@ -43,8 +43,6 @@ export default function JoinWorkspace() {
     error: userError,
   } = useCurrentUser();
 
-  console.log("currentUser", currentUser);
-
   const invitesQuery = useQuery({
     queryKey: ["invites", currentUser?.email],
     enabled: currentUser?.email != null,
@@ -70,12 +68,12 @@ export default function JoinWorkspace() {
   });
 
   if (isUserLoading || invitesQuery.isLoading) {
-    return <div className="h-screen bg-slate-1 text-white">Loading</div>;
+    return <div className="h-screen bg-slate-1 text-white">Loading..</div>;
   }
 
   if (userError || invitesQuery.error) {
     return (
-      <div>
+      <div className="text-white">
         Error: {JSON.stringify(userError)} invitesQuery error:{" "}
         {JSON.stringify(invitesQuery.error)}
       </div>

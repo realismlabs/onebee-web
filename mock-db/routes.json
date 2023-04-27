@@ -1,5 +1,6 @@
 {
   "/api/auth/signup": "/users",
+  "/api/users/": "/users",
   "/api/auth/verify-email": "/verifyEmail",
   "/api/auth/login": "/login",
   "/api/auth/logout": "/logout",

@@ -2,11 +2,12 @@
   "users": [
     {
       "id": 1,
-      "email": "arthur@dataland.io",
+      "email": "arthur+verified_complete@dataland.io",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
       "updatedAt": "2023-04-26T02:52:46.736Z",
-      "emailVerified": false
+      "emailVerified": true,
+      "welcomeCompleted": true
     },
     {
       "id": 2,
@@ -92,6 +93,24 @@
       "createdAt": "2023-04-26T18:16:59.858Z",
       "updatedAt": "2023-04-26T18:16:59.858Z",
       "id": 12
+    },
+    {
+      "id": 13,
+      "email": "arthur+unverified@dataland.io",
+      "password": "password",
+      "createdAt": "2023-04-26T02:52:46.736Z",
+      "updatedAt": "2023-04-26T02:52:46.736Z",
+      "emailVerified": false,
+      "welcomeCompleted": false
+    },
+    {
+      "id": 14,
+      "email": "arthur+verified_incomplete@dataland.io",
+      "password": "password",
+      "createdAt": "2023-04-26T02:52:46.736Z",
+      "updatedAt": "2023-04-26T02:52:46.736Z",
+      "emailVerified": true,
+      "welcomeCompleted": false
     }
   ],
   "workspaces": [
@@ -250,28 +269,28 @@
     },
     {
       "inviter_email": "howard@dataland.io",
-      "recipient_email": "arthur@dataland.io",
+      "recipient_email": "arthur+verified_complete@dataland.io",
       "accepted": false,
       "workspaceId": 2,
       "id": 7
     },
     {
       "inviter_email": "howard@dataland.io",
-      "recipient_email": "arthur@dataland.io",
+      "recipient_email": "arthur+verified_complete@dataland.io",
       "accepted": false,
       "workspaceId": 3,
       "id": 8
     },
     {
       "inviter_email": "howard@dataland.io",
-      "recipient_email": "arthur@dataland.io",
+      "recipient_email": "arthur+verified_complete@dataland.io",
       "accepted": false,
       "workspaceId": 4,
       "id": 9
     },
     {
       "inviter_email": "howard@dataland.io",
-      "recipient_email": "arthur@dataland.io",
+      "recipient_email": "arthur+verified_complete@dataland.io",
       "accepted": true,
       "workspaceId": 3,
       "id": 10

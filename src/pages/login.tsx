@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import Link from "next/link";
 import router, { Router } from "next/router";
+import { getUsers } from "@/utils/api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -16,101 +17,72 @@ export default function Login() {
     lo = router.query;
   }
 
-  const registeredEmails = [
-    {
-      email: "unverified@example.com",
-      password: "password",
-      verified: false,
-      completed_welcome: false,
-    },
-    {
-      email: "verified-and-complete@example.com",
-      password: "password",
-      verified: true,
-      completed_welcome: true,
-    },
-    {
-      email: "verified-and-incomplete@example.com",
-      password: "password",
-      verified: true,
-      completed_welcome: false,
-    },
-  ];
-
-  // Mock API call to see if email and password are correct
-  const isEmailAndPasswordRegistered = async (
-    email: string,
-    password: string,
-    registeredEmails: any
-  ) => {
-    // Replace this with your actual API call
-
-    return registeredEmails.some(
-      (user: any) => user.email === email && user.password === password
-    );
-  };
-
   const isEmailAndPasswordVerifiedIncompleteWelcome = async (
     email: string,
     password: string,
-    registeredEmails: any
+    users: any
   ) => {
     // Replace this with your actual API call
-    return registeredEmails.some(
+    return users.some(
       (user: any) =>
         user.email === email &&
         user.password === password &&
-        user.verified &&
-        user.completed_welcome === false
+        user.emailVerified === true &&
+        user.welcomeCompleted === false
     );
   };
 
   const isEmailAndPasswordVerifiedCompleteWelcome = async (
     email: string,
     password: string,
-    registeredEmails: any
+    users: any
   ) => {
     // Replace this with your actual API call
-    return registeredEmails.some(
+    return users.some(
       (user: any) =>
         user.email === email &&
         user.password === password &&
-        user.verified &&
-        user.completed_welcome === true
+        user.emailVerified === true &&
+        user.welcomeCompleted === true
     );
   };
 
   const isEmailAndPasswordUnverified = async (
     email: string,
     password: string,
-    registeredEmails: any
+    users: any
   ) => {
     // Replace this with your actual API call
-    return registeredEmails.some(
+    return users.some(
       (user: any) =>
         user.email === email &&
         user.password === password &&
-        user.verified === false
+        user.emailVerified === false
     );
   };
-  // Handle login
+
+  // Handle login - this is cursed code, will def need to handle properly
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     console.log("Signup submit data:", { email, password });
-    // Here you can send the form data to your backend or perform any other necessary action.
     setErrorMessage("");
     if (!email || !password) {
       setErrorMessage("Email and password are required.");
       return;
     }
 
-    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    const emailRegex =
+      /^[\w-]+(\.[\w-]+)*(\+[a-zA-Z0-9-_.+]+)?@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+
     if (!emailRegex.test(email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
 
-    const user = registeredEmails.find(
+    // totally cursed
+    // see db.json file for the data
+    const users = await getUsers();
+    const user = users.find(
       (user: any) => user.email === email && user.password === password
     );
 
@@ -120,25 +92,15 @@ export default function Login() {
     }
 
     if (
-      await isEmailAndPasswordVerifiedCompleteWelcome(
-        email,
-        password,
-        registeredEmails
-      )
+      await isEmailAndPasswordVerifiedCompleteWelcome(email, password, users)
     ) {
       router.push("/home");
     } else if (
-      await isEmailAndPasswordVerifiedIncompleteWelcome(
-        email,
-        password,
-        registeredEmails
-      )
+      await isEmailAndPasswordVerifiedIncompleteWelcome(email, password, users)
     ) {
       router.push("/welcome");
-    } else if (
-      await isEmailAndPasswordUnverified(email, password, registeredEmails)
-    ) {
-      router.push("/verify");
+    } else if (await isEmailAndPasswordUnverified(email, password, users)) {
+      router.push("/verify-email");
     }
   };
 
