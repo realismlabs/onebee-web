@@ -73,3 +73,39 @@ export const callApi = async ({
 
   return await response.json();
 };
+
+export function stringToVibrantColor(input: string): string {
+  const hash = Array.from(input).reduce(
+    (accumulator, char) =>
+      char.charCodeAt(0) + ((accumulator << 5) - accumulator),
+    0
+  );
+
+  const hue = (hash % 360) / 360;
+  const saturation = 0.6; // 60% saturation for vibrancy
+  const lightness = 0.4; // 40% lightness to ensure good contrast with white text
+
+  const hslToRgb = (p: number, q: number, t: number): number => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+
+  const q =
+    lightness < 0.5
+      ? lightness * (1 + saturation)
+      : lightness + saturation - lightness * saturation;
+  const p = 2 * lightness - q;
+
+  const r = Math.round(hslToRgb(p, q, hue + 1 / 3) * 255);
+  const g = Math.round(hslToRgb(p, q, hue) * 255);
+  const b = Math.round(hslToRgb(p, q, hue - 1 / 3) * 255);
+
+  const rgbToHex = (r: number, g: number, b: number): string =>
+    "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
+
+  return rgbToHex(r, g, b);
+}

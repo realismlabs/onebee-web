@@ -74,7 +74,7 @@ export default function Login() {
                 </Link>
               </header>
               <h1 className="text-xl ">Home</h1>
-              <h3 className="text-sm text-slate-11">
+              <h3 className="text-[14px] text-slate-11">
                 We&apos;ll email you a link to reset your password.
               </h3>
             </div>

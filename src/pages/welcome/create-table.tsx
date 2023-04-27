@@ -73,12 +73,12 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   return (
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
-        <p className="text-xs text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-xs text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
+        <p className="text-[13px] text-white font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-xs text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -131,7 +131,7 @@ const PreviewTableUI = ({ tablesQueryData }: { tablesQueryData: any }) => {
                 </div>
                 <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-white flex items-center justify-center">
                   <button
-                    className={`text-md px-4 py-2 bg-blue-600 rounded-md`}
+                    className={`text-[16px] px-4 py-2 bg-blue-600 rounded-md`}
                   >
                     Create table
                   </button>

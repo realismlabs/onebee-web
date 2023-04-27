@@ -2,7 +2,7 @@
   "users": [
     {
       "id": 1,
-      "email": "arthur+verified_complete@dataland.io",
+      "email": "arthur@dataland.io",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
       "updatedAt": "2023-04-26T02:52:46.736Z",
@@ -126,7 +126,7 @@
     },
     {
       "id": 3,
-      "name": "Celestia",
+      "name": "Celestia - Extremely long workspace name",
       "ownerId": 2
     },
     {
@@ -269,28 +269,28 @@
     },
     {
       "inviter_email": "howard@dataland.io",
-      "recipient_email": "arthur+verified_complete@dataland.io",
+      "recipient_email": "arthur@dataland.io",
       "accepted": false,
       "workspaceId": 2,
       "id": 7
     },
     {
-      "inviter_email": "howard@dataland.io",
-      "recipient_email": "arthur+verified_complete@dataland.io",
+      "inviter_email": "howardreallylongreallylongemail@dataland.io",
+      "recipient_email": "arthur@dataland.io",
       "accepted": false,
       "workspaceId": 3,
       "id": 8
     },
     {
       "inviter_email": "howard@dataland.io",
-      "recipient_email": "arthur+verified_complete@dataland.io",
+      "recipient_email": "arthur@dataland.io",
       "accepted": false,
       "workspaceId": 4,
       "id": 9
     },
     {
       "inviter_email": "howard@dataland.io",
-      "recipient_email": "arthur+verified_complete@dataland.io",
+      "recipient_email": "arthur@dataland.io",
       "accepted": true,
       "workspaceId": 3,
       "id": 10

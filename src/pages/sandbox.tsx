@@ -16,10 +16,10 @@ export default function Sandbox() {
         className={`overflow-hidden flex h-screen flex-col justify-center items-center min-h-screen bg-slate-1`}
       >
         <div className="bg-blue-900/50 flex justify-center items-center py-1.5 w-full mx-auto gap-2">
-          <div className="text-blue-400 text-sm">
+          <div className="text-blue-400 text-[14px]">
             This playground loads 1.6 billion rows of Hacker News data.
           </div>
-          <Link href="/signup" className="text-white text-sm">
+          <Link href="/signup" className="text-white text-[14px]">
             Try with your data →
           </Link>
         </div>

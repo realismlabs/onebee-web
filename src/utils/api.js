@@ -3,7 +3,7 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const fetchCurrentUser = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/users/1`);
+  const response = await fetch(`${API_BASE_URL}/api/users/4`);
 
   if (!response.ok) {
     throw new Error('Error fetching current user');

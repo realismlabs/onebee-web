@@ -23,12 +23,12 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   return (
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
-        <p className="text-xs text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-xs text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
+        <p className="text-[13px] text-white font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-xs text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -216,7 +216,7 @@ const InviteTeammateDialog = ({
     <div>
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Trigger tabIndex={-1}>
-          <div className="text-sm text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16">
+          <div className="text-[14px] text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16">
             <p className="text-slate-10">Don&apos;t have credentials?</p>
             <p className="text-white">Invite a teammate to help →</p>
           </div>
@@ -232,14 +232,14 @@ const InviteTeammateDialog = ({
                 <div className="flex flex-col gap-4 mt-6">
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col flex-grow gap-1">
-                      <label className="text-xs w-[120px]">
+                      <label className="text-[13px] w-[120px]">
                         Email address(es)
                       </label>
                       <p className="text-[11px] text-slate-11">
                         Enter multiple email addresses separated by commas.
                       </p>
                       <input
-                        className={`rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
+                        className={`rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
                     ${
                       isValid === false
                         ? "border-red-500"
@@ -259,9 +259,9 @@ const InviteTeammateDialog = ({
                       )}
                     </div>
                     <div className="flex flex-col gap-2">
-                      <label className="text-xs w-[120px]">Message</label>
+                      <label className="text-[13px] w-[120px]">Message</label>
                       <textarea
-                        className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 h-36 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                        className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 h-36 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                         required
                         title="Custom message"
                         value={customMessage}
@@ -301,12 +301,12 @@ const InviteTeammateDialog = ({
                 </div>
                 <div className="mt-5 flex justify-end gap-2">
                   <Dialog.Close asChild>
-                    <button className="px-4 h-[36px] bg-slate-3 rounded-md text-xs font-medium leading-none focus:outline-none hover:bg-slate-4">
+                    <button className="px-4 h-[36px] bg-slate-3 rounded-md text-[13px] font-medium leading-none focus:outline-none hover:bg-slate-4">
                       Cancel
                     </button>
                   </Dialog.Close>
                   <button
-                    className={`px-4 h-[36px] bg-blue-600 rounded-md text-xs font-medium leading-none focus:outline-none w-[97px]
+                    className={`px-4 h-[36px] bg-blue-600 rounded-md text-[13px] font-medium leading-none focus:outline-none w-[97px]
                   ${loading ? "opacity-50" : "hover:bg-blue-700"}`}
                     type="submit"
                     disabled={loading}
@@ -415,7 +415,7 @@ export default function AddDataSource() {
         <form className="flex flex-col gap-4 mt-4">
           <div className="flex gap-4">
             <Link href="/welcome/add-snowflake">
-              <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
                   <LogoSnowflake />
                 </div>
@@ -423,7 +423,7 @@ export default function AddDataSource() {
               </div>
             </Link>
             <Link href="/welcome/add-bigquery">
-              <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
                   <LogoBigQuery />
                 </div>
@@ -431,7 +431,7 @@ export default function AddDataSource() {
               </div>
             </Link>
             <Link href="/welcome/add-postgres">
-              <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
                   <LogoPostgres />
                 </div>
@@ -440,7 +440,7 @@ export default function AddDataSource() {
             </Link>
           </div>
           <InviteTeammateDialog email={email} workspace={workspace_name} />
-          <div className="text-white text-sm text-center w-full cursor-pointer">
+          <div className="text-white text-[14px] text-center w-full cursor-pointer">
             Do this later
           </div>
         </form>

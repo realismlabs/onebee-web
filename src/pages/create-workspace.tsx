@@ -15,12 +15,12 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   return (
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
-        <p className="text-xs text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-xs text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
+        <p className="text-[13px] text-white font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-xs text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -115,14 +115,14 @@ export default function CreateWorkspace() {
                 setErrorMessage("");
               }}
               placeholder="i.e. Acme organization"
-              className={`w-full bg-slate-3 border text-white text-sm rounded-md px-3 py-2 placeholder-slate-9
+              className={`w-full bg-slate-3 border text-white text-[14px] rounded-md px-3 py-2 placeholder-slate-9
               ${errorMessage !== "" ? "border-red-9" : "border-slate-6"} 
               focus:outline-none focus:ring-blue-600
               `}
             />
 
             {errorMessage && (
-              <p className="text-red-9 text-xs mt-2">{errorMessage}</p>
+              <p className="text-red-9 text-[13px] mt-2">{errorMessage}</p>
             )}
           </div>
           <div className="flex items-start">
@@ -135,7 +135,7 @@ export default function CreateWorkspace() {
             />
             <label
               htmlFor="allowOthersFromDomain"
-              className="ml-2 block text-slate-11 text-sm"
+              className="ml-2 block text-slate-11 text-[14px]"
             >
               Allow anyone with an{" "}
               <span className="text-white font-medium">{"@" + domain}</span>{" "}
@@ -144,12 +144,12 @@ export default function CreateWorkspace() {
           </div>
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md mt-4"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-[14px] font-medium py-2 px-4 rounded-md mt-4"
           >
             Continue
           </button>
-          <div className="text-blue-500 text-center text-[14px] mt-2">
-            <Link href="/join-workspace">Join an existing workspace</Link>
+          <div className="text-blue-500 text-center text-[14px] mt-12">
+            <Link href="/join-workspace">Join an existing workspace →</Link>
           </div>
         </form>
       </div>
