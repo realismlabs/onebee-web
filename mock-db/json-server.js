@@ -5,7 +5,15 @@ const router = jsonServer.router(path.join('mock-db', 'db.json'));
 const middlewares = jsonServer.defaults();
 const rewriter = jsonServer.rewriter(require('./routes.json'));
 
-server.use(middlewares);
+// Add this line to load the configuration
+const config = {
+  watch: true,
+};
+
+// Pass the configuration to middlewares
+const middlewaresWithOptions = jsonServer.defaults(config);
+
+server.use(middlewaresWithOptions);
 server.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import router from "next/router";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useQuery, useQueries } from "@tanstack/react-query";
+import { getInvitesForUserEmail, getWorkspaceDetails } from "../utils/api";
 
 interface AccountHeaderProps {
   email: string;
@@ -30,35 +32,10 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   );
 };
 
-export default function CreateWorkspace() {
-  const [errorMessage, setErrorMessage] = React.useState("");
-  const [workspaceName, setWorkspaceName] = React.useState("");
-  const [domain, setDomain] = React.useState("");
-
+export default function JoinWorkspace() {
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("clicked");
-    if (workspaceName === "" || workspaceName === null) {
-      setErrorMessage("Workspace name is required.");
-    } else {
-      // TODO: Create workspace and mock API call to create workspace + allow others to join from same domain (if enabled)
-      console.log(
-        "TODO: Create workspace and mock API call to create workspace + allow others to join from same domain (if enabled)"
-      );
-      console.log({
-        workspaceName,
-        allowOthersFromDomainChecked,
-      });
-      router.push("/welcome/add-data-source");
-    }
   };
-
-  const [allowOthersFromDomainChecked, setAllowOthersFromDomainChecked] =
-    useState(true);
-
-  function handleAllowOthersFromDomainCheckboxChange() {
-    setAllowOthersFromDomainChecked(!allowOthersFromDomainChecked);
-  }
 
   const {
     data: currentUser,
@@ -66,29 +43,43 @@ export default function CreateWorkspace() {
     error: userError,
   } = useCurrentUser();
 
-  useEffect(() => {
-    if (currentUser?.email) {
-      const email = currentUser.email;
-      const domain = email.split("@")[1];
-      const domain_without_extension = email.split("@")[1].split(".")[0];
-      let workspace_name_suggestion = domain_without_extension;
-      if (typeof domain_without_extension === "string") {
-        workspace_name_suggestion =
-          domain_without_extension.charAt(0).toUpperCase() +
-          domain_without_extension.slice(1);
-      }
+  console.log("currentUser", currentUser);
 
-      setWorkspaceName(workspace_name_suggestion);
-      setDomain(domain);
-    }
-  }, [currentUser]);
+  const invitesQuery = useQuery({
+    queryKey: ["invites", currentUser?.email],
+    enabled: currentUser?.email != null,
+    queryFn: () => {
+      console.log("starting query");
+      return getInvitesForUserEmail(currentUser.email);
+    },
+    staleTime: 1000, // 1 second
+  });
 
-  if (isUserLoading) {
-    return <div className="h-screen bg-slate-1"></div>;
+  const workspaceIds = invitesQuery.data
+    ? Array.from(
+        new Set(invitesQuery.data.map((invite: any) => invite.workspaceId))
+      )
+    : [];
+
+  // Fetch workspace details for each workspaceId
+  const workspacesQuery = useQueries({
+    queries: workspaceIds.map((id) => ({
+      queryKey: ["workspace", id],
+      queryFn: () => getWorkspaceDetails(id),
+    })),
+  });
+
+  if (isUserLoading || invitesQuery.isLoading) {
+    return <div className="h-screen bg-slate-1 text-white">Loading</div>;
   }
 
-  if (userError) {
-    return <div>Error: {JSON.stringify(userError)}</div>;
+  if (userError || invitesQuery.error) {
+    return (
+      <div>
+        Error: {JSON.stringify(userError)} invitesQuery error:{" "}
+        {JSON.stringify(invitesQuery.error)}
+      </div>
+    );
   }
 
   const email = currentUser.email;
@@ -100,57 +91,29 @@ export default function CreateWorkspace() {
         <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
           Join a workspace
         </div>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-3 w-[300px] mt-4"
-        >
-          <div className="relative">
-            <input
-              type={"text"}
-              id="workspaceNameInput"
-              value={workspaceName}
-              onChange={(e) => {
-                setWorkspaceName(e.target.value);
-                setErrorMessage("");
-              }}
-              placeholder="i.e. Acme organization"
-              className={`w-full bg-slate-3 border text-white text-sm rounded-md px-3 py-2 placeholder-slate-9
-              ${errorMessage !== "" ? "border-red-9" : "border-slate-6"} 
-              focus:outline-none focus:ring-blue-600
-              `}
-            />
+        <div className="text-white">
+          {/* map through invitesQuery.data */}
+          {invitesQuery.data?.map((invite: any) => {
+            console.log("invite", invite);
+            if (invite.accepted === true) {
+              // skip
+              return;
+            }
+            // Find the corresponding workspace detail
+            const workspaceDetail = workspacesQuery.find(
+              (query: any) => query.data && query.data.id === invite.workspaceId
+            )?.data;
 
-            {errorMessage && (
-              <p className="text-red-9 text-xs mt-2">{errorMessage}</p>
-            )}
-          </div>
-          <div className="flex items-start">
-            <input
-              id="allowOthersFromDomain"
-              type="checkbox"
-              className="mt-0.5 w-[18px] h-[18px] text-blue-600 bg-slate-3 border-slate-6 rounded focus:ring-blue-500 focus:ring-1"
-              checked={allowOthersFromDomainChecked}
-              onChange={handleAllowOthersFromDomainCheckboxChange}
-            />
-            <label
-              htmlFor="allowOthersFromDomain"
-              className="ml-2 block text-slate-11 text-sm"
-            >
-              Allow anyone with an{" "}
-              <span className="text-white font-medium">{"@" + domain}</span>{" "}
-              email to join this workspace
-            </label>
-          </div>
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md mt-4"
-          >
-            Continue
-          </button>
-          <div className="text-blue-500 text-center text-[14px] mt-2">
-            <Link href="/join-workspace">Join an existing workspace</Link>
-          </div>
-        </form>
+            return (
+              <div key={invite.id}>
+                <div className="text-white text-center text-[18px] pt-4">
+                  {invite.inviter_email} invited you to join{" "}
+                  {workspaceDetail ? workspaceDetail.name : invite.workspaceId}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

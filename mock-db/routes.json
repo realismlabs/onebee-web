@@ -4,6 +4,7 @@
   "/api/auth/login": "/login",
   "/api/auth/logout": "/logout",
   "/api/users/:userId": "/users/:userId",
+  "/api/invites/recipient/:recipientEmail": "/invites?recipient_email=:recipientEmail",
   "/api/auth/reset-password": "/resetPassword",
   "/api/auth/change-password": "/changePassword",
   "/api/workspaces": "/workspaces",
