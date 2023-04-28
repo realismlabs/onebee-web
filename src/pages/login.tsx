@@ -94,7 +94,11 @@ export default function Login() {
     if (
       await isEmailAndPasswordVerifiedCompleteWelcome(email, password, users)
     ) {
-      router.push("/home");
+      const last_accessed_workspace_id = user.lastAccessedWorkspace;
+      if (last_accessed_workspace_id === null) {
+        router.push("/create-workspace");
+      }
+      router.push("/workspace/" + last_accessed_workspace_id);
     } else if (
       await isEmailAndPasswordVerifiedIncompleteWelcome(email, password, users)
     ) {

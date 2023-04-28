@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
-import { getTable } from "../../../utils/api";
+import { getTable } from "../../../../utils/api";
 import { useQuery } from "@tanstack/react-query";
-import { useCurrentUser } from "../../../hooks/useCurrentUser";
-import { useCurrentWorkspace } from "../../../hooks/useCurrentWorkspace";
-import WorkspaceLayout from "../../../components/WorkspaceLayout";
-import MockTable from "../../../components/MockTable";
+import { useCurrentUser } from "../../../../hooks/useCurrentUser";
+import { useCurrentWorkspace } from "../../../../hooks/useCurrentWorkspace";
+import WorkspaceLayout from "../../../../components/WorkspaceLayout";
+import MockTable from "../../../../components/MockTable";
 
 export default function Table() {
   const router = useRouter();

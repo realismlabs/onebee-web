@@ -444,7 +444,7 @@ export default function AddDataSource() {
             </Link>
           </div>
           <InviteTeammateDialog email={email} workspace={workspace_name} />
-          <Link href="/home">
+          <Link href={`/workspace/${currentWorkspace.id}`}>
             <div className="text-white text-[14px] text-center w-full cursor-pointer">
               Do this later
             </div>
