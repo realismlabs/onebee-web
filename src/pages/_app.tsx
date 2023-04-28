@@ -37,7 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
       persistOptions={{ persister: customPersister }}
     >
       <Component {...pageProps} />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={false} position={"bottom-right"} />
     </PersistQueryClientProvider>
   );
 }

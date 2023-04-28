@@ -197,15 +197,11 @@ export function capitalizeString(str: string) {
 type ColorMap = { [key: string]: string };
 
 const colorTable: ColorMap = {
-  "#ee7600": "#ee7600",
-  "#ff3e3e": "#ff3e3e",
-  "#6c757d": "#6c757d",
-  "#ffa500": "#ffa500",
-  "#6f42c1": "#6f42c1",
-  "#5bc0de": "#5bc0de",
-  "#ffc107": "#ffc107",
-  "#dc3545": "#dc3545",
-  // add more colors as needed
+  orange: "#f76808",
+  blue: "#0091ff",
+  crimson9: "#e93d82",
+  amber9: "#ffb224",
+  plums9: "#ab4aba",
 };
 
 export function assignColor(name: string): string {
@@ -213,7 +209,7 @@ export function assignColor(name: string): string {
   const hashCode = name
     .split("")
     .reduce(
-      (acc: number, char) => (acc = char.charCodeAt(0) + ((acc << 5) - acc)),
+      (acc: number, char) => (acc = char.charCodeAt(0) + ((acc << 7) - acc)),
       0
     );
   const index = Math.abs(hashCode) % Object.keys(colorTable).length;

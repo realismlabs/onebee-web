@@ -5,7 +5,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery } from '@tanstack/react-query';
 import { getTables } from '../utils/api';
-import { House, Table } from '@phosphor-icons/react';
+import { House, Table, UserCircle, PaperPlaneTilt } from '@phosphor-icons/react';
 import { stringToVibrantColor, assignColor } from '@/utils/util';
 
 const WorkspaceShell = () => {
@@ -57,13 +57,14 @@ const WorkspaceShell = () => {
           height="28"
           draggable="false"
           alt="workspace icon"
+          className="rounded-sm"
         />
         <p className="text-white">
           {currentWorkspace.name}
         </p>
       </div>
       {/* core */}
-      <div className="mt-4 flex flex-col gap-4 px-[14px]">
+      <div className="mt-2 flex flex-col gap-4 px-[14px]">
         <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md">
           <House
             size={20}
@@ -74,28 +75,47 @@ const WorkspaceShell = () => {
             <div className="">Home</div>
           </Link>
         </div>
-        <h2 className="text-white">Tables</h2>
-        <div>
-          {tablesData.map((item) => (
-            <Link key={item.id} href={`/table/${item.id}`}>
-              <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md">
-                <Table
-                  size={20}
-                  weight="fill"
-                  className="text-slate-10 group-hover:text-slate-11 transition-all duration-100"
-                  style={{
-                    color: assignColor(item.displayName)
-                  }}
-                />
-                <div>{item.displayName}</div>
-              </div>
-            </Link>
-          ))}
+        <div className="space-y-2">
+          <div className="px-[8px] text-slate-11 text-[13px] flex flex-row">
+            <div>Tables</div>
+            <div className="ml-auto">+ New</div></div>
+          <div>
+            {tablesData.map((item) => (
+              <Link key={item.id} href={`/table/${item.id}`}>
+                <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md cursor-pointer">
+                  <Table
+                    size={20}
+                    weight="fill"
+                    className="text-slate-10 group-hover:text-slate-11 transition-all duration-100"
+                    style={{
+                      color: assignColor(item.displayName)
+                    }}
+                  />
+                  <div>{item.displayName}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
       {/* footer */}
-      <div className="mt-auto">
-        Hello
+      <div className="mt-auto flex flex-col px-[14px]">
+        <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md">
+          <PaperPlaneTilt
+            size={20}
+            weight="fill"
+            className="text-slate-10 group-hover:text-slate-11 transition-all duration-100"
+          />
+          <div className="">Invite people</div>
+        </div>
+        <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md">
+          <UserCircle
+            size={20}
+            weight="fill"
+            className="text-slate-10 group-hover:text-slate-11 transition-all duration-100"
+          />
+          <div className="">Account</div>
+        </div>
       </div>
     </div>
   );

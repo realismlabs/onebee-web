@@ -60,7 +60,7 @@ const MockTable = () => {
 
   return (
     <table className="divide-y divide-slate-6">
-      <thead className="bg-slate-3 text-white">
+      <thead className="bg-slate-2 text-white">
         <tr>
           {Array.from({ length: 20 }, (_, i) => (
             <th
@@ -73,7 +73,7 @@ const MockTable = () => {
           ))}
         </tr>
       </thead>
-      <tbody className="bg-slate-2 divide-y divide-slate-6">
+      <tbody className="bg-slate-1 divide-y divide-slate-6">
         {tableData.map((row, rowIndex) => (
           <tr key={rowIndex}>
             {row.map((cell, cellIndex) => (
