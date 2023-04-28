@@ -56,7 +56,6 @@ function AccountPopover() {
   )
 }
 
-
 function WorkspacePopoverContents() {
   const {
     data: workspacesForUserData,

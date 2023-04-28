@@ -12,7 +12,6 @@ export const fetchCurrentUser = async () => {
 };
 
 export const fetchCurrentWorkspace = async () => {
-  //hardcoding
   const workspaceId = 6
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
   console.log("fetchCurrentWorkspace", response);

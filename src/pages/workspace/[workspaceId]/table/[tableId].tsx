@@ -8,9 +8,9 @@ import MockTable from "../../../../components/MockTable";
 
 export default function Table() {
   const router = useRouter();
-  const { id } = router.query;
+  const { tableId } = router.query;
 
-  console.log("id", id);
+  console.log("id", tableId);
 
   const {
     data: currentUser,
@@ -29,10 +29,10 @@ export default function Table() {
     isLoading: isTableLoading,
     error: tableError,
   } = useQuery({
-    queryKey: ["getTable", currentWorkspace?.id, id],
+    queryKey: ["getTable", currentWorkspace?.id, tableId],
     queryFn: async () => {
-      console.log("currentWorkspace?.id", currentWorkspace?.id, "id", id);
-      const response = await getTable(currentWorkspace?.id, id);
+      console.log("currentWorkspace?.id", currentWorkspace?.id, "id", tableId);
+      const response = await getTable(currentWorkspace?.id, tableId);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
