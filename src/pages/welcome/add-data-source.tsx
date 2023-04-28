@@ -165,7 +165,7 @@ const InviteTeammateDialog = ({
       sender_email_name.slice(1).toLowerCase();
 
     return (
-      <div className="mt-4 h-[280px] overflow-y-scroll p-4 bg-white text-black rounded-md text-[12px] space-y-2">
+      <div className="mt-4 h-[280px] overflow-y-scroll p-4 bg-white text-black rounded-md text-[13px] space-y-2">
         <div className="text-slate-10 pb-1">
           <p>From: Dataland Support &lt;no-reply@dataland.io&gt;</p>
           <p>Subject: Help {sender_email_name} add a data source to Dataland</p>
@@ -215,8 +215,11 @@ const InviteTeammateDialog = ({
   return (
     <div>
       <Dialog.Root open={open} onOpenChange={setOpen}>
-        <Dialog.Trigger tabIndex={-1}>
-          <div className="text-[14px] text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16">
+        <Dialog.Trigger tabIndex={-1} className="focus:outline-none">
+          <div
+            className="text-[14px] text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16 focus:outline-none"
+            tabIndex={-1}
+          >
             <p className="text-slate-10">Don&apos;t have credentials?</p>
             <p className="text-white">Invite a teammate to help →</p>
           </div>
@@ -232,12 +235,9 @@ const InviteTeammateDialog = ({
                 <div className="flex flex-col gap-4 mt-6">
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col flex-grow gap-1">
-                      <label className="text-[13px] w-[120px]">
+                      <label className="text-[14px] w-[120px]">
                         Email address(es)
                       </label>
-                      <p className="text-[11px] text-slate-11">
-                        Enter multiple email addresses separated by commas.
-                      </p>
                       <input
                         className={`rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
                     ${
@@ -248,7 +248,7 @@ const InviteTeammateDialog = ({
                         required
                         value={emailAddresses}
                         onChange={(e) => handleEmailAddressChange(e)}
-                        placeholder="teammate@example.com"
+                        placeholder="teammate@example.com, teammate2@example.com"
                       />
                       {errorMessage !== "" ? (
                         <p className="text-[11px] text-red-500">
@@ -259,9 +259,9 @@ const InviteTeammateDialog = ({
                       )}
                     </div>
                     <div className="flex flex-col gap-2">
-                      <label className="text-[13px] w-[120px]">Message</label>
+                      <label className="text-[14px] w-[120px]">Message</label>
                       <textarea
-                        className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 h-36 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                        className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 h-48 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10 leading-normal"
                         required
                         title="Custom message"
                         value={customMessage}
@@ -285,7 +285,9 @@ const InviteTeammateDialog = ({
                                 open ? "rotate-90 transform" : ""
                               } text-slate-12`}
                             />
-                            <span>Toggle email preview</span>
+                            <span className="text-[14px]">
+                              Toggle email preview
+                            </span>
                           </Disclosure.Button>
                           <Disclosure.Panel className="">
                             <EmailPreview
@@ -306,7 +308,7 @@ const InviteTeammateDialog = ({
                     </button>
                   </Dialog.Close>
                   <button
-                    className={`px-4 h-[36px] bg-blue-600 rounded-md text-[13px] font-medium leading-none focus:outline-none w-[97px]
+                    className={`px-4 h-[36px] bg-blue-600 rounded-md text-[13px] font-medium leading-none focus:outline-none w-[105px]
                   ${loading ? "opacity-50" : "hover:bg-blue-700"}`}
                     type="submit"
                     disabled={loading}
@@ -323,12 +325,14 @@ const InviteTeammateDialog = ({
                   </button>
                 </div>
               </form>
-              <button
-                className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
-                aria-label="Close"
-              >
-                <X size={16} weight="bold" />
-              </button>
+              <Dialog.Close asChild>
+                <button
+                  className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+                  aria-label="Close"
+                >
+                  <X size={16} weight="bold" />
+                </button>
+              </Dialog.Close>
             </Dialog.Content>
           </div>
         </Dialog.Portal>
@@ -409,7 +413,7 @@ export default function AddDataSource() {
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-white text-center text-2xl pb-4">
+        <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
           Connect a data source
         </div>
         <form className="flex flex-col gap-4 mt-4">
@@ -440,9 +444,11 @@ export default function AddDataSource() {
             </Link>
           </div>
           <InviteTeammateDialog email={email} workspace={workspace_name} />
-          <div className="text-white text-[14px] text-center w-full cursor-pointer">
-            Do this later
-          </div>
+          <Link href="/home">
+            <div className="text-white text-[14px] text-center w-full cursor-pointer">
+              Do this later
+            </div>
+          </Link>
         </form>
       </div>
     </div>

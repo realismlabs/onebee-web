@@ -63,7 +63,7 @@ const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger tabIndex={-1}>
         <div
-          className="text-[13px] px-2 py-1 bg-green-900/40 hover:bg-green-900/60 w-32 rounded-md"
+          className="text-[13px] px-2 py-1 bg-green-900/40 hover:bg-green-900/60 w-[140px] rounded-md focus:outline-none"
           tabIndex={-1}
         >
           See full table list →

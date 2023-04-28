@@ -107,6 +107,10 @@ export default function AddSnowflake() {
     ""
   );
   const [role, setRole] = useLocalStorageState("role", "");
+  const [connectionType, setConnectionType] = useLocalStorageState(
+    "connectionType",
+    "snowflake"
+  );
 
   // Connection test vars
   const [connectionResult, setConnectionResult] = useState<any>({
@@ -147,6 +151,7 @@ export default function AddSnowflake() {
     keyPairAuthPrivateKey,
     keyPairAuthPrivateKeyPassphrase,
     role,
+    connectionType,
   };
 
   const connectionTestQuery = useQuery({
@@ -227,9 +232,9 @@ export default function AddSnowflake() {
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col mx-auto w-[600px] text-white gap-2 mt-4">
-        <Link href="/welcome/add-data-source">
-          <div className="flex flex-row items-center gap-2 text-[13px] text-slate-11">
+      <div className="flex flex-col mx-auto w-[640px] text-white gap-2 mt-4">
+        <Link href="/welcome/add-data-source" className="self-start">
+          <div className="flex flex-row items-center gap-2 text-[13px] text-slate-11 self-start">
             <CaretLeft size={16} weight="bold" />
             <p>Back to sources</p>
           </div>
@@ -284,7 +289,7 @@ export default function AddSnowflake() {
                   </div>
                 </div>
                 <div className="flex flex-row gap-2 items-center">
-                  <label className="text-[13px] w-20">Custom host?</label>
+                  <label className="text-[13px]">Custom host?</label>
                   <Switch
                     checked={useCustomHost}
                     onChange={setUseCustomHost}
@@ -315,7 +320,7 @@ export default function AddSnowflake() {
                   />
                 </div>
                 <div className="flex flex-row gap-2 items-center">
-                  <label className="text-[13px] w-20">Custom host?</label>
+                  <label className="text-[13px]">Custom host?</label>
                   <Switch
                     checked={useCustomHost}
                     onChange={setUseCustomHost}
@@ -389,6 +394,7 @@ export default function AddSnowflake() {
               title="Auth method"
               className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
               onChange={(e) => setSnowflakeAuthMethod(e.target.value)}
+              value={snowflakeAuthMethod}
             >
               <option value="user_pass">Username / password</option>
               <option value="key_value">Key pair</option>

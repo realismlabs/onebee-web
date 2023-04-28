@@ -56,7 +56,7 @@ export default function Welcome() {
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-white text-center text-2xl pb-4">
+        <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
           Welcome to Dataland, Arthur.
         </div>
         <div className="text-slate-11 max-w-md text-center text-lg pb-8">

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import router from "next/router";
+import Image from "next/image";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useQuery, useQueries } from "@tanstack/react-query";
 import { getInvitesForUserEmail, getWorkspaceDetails } from "../utils/api";
-import { stringToVibrantColor } from "../utils/util";
+import { stringToVibrantColor, generateIcon } from "../utils/util";
 import { CaretRight, UsersThree } from "@phosphor-icons/react";
 
 interface AccountHeaderProps {
@@ -107,6 +108,11 @@ export default function JoinWorkspace() {
                   query.data && query.data.id === invite.workspaceId
               )?.data;
 
+              let base64Icon: string | null = "";
+              if (typeof workspaceDetail.name == "string") {
+                base64Icon = generateIcon(workspaceDetail.name);
+              }
+
               return (
                 <>
                   <div key={invite.id}>
@@ -114,9 +120,14 @@ export default function JoinWorkspace() {
                       <div
                         className={`h-[48px] w-[48px] flex items-center justify-center text-[18px] rounded-md`}
                         style={{
-                          backgroundColor: stringToVibrantColor(
-                            workspaceDetail.name
-                          ),
+                          backgroundImage:
+                            typeof base64Icon === "string"
+                              ? `url(${base64Icon})`
+                              : "",
+                          backgroundColor:
+                            typeof base64Icon !== "string"
+                              ? stringToVibrantColor(workspaceDetail.name)
+                              : "",
                         }}
                       >
                         {workspaceDetail.name.slice(0, 1)}

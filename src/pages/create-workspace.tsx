@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import router from "next/router";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import { createWorkspace } from "@/utils/api";
 
 interface AccountHeaderProps {
   email: string;
@@ -35,7 +36,7 @@ export default function CreateWorkspace() {
   const [workspaceName, setWorkspaceName] = React.useState("");
   const [domain, setDomain] = React.useState("");
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log("clicked");
     if (workspaceName === "" || workspaceName === null) {
@@ -50,6 +51,16 @@ export default function CreateWorkspace() {
         allowOthersFromDomainChecked,
       });
       // TODO: Push to home of the new workspace
+      try {
+        const result = await createWorkspace({
+          name: workspaceName,
+          createdAt: new Date().toISOString(),
+          creatorUserId: currentUser.id,
+        });
+        console.log("Created workspace", result);
+      } catch (e) {
+        console.log("Couldn't create workspace", e);
+      }
       router.push("/home");
     }
   };

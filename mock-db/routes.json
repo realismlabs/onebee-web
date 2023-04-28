@@ -9,11 +9,18 @@
   "/api/auth/reset-password": "/resetPassword",
   "/api/auth/change-password": "/changePassword",
   "/api/workspaces": "/workspaces",
+  "/api/workspaces/create": "/workspaces",
   "/api/workspaces/:workspaceId/invite": "/invites",
   "/api/workspaces/:workspaceId/invites": "/invites?workspaceId=:workspaceId",
   "/api/workspaces/:workspaceId/accept-invite/:inviteId": "/invites/:inviteId",
   "/api/workspaces/:workspaceId/leave": "/workspaceMembers/:id",
   "/api/workspaces/:workspaceId": "/workspaces/:workspaceId",
   "/api/workspaces/:workspaceId/tables": "/tables",
-  "/api/workspaces/:workspaceId/tables/:tableId": "/tables/:tableId"
+  "/api/workspaces/:workspaceId/tables/:tableId": "/tables/:tableId",
+  "/api/connections/create": "/connections",
+  "/api/connections/:connectionId": "/connections/:connectionId",
+  "/api/connections/:connectionId/update": "/connections/:connectionId",
+  "/api/connections/:connectionId/delete": "/connections/:connectionId",
+  "/api/connections": "/connections",
+  "/api/workspaces/:workspaceId/connections": "/connections?workspaceId=:workspaceId"
 }

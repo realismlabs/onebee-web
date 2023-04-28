@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import router from "next/router";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { createWorkspace } from "@/utils/api";
 
 interface AccountHeaderProps {
   email: string;
@@ -35,7 +36,7 @@ export default function CreateWorkspace() {
   const [workspaceName, setWorkspaceName] = React.useState("");
   const [domain, setDomain] = React.useState("");
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log("clicked");
     if (workspaceName === "" || workspaceName === null) {
@@ -49,6 +50,19 @@ export default function CreateWorkspace() {
         workspaceName,
         allowOthersFromDomainChecked,
       });
+
+      try {
+        const response = await createWorkspace({
+          name: workspaceName,
+          createdAt: new Date().toISOString(),
+          creatorUserId: currentUser.id,
+        });
+
+        console.log("Created workspace", response);
+      } catch (e) {
+        console.log("Couldn't create workspace", e);
+      }
+
       router.push("/welcome/add-data-source");
     }
   };
@@ -97,7 +111,7 @@ export default function CreateWorkspace() {
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-white text-center text-2xl pb-4">
+        <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
           Name your workspace
         </div>
         <form

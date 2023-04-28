@@ -6,6 +6,9 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useCurrentWorkspace } from "../../hooks/useCurrentWorkspace";
+import { capitalizeString } from "@/utils/util";
+import MockTable from "@/components/MockTable";
 
 interface AccountHeaderProps {
   email: string;
@@ -88,13 +91,30 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   );
 };
 
-const PreviewTableUI = ({ tablesQueryData }: { tablesQueryData: any }) => {
-  const [selectedTable, setSelectedTable] = useState<string | null>(null);
-  const [selectedTableRowCount, setSelectedTableRowCount] = useState<
-    number | null
-  >(null);
+const PreviewTableUI = ({
+  tablesQueryData,
+  handleSubmit,
+  selectedTable,
+  setSelectedTable,
+  selectedTableRowCount,
+  setSelectedTableRowCount,
+}: {
+  tablesQueryData: any;
+  handleSubmit: any;
+  selectedTable: string | null;
+  setSelectedTable: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedTableRowCount: number | null;
+  setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
+}) => {
+  console.log("awu1 tablesQueryData", tablesQueryData);
 
   const data = tablesQueryData.listed_tables;
+  console.log("awu data", data);
+
+  // based on the selected table, get the tablename and path differetly
+  const tableName = selectedTable?.split(".")[2];
+  const path =
+    selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
 
   return (
     <>
@@ -109,29 +129,28 @@ const PreviewTableUI = ({ tablesQueryData }: { tablesQueryData: any }) => {
             setSelectedTableRowCount={setSelectedTableRowCount}
           />
         </div>
-        <div className="flex-grow">
+        <div className="flex-grow flex-shrink-0 w-0">
           <p className="text-white text-[14px]">Preview</p>
           <div className="relative bg-slate-2 rounded-md mt-4 h-[80vh] border border-slate-4 flex flex-col">
             {selectedTable ? (
               <>
                 <div className="flex flex-row gap-2 items-center px-4 py-2 border-b border-slate-4">
-                  <p className="text-white text-[14px]">{selectedTable}</p>
+                  <p className="text-white text-[14px]">{tableName}</p>
+                  <pre className="px-2 py-1.5 bg-slate-4 rounded-sm text-white text-[12px]">
+                    {path}
+                  </pre>
                   <pre className="px-2 py-1.5 bg-slate-4 rounded-sm text-white text-[12px]">
                     {abbreviateNumber(selectedTableRowCount) + " rows"}
                   </pre>
                 </div>
-                <div className="w-full flex-grow-0 overflow-scroll">
-                  <Image
-                    src="../images/data-example-preview.svg"
-                    alt="preview"
-                    width={1400}
-                    height={700}
-                    draggable={false}
-                  />
+                <div className="flex-grow-0 overflow-x-auto overflow-y-scroll">
+                  <MockTable />
                 </div>
                 <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-white flex items-center justify-center">
                   <button
                     className={`text-[16px] px-4 py-2 bg-blue-600 rounded-md`}
+                    type="button"
+                    onClick={handleSubmit}
                   >
                     Create table
                   </button>
@@ -352,8 +371,12 @@ export default function CreateTable() {
     ""
   );
   const [role, setRole] = useLocalStorageState("role", "");
+  const [connectionType, setConnectionType] = useLocalStorageState(
+    "connectionType",
+    "snowflake"
+  );
 
-  const requestBody = {
+  const connectionRequestBody = {
     accountIdentifier,
     warehouse,
     basicAuthUsername,
@@ -362,6 +385,34 @@ export default function CreateTable() {
     keyPairAuthPrivateKey,
     keyPairAuthPrivateKeyPassphrase,
     role,
+    connectionType,
+  };
+
+  const [selectedTable, setSelectedTable] = useState<string | null>(null);
+  const [selectedTableRowCount, setSelectedTableRowCount] = useState<
+    number | null
+  >(null);
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    console.log("test");
+
+    const createConnectionRequestBody = {
+      ...connectionRequestBody,
+      name:
+        capitalizeString(connectionRequestBody.connectionType) +
+        connectionRequestBody.accountIdentifier,
+      createdAt: new Date().toISOString(),
+      workspaceId: currentWorkspace?.id,
+    };
+    console.log("createConnectionRequestBody", createConnectionRequestBody);
+
+    const createTableRequestBody = {
+      selectedTable,
+      selectedTableRowCount,
+    };
+
+    console.log("createTableRequestBody", createTableRequestBody);
   };
 
   const {
@@ -369,7 +420,7 @@ export default function CreateTable() {
     isLoading: isTablesQueryLoading,
     error: tablesQueryError,
   } = useQuery({
-    queryKey: ["connectionResult", requestBody],
+    queryKey: ["connectionResult", connectionRequestBody],
     queryFn: async () => {
       console.log("test");
       const response = await fetch("/api/test-snowflake-connection", {
@@ -377,7 +428,7 @@ export default function CreateTable() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(connectionRequestBody),
       });
       return await response.json();
     },
@@ -388,6 +439,12 @@ export default function CreateTable() {
     isLoading: isUserLoading,
     error: userError,
   } = useCurrentUser();
+
+  const {
+    data: currentWorkspace,
+    isLoading: isWorkspaceLoading,
+    error: workspaceError,
+  } = useCurrentWorkspace();
 
   if (isUserLoading || isTablesQueryLoading) {
     return (
@@ -411,8 +468,15 @@ export default function CreateTable() {
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full">
-        <div className="bg-slate-1 text-white text-center text-2xl pb-4"></div>
-        <PreviewTableUI tablesQueryData={tablesQueryData} />
+        <div className="bg-slate-1 text-white text-center text-[22px] pb-4"></div>
+        <PreviewTableUI
+          tablesQueryData={tablesQueryData}
+          handleSubmit={handleSubmit}
+          selectedTable={selectedTable}
+          setSelectedTable={setSelectedTable}
+          selectedTableRowCount={selectedTableRowCount}
+          setSelectedTableRowCount={setSelectedTableRowCount}
+        />
       </div>
     </div>
   );
