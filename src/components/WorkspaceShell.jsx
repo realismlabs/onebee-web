@@ -5,7 +5,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery } from '@tanstack/react-query';
 import { getTables } from '../utils/api';
-import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch } from '@phosphor-icons/react';
+import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check } from '@phosphor-icons/react';
 import { stringToVibrantColor, assignColor } from '@/utils/util';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
@@ -25,7 +25,7 @@ function AccountPopover() {
           <Popover.Button
             className={`
                 ${open ? '' : 'text-opacity-90'}
-                flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md w-full`}
+                flex flex-row gap-2 group hover:bg-slate-4 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md w-full`}
           >
             <UserCircle
               size={20}
@@ -36,16 +36,16 @@ function AccountPopover() {
           </Popover.Button>
           <Transition
             as={Fragment}
-            enter="transition ease-out duration-200"
+            enter="transition ease-out duration-100"
             enterFrom="opacity-0 translate-y-1"
             enterTo="opacity-100 translate-y-0"
-            leave="transition ease-in duration-150"
+            leave="transition ease-in duration-50"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
             <Popover.Panel className="absolute mb-[32px] bottom-0 ">
-              <div className="overflow-hidden rounded-md shadow-2xl ring-1 ring-black ring-opacity-5 bg-black w-[180px] p-[8px] text-[13px] cursor-pointer">
-                <div className="hover:bg-slate-1 px-[8px] py-[4px]" onClick={handleLogout}>Log out</div>
+              <div className="overflow-hidden rounded-md shadow-2xl ring-1 ring-black ring-opacity-5 bg-slate-2 w-[180px] p-[8px] text-[13px] cursor-pointer">
+                <div className="hover:bg-slate-4 px-[8px] py-[4px]" onClick={handleLogout}>Log out</div>
               </div>
             </Popover.Panel>
           </Transition>
@@ -55,7 +55,7 @@ function AccountPopover() {
   )
 }
 
-function WorkspacePopoverContents() {
+function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   const router = useRouter();
 
   const {
@@ -79,13 +79,14 @@ function WorkspacePopoverContents() {
 
   return (
     <>
+      <div className="px-[16px] pt-[12px] pb-[4px] text-slate-11 text-[12px]">{currentUser.email}</div>
       {workspacesForUserData.map((workspace) => (
         <Popover.Button key={workspace.id}>
           <div onClick={(e) => {
             router.push(`/workspace/${workspace.id}`);
           }}>
-            <div className="overflow-hidden shadow-2xl ring-1 ring-black ring-opacity-5 bg-black w-[180px] p-[8px] text-[13px] cursor-pointer">
-              <div className="hover:bg-slate-1 px-[8px] py-[4px] text-left flex flex-row gap-2">
+            <div className="w-[240px] px-[8px] text-[13px] cursor-pointer">
+              <div className="hover:bg-slate-4 px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center">
                 <Image
                   src={workspace.iconUrl}
                   width="24"
@@ -95,17 +96,44 @@ function WorkspacePopoverContents() {
                   className="rounded-sm"
                 />
                 {workspace.name}
+                {workspace.id === currentWorkspace.id && (
+                  <div className="ml-auto text-white">
+                    <Check
+                      size={16}
+                      weight="bold"
+                      className="text-white group-hover:text-slate-11 transition-all duration-100"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </Popover.Button>
       ))
       }
+      <div className="flex flex-col px-[8px] py-[12px] mt-[12px] border-t border-slate-4 w-full text-[12px] text-slate-11">
+        <Popover.Button>
+          <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
+            onClick={(e) => {
+              router.push(`/create-workspace`);
+            }}>
+            Create a new workspace
+          </div>
+        </Popover.Button>
+        <Popover.Button>
+          <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
+            onClick={(e) => {
+              router.push(`/join-workspace`);
+            }}>
+            Join an existing workspace
+          </div>
+        </Popover.Button>
+      </div>
     </>
   );
 }
 
-function WorkspacePopover({ currentWorkspace }) {
+function WorkspacePopover({ currentWorkspace, currentUser }) {
 
   return (
     <Popover className="relative">
@@ -114,7 +142,7 @@ function WorkspacePopover({ currentWorkspace }) {
           <Popover.Button
             className={`
                 ${open ? 'bg-slate-3' : 'hover:bg-slate-3 active:bg-slate-4'}
-                flex flex-row gap-3 items-center mx-[12px] focus:outline-none p-[6px] pr-[12px] rounded-md`}
+                flex flex-row gap-3 items-center mx-[10px] focus:outline-none pl-[8px] pr-[12px] py-[6px] rounded-md`}
           >
             <Image
               src={currentWorkspace.iconUrl}
@@ -137,14 +165,14 @@ function WorkspacePopover({ currentWorkspace }) {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute mt-[32px] top-0 rounded-md bg-black flex flex-col items-start justify-start">
-              <WorkspacePopoverContents />
+            <Popover.Panel className="absolute mt-[44px] ml-[12px] top-0 rounded-md bg-slate-2 shadow-2xl border border-slate-4 flex flex-col items-start justify-start">
+              <WorkspacePopoverContents currentUser={currentUser} currentWorkspace={currentWorkspace} />
             </Popover.Panel>
           </Transition>
         </>
       )
       }
-    </Popover >
+    </Popover>
   )
 }
 
@@ -200,7 +228,7 @@ const WorkspaceShell = () => {
 
   return (
     <div className="bg-slate-1 py-[10px] w-[240px] text-[13px] text-white flex flex-col border-r border-slate-6">
-      <WorkspacePopover currentWorkspace={currentWorkspace} />
+      <WorkspacePopover currentWorkspace={currentWorkspace} currentUser={currentUser} />
       {/* core */}
       <div className="mt-2 flex flex-col gap-4 px-[9px]">
         <Link href={`/workspace/${currentWorkspace.id}`}>

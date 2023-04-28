@@ -59,10 +59,10 @@ export default function CreateWorkspace() {
           creatorUserId: currentUser.id,
         });
         console.log("Created workspace", result);
+        router.push(`/workspace/${result.id}`);
       } catch (e) {
         console.log("Couldn't create workspace", e);
       }
-      router.push(`/${currentWorkspace.id}`);
     }
   };
 
@@ -115,7 +115,7 @@ export default function CreateWorkspace() {
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full pt-32">
+      <div className="flex flex-col justify-center items-center w-full pt-12">
         <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
           Name your workspace
         </div>
@@ -164,7 +164,7 @@ export default function CreateWorkspace() {
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white text-[14px] font-medium py-2 px-4 rounded-md mt-4"
           >
-            Continue
+            Create workspace
           </button>
           <div className="text-blue-500 text-center text-[14px] mt-12">
             <Link href="/join-workspace">Join an existing workspace →</Link>

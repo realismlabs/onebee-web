@@ -50,9 +50,7 @@ export default function JoinWorkspace() {
     queryKey: ["invites", currentUser?.email],
     enabled: currentUser?.email != null,
     queryFn: async () => {
-      console.log("starting query for", currentUser.email);
       const result = await getInvitesForUserEmail(currentUser.email);
-      console.log("result", result);
       return result;
     },
     staleTime: 1000, // 1 second
@@ -72,11 +70,19 @@ export default function JoinWorkspace() {
     })),
   });
 
-  if (isUserLoading || invitesQuery.isLoading) {
+  console.log("workspacesQuery", workspacesQuery);
+
+  // if any of workspacesQuery[0].isLoading, workspacesQuery[1].isLoading, etc. is true, then isLoading is true
+  const isWorkspacesQueriesLoading = workspacesQuery.some(
+    (query) => query.isLoading
+  );
+  const isWorkspacesQueriesError = workspacesQuery.some((query) => query.error);
+
+  if (isUserLoading || invitesQuery.isLoading || isWorkspacesQueriesLoading) {
     return <div className="h-screen bg-slate-1 text-white">Loading..</div>;
   }
 
-  if (userError || invitesQuery.error) {
+  if (userError || invitesQuery.error || isWorkspacesQueriesError) {
     return (
       <div className="text-white">
         Error: {JSON.stringify(userError)} invitesQuery error:{" "}
@@ -90,7 +96,7 @@ export default function JoinWorkspace() {
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full pt-32">
+      <div className="flex flex-col justify-center items-center w-full pt-12 bg-slate-1 pb-32">
         <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
           Join a workspace
         </div>
@@ -108,11 +114,6 @@ export default function JoinWorkspace() {
                   query.data && query.data.id === invite.workspaceId
               )?.data;
 
-              let base64Icon: string | null = "";
-              if (typeof workspaceDetail.name == "string") {
-                base64Icon = generateIcon(workspaceDetail.name);
-              }
-
               return (
                 <>
                   <div key={invite.id}>
@@ -120,14 +121,7 @@ export default function JoinWorkspace() {
                       <div
                         className={`h-[48px] w-[48px] flex items-center justify-center text-[18px] rounded-md`}
                         style={{
-                          backgroundImage:
-                            typeof base64Icon === "string"
-                              ? `url(${base64Icon})`
-                              : "",
-                          backgroundColor:
-                            typeof base64Icon !== "string"
-                              ? stringToVibrantColor(workspaceDetail.name)
-                              : "",
+                          backgroundImage: `url(${workspaceDetail.iconUrl})`,
                         }}
                       >
                         {workspaceDetail.name.slice(0, 1)}
