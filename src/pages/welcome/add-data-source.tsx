@@ -1,6 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
 import Link from "next/link";
-import { useUser } from "../../components/UserContext";
 import router from "next/router";
 import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -9,28 +8,27 @@ import { Disclosure, Transition } from "@headlessui/react";
 import LogoSnowflake from "../../components/LogoSnowflake";
 import LogoBigQuery from "../../components/LogoBigQuery";
 import LogoPostgres from "../../components/LogoPostgres";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useCurrentWorkspace } from "../../hooks/useCurrentWorkspace";
 
 interface AccountHeaderProps {
   email: string;
 }
 
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const { user, logout } = useUser();
-
   const handleLogout = () => {
-    logout();
     router.push("/login?lo=true");
   };
 
   return (
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
-        <p className="text-xs text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-xs text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
+        <p className="text-[13px] text-white font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-xs text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -64,6 +62,41 @@ const InviteTeammateDialog = ({
     setIsValid(true);
   };
 
+  const createInvite = async (
+    workspaceId: number,
+    inviter_email: string,
+    recipient_email: string
+  ) => {
+    const api_url = process.env.NEXT_PUBLIC_API_URL;
+    try {
+      const response = await fetch(
+        `${api_url}/api/workspaces/${workspaceId}/invite`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            inviter_email,
+            recipient_email,
+            accepted: false,
+            workspaceId: workspaceId,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const invite = await response.json();
+        console.log("Invite created:", invite);
+      } else {
+        const error = await response.json();
+        console.error("Error creating invite:", error.message);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (emailAddresses === "") {
@@ -84,13 +117,6 @@ const InviteTeammateDialog = ({
         setLoading(true);
         setShowToast(false);
 
-        const mockApiCall = new Promise<void>((resolve) => {
-          setTimeout(() => {
-            console.log("sending email to ", emailAddresses);
-            resolve();
-          }, 1000);
-        });
-
         const delay = new Promise<void>((resolve) => setTimeout(resolve, 2000));
 
         // count the number of elements in csv string emailAddresses
@@ -100,7 +126,18 @@ const InviteTeammateDialog = ({
           emailAddressesCount === 1 ? "teammate" : "teammates"
         }!`;
 
-        Promise.all([mockApiCall, delay]).then(() => {
+        console.log("hello");
+
+        const inviteAllTeammates = async () => {
+          console.log("emailAddressesArray: ", emailAddressesArray);
+          const workspaceId = 1;
+          for (const recipient_email of emailAddressesArray) {
+            console.log("starting to invite: ", recipient_email);
+            await createInvite(workspaceId, sender_email, recipient_email);
+          }
+        };
+
+        Promise.all([inviteAllTeammates(), delay]).then(() => {
           setLoading(false);
           setOpen(false);
           setToastMessage(inviteResultMessage);
@@ -128,7 +165,7 @@ const InviteTeammateDialog = ({
       sender_email_name.slice(1).toLowerCase();
 
     return (
-      <div className="mt-4 h-[280px] overflow-y-scroll p-4 bg-white text-black rounded-md text-[12px] space-y-2">
+      <div className="mt-4 h-[280px] overflow-y-scroll p-4 bg-white text-black rounded-md text-[13px] space-y-2">
         <div className="text-slate-10 pb-1">
           <p>From: Dataland Support &lt;no-reply@dataland.io&gt;</p>
           <p>Subject: Help {sender_email_name} add a data source to Dataland</p>
@@ -162,7 +199,7 @@ const InviteTeammateDialog = ({
           href="https://dataland.io"
           className="text-blue-500 underline mb-2"
         >
-          dataland.io/example-join
+          dataland.io/join-workspace/workspace-id
         </Link>
         <hr className="pb-2" />
         <Link href="https://dataland.io">
@@ -178,8 +215,11 @@ const InviteTeammateDialog = ({
   return (
     <div>
       <Dialog.Root open={open} onOpenChange={setOpen}>
-        <Dialog.Trigger tabIndex={-1}>
-          <div className="text-sm text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16">
+        <Dialog.Trigger tabIndex={-1} className="focus:outline-none">
+          <div
+            className="text-[14px] text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16 focus:outline-none"
+            tabIndex={-1}
+          >
             <p className="text-slate-10">Don&apos;t have credentials?</p>
             <p className="text-white">Invite a teammate to help →</p>
           </div>
@@ -195,14 +235,11 @@ const InviteTeammateDialog = ({
                 <div className="flex flex-col gap-4 mt-6">
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col flex-grow gap-1">
-                      <label className="text-xs w-[120px]">
+                      <label className="text-[14px] w-[120px]">
                         Email address(es)
                       </label>
-                      <p className="text-[11px] text-slate-11">
-                        Enter multiple email addresses separated by commas.
-                      </p>
                       <input
-                        className={`rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
+                        className={`rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
                     ${
                       isValid === false
                         ? "border-red-500"
@@ -211,7 +248,7 @@ const InviteTeammateDialog = ({
                         required
                         value={emailAddresses}
                         onChange={(e) => handleEmailAddressChange(e)}
-                        placeholder="teammate@example.com"
+                        placeholder="teammate@example.com, teammate2@example.com"
                       />
                       {errorMessage !== "" ? (
                         <p className="text-[11px] text-red-500">
@@ -222,9 +259,9 @@ const InviteTeammateDialog = ({
                       )}
                     </div>
                     <div className="flex flex-col gap-2">
-                      <label className="text-xs w-[120px]">Message</label>
+                      <label className="text-[14px] w-[120px]">Message</label>
                       <textarea
-                        className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 h-36 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                        className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 h-48 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10 leading-normal"
                         required
                         title="Custom message"
                         value={customMessage}
@@ -248,7 +285,9 @@ const InviteTeammateDialog = ({
                                 open ? "rotate-90 transform" : ""
                               } text-slate-12`}
                             />
-                            <span>Toggle email preview</span>
+                            <span className="text-[14px]">
+                              Toggle email preview
+                            </span>
                           </Disclosure.Button>
                           <Disclosure.Panel className="">
                             <EmailPreview
@@ -264,12 +303,12 @@ const InviteTeammateDialog = ({
                 </div>
                 <div className="mt-5 flex justify-end gap-2">
                   <Dialog.Close asChild>
-                    <button className="px-4 h-[36px] bg-slate-3 rounded-md text-xs font-medium leading-none focus:outline-none hover:bg-slate-4">
+                    <button className="px-4 h-[36px] bg-slate-3 rounded-md text-[13px] font-medium leading-none focus:outline-none hover:bg-slate-4">
                       Cancel
                     </button>
                   </Dialog.Close>
                   <button
-                    className={`px-4 h-[36px] bg-blue-600 rounded-md text-xs font-medium leading-none focus:outline-none w-[97px]
+                    className={`px-4 h-[36px] bg-blue-600 rounded-md text-[13px] font-medium leading-none focus:outline-none w-[105px]
                   ${loading ? "opacity-50" : "hover:bg-blue-700"}`}
                     type="submit"
                     disabled={loading}
@@ -286,12 +325,14 @@ const InviteTeammateDialog = ({
                   </button>
                 </div>
               </form>
-              <button
-                className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
-                aria-label="Close"
-              >
-                <X size={16} weight="bold" />
-              </button>
+              <Dialog.Close asChild>
+                <button
+                  className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+                  aria-label="Close"
+                >
+                  <X size={16} weight="bold" />
+                </button>
+              </Dialog.Close>
             </Dialog.Content>
           </div>
         </Dialog.Portal>
@@ -341,28 +382,44 @@ const Toast: React.FC<ToastProps> = ({ message, duration }) => {
 };
 
 export default function AddDataSource() {
-  const { user } = useUser();
-  const email = user?.email ?? "placeholder@example.com";
-  const workspace_name = "Acme";
+  const {
+    data: currentUser,
+    isLoading: isUserLoading,
+    error: userError,
+  } = useCurrentUser();
 
-  const [allowOthersFromDomainChecked, setAllowOthersFromDomainChecked] =
-    useState(true);
+  const {
+    data: currentWorkspace,
+    isLoading: isWorkspaceLoading,
+    error: workspaceError,
+  } = useCurrentWorkspace();
 
-  function handleAllowOthersFromDomainCheckboxChange() {
-    setAllowOthersFromDomainChecked(!allowOthersFromDomainChecked);
+  if (isUserLoading || isWorkspaceLoading) {
+    return <div className="h-screen bg-slate-1"></div>;
   }
+
+  if (userError || workspaceError) {
+    return (
+      <div>
+        Error: {JSON.stringify(userError)} {JSON.stringify(workspaceError)}
+      </div>
+    );
+  }
+
+  const email = currentUser.email;
+  const workspace_name = currentWorkspace.name;
 
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-white text-center text-2xl pb-4">
+        <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
           Connect a data source
         </div>
         <form className="flex flex-col gap-4 mt-4">
           <div className="flex gap-4">
             <Link href="/welcome/add-snowflake">
-              <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
                   <LogoSnowflake />
                 </div>
@@ -370,7 +427,7 @@ export default function AddDataSource() {
               </div>
             </Link>
             <Link href="/welcome/add-bigquery">
-              <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
                   <LogoBigQuery />
                 </div>
@@ -378,7 +435,7 @@ export default function AddDataSource() {
               </div>
             </Link>
             <Link href="/welcome/add-postgres">
-              <div className="bg-slate-3 text-white text-sm w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
                   <LogoPostgres />
                 </div>
@@ -387,9 +444,11 @@ export default function AddDataSource() {
             </Link>
           </div>
           <InviteTeammateDialog email={email} workspace={workspace_name} />
-          <div className="text-white text-sm text-center w-full cursor-pointer">
-            Do this later
-          </div>
+          <Link href={`/workspace/${currentWorkspace.id}`}>
+            <div className="text-white text-[14px] text-center w-full cursor-pointer">
+              Do this later
+            </div>
+          </Link>
         </form>
       </div>
     </div>

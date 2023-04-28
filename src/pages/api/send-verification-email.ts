@@ -1,35 +1,37 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-interface SnowflakeData {
-  accountIdentifier: string;
-  warehouse: string;
-  basicAuthUsername: string;
-  basicAuthPassword: string;
-  keyPairAuthUsername: string;
-  keyPairAuthPrivateKey: string;
-  keyPairAuthPrivateKeyPassphrase: string;
-  role: string;
+interface sendVerificationEmailData {
+  email: string;
+  verification_token: string;
 }
 
 const endpoint =
-  "https://us-central1-dataland-demo-995df.cloudfunctions.net/test_snowflake_connection";
+  "https://us-central1-dataland-demo-995df.cloudfunctions.net/send_verification_email";
 
-async function testConnection(requestBody: SnowflakeData) {
+async function sendVerificationEmail(requestBody: sendVerificationEmailData) {
+  const email = requestBody.email;
+  const verification_token = requestBody.verification_token;
+  const app_url = process.env.NEXT_PUBLIC_APP_URL;
+  const verification_url = `${app_url}/verify-email?token=${verification_token}`;
+
   try {
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify({
+        email,
+        verification_url,
+      }),
     });
 
     return await response.json();
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in testConnection:", error.message);
+      console.error("Error in sendVerificationEmail:", error.message);
     } else {
-      console.error("Unknown error in testConnection:", error);
+      console.error("Unknown error in sendVerificationEmail:", error);
     }
     throw error;
   }
@@ -48,7 +50,7 @@ export default async function handler(
 
   if (req.method === "POST") {
     try {
-      const data = await testConnection(req.body);
+      const data = await sendVerificationEmail(req.body);
       res.status(200).json(data);
     } catch (error) {
       if (error instanceof Error) {

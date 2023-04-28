@@ -74,7 +74,7 @@ export default function Login() {
                 </Link>
               </header>
               <h1 className="text-xl ">Forgot your password?</h1>
-              <h3 className="text-sm text-slate-11">
+              <h3 className="text-[14px] text-slate-11">
                 We&apos;ll email you a link to reset your password.
               </h3>
               <div className="flex flex-col gap-4 mt-8 w-full">
@@ -83,13 +83,13 @@ export default function Login() {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="email"
-                      className="text-white text-sm font-medium"
+                      className="text-white text-[14px] font-medium"
                     >
                       Email
                     </label>
                     <input
                       id="email"
-                      className={`bg-slate-3 hover:border-slate-7 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
+                      className={`bg-slate-3 hover:border-slate-7 border border-slate-6 text-white text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
                         errorMessage && "border-red-9"
                       }
                       focus:outline-none focus:ring-1 focus:ring-blue-600`}
@@ -99,10 +99,12 @@ export default function Login() {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                     {errorMessage && (
-                      <div className="text-red-9 text-xs">{errorMessage}</div>
+                      <div className="text-red-9 text-[13px]">
+                        {errorMessage}
+                      </div>
                     )}
                     <button
-                      className={`bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center mt-4
+                      className={`bg-blue-600 text-white text-[14px] font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center mt-4
                       ${loading ? "opacity-50" : ""}`}
                       type="submit"
                       disabled={loading}
@@ -116,7 +118,7 @@ export default function Login() {
                       )}
                     </button>
                     {emailSent && (
-                      <div className="text-green-9 mt-2 text-xs p-4 flex flex-row gap-2 bg-slate-2 border border-slate-4 items-center rounded-md">
+                      <div className="text-green-9 mt-2 text-[13px] p-4 flex flex-row gap-2 bg-slate-2 border border-slate-4 items-center rounded-md">
                         <CheckCircle
                           size={20}
                           weight="fill"

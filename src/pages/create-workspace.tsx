@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import router from "next/router";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { createWorkspace } from "@/utils/api";
 
 interface AccountHeaderProps {
@@ -50,20 +51,18 @@ export default function CreateWorkspace() {
         workspaceName,
         allowOthersFromDomainChecked,
       });
-
+      // TODO: Push to home of the new workspace
       try {
-        const response = await createWorkspace({
+        const result = await createWorkspace({
           name: workspaceName,
           createdAt: new Date().toISOString(),
           creatorUserId: currentUser.id,
         });
-
-        console.log("Created workspace", response);
+        console.log("Created workspace", result);
+        router.push(`/workspace/${result.id}`);
       } catch (e) {
         console.log("Couldn't create workspace", e);
       }
-
-      router.push("/welcome/add-data-source");
     }
   };
 
@@ -79,6 +78,12 @@ export default function CreateWorkspace() {
     isLoading: isUserLoading,
     error: userError,
   } = useCurrentUser();
+
+  const {
+    data: currentWorkspace,
+    isLoading: isWorkspaceLoading,
+    error: workspaceError,
+  } = useCurrentWorkspace();
 
   useEffect(() => {
     if (currentUser?.email) {
@@ -110,7 +115,7 @@ export default function CreateWorkspace() {
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full pt-32">
+      <div className="flex flex-col justify-center items-center w-full pt-12">
         <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
           Name your workspace
         </div>
@@ -159,8 +164,11 @@ export default function CreateWorkspace() {
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white text-[14px] font-medium py-2 px-4 rounded-md mt-4"
           >
-            Continue
+            Create workspace
           </button>
+          <div className="text-blue-500 text-center text-[14px] mt-12">
+            <Link href="/join-workspace">Join an existing workspace →</Link>
+          </div>
         </form>
       </div>
     </div>

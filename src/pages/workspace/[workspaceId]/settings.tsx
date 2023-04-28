@@ -1,16 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import router from "next/router";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
+import { createWorkspace } from "@/utils/api";
+import WorkspaceLayout from "@/components/WorkspaceLayout";
 
 interface AccountHeaderProps {
   email: string;
 }
-
-const handleSubmit = async () => {
-  console.log("clicked");
-  router.push("/welcome/create-workspace");
-};
 
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   const handleLogout = () => {
@@ -35,12 +33,18 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   );
 };
 
-export default function Welcome() {
+export default function Settings() {
   const {
     data: currentUser,
     isLoading: isUserLoading,
     error: userError,
   } = useCurrentUser();
+
+  const {
+    data: currentWorkspace,
+    isLoading: isWorkspaceLoading,
+    error: workspaceError,
+  } = useCurrentWorkspace();
 
   if (isUserLoading) {
     return <div className="h-screen bg-slate-1"></div>;
@@ -53,24 +57,14 @@ export default function Welcome() {
   const email = currentUser.email;
 
   return (
-    <div className="h-screen bg-slate-1">
-      <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
-          Welcome to Dataland, Arthur.
+    <WorkspaceLayout>
+      <div className="h-screen bg-slate-1">
+        <div className="flex flex-col justify-center items-center w-full pt-32">
+          <div className="bg-slate-1 text-white text-left flex flex-col items-start text-[22px] pb-4 w-[800px] gap-4">
+            <div className="items-start text-left">TODO: Settings!</div>
+          </div>
         </div>
-        <div className="text-slate-11 max-w-md text-center text-lg pb-8">
-          Dataland makes it easy for your whole team to browse data from your
-          data warehouse.
-        </div>
-        <button
-          type="button"
-          className="bg-blue-600 hover:bg-blue-700 text-white text-[14px] font-medium py-2 px-4 rounded-md"
-          onClick={handleSubmit}
-        >
-          Get started
-        </button>
       </div>
-    </div>
+    </WorkspaceLayout>
   );
 }

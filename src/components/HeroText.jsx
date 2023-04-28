@@ -3,10 +3,10 @@ import Image from 'next/image';
 import styles from "../styles/Home.module.css";
 
 const TextCycler = () => {
-  const [title, setTitle] = useState('everyone');
+  const [title, setTitle] = useState('every role');
 
   // wrap initialization of roles in useMemo to avoid re-creating the array on every render
-  const roles = useMemo(() => ['everyone', 'operations', 'support', 'customer success'], []);
+  const roles = useMemo(() => ['every role', 'operations', 'support', 'customer success'], []);
 
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [action, setAction] = useState('deleting');
@@ -28,8 +28,8 @@ const TextCycler = () => {
           setTitle(title + newRole[currentTyped.length]);
         } else {
           setAction('waiting');
-          // Wait 3 seconds before deleting if the title is 'everyone'
-          const delay = title === 'everyone' ? 3000 : 1500;
+          // Wait 3 seconds before deleting if the title is 'every role'
+          const delay = title === 'every role' ? 3000 : 1500;
           setTimeout(() => setAction('deleting'), delay);
         }
       }
@@ -178,7 +178,7 @@ function HeroText(type) {
       <h1
         className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-white pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
       >
-        Fast data browsing <br className="sm:hidden"></br>for everyone
+        Fast data browsing <br className="sm:hidden"></br>for every role
       </h1>
       <div className="max-w-3xl text-center md:text-lg md:mb-2 lg:mb-0 text-md text-[#958eb3] inline-block">
         Stop building one-off data UIs. Give your whole team a

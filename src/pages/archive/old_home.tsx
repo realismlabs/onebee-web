@@ -100,7 +100,7 @@ export default function Home() {
             </div>
           </div>
           <div
-            className={`inline-block pt-8 sm:absolute md:pt-[460px] lg:pt-[600px] md:inset-0 z-30 m-auto w-full text-center text-white text-sm md:text-md ${styles.heroTextContainer}`}
+            className={`inline-block pt-8 sm:absolute md:pt-[460px] lg:pt-[600px] md:inset-0 z-30 m-auto w-full text-center text-white text-[14px] md:text-[16px] ${styles.heroTextContainer}`}
           >
             <div className="flex justify-center">
               <h2 className="max-w-md md:max-w-md">
@@ -162,11 +162,11 @@ export default function Home() {
             opacity: 0,
           }}
         >
-          <h2 className="text-md md:text-lg lg:text-xl">
+          <h2 className="text-[16px] md:text-lg lg:text-xl">
             Dataland is a new kind of data browser that delivers a seamless user
             experience, regardless of data scale.{" "}
           </h2>
-          <div className="text-sm md:text-md lg:text-lg space-y-4">
+          <div className="text-[14px] md:text-[16px] lg:text-lg space-y-4">
             <p className="text-slate-11">
               Dataland lets your internal teams access the data in your data
               warehouse using a familiar spreadsheet-like UI that works the same
@@ -276,7 +276,7 @@ export default function Home() {
               <h1 className="text-3xl w-[240px]">
                 Full-text search that just works
               </h1>
-              <p className="text-md max-w-xl text-slate-11">
+              <p className="text-[16px] max-w-xl text-slate-11">
                 Just ⌘F to launch a case insensitive, substring search that
                 returns results instantly. Instantly jump to the next search
                 result a million rows away.
@@ -297,7 +297,7 @@ export default function Home() {
             <div className="flex flex-col items-center gap-4 text-center">
               <h1 className="text-3xl text-white">Rich cell types</h1>
               <div className="space-y-0 text-slate-11">
-                <p className="text-md max-w-xl">
+                <p className="text-[16px] max-w-xl">
                   Rich cell types help users understand data, faster.
                 </p>
                 <p>
@@ -417,7 +417,7 @@ export default function Home() {
               />
               <h1 className="text-3xl text-white">Row navigation</h1>
               <div className="space-y-4 text-slate-11">
-                <p className="text-md max-w-xl">
+                <p className="text-[16px] max-w-xl">
                   Dataland makes it easy to introspect rows in wide tables. Just
                   double-click on a row to summon an object view.
                 </p>

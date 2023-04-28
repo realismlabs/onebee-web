@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "mock-api": "json-server --watch db.json --routes routes.json --port 5000"
+    "mock-api": "node mock-db/json-server.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",

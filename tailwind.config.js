@@ -29,6 +29,12 @@ module.exports = {
         slate: radixColors.slateDark,
         purple: radixColors.purpleDark,
         red: radixColors.redDark,
+        amber: radixColors.amberDark,
+        green: radixColors.greenDark,
+        purple: radixColors.purpleDark,
+        plum: radixColors.plumDark,
+        pink: radixColors.pinkDark,
+        cyan: radixColors.cyanDark,
       },
     }), require('@tailwindcss/forms'),],
 }

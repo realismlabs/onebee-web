@@ -1,7 +1,6 @@
 import React, { useState, FC, lazy } from "react";
 import { useQueryClient, QueryClient, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useUser } from "../../components/UserContext";
 import useCopyToClipboard from "../../components/useCopyToClipboard";
 import router from "next/router";
 import Image from "next/image";
@@ -16,6 +15,7 @@ import {
 import { Switch } from "@headlessui/react";
 import WordTooltipDemo from "../../components/WordTooltipDemo";
 import { useLocalStorageState } from "../../utils/util";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 const PreviewTablesDialog = lazy(
   () => import("../../components/PreviewTablesDialog")
@@ -26,22 +26,19 @@ interface AccountHeaderProps {
 }
 
 const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const { user, logout } = useUser();
-
   const handleLogout = () => {
-    logout();
     router.push("/login?lo=true");
   };
 
   return (
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
-        <p className="text-xs text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-xs text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
+        <p className="text-[13px] text-white font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-xs text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -76,9 +73,6 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
 };
 
 export default function AddSnowflake() {
-  const { user } = useUser();
-  const email = user?.email ?? "placeholder@example.com";
-
   // Snowflake vars
   const [useCustomHost, setUseCustomHost] = useLocalStorageState(
     "useCustomHost",
@@ -113,6 +107,10 @@ export default function AddSnowflake() {
     ""
   );
   const [role, setRole] = useLocalStorageState("role", "");
+  const [connectionType, setConnectionType] = useLocalStorageState(
+    "connectionType",
+    "snowflake"
+  );
 
   // Connection test vars
   const [connectionResult, setConnectionResult] = useState<any>({
@@ -153,6 +151,7 @@ export default function AddSnowflake() {
     keyPairAuthPrivateKey,
     keyPairAuthPrivateKeyPassphrase,
     role,
+    connectionType,
   };
 
   const connectionTestQuery = useQuery({
@@ -214,13 +213,28 @@ export default function AddSnowflake() {
   };
 
   //
+  const {
+    data: currentUser,
+    isLoading: isUserLoading,
+    error: userError,
+  } = useCurrentUser();
+
+  if (isUserLoading) {
+    return <div className="h-screen bg-slate-1"></div>;
+  }
+
+  if (userError) {
+    return <div>Error: {JSON.stringify(userError)}</div>;
+  }
+
+  const email = currentUser.email;
 
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col mx-auto w-[600px] text-white gap-2 mt-4">
-        <Link href="/welcome/add-data-source">
-          <div className="flex flex-row items-center gap-2 text-xs text-slate-11">
+      <div className="flex flex-col mx-auto w-[640px] text-white gap-2 mt-4">
+        <Link href="/welcome/add-data-source" className="self-start">
+          <div className="flex flex-row items-center gap-2 text-[13px] text-slate-11 self-start">
             <CaretLeft size={16} weight="bold" />
             <p>Back to sources</p>
           </div>
@@ -233,8 +247,11 @@ export default function AddSnowflake() {
             alt="Snowflake logo"
             draggable={false}
           ></Image>
-          <p className="flex-grow text-md">Set up Snowflake connection</p>
-          <Link href="/" className="text-xs px-3 py-2 bg-slate-3 rounded-md">
+          <p className="flex-grow text-[16px]">Set up Snowflake connection</p>
+          <Link
+            href="/"
+            className="text-[13px] px-3 py-2 bg-slate-3 rounded-md"
+          >
             Snowflake docs
           </Link>
         </div>
@@ -243,7 +260,7 @@ export default function AddSnowflake() {
           {useCustomHost === false ? (
             <>
               <div className="flex flex-row w-full items-center mt-4 gap-4">
-                <label className="text-xs min-w-[120px]">
+                <label className="text-[13px] min-w-[120px]">
                   <WordTooltipDemo
                     display_text={"Account identifier"}
                     tooltip_content={
@@ -261,18 +278,18 @@ export default function AddSnowflake() {
                 </label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-l block w-full bg-slate-3 z-10 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="rounded-l block w-full bg-slate-3 z-10 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={accountIdentifier}
                     onChange={(e) => setAccountIdentifier(e.target.value)}
                     placeholder="account_identifier"
                   />
-                  <div className="rounded-r block bg-slate-6 text-white border-t border-r border-b border-slate-6 text-xs py-2 px-2 ">
+                  <div className="rounded-r block bg-slate-6 text-white border-t border-r border-b border-slate-6 text-[13px] py-2 px-2 ">
                     .snowflakecomputing.com
                   </div>
                 </div>
                 <div className="flex flex-row gap-2 items-center">
-                  <label className="text-xs w-20">Custom host?</label>
+                  <label className="text-[13px]">Custom host?</label>
                   <Switch
                     checked={useCustomHost}
                     onChange={setUseCustomHost}
@@ -292,10 +309,10 @@ export default function AddSnowflake() {
           ) : (
             <>
               <div className="flex flex-row w-full items-center mt-4 gap-4">
-                <label className="text-xs w-[120px]">Custom host</label>
+                <label className="text-[13px] w-[120px]">Custom host</label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={customHost}
                     onChange={(e) => setCustomHost(e.target.value)}
@@ -303,7 +320,7 @@ export default function AddSnowflake() {
                   />
                 </div>
                 <div className="flex flex-row gap-2 items-center">
-                  <label className="text-xs w-20">Custom host?</label>
+                  <label className="text-[13px]">Custom host?</label>
                   <Switch
                     checked={useCustomHost}
                     onChange={setUseCustomHost}
@@ -320,7 +337,7 @@ export default function AddSnowflake() {
                 </div>
               </div>
               <div className="flex flex-row w-full items-center mt-4 gap-4">
-                <label className="text-xs w-[120px]">
+                <label className="text-[13px] w-[120px]">
                   <WordTooltipDemo
                     display_text={"Account identifier"}
                     tooltip_content={
@@ -335,7 +352,7 @@ export default function AddSnowflake() {
                 </label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={customHostAccountIdentifier}
                     onChange={(e) =>
@@ -348,7 +365,7 @@ export default function AddSnowflake() {
             </>
           )}
           <div className="flex flex-row items-center mt-4 gap-4">
-            <label className="text-xs w-[120px]">
+            <label className="text-[13px] w-[120px]">
               <WordTooltipDemo
                 display_text={"Warehouse"}
                 tooltip_content={
@@ -363,7 +380,7 @@ export default function AddSnowflake() {
             </label>
             <div className="flex flex-row items-center flex-grow">
               <input
-                className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                className="rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                 required
                 placeholder="i.e. SMALL_WH"
                 value={warehouse}
@@ -372,11 +389,12 @@ export default function AddSnowflake() {
             </div>
           </div>
           <div className="flex flex-row items-center mt-4 gap-4">
-            <label className="text-xs w-[120px]">Auth method</label>
+            <label className="text-[13px] w-[120px]">Auth method</label>
             <select
               title="Auth method"
-              className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
+              className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
               onChange={(e) => setSnowflakeAuthMethod(e.target.value)}
+              value={snowflakeAuthMethod}
             >
               <option value="user_pass">Username / password</option>
               <option value="key_value">Key pair</option>
@@ -386,9 +404,9 @@ export default function AddSnowflake() {
             {snowflakeAuthMethod === "user_pass" ? (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-row items-center mt-4 gap-4">
-                  <label className="text-xs w-[120px]">Username</label>
+                  <label className="text-[13px] w-[120px]">Username</label>
                   <input
-                    className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     placeholder=""
                     title="Username"
@@ -397,9 +415,9 @@ export default function AddSnowflake() {
                   />
                 </div>
                 <div className="flex flex-row items-center gap-4">
-                  <label className="text-xs w-[120px]">Password</label>
+                  <label className="text-[13px] w-[120px]">Password</label>
                   <input
-                    className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     placeholder=""
                     title="Password"
@@ -412,9 +430,9 @@ export default function AddSnowflake() {
               <div>
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-row items-center mt-4 gap-4">
-                    <label className="text-xs w-[120px]">Username</label>
+                    <label className="text-[13px] w-[120px]">Username</label>
                     <input
-                      className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                      className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                       required
                       placeholder=""
                       title="Key Pair Username"
@@ -423,7 +441,7 @@ export default function AddSnowflake() {
                     />
                   </div>
                   <div className="flex flex-row items-start gap-4">
-                    <label className="text-xs w-[120px] mt-2">
+                    <label className="text-[13px] w-[120px] mt-2">
                       <WordTooltipDemo
                         display_text={"Private key"}
                         tooltip_content={
@@ -444,7 +462,7 @@ export default function AddSnowflake() {
                       />
                     </label>
                     <textarea
-                      className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 h-20 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                      className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 h-20 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                       required
                       placeholder={`-----BEGIN ENCRYPTED PRIVATE KEY-----
 {{private_key_value}}
@@ -455,7 +473,7 @@ export default function AddSnowflake() {
                     />
                   </div>
                   <div className="flex flex-row items-center gap-4">
-                    <label className="text-xs w-[120px]">
+                    <label className="text-[13px] w-[120px]">
                       <WordTooltipDemo
                         display_text={
                           <>
@@ -483,7 +501,7 @@ export default function AddSnowflake() {
                       />
                     </label>
                     <input
-                      className="flex-grow rounded-md block bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                      className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                       required
                       placeholder="•••••••••••"
                       title="Private key passphrase"
@@ -498,7 +516,7 @@ export default function AddSnowflake() {
             )}
           </div>
           <div className="flex flex-row items-center mt-4 gap-4">
-            <label className="text-xs w-[120px]">
+            <label className="text-[13px] w-[120px]">
               <WordTooltipDemo
                 display_text={"Role (optional)"}
                 tooltip_content={
@@ -526,7 +544,7 @@ export default function AddSnowflake() {
             </label>
             <div className="flex flex-row items-center flex-grow">
               <input
-                className="rounded-md block w-full bg-slate-3 text-white text-xs py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                className="rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                 placeholder="i.e. PUBLIC"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -534,9 +552,9 @@ export default function AddSnowflake() {
             </div>
           </div>
           <div className="flex flex-row mt-4 gap-4">
-            <label className="text-xs w-[120px] pt-2">Whitelist IPs</label>
-            <div className="flex flex-col gap-2 px-4 py-3 border border-slate-4 rounded-md flex-grow text-xs">
-              <div className="flex flex-row flex-grow text-xs text-slate-11">
+            <label className="text-[13px] w-[120px] pt-2">Whitelist IPs</label>
+            <div className="flex flex-col gap-2 px-4 py-3 border border-slate-4 rounded-md flex-grow text-[13px]">
+              <div className="flex flex-row flex-grow text-[13px] text-slate-11">
                 <p>
                   Allow Dataland to connect to Snowflake via these IPs&nbsp;
                 </p>
@@ -554,9 +572,9 @@ export default function AddSnowflake() {
               </div>
             </div>
           </div>
-          <div className="flex flex-row justify-end mt-8 gap-4 text-xs">
+          <div className="flex flex-row justify-end mt-8 gap-4 text-[13px]">
             <button
-              className="text-xs px-3 py-2 bg-slate-3 rounded-md hover:bg-slate-4"
+              className="text-[13px] px-3 py-2 bg-slate-3 rounded-md hover:bg-slate-4"
               type={"submit"}
             >
               Test connection
@@ -566,7 +584,7 @@ export default function AddSnowflake() {
                 onClick={handleContinue}
                 onMouseEnter={() => setIsHoveringOnContinueButton(true)}
                 onMouseLeave={() => setIsHoveringOnContinueButton(false)}
-                className={`text-xs px-3 py-2 bg-blue-600 rounded-md ${
+                className={`text-[13px] px-3 py-2 bg-blue-600 rounded-md ${
                   connectionResult.status !== "success" &&
                   "opacity-50 cursor-not-allowed "
                 }`}
@@ -593,7 +611,7 @@ export default function AddSnowflake() {
         {showTestPanel && (
           <>
             <div className="flex flex-row gap-4 mt-4">
-              <label className="text-xs min-w-[120px]"></label>
+              <label className="text-[13px] min-w-[120px]"></label>
               <div
                 className={` text-white p-4 mt-4 rounded-md flex-grow ${
                   connectionResult.status === "error"
@@ -621,7 +639,7 @@ export default function AddSnowflake() {
                         className="animate-spin"
                       />
                     </div>
-                    <p className="text-xs">In progress..</p>
+                    <p className="text-[13px]">In progress..</p>
                   </div>
                 )}
                 {connectionResult.message &&
@@ -643,11 +661,11 @@ export default function AddSnowflake() {
                             className="text-green-500"
                           />
                         ) : null}
-                        <p className="text-xs">{connectionResult.title}</p>
+                        <p className="text-[13px]">{connectionResult.title}</p>
                       </div>
                       {connectionResult.status === "success" && (
                         <>
-                          <p className="text-xs">
+                          <p className="text-[13px]">
                             This connection can access{" "}
                             {connectionResult.listed_tables.length} tables from{" "}
                             {connectionResult.listed_databases.length}{" "}
@@ -669,14 +687,14 @@ export default function AddSnowflake() {
                           </p>
                           {/* Don't show if error message is generic */}
                           {connectionResult.message !== "Connection failed" && (
-                            <p className="text-xs">
+                            <p className="text-[13px]">
                               {connectionResult.message}
                             </p>
                           )}
                         </>
                       )}
                       {connectionResult.snowflake_error?.includes("IP") && (
-                        <div className="inline relative text-xs text-red-200">
+                        <div className="inline relative text-[13px] text-red-200">
                           <p className="inline">
                             Please allow Dataland to connect to Snowflake via
                             IPs: <br />

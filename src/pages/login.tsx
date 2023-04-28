@@ -3,10 +3,9 @@ import Image from "next/image";
 import React, { useState } from "react";
 import Link from "next/link";
 import router, { Router } from "next/router";
-import { useUser } from "../components/UserContext";
+import { getUsers } from "@/utils/api";
 
 export default function Login() {
-  const { setUser } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -18,101 +17,72 @@ export default function Login() {
     lo = router.query;
   }
 
-  const registeredEmails = [
-    {
-      email: "unverified@example.com",
-      password: "password",
-      verified: false,
-      completed_welcome: false,
-    },
-    {
-      email: "verified-and-complete@example.com",
-      password: "password",
-      verified: true,
-      completed_welcome: true,
-    },
-    {
-      email: "verified-and-incomplete@example.com",
-      password: "password",
-      verified: true,
-      completed_welcome: false,
-    },
-  ];
-
-  // Mock API call to see if email and password are correct
-  const isEmailAndPasswordRegistered = async (
-    email: string,
-    password: string,
-    registeredEmails: any
-  ) => {
-    // Replace this with your actual API call
-
-    return registeredEmails.some(
-      (user: any) => user.email === email && user.password === password
-    );
-  };
-
   const isEmailAndPasswordVerifiedIncompleteWelcome = async (
     email: string,
     password: string,
-    registeredEmails: any
+    users: any
   ) => {
     // Replace this with your actual API call
-    return registeredEmails.some(
+    return users.some(
       (user: any) =>
         user.email === email &&
         user.password === password &&
-        user.verified &&
-        user.completed_welcome === false
+        user.emailVerified === true &&
+        user.welcomeCompleted === false
     );
   };
 
   const isEmailAndPasswordVerifiedCompleteWelcome = async (
     email: string,
     password: string,
-    registeredEmails: any
+    users: any
   ) => {
     // Replace this with your actual API call
-    return registeredEmails.some(
+    return users.some(
       (user: any) =>
         user.email === email &&
         user.password === password &&
-        user.verified &&
-        user.completed_welcome === true
+        user.emailVerified === true &&
+        user.welcomeCompleted === true
     );
   };
 
   const isEmailAndPasswordUnverified = async (
     email: string,
     password: string,
-    registeredEmails: any
+    users: any
   ) => {
     // Replace this with your actual API call
-    return registeredEmails.some(
+    return users.some(
       (user: any) =>
         user.email === email &&
         user.password === password &&
-        user.verified === false
+        user.emailVerified === false
     );
   };
-  // Handle Sign up
+
+  // Handle login - this is cursed code, will def need to handle properly
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     console.log("Signup submit data:", { email, password });
-    // Here you can send the form data to your backend or perform any other necessary action.
     setErrorMessage("");
     if (!email || !password) {
       setErrorMessage("Email and password are required.");
       return;
     }
 
-    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    const emailRegex =
+      /^[\w-]+(\.[\w-]+)*(\+[a-zA-Z0-9-_.+]+)?@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+
     if (!emailRegex.test(email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
 
-    const user = registeredEmails.find(
+    // totally cursed
+    // see db.json file for the data
+    const users = await getUsers();
+    const user = users.find(
       (user: any) => user.email === email && user.password === password
     );
 
@@ -121,28 +91,20 @@ export default function Login() {
       return;
     }
 
-    setUser({ email: user.email });
-
     if (
-      await isEmailAndPasswordVerifiedCompleteWelcome(
-        email,
-        password,
-        registeredEmails
-      )
+      await isEmailAndPasswordVerifiedCompleteWelcome(email, password, users)
     ) {
-      router.push("/home");
+      const last_accessed_workspace_id = user.lastAccessedWorkspace;
+      if (last_accessed_workspace_id === null) {
+        router.push("/create-workspace");
+      }
+      router.push("/workspace/" + last_accessed_workspace_id);
     } else if (
-      await isEmailAndPasswordVerifiedIncompleteWelcome(
-        email,
-        password,
-        registeredEmails
-      )
+      await isEmailAndPasswordVerifiedIncompleteWelcome(email, password, users)
     ) {
       router.push("/welcome");
-    } else if (
-      await isEmailAndPasswordUnverified(email, password, registeredEmails)
-    ) {
-      router.push("/verify");
+    } else if (await isEmailAndPasswordUnverified(email, password, users)) {
+      router.push("/verify-email");
     }
   };
 
@@ -171,15 +133,15 @@ export default function Login() {
                 </Link>
               </header>
               {lo !== null && lo.lo === "true" && (
-                <div className="text-green-500 absolute top-24 px-4 py-2 rounded-md bg-green-900/20 text-sm">
+                <div className="text-green-500 absolute top-24 px-4 py-2 rounded-md bg-green-900/20 text-[14px]">
                   You have been successfully logged out.
                 </div>
               )}
               <h1 className="text-xl ">Welcome back</h1>
-              <h3 className="text-sm text-slate-11">Log into Dataland</h3>
+              <h3 className="text-[14px] text-slate-11">Log into Dataland</h3>
               <div className="flex flex-col gap-4 mt-8 w-full">
                 <div className="w-full flex flex-col gap-2">
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                     <Image
                       src="/images/logo_google.svg"
                       width={24}
@@ -188,7 +150,7 @@ export default function Login() {
                     ></Image>
                     Log in with Google
                   </button>
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-sm font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                     <Image
                       src="/images/logo_github.svg"
                       width={24}
@@ -200,7 +162,7 @@ export default function Login() {
                 </div>
                 <div className="flex flex-row items-center justify-center">
                   <hr className="w-full border-1 border-slate-6" />
-                  <div className="mx-2 text-slate-11 text-sm">or</div>
+                  <div className="mx-2 text-slate-11 text-[14px]">or</div>
                   <hr className="w-full border-1 border-slate-6" />
                 </div>
                 {/* Write a form input compoennt */}
@@ -209,13 +171,13 @@ export default function Login() {
                     <div className="flex flex-col gap-2">
                       <label
                         htmlFor="email"
-                        className="text-white text-sm font-medium"
+                        className="text-white text-[14px] font-medium"
                       >
                         Email
                       </label>
                       <input
                         id="email"
-                        className={`bg-slate-3 hover:border-slate-7 border text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9 
+                        className={`bg-slate-3 hover:border-slate-7 border text-white text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9 
                         ${
                           errorMessage !== ""
                             ? "border-red-9"
@@ -231,13 +193,13 @@ export default function Login() {
                       <div className="mt-2 flex flex-row items-center">
                         <label
                           htmlFor="password"
-                          className="text-white text-sm font-medium flex-grow"
+                          className="text-white text-[14px] font-medium flex-grow"
                         >
                           Password
                         </label>
                         <Link
                           href="/forgot-password"
-                          className="text-slate-10 text-xs hover:text-slate-11"
+                          className="text-slate-10 text-[13px] hover:text-slate-11"
                           tabIndex={-1}
                         >
                           {" "}
@@ -252,7 +214,7 @@ export default function Login() {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="•••••••••••••"
                           required
-                          className={`w-full bg-slate-3 hover:border-slate-7 border  text-white text-sm font-medium rounded-md px-3 py-2 placeholder-slate-9
+                          className={`w-full bg-slate-3 hover:border-slate-7 border  text-white text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9
                           ${
                             errorMessage !== ""
                               ? "border-red-9"
@@ -262,7 +224,7 @@ export default function Login() {
                           `}
                         />
                         <button
-                          className="absolute top-1/2 transform -translate-y-1/2 right-2 px-2 py-1 text-xs text-slate-11  hover:bg-slate-2 rounded-sm"
+                          className="absolute top-1/2 transform -translate-y-1/2 right-2 px-2 py-1 text-[13px] text-slate-11  hover:bg-slate-2 rounded-sm"
                           onClick={() => setShowPassword(!showPassword)}
                           type="button"
                           tabIndex={-1}
@@ -272,13 +234,13 @@ export default function Login() {
                       </div>
 
                       {errorMessage && (
-                        <div className="text-red-9 mt-2 text-xs ">
+                        <div className="text-red-9 mt-2 text-[13px] ">
                           {errorMessage}
                         </div>
                       )}
 
                       <button
-                        className="bg-blue-600 text-white text-sm font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
+                        className="bg-blue-600 text-white text-[14px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
                         type="submit"
                       >
                         Log in
@@ -287,7 +249,7 @@ export default function Login() {
                   </div>
                 </form>
               </div>
-              <h3 className="text-sm text-slate-11 mt-8 w-full items-center text-center">
+              <h3 className="text-[14px] text-slate-11 mt-8 w-full items-center text-center">
                 Don&apos;t have an account yet?{" "}
                 <Link
                   href="/signup"

@@ -1,20 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-interface SnowflakeData {
-  accountIdentifier: string;
-  warehouse: string;
-  basicAuthUsername: string;
-  basicAuthPassword: string;
-  keyPairAuthUsername: string;
-  keyPairAuthPrivateKey: string;
-  keyPairAuthPrivateKeyPassphrase: string;
-  role: string;
+// example  request body:
+// curl -X POST \
+//     -H "Content-Type: application/json" \
+//     -d '{
+//       "email": "arthur@dataland.io",
+//       "password_reset_url": "dataland.io/reset-password/slkdjfslfd"
+//     }' \
+//     http://localhost:8080/
+
+interface sendVerificationEmailData {
+  email: string;
+  password_reset_url: string;
 }
 
 const endpoint =
-  "https://us-central1-dataland-demo-995df.cloudfunctions.net/test_snowflake_connection";
+  "https://us-central1-dataland-demo-995df.cloudfunctions.net/send_password_reset_email";
 
-async function testConnection(requestBody: SnowflakeData) {
+async function sendVerificationEmail(requestBody: sendVerificationEmailData) {
   try {
     const response = await fetch(endpoint, {
       method: "POST",
@@ -27,9 +30,9 @@ async function testConnection(requestBody: SnowflakeData) {
     return await response.json();
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error in testConnection:", error.message);
+      console.error("Error in send password reset email:", error.message);
     } else {
-      console.error("Unknown error in testConnection:", error);
+      console.error("Unknown error in send password reset email:", error);
     }
     throw error;
   }
@@ -48,7 +51,7 @@ export default async function handler(
 
   if (req.method === "POST") {
     try {
-      const data = await testConnection(req.body);
+      const data = await sendVerificationEmail(req.body);
       res.status(200).json(data);
     } catch (error) {
       if (error instanceof Error) {

@@ -1,0 +1,56 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "arthur@dataland.io",
+      "emailVerified": false
+    },
+    {
+      "id": 2,
+      "email": "howard@dataland.io",
+      "emailVerified": false
+    }
+  ],
+  "workspaces": [
+    {
+      "id": 1,
+      "name": "Dataland",
+      "ownerId": 1
+    }
+  ],
+  "workspaceMembers": [
+    {
+      "id": 1,
+      "workspaceId": 1,
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "workspaceId": 1,
+      "userId": 2
+    }
+  ],
+  "tables": [
+    {
+      "id": 1,
+      "name": "Users Table",
+      "connectionPath": "SNOWFLAKE_SAMPLE_DATA.TCFS.USERS",
+      "workspaceId": 1
+    }
+  ],
+  "verifyEmail": [
+    {
+      "id": 1,
+      "userId": 1,
+      "token": "4a8c94e3-3a3c-42c8-8e89-df3e3b3e9ec9",
+      "expiresAt": "2023-04-26T10:45:00Z"
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "token": "7ec0d6b1-d6c7-492a-937f-c2e5d5e9c1ab",
+      "expiresAt": "2023-04-27T12:30:00Z"
+    }
+  ],
+  "invites": []
+}

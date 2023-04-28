@@ -63,7 +63,7 @@ const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger tabIndex={-1}>
         <div
-          className="text-xs px-2 py-1 bg-green-900/40 hover:bg-green-900/60 w-32 rounded-md"
+          className="text-[13px] px-2 py-1 bg-green-900/40 hover:bg-green-900/60 w-[140px] rounded-md focus:outline-none"
           tabIndex={-1}
         >
           See full table list →
@@ -89,7 +89,7 @@ const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
           </div>
           <div className="mt-5 flex justify-end">
             <Dialog.Close asChild>
-              <button className="px-4 py-3 bg-slate-3 rounded-md text-xs font-medium leading-none focus:outline-none hover:bg-slate-4">
+              <button className="px-4 py-3 bg-slate-3 rounded-md text-[13px] font-medium leading-none focus:outline-none hover:bg-slate-4">
                 Close preview
               </button>
             </Dialog.Close>

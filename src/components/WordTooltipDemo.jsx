@@ -6,7 +6,7 @@ const WordTooltipDemo = ({ display_text, tooltip_content }) => {
     <Tooltip.Provider>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
-          <button className="text-white border-b border-slate-11 border-dotted text-xs text-left" tabIndex={-1}>
+          <button className="text-white border-b border-slate-11 border-dotted text-[13px] text-left" tabIndex={-1}>
             {display_text}
           </button>
         </Tooltip.Trigger>
