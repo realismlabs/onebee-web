@@ -136,7 +136,7 @@ export function generateIcon(name: string): string | null {
     return null;
   }
 
-  const color = stringToVibrantColor(name);
+  const color = "#ab4aba";
   ctx.fillStyle = color;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -176,6 +176,14 @@ export function generateIcon(name: string): string | null {
 
   ctx.globalCompositeOperation = "hard-light";
   ctx.fillStyle = color;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.globalCompositeOperation = "overlay";
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.globalCompositeOperation = "overlay";
+  ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.globalCompositeOperation = "overlay";
