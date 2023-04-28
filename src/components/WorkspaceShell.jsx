@@ -1,15 +1,14 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery } from '@tanstack/react-query';
 import { getTables } from '../utils/api';
-import { House, Table, UserCircle, PaperPlaneTilt } from '@phosphor-icons/react';
+import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch } from '@phosphor-icons/react';
 import { stringToVibrantColor, assignColor } from '@/utils/util';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
 import { getWorkspaces } from '@/utils/api';
 
 function AccountPopover() {
@@ -57,6 +56,8 @@ function AccountPopover() {
 }
 
 function WorkspacePopoverContents() {
+  const router = useRouter();
+
   const {
     data: workspacesForUserData,
     isLoading: isWorkspacesForUserLoading,
@@ -79,25 +80,41 @@ function WorkspacePopoverContents() {
   return (
     <>
       {workspacesForUserData.map((workspace) => (
-        <Link href={`/workspace/${workspace.id}`} key={workspace.id}>
-          <div className="overflow-hidden rounded-md shadow-2xl ring-1 ring-black ring-opacity-5 bg-black w-[180px] p-[8px] text-[13px] cursor-pointer">
-            <div className="hover:bg-slate-1 px-[8px] py-[4px]">{workspace.name}</div>
+        <Popover.Button key={workspace.id}>
+          <div onClick={(e) => {
+            router.push(`/workspace/${workspace.id}`);
+          }}>
+            <div className="overflow-hidden shadow-2xl ring-1 ring-black ring-opacity-5 bg-black w-[180px] p-[8px] text-[13px] cursor-pointer">
+              <div className="hover:bg-slate-1 px-[8px] py-[4px] text-left flex flex-row gap-2">
+                <Image
+                  src={workspace.iconUrl}
+                  width="24"
+                  height="24"
+                  draggable="false"
+                  alt="workspace icon"
+                  className="rounded-sm"
+                />
+                {workspace.name}
+              </div>
+            </div>
           </div>
-        </Link>
-      ))}
+        </Popover.Button>
+      ))
+      }
     </>
   );
 }
 
 function WorkspacePopover({ currentWorkspace }) {
+
   return (
     <Popover className="relative">
       {({ open }) => (
         <>
           <Popover.Button
             className={`
-                ${open ? '' : 'text-opacity-90'}
-                flex flex-row gap-3 items-center w-full px-[16px]`}
+                ${open ? 'bg-slate-3' : 'hover:bg-slate-3 active:bg-slate-4'}
+                flex flex-row gap-3 items-center mx-[12px] focus:outline-none p-[6px] pr-[12px] rounded-md`}
           >
             <Image
               src={currentWorkspace.iconUrl}
@@ -107,7 +124,7 @@ function WorkspacePopover({ currentWorkspace }) {
               alt="workspace icon"
               className="rounded-sm"
             />
-            <p className="text-white">
+            <p className="text-white flex-grow truncate max-w-[160px]">
               {currentWorkspace.name}
             </p>
           </Popover.Button>
@@ -120,13 +137,14 @@ function WorkspacePopover({ currentWorkspace }) {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute mt-[32px] top-0 ">
+            <Popover.Panel className="absolute mt-[32px] top-0 rounded-md bg-black flex flex-col items-start justify-start">
               <WorkspacePopoverContents />
             </Popover.Panel>
           </Transition>
         </>
-      )}
-    </Popover>
+      )
+      }
+    </Popover >
   )
 }
 
@@ -156,31 +174,37 @@ const WorkspaceShell = () => {
     isLoading: areTablesLoading,
     error: tablesError,
   } = useQuery({
-    queryKey: ["tables-workspace", currentWorkspace.id],
+    queryKey: ["workspaceTables", currentWorkspace?.id],
     queryFn: async () => {
-      return await getTables(currentWorkspace.id)
+      return await getTables(currentWorkspace?.id)
     },
     enabled: currentWorkspace?.id !== null,
     staleTime: 1000
   });
 
-  if (areTablesLoading) {
-    return <div>Loading...</div>;
+  if (areTablesLoading || isWorkspaceLoading || isUserLoading) {
+    return (
+      <div className="bg-slate-1 py-[16px] w-[240px] text-[13px] text-white flex flex-col gap-2 border-r border-slate-6 items-center justify-center">
+        <span className="animate-spin">
+          <CircleNotch width={20} height={20} />
+        </span>
+      </div>
+    )
   }
 
-  if (tablesError) {
-    return <div>There was an error loading your tables</div>;
+  if (tablesError || workspaceError || userError) {
+    return <div className="text-white">There was an error loading your tables</div>;
   }
 
   console.log(tablesData);
 
   return (
-    <div className="bg-slate-1 py-[16px] min-w-[240px] text-[13px] text-white flex flex-col gap-2 border-r border-slate-6">
+    <div className="bg-slate-1 py-[10px] w-[240px] text-[13px] text-white flex flex-col border-r border-slate-6">
       <WorkspacePopover currentWorkspace={currentWorkspace} />
       {/* core */}
       <div className="mt-2 flex flex-col gap-4 px-[9px]">
         <Link href={`/workspace/${currentWorkspace.id}`}>
-          <div className={`flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/home` ? "bg-slate-3" : ""}`}>
+          <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/home` ? "bg-slate-3" : ""}`}>
             <House
               size={20}
               weight="fill"
@@ -196,7 +220,7 @@ const WorkspaceShell = () => {
           <div>
             {tablesData.map((item) => (
               <Link key={item.id} href={`/workspace/${currentWorkspace.id}/table/${item.id}`}>
-                <div className={`flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/table/${item.id}` ? "bg-slate-3" : ""}`}>
+                <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/table/${item.id}` ? "bg-slate-3" : ""}`}>
                   <Table
                     size={20}
                     weight="fill"

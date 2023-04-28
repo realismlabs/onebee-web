@@ -11,8 +11,7 @@ export const fetchCurrentUser = async () => {
   return response.json();
 };
 
-export const fetchCurrentWorkspace = async () => {
-  const workspaceId = 6
+export const fetchCurrentWorkspace = async (workspaceId) => {
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
   console.log("fetchCurrentWorkspace", response);
 
@@ -20,11 +19,10 @@ export const fetchCurrentWorkspace = async () => {
     throw new Error("Error fetching current workspace");
   }
 
-  const result = await response.json(); // Add 'await' here
+  const result = await response.json();
   console.log("fetchCurrentWorkspace", result);
   return result;
 };
-
 
 export const getInvitesForUserEmail = async (recipientEmail) => {
   console.log("getInvitesForUserEmail", recipientEmail);
@@ -95,6 +93,7 @@ export const getTables = async (workspaceId) => {
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables`
   );
   const tables = await response.json();
+  console.log("getTables", tables, workspaceId)
   return tables;
 };
 

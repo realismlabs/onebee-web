@@ -15,7 +15,7 @@
   "/api/workspaces/:workspaceId/accept-invite/:inviteId": "/invites/:inviteId",
   "/api/workspaces/:workspaceId/leave": "/workspaceMembers/:id",
   "/api/workspaces/:workspaceId": "/workspaces/:workspaceId",
-  "/api/workspaces/:workspaceId/tables": "/tables",
+  "/api/workspaces/:workspaceId/tables": "/tables?workspaceId=:workspaceId",
   "/api/workspaces/:workspaceId/tables/create": "/tables?workspaceId=:workspaceId",
   "/api/workspaces/:workspaceId/tables/:tableId": "/tables/:tableId",
   "/api/workspaces/:workspaceId/tables/:tableId/update": "/tables/:tableId",
