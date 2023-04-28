@@ -8,7 +8,9 @@ import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { useCurrentWorkspace } from "../../hooks/useCurrentWorkspace";
 import { capitalizeString } from "@/utils/util";
+import { createTable, createConnection } from "@/utils/api";
 import MockTable from "@/components/MockTable";
+import { create } from "domain";
 
 interface AccountHeaderProps {
   email: string;
@@ -111,7 +113,7 @@ const PreviewTableUI = ({
   const data = tablesQueryData.listed_tables;
   console.log("awu data", data);
 
-  // based on the selected table, get the tablename and path differetly
+  // based on the selected table, get the tablename and path differently
   const tableName = selectedTable?.split(".")[2];
   const path =
     selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
@@ -136,10 +138,10 @@ const PreviewTableUI = ({
               <>
                 <div className="flex flex-row gap-2 items-center px-4 py-2 border-b border-slate-4">
                   <p className="text-white text-[14px]">{tableName}</p>
-                  <pre className="px-2 py-1.5 bg-slate-4 rounded-sm text-white text-[12px]">
+                  <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
                     {path}
                   </pre>
-                  <pre className="px-2 py-1.5 bg-slate-4 rounded-sm text-white text-[12px]">
+                  <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
                     {abbreviateNumber(selectedTableRowCount) + " rows"}
                   </pre>
                 </div>
@@ -407,12 +409,29 @@ export default function CreateTable() {
     };
     console.log("createConnectionRequestBody", createConnectionRequestBody);
 
+    const create_connection_response = await createConnection(
+      createConnectionRequestBody
+    );
+    console.log("create_connection_response", create_connection_response);
+
+    const displayName = selectedTable?.split(".")[2];
+    const connectionPath =
+      selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
+
     const createTableRequestBody = {
-      selectedTable,
-      selectedTableRowCount,
+      workspaceId: currentWorkspace?.id,
+      fullName: selectedTable,
+      displayName,
+      connectionPath,
+      rowCount: selectedTableRowCount,
     };
 
+    const create_table_response = await createTable(createTableRequestBody);
+    console.log("create_table_response", create_table_response);
     console.log("createTableRequestBody", createTableRequestBody);
+
+    //  route to the table page
+    router.push(`/table/${create_table_response.id}`);
   };
 
   const {

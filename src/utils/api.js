@@ -86,3 +86,109 @@ export const createWorkspace = async (workspaceData) => {
   const createdWorkspace = await response.json();
   return createdWorkspace;
 };
+
+
+// Get all tables associated with a workspace
+export const getTables = async (workspaceId) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/tables`);
+  const tables = await response.json();
+  return tables;
+};
+
+// Create a table in a workspace
+export const createTable = async (tableData) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${tableData.workspaceId}/tables/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tableData),
+  });
+  const createdTable = await response.json();
+  return createdTable;
+};
+
+// Get a specific table in a workspace
+export const getTable = async (workspaceId, tableId) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}`);
+  const table = await response.json();
+  return table;
+};
+
+// Update a specific table in a workspace
+export const updateTable = async (workspaceId, tableId, tableData) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/update`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tableData),
+  });
+  const updatedTable = await response.json();
+  return updatedTable;
+};
+
+// Delete a specific table in a workspace
+export const deleteTable = async (workspaceId, tableId) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/delete`, {
+    method: 'DELETE',
+  });
+  const deletedTable = await response.json();
+  return deletedTable;
+};
+
+// Create a new connection
+export const createConnection = async (connectionData) => {
+  const response = await fetch(`${API_BASE_URL}/api/connections/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(connectionData),
+  });
+  const createdConnection = await response.json();
+  return createdConnection;
+};
+
+// Get a specific connection
+export const getConnection = async (connectionId) => {
+  const response = await fetch(`${API_BASE_URL}/api/connections/${connectionId}`);
+  const connection = await response.json();
+  return connection;
+};
+
+// Update a specific connection
+export const updateConnection = async (connectionId, connectionData) => {
+  const response = await fetch(`${API_BASE_URL}/api/connections/${connectionId}/update`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(connectionData),
+  });
+  const updatedConnection = await response.json();
+  return updatedConnection;
+};
+
+// Delete a specific connection
+export const deleteConnection = async (connectionId) => {
+  const response = await fetch(`${API_BASE_URL}/api/connections/${connectionId}/delete`, {
+    method: 'DELETE',
+  });
+  const deletedConnection = await response.json();
+  return deletedConnection;
+};
+
+// Get all connections
+export const getConnections = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/connections`);
+  const connections = await response.json();
+  return connections;
+};
+
+// Get all connections associated with a workspace
+export const getWorkspaceConnections = async (workspaceId) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/connections`);
+  const connections = await response.json();
+  return connections;
+};
