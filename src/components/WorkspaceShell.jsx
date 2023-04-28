@@ -96,7 +96,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
                 >
                   <div className="text-[10px] text-white">{workspace.name.slice(0, 1)}</div>
                 </div>
-                {workspace.name}
+                <div className="max-w-[140px] truncate">{workspace.name}</div>
                 {workspace.id === currentWorkspace.id && (
                   <div className="ml-auto text-white">
                     <Check
