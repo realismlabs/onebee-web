@@ -7,7 +7,10 @@ const generateTableData = (rows, columns) => {
     const row = [];
 
     for (let j = 1; j <= columns; j++) {
-      row.push(`${i}-${j}`);
+      // generate random string
+      const randomString = Math.random().toString(36).substring(2, 25);
+
+      row.push(`${randomString}`);
     }
 
     table.push(row);
