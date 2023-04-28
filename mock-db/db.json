@@ -208,14 +208,6 @@
       "displayName": "DIM_CUSTOMERS",
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
-      "id": 2
-    },
-    {
-      "workspaceId": 6,
-      "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
-      "displayName": "DIM_CUSTOMERS",
-      "connectionPath": "ARTHUR_TEST/DBT_AWU/",
-      "rowCount": 100,
       "id": 3
     },
     {

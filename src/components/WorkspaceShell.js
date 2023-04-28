@@ -65,16 +65,16 @@ const WorkspaceShell = () => {
       </div>
       {/* core */}
       <div className="mt-2 flex flex-col gap-4 px-[14px]">
-        <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md">
-          <House
-            size={20}
-            weight="fill"
-            className="text-slate-10 group-hover:text-slate-11 transition-all duration-100"
-          />
-          <Link href={`/home`}>
+        <Link href={`/home`}>
+          <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md">
+            <House
+              size={20}
+              weight="fill"
+              className="text-slate-10 group-hover:text-slate-11 transition-all duration-100"
+            />
             <div className="">Home</div>
-          </Link>
-        </div>
+          </div>
+        </Link>
         <div className="space-y-2">
           <div className="px-[8px] text-slate-11 text-[13px] flex flex-row">
             <div>Tables</div>
