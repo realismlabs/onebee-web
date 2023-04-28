@@ -6,7 +6,7 @@ import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery } from '@tanstack/react-query';
 import { getTables } from '../utils/api';
 import { House, Table } from '@phosphor-icons/react';
-import { stringToVibrantColor } from '@/utils/util';
+import { stringToVibrantColor, assignColor } from '@/utils/util';
 
 const WorkspaceShell = () => {
   // Replace the items array with your dynamic data
@@ -84,7 +84,7 @@ const WorkspaceShell = () => {
                   weight="fill"
                   className="text-slate-10 group-hover:text-slate-11 transition-all duration-100"
                   style={{
-                    color: stringToVibrantColor(item.displayName)
+                    color: assignColor(item.displayName)
                   }}
                 />
                 <div>{item.displayName}</div>

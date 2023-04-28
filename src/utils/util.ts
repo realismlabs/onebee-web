@@ -192,3 +192,32 @@ export function generateIcon(name: string): string | null {
 export function capitalizeString(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
+
+// Try deterministic assignment with radix color
+type ColorMap = { [key: string]: string };
+
+const colorTable: ColorMap = {
+  "#ee7600": "#ee7600",
+  "#ff3e3e": "#ff3e3e",
+  "#6c757d": "#6c757d",
+  "#ffa500": "#ffa500",
+  "#6f42c1": "#6f42c1",
+  "#5bc0de": "#5bc0de",
+  "#ffc107": "#ffc107",
+  "#dc3545": "#dc3545",
+  // add more colors as needed
+};
+
+export function assignColor(name: string): string {
+  // Get a deterministic color based on the name
+  const hashCode = name
+    .split("")
+    .reduce(
+      (acc: number, char) => (acc = char.charCodeAt(0) + ((acc << 5) - acc)),
+      0
+    );
+  const index = Math.abs(hashCode) % Object.keys(colorTable).length;
+
+  // Assign the color from the table
+  return Object.values(colorTable)[index];
+}
