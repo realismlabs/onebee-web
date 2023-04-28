@@ -87,14 +87,15 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
           }}>
             <div className="w-[240px] px-[8px] text-[13px] cursor-pointer">
               <div className="hover:bg-slate-4 px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center">
-                <Image
-                  src={workspace.iconUrl}
-                  width="24"
-                  height="24"
-                  draggable="false"
-                  alt="workspace icon"
-                  className="rounded-sm"
-                />
+                <div
+                  className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
+                  style={{
+                    backgroundImage: `url(${workspace.iconUrl})`,
+                    backgroundSize: 'cover',
+                  }}
+                >
+                  <div className="text-[10px] text-white">{workspace.name.slice(0, 1)}</div>
+                </div>
                 {workspace.name}
                 {workspace.id === currentWorkspace.id && (
                   <div className="ml-auto text-white">
@@ -111,7 +112,16 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
         </Popover.Button>
       ))
       }
+
       <div className="flex flex-col px-[8px] py-[12px] mt-[12px] border-t border-slate-4 w-full text-[12px] text-slate-11">
+        <Popover.Button>
+          <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
+            onClick={(e) => {
+              router.push(`/workspace/${currentWorkspace.id}/settings`);
+            }}>
+            Workspace settings
+          </div>
+        </Popover.Button>
         <Popover.Button>
           <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
             onClick={(e) => {
@@ -144,14 +154,15 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
                 ${open ? 'bg-slate-3' : 'hover:bg-slate-3 active:bg-slate-4'}
                 flex flex-row gap-3 items-center mx-[10px] focus:outline-none pl-[8px] pr-[12px] py-[6px] rounded-md`}
           >
-            <Image
-              src={currentWorkspace.iconUrl}
-              width="24"
-              height="24"
-              draggable="false"
-              alt="workspace icon"
-              className="rounded-sm"
-            />
+            <div
+              className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
+              style={{
+                backgroundImage: `url(${currentWorkspace.iconUrl})`,
+                backgroundSize: 'cover',
+              }}
+            >
+              <div className="text-[10px] text-white">{currentWorkspace.name.slice(0, 1)}</div>
+            </div>
             <p className="text-white flex-grow truncate max-w-[160px]">
               {currentWorkspace.name}
             </p>

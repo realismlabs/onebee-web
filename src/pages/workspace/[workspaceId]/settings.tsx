@@ -33,7 +33,7 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   );
 };
 
-export default function WorkspaceHome() {
+export default function Settings() {
   const {
     data: currentUser,
     isLoading: isUserLoading,
@@ -61,23 +61,7 @@ export default function WorkspaceHome() {
       <div className="h-screen bg-slate-1">
         <div className="flex flex-col justify-center items-center w-full pt-32">
           <div className="bg-slate-1 text-white text-left flex flex-col items-start text-[22px] pb-4 w-[800px] gap-4">
-            <div className="items-start text-left">
-              Hi {email ?? "there"}! Let&apos;s get started.
-            </div>
-            <div className="p-8 bg-blue-900/20 border border-blue-500 rounded-md w-full">
-              {" "}
-              Docs
-            </div>
-            <div className="w-full flex flex-row gap-4">
-              <div className="p-8 bg-blue-900/20 border border-blue-500 rounded-md w-full">
-                {" "}
-                Docs
-              </div>
-              <div className="p-8 bg-blue-900/20 border border-blue-500 rounded-md w-full">
-                {" "}
-                Docs
-              </div>
-            </div>
+            <div className="items-start text-left">TODO: Settings!</div>
           </div>
         </div>
       </div>
