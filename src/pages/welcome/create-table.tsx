@@ -410,6 +410,7 @@ export default function CreateTable() {
     console.log("createConnectionRequestBody", createConnectionRequestBody);
 
     const create_connection_response = await createConnection(
+      currentWorkspace?.id,
       createConnectionRequestBody
     );
     console.log("create_connection_response", create_connection_response);

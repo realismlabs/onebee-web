@@ -138,8 +138,8 @@ export const deleteTable = async (workspaceId, tableId) => {
 };
 
 // Create a new connection
-export const createConnection = async (connectionData) => {
-  const response = await fetch(`${API_BASE_URL}/api/connections/create`, {
+export const createConnection = async (workspaceId, connectionData) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/connections/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -151,15 +151,15 @@ export const createConnection = async (connectionData) => {
 };
 
 // Get a specific connection
-export const getConnection = async (connectionId) => {
-  const response = await fetch(`${API_BASE_URL}/api/connections/${connectionId}`);
+export const getConnection = async (workspaceId, connectionId) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`);
   const connection = await response.json();
   return connection;
 };
 
 // Update a specific connection
-export const updateConnection = async (connectionId, connectionData) => {
-  const response = await fetch(`${API_BASE_URL}/api/connections/${connectionId}/update`, {
+export const updateConnection = async (workspaceId, connectionId, connectionData) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/update`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -171,8 +171,8 @@ export const updateConnection = async (connectionId, connectionData) => {
 };
 
 // Delete a specific connection
-export const deleteConnection = async (connectionId) => {
-  const response = await fetch(`${API_BASE_URL}/api/connections/${connectionId}/delete`, {
+export const deleteConnection = async (workspaceId, connectionId) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/delete`, {
     method: 'DELETE',
   });
   const deletedConnection = await response.json();

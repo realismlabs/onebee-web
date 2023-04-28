@@ -7,9 +7,13 @@ import { useQuery } from '@tanstack/react-query';
 import { getTables } from '../utils/api';
 import { House, Table, UserCircle, PaperPlaneTilt } from '@phosphor-icons/react';
 import { stringToVibrantColor, assignColor } from '@/utils/util';
+import { useRouter } from 'next/router';
 
 const WorkspaceShell = () => {
   // Replace the items array with your dynamic data
+  const router = useRouter();
+  console.log("pathname", router.asPath);
+  // console.log("In Workspce Shell id", id)
 
   const {
     data: currentUser,
@@ -48,13 +52,13 @@ const WorkspaceShell = () => {
   console.log(tablesData);
 
   return (
-    <div className="bg-slate-1 py-[20px] min-w-[240px] text-[14px] text-white flex flex-col gap-2 border-r border-slate-6">
+    <div className="bg-slate-1 py-[16px] min-w-[240px] text-[13px] text-white flex flex-col gap-2 border-r border-slate-6">
       {/* workspace header */}
-      <div className="flex flex-row gap-3 items-center w-full px-[20px]">
+      <div className="flex flex-row gap-3 items-center w-full px-[16px]">
         <Image
           src={currentWorkspace.iconUrl}
-          width="28"
-          height="28"
+          width="24"
+          height="24"
           draggable="false"
           alt="workspace icon"
           className="rounded-sm"
@@ -64,9 +68,9 @@ const WorkspaceShell = () => {
         </p>
       </div>
       {/* core */}
-      <div className="mt-2 flex flex-col gap-4 px-[14px]">
+      <div className="mt-2 flex flex-col gap-4 px-[9px]">
         <Link href={`/home`}>
-          <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md">
+          <div className={`flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `/home` ? "bg-slate-3" : ""}`}>
             <House
               size={20}
               weight="fill"
@@ -82,7 +86,7 @@ const WorkspaceShell = () => {
           <div>
             {tablesData.map((item) => (
               <Link key={item.id} href={`/table/${item.id}`}>
-                <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md cursor-pointer">
+                <div className={`flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `/table/${item.id}` ? "bg-slate-3" : ""}`}>
                   <Table
                     size={20}
                     weight="fill"
@@ -99,8 +103,8 @@ const WorkspaceShell = () => {
         </div>
       </div>
       {/* footer */}
-      <div className="mt-auto flex flex-col px-[14px]">
-        <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md">
+      <div className="mt-auto flex flex-col px-[13px]">
+        <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
           <PaperPlaneTilt
             size={20}
             weight="fill"
@@ -108,7 +112,7 @@ const WorkspaceShell = () => {
           />
           <div className="">Invite people</div>
         </div>
-        <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer p-[8px] rounded-md">
+        <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
           <UserCircle
             size={20}
             weight="fill"

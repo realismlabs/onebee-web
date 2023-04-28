@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import router from "next/router";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { createWorkspace } from "@/utils/api";
 
 interface AccountHeaderProps {
@@ -61,7 +62,7 @@ export default function CreateWorkspace() {
       } catch (e) {
         console.log("Couldn't create workspace", e);
       }
-      router.push("/home");
+      router.push(`/${currentWorkspace.id}`);
     }
   };
 
@@ -77,6 +78,12 @@ export default function CreateWorkspace() {
     isLoading: isUserLoading,
     error: userError,
   } = useCurrentUser();
+
+  const {
+    data: currentWorkspace,
+    isLoading: isWorkspaceLoading,
+    error: workspaceError,
+  } = useCurrentWorkspace();
 
   useEffect(() => {
     if (currentUser?.email) {
