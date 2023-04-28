@@ -2,5 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchCurrentWorkspace } from '../utils/api';
 
 export const useCurrentWorkspace = () => {
-  return useQuery(['currentWorkspace'], fetchCurrentWorkspace);
+  console.log("useCurrentWorkspace")
+  const data = useQuery(['currentWorkspace'], fetchCurrentWorkspace);
+  return data;
 };

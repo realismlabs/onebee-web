@@ -12,16 +12,20 @@ export const fetchCurrentUser = async () => {
 };
 
 export const fetchCurrentWorkspace = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/workspaces/6`);
+  //hardcoding
+  const workspaceId = 6
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
+  console.log("fetchCurrentWorkspace", response);
 
   if (!response.ok) {
     throw new Error("Error fetching current workspace");
   }
 
-  const result = response.json();
-  console.log("fetchCurrentWorkspace", result)
+  const result = await response.json(); // Add 'await' here
+  console.log("fetchCurrentWorkspace", result);
   return result;
 };
+
 
 export const getInvitesForUserEmail = async (recipientEmail) => {
   console.log("getInvitesForUserEmail", recipientEmail);
