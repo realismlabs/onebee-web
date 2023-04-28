@@ -203,12 +203,6 @@
   ],
   "tables": [
     {
-      "id": 1,
-      "name": "Users Table",
-      "connectionPath": "SNOWFLAKE_SAMPLE_DATA.TCFS.USERS",
-      "workspaceId": 1
-    },
-    {
       "workspaceId": 6,
       "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
       "displayName": "DIM_CUSTOMERS",
@@ -223,6 +217,46 @@
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
       "id": 3
+    },
+    {
+      "workspaceId": 6,
+      "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.CUSTOMER",
+      "displayName": "CUSTOMER",
+      "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
+      "rowCount": 100000000,
+      "id": 4
+    },
+    {
+      "workspaceId": 6,
+      "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCH_SF10.LINEITEM",
+      "displayName": "LINEITEM",
+      "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF10/",
+      "rowCount": 59986052,
+      "id": 5
+    },
+    {
+      "workspaceId": 6,
+      "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.CATALOG_PAGE",
+      "displayName": "CATALOG_PAGE",
+      "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
+      "rowCount": 50000,
+      "id": 6
+    },
+    {
+      "workspaceId": 6,
+      "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.INCOME_BAND",
+      "displayName": "INCOME_BAND",
+      "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
+      "rowCount": 20,
+      "id": 7
+    },
+    {
+      "workspaceId": 6,
+      "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.STORE_SALES",
+      "displayName": "STORE_SALES",
+      "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF10TCL/",
+      "rowCount": 28800239865,
+      "id": 8
     }
   ],
   "verifyEmail": [
@@ -370,7 +404,81 @@
       "createdAt": "2023-04-28T14:17:04.322Z",
       "workspaceId": 6,
       "id": 2
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "test_read_only_some",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "READ_ONLY_TEST",
+      "connectionType": "snowflake",
+      "name": "Snowflakepwkesfj-uo88877",
+      "createdAt": "2023-04-28T15:15:56.225Z",
+      "workspaceId": 6,
+      "id": 3
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "test_read_only_some",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "READ_ONLY_TEST",
+      "connectionType": "snowflake",
+      "name": "Snowflakepwkesfj-uo88877",
+      "createdAt": "2023-04-28T15:16:16.358Z",
+      "workspaceId": 6,
+      "id": 4
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "test_read_only_some",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "READ_ONLY_TEST",
+      "connectionType": "snowflake",
+      "name": "Snowflakepwkesfj-uo88877",
+      "createdAt": "2023-04-28T15:17:13.279Z",
+      "workspaceId": 6,
+      "id": 5
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "test_read_only_some",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "READ_ONLY_TEST",
+      "connectionType": "snowflake",
+      "name": "Snowflakepwkesfj-uo88877",
+      "createdAt": "2023-04-28T15:17:48.311Z",
+      "workspaceId": 6,
+      "id": 6
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "test_read_only_some",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "READ_ONLY_TEST",
+      "connectionType": "snowflake",
+      "name": "Snowflakepwkesfj-uo88877",
+      "createdAt": "2023-04-28T15:17:52.381Z",
+      "workspaceId": 6,
+      "id": 7
     }
-  ],
-  "tables": []
+  ]
 }

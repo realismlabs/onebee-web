@@ -4,6 +4,7 @@ import router from "next/router";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { createWorkspace } from "@/utils/api";
+import WorkspaceLayout from "@/components/WorkspaceLayout";
 
 interface AccountHeaderProps {
   email: string;
@@ -56,14 +57,16 @@ export default function CreateWorkspace() {
   const email = currentUser.email;
 
   return (
-    <div className="h-screen bg-slate-1">
-      <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
-          {JSON.stringify(currentUser)}
-          {JSON.stringify(currentWorkspace)}
+    <WorkspaceLayout>
+      <div className="h-screen bg-slate-1">
+        <AccountHeader email={email ?? "placeholder@example.com"} />
+        <div className="flex flex-col justify-center items-center w-full pt-32">
+          <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
+            {JSON.stringify(currentUser)}
+            {JSON.stringify(currentWorkspace)}
+          </div>
         </div>
       </div>
-    </div>
+    </WorkspaceLayout>
   );
 }
