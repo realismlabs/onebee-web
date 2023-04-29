@@ -208,7 +208,6 @@ const WorkspaceShell = () => {
     error: workspaceError,
   } = useCurrentWorkspace();
 
-  console.log("currentWorkspace", currentWorkspace)
 
   const {
     data: tablesData,

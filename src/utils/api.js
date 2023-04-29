@@ -207,15 +207,27 @@ export const updateConnection = async (
 };
 
 // Delete a specific connection
-export const deleteConnection = async (workspaceId, connectionId) => {
-  const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/delete`,
-    {
-      method: "DELETE",
+export const deleteConnection = async ({ workspaceId, connectionId }) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Error deleting connection");
     }
-  );
-  const deletedConnection = await response.json();
-  return deletedConnection;
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in deleteConnection:", error);
+    throw error;
+  }
 };
 
 // Get all connections

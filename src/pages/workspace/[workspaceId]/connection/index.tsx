@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { useQuery } from "@tanstack/react-query";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { getWorkspaceConnections, getTablesFromConnection } from "@/utils/api";
@@ -10,6 +9,8 @@ import LogoPostgres from "@/components/LogoPostgres";
 import Link from "next/link";
 import { useState } from "react";
 import { formatFriendlyDate, abbreviateNumber } from "@/utils/util";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { deleteConnection } from "@/utils/api";
 
 function findSelectedConnection(
   connectionsData: any,
@@ -28,6 +29,8 @@ export default function Connections() {
   const [selectedConnectionId, setSelectedConnectionId] = useState(null);
 
   console.log("id", tableId);
+
+  const queryClient = useQueryClient();
 
   const {
     data: currentUser,
@@ -72,6 +75,12 @@ export default function Connections() {
       return response;
     },
     enabled: currentWorkspace?.id !== null && selectedConnectionId !== null,
+  });
+
+  const deleteConnectionMutation = useMutation(deleteConnection, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
+    },
   });
 
   const selectedConnection = findSelectedConnection(
@@ -133,13 +142,27 @@ export default function Connections() {
                   <div className="flex flex-col mt-[48px] gap-4 items-center w-full">
                     <div className="flex flex-row pb-2 border-b border-slate-4 w-full items-center">
                       <p className="text-[14px]">Connection details</p>
-                      <button className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-white px-[12px] py-[4px] rounded-[4px] ml-auto">
+                      <button
+                        className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-white px-[12px] py-[4px] rounded-[4px] ml-auto"
+                        onClick={() =>
+                          deleteConnectionMutation.mutate({
+                            workspaceId: currentWorkspace.id,
+                            connectionId: selectedConnectionId,
+                          })
+                        }
+                      >
                         Delete
                       </button>
                     </div>
                     {selectedConnectionId &&
                       selectedConnection?.connectionType === "snowflake" && (
                         <div className="flex flex-col gap-4 w-full">
+                          <div className="flex flex-row gap-3 text-[13px]">
+                            <p className="w-[180px] text-slate-11">
+                              Connection ID
+                            </p>
+                            <p className="">{selectedConnection?.id}</p>
+                          </div>
                           <div className="flex flex-row gap-3 text-[13px]">
                             <p className="w-[180px] text-slate-11">
                               Display name

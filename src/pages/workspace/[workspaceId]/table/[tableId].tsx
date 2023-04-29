@@ -31,7 +31,6 @@ export default function Table() {
   } = useQuery({
     queryKey: ["getTable", currentWorkspace?.id, tableId],
     queryFn: async () => {
-      console.log("currentWorkspace?.id", currentWorkspace?.id, "id", tableId);
       const response = await getTable(currentWorkspace?.id, tableId);
       return response;
     },
