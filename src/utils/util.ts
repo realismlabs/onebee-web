@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
+import { utcToZonedTime, format as tzFormat } from "date-fns-tz";
 
 export function abbreviateNumber(number: number | null) {
   const SI_SYMBOL = ["", "K", "M", "B"];
@@ -228,7 +229,11 @@ export function assignColor(name: string): string {
 }
 
 export function formatFriendlyDate(isoDateString: string) {
-  const dateObject = parseISO(isoDateString);
-  const friendlyDateString = format(dateObject, "PPPpp");
-  return friendlyDateString;
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const dateObject = utcToZonedTime(isoDateString, timeZone);
+  const formattedDate = format(dateObject, "PPPpp");
+  const timeZoneAbbr = tzFormat(dateObject, "zzz", { timeZone });
+
+  // Transforms  2023-04-28T14:16:27.000Z into April 28th, 2023 at 10:16:27 AM EDT
+  return `${formattedDate} ${timeZoneAbbr}`;
 }

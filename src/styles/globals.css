@@ -87,7 +87,8 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  background-color: rgb(4, 10, 25);
+  /* background-color: rgb(4, 10, 25); */
+  background-color: var(--slate1);
 }
 
 body {
