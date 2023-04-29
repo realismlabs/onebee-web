@@ -198,32 +198,42 @@ export default function Connections() {
                     <div className="w-full">
                       {selectedConnectionId && tablesFromConnectionData && (
                         <>
-                          <div className="flex flex-row gap-3 mt-8 text-[14px] items-center">
+                          <div className="flex flex-row gap-3 mt-8 text-[14px] items-center mb-4">
                             Connected tables{" "}
                             <div className="text-[12px] px-[4px] py-[2px] bg-slate-3">
                               {tablesFromConnectionData.length}
                             </div>
                           </div>
-                          <div className="flex flex-col mt-4 border-slate-4 rounded-lg border">
-                            {tablesFromConnectionData.map((table: any) => (
-                              <Link
-                                key={table.id}
-                                href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
-                              >
-                                <div className="flex flex-row gap-4 items-center border-b border-slate-4 text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-white">
-                                  <div className="w-[180px]">
-                                    {table.displayName}
+                          {tablesFromConnectionData.length === 0 && (
+                            <div className="flex flex-col items-center justify-center h-32 bg-slate-2 rounded-lg">
+                              <p className="text-slate-11 text-[14px]">
+                                No connected tables
+                              </p>
+                            </div>
+                          )}
+                          {tablesFromConnectionData.length > 0 && (
+                            <div className="flex flex-col border-slate-4 rounded-lg border overflow-clip">
+                              {tablesFromConnectionData.map((table: any) => (
+                                <Link
+                                  key={table.id}
+                                  href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
+                                >
+                                  <div className="flex flex-row gap-4 items-center border-b border-slate-4 text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-white">
+                                    <div className="w-[180px]">
+                                      {table.displayName}
+                                    </div>
+                                    <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px]">
+                                      {table.connectionPath}
+                                    </pre>
+                                    <div className="ml-auto">
+                                      {abbreviateNumber(table.rowCount) +
+                                        " rows"}
+                                    </div>
                                   </div>
-                                  <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px]">
-                                    {table.connectionPath}
-                                  </pre>
-                                  <div className="ml-auto">
-                                    {abbreviateNumber(table.rowCount) + " rows"}
-                                  </div>
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
+                                </Link>
+                              ))}
+                            </div>
+                          )}
                         </>
                       )}
                     </div>
