@@ -155,7 +155,8 @@
       "displayName": "DIM_CUSTOMERS",
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
-      "id": 3
+      "id": 3,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -163,7 +164,8 @@
       "displayName": "CUSTOMER",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 100000000,
-      "id": 4
+      "id": 4,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -171,7 +173,8 @@
       "displayName": "LINEITEM",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF10/",
       "rowCount": 59986052,
-      "id": 5
+      "id": 5,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -179,7 +182,8 @@
       "displayName": "CATALOG_PAGE",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 50000,
-      "id": 6
+      "id": 6,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -187,7 +191,8 @@
       "displayName": "INCOME_BAND",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 20,
-      "id": 7
+      "id": 7,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -195,7 +200,8 @@
       "displayName": "STORE_SALES",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF10TCL/",
       "rowCount": 28800239865,
-      "id": 8
+      "id": 8,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -203,7 +209,8 @@
       "displayName": "REGION",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF100/",
       "rowCount": 5,
-      "id": 9
+      "id": 9,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -211,7 +218,8 @@
       "displayName": "SUPPLIER",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF1000/",
       "rowCount": 10000000,
-      "id": 10
+      "id": 10,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -219,7 +227,8 @@
       "displayName": "CATALOG_PAGE",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 50000,
-      "id": 11
+      "id": 11,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -227,7 +236,8 @@
       "displayName": "DIM_CUSTOMERS",
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
-      "id": 12
+      "id": 12,
+      "connectionId": 1
     },
     {
       "workspaceId": 6,
@@ -235,7 +245,8 @@
       "displayName": "DIM_CUSTOMERS",
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
-      "id": 13
+      "id": 13,
+      "connectionId": 1
     }
   ],
   "verifyEmail": [

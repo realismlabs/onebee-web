@@ -97,6 +97,17 @@ export const getTables = async (workspaceId) => {
   return tables;
 };
 
+// Get tables associated with a connection in a workspace
+export const getTablesFromConnection = async (workspaceId, connectionId) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/tables`
+  );
+  const tables = await response.json();
+  console.log("getTablesFromConnection", tables, workspaceId, connectionId)
+  return tables;
+};
+
+
 // Create a table in a workspace
 export const createTable = async (tableData) => {
   const response = await fetch(

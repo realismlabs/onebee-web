@@ -5,7 +5,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery } from '@tanstack/react-query';
 import { getTables } from '../utils/api';
-import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check } from '@phosphor-icons/react';
+import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database } from '@phosphor-icons/react';
 import { stringToVibrantColor, assignColor } from '@/utils/util';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
@@ -79,41 +79,43 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
 
   return (
     <>
-      <div className="px-[16px] pt-[12px] pb-[4px] text-slate-11 text-[12px]">{currentUser.email}</div>
-      {workspacesForUserData.map((workspace) => (
-        <Popover.Button key={workspace.id}>
-          <div onClick={(e) => {
-            router.push(`/workspace/${workspace.id}`);
-          }}>
-            <div className="w-[240px] px-[8px] text-[13px] cursor-pointer">
-              <div className="hover:bg-slate-4 px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center">
-                <div
-                  className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
-                  style={{
-                    backgroundImage: `url(${workspace.iconUrl})`,
-                    backgroundSize: 'cover',
-                  }}
-                >
-                  <div className="text-[10px] text-white">{workspace.name.slice(0, 1)}</div>
-                </div>
-                <div className="max-w-[140px] truncate">{workspace.name}</div>
-                {workspace.id === currentWorkspace.id && (
-                  <div className="ml-auto text-white">
-                    <Check
-                      size={16}
-                      weight="bold"
-                      className="text-white group-hover:text-slate-11 transition-all duration-100"
-                    />
+      <div className="px-[16px] pt-[13px] pb-[4px] text-slate-11 text-[13px]">{currentUser.email}</div>
+      <div className="max-h-[60vh] overflow-y-scroll">
+        {workspacesForUserData.map((workspace) => (
+          <Popover.Button key={workspace.id}>
+            <div onClick={(e) => {
+              router.push(`/workspace/${workspace.id}`);
+            }}>
+              <div className="w-[240px] px-[8px] text-[13px] cursor-pointer">
+                <div className="hover:bg-slate-4 px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center">
+                  <div
+                    className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
+                    style={{
+                      backgroundImage: `url(${workspace.iconUrl})`,
+                      backgroundSize: 'cover',
+                    }}
+                  >
+                    <div className="text-[10px] text-white">{workspace.name.slice(0, 1)}</div>
                   </div>
-                )}
+                  <div className="max-w-[140px] truncate">{workspace.name}</div>
+                  {workspace.id === currentWorkspace.id && (
+                    <div className="ml-auto text-white">
+                      <Check
+                        size={16}
+                        weight="bold"
+                        className="text-white group-hover:text-slate-11 transition-all duration-100"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </Popover.Button>
-      ))
-      }
+          </Popover.Button>
+        ))
+        }
+      </div>
 
-      <div className="flex flex-col px-[8px] py-[12px] mt-[12px] border-t border-slate-4 w-full text-[12px] text-slate-11">
+      <div className="flex flex-col px-[8px] py-[13px] mt-[13px] border-t border-slate-4 w-full text-[13px] text-slate-11">
         <Popover.Button>
           <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
             onClick={(e) => {
@@ -152,7 +154,7 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
           <Popover.Button
             className={`
                 ${open ? 'bg-slate-3' : 'hover:bg-slate-3 active:bg-slate-4'}
-                flex flex-row gap-3 items-center mx-[10px] focus:outline-none pl-[8px] pr-[12px] py-[6px] rounded-md`}
+                flex flex-row gap-3 items-center mx-[10px] focus:outline-none pl-[8px] pr-[13px] py-[6px] rounded-md`}
           >
             <div
               className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
@@ -176,7 +178,7 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute mt-[44px] ml-[12px] top-0 rounded-md bg-slate-2 shadow-2xl border border-slate-4 flex flex-col items-start justify-start">
+            <Popover.Panel className="absolute mt-[44px] max-h-[80vh] ml-[13px] top-0 rounded-md bg-slate-2 shadow-2xl border border-slate-4 flex flex-col items-start justify-start">
               <WorkspacePopoverContents currentUser={currentUser} currentWorkspace={currentWorkspace} />
             </Popover.Panel>
           </Transition>
@@ -238,7 +240,7 @@ const WorkspaceShell = () => {
   console.log(tablesData);
 
   return (
-    <div className="bg-slate-1 py-[10px] w-[240px] text-[13px] text-white flex flex-col border-r border-slate-6">
+    <div className="bg-slate-1 py-[10px] min-w-[240px] max-w-[240px] text-[13px] text-white flex flex-col border-r border-slate-4">
       <WorkspacePopover currentWorkspace={currentWorkspace} currentUser={currentUser} />
       {/* core */}
       <div className="mt-2 flex flex-col gap-4 px-[9px]">
@@ -277,6 +279,16 @@ const WorkspaceShell = () => {
       </div>
       {/* footer */}
       <div className="mt-auto flex flex-col px-[13px]">
+        <Link href={`/workspace/${currentWorkspace.id}/connection`}>
+          <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
+            <TreeStructure
+              size={20}
+              weight="fill"
+              className="text-slate-10 group-hover:text-slate-11 transition-all duration-100"
+            />
+            <div className="">Data connections</div>
+          </div>
+        </Link>
         <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
           <PaperPlaneTilt
             size={20}

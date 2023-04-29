@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { format, parseISO } from "date-fns";
 
 export function abbreviateNumber(number: number | null) {
   const SI_SYMBOL = ["", "K", "M", "B"];
@@ -224,4 +225,10 @@ export function assignColor(name: string): string {
 
   // Assign the color from the table
   return Object.values(colorTable)[index];
+}
+
+export function formatFriendlyDate(isoDateString: string) {
+  const dateObject = parseISO(isoDateString);
+  const friendlyDateString = format(dateObject, "PPPpp");
+  return friendlyDateString;
 }
