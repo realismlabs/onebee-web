@@ -10,7 +10,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { formatFriendlyDate, abbreviateNumber } from "@/utils/util";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { deleteConnection } from "@/utils/api";
+import { deleteConnection, updateConnectionDisplayName } from "@/utils/api";
+import { PencilSimpleLine } from "@phosphor-icons/react";
 
 function findSelectedConnection(
   connectionsData: any,
@@ -27,6 +28,8 @@ export default function Connections() {
   const { tableId } = router.query;
 
   const [selectedConnectionId, setSelectedConnectionId] = useState(null);
+  const [displayNameInputValue, setDisplayNameInputValue] = useState("");
+  const [isEditingDisplayName, setIsEditingDisplayName] = useState(false);
 
   console.log("id", tableId);
 
@@ -83,6 +86,24 @@ export default function Connections() {
       setSelectedConnectionId(null);
     },
   });
+
+  const updateConnectionDisplayNameMutation = useMutation(
+    updateConnectionDisplayName,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
+      },
+    }
+  );
+
+  const handleUpdateDisplayName = async () => {
+    await updateConnectionDisplayNameMutation.mutateAsync({
+      workspaceId: currentWorkspace.id,
+      connectionId: selectedConnectionId,
+      displayName: displayNameInputValue,
+    });
+    setIsEditingDisplayName(false);
+  };
 
   const selectedConnection = findSelectedConnection(
     connectionsData,
@@ -172,7 +193,35 @@ export default function Connections() {
                             <p className="w-[180px] text-slate-11">
                               Display name
                             </p>
-                            <p className="">{selectedConnection?.name}</p>
+                            {isEditingDisplayName ? (
+                              <input
+                                title="Display name"
+                                type="text"
+                                value={displayNameInputValue}
+                                onChange={(e) =>
+                                  setDisplayNameInputValue(e.target.value)
+                                }
+                                className="border border-white rounded-sm text-white bg-transparent px-2 py-1 mr-2"
+                                onBlur={handleUpdateDisplayName}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    handleUpdateDisplayName();
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <p>{selectedConnection?.name}</p>
+                            )}
+                            <PencilSimpleLine
+                              size={32}
+                              weight="fill"
+                              onClick={() => {
+                                setDisplayNameInputValue(
+                                  selectedConnection?.name || ""
+                                );
+                                setIsEditingDisplayName(true);
+                              }}
+                            />
                           </div>
                           <div className="flex flex-row gap-3 text-[13px]">
                             <p className="w-[180px] text-slate-11">

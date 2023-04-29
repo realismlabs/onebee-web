@@ -187,11 +187,15 @@ export const getConnection = async (workspaceId, connectionId) => {
 };
 
 // Update a specific connection
-export const updateConnection = async (
+export const updateConnectionDisplayName = async ({
   workspaceId,
   connectionId,
-  connectionData
+  displayName,
+}
 ) => {
+  //  print all args
+  console.log("updateConnectionDisplayName", workspaceId, connectionId, displayName)
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/update`,
     {
@@ -199,7 +203,9 @@ export const updateConnection = async (
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(connectionData),
+      body: JSON.stringify({
+        name: displayName,
+      }),
     }
   );
   const updatedConnection = await response.json();
