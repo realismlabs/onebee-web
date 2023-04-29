@@ -330,7 +330,7 @@
       "keyPairAuthPrivateKeyPassphrase": "",
       "role": "READ_ONLY_TEST",
       "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
+      "name": "Snowflake - ARTHUR_TESTsdfsdf",
       "createdAt": "2023-04-28T14:16:27.754Z",
       "workspaceId": 6,
       "id": 1
@@ -345,7 +345,7 @@
       "keyPairAuthPrivateKeyPassphrase": "",
       "role": "READ_ONLY_TEST",
       "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
+      "name": "Another one",
       "createdAt": "2023-04-28T15:17:48.311Z",
       "workspaceId": 6,
       "id": 6
@@ -360,58 +360,13 @@
       "keyPairAuthPrivateKeyPassphrase": "",
       "role": "READ_ONLY_TEST",
       "connectionType": "snowflake",
-      "name": "Snowflake real",
+      "name": "Snowflake",
       "createdAt": "2023-04-28T15:17:52.381Z",
       "workspaceId": 6,
       "id": 7,
       "data": {
         "name": "sdfsfsfd"
       }
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-04-28T16:32:19.130Z",
-      "workspaceId": 6,
-      "id": 8
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-04-28T17:33:10.361Z",
-      "workspaceId": 6,
-      "id": 10
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-04-28T19:37:57.323Z",
-      "workspaceId": "6",
-      "id": 11
     }
   ]
 }

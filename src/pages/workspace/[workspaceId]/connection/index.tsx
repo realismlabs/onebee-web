@@ -7,7 +7,7 @@ import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { formatFriendlyDate, abbreviateNumber } from "@/utils/util";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { deleteConnection, updateConnectionDisplayName } from "@/utils/api";
@@ -27,9 +27,17 @@ export default function Connections() {
   const router = useRouter();
   const { tableId } = router.query;
 
+  const displayNameInputRef = useRef<HTMLInputElement>(null);
+
   const [selectedConnectionId, setSelectedConnectionId] = useState(null);
   const [displayNameInputValue, setDisplayNameInputValue] = useState("");
   const [isEditingDisplayName, setIsEditingDisplayName] = useState(false);
+
+  useEffect(() => {
+    if (isEditingDisplayName && displayNameInputRef.current) {
+      displayNameInputRef.current.focus();
+    }
+  }, [isEditingDisplayName, displayNameInputRef]);
 
   console.log("id", tableId);
 
@@ -124,7 +132,7 @@ export default function Connections() {
   return (
     <WorkspaceLayout>
       <div className="bg-slate-1 h-screen text-white flex flex-row divide-slate-4 divide-y">
-        <div className="min-w-[360px] border-r border-slate-4 overflow-y-scroll grow">
+        <div className="min-w-[360px] max-w-[360px] border-r border-slate-4 overflow-y-scroll grow">
           <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[20px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
             <p className="text-white text-[13px]">Data connections</p>
             <button className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-[13px] text-white px-[12px] py-[4px] rounded-[4px] ml-auto">
@@ -142,15 +150,17 @@ export default function Connections() {
                 }`}
                 onClick={() => setSelectedConnectionId(connection.id)}
               >
-                <div className="h-[36px] w-[36px] bg-slate-2 flex items-center justify-center border border-slate-4 rounded-md">
+                <div className="min-h-[36px] min-w-[36px] bg-slate-2 flex items-center justify-center border border-slate-4 rounded-md">
                   {connection.connectionType === "snowflake" && (
                     <div className="w-[20px] h-[20px]">
                       <LogoSnowflake />
                     </div>
                   )}
                 </div>
-                <div className="flex flex-col gap-2">
-                  <p className="text-white text-[13px]">{connection.name}</p>
+                <div className="flex flex-col gap-2 flex-grow-1 min-w-0">
+                  <p className="text-white text-[13px] truncate max-w-full">
+                    {connection.name}
+                  </p>
                   <p className="text-slate-11 text-[12px]">
                     {connection.accountIdentifier}
                   </p>
@@ -183,57 +193,88 @@ export default function Connections() {
                       selectedConnection?.connectionType === "snowflake" && (
                         <div className="flex flex-col gap-4 w-full">
                           <div className="flex flex-row gap-3 text-[13px]">
-                            <p className="w-[180px] text-slate-11">
+                            <p className="min-w-[180px] text-slate-11">
                               Connection ID
                             </p>
                             <p className="">{selectedConnection?.id}</p>
                           </div>
-                          <div className="flex flex-row gap-3 text-[13px]">
-                            <p className="w-[180px] text-slate-11">
+                          <div className="flex flex-row gap-3 text-[13px] relative">
+                            <p className="min-w-[180px] text-slate-11">
                               Display name
                             </p>
                             {isEditingDisplayName ? (
-                              <input
-                                title="Display name"
-                                type="text"
-                                value={displayNameInputValue}
-                                onChange={(e) =>
-                                  setDisplayNameInputValue(e.target.value)
-                                }
-                                className="border border-white rounded-sm text-white bg-transparent px-2 py-1 mr-2"
-                                onBlur={handleUpdateDisplayName}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    handleUpdateDisplayName();
-                                  }
+                              <div
+                                className="absolute ml-[192px]"
+                                style={{
+                                  transform: `translateY(-6px) translateX(-8px)`,
                                 }}
-                              />
+                              >
+                                <input
+                                  title="Display name"
+                                  type="text"
+                                  value={displayNameInputValue}
+                                  onChange={(e) =>
+                                    setDisplayNameInputValue(e.target.value)
+                                  }
+                                  className="border border-blue-700 rounded-md text-white bg-transparent py-[2px] px-[8px] mr-2 text-[13px] w-[240px]"
+                                  ref={displayNameInputRef}
+                                  onBlur={handleUpdateDisplayName}
+                                  onKeyDown={(e) => {
+                                    console.log(e.key);
+                                    if (e.key === "Enter") {
+                                      handleUpdateDisplayName();
+                                    }
+                                    if (e.key === "Escape") {
+                                      setDisplayNameInputValue(
+                                        selectedConnection?.name || ""
+                                      );
+                                      setIsEditingDisplayName(false);
+                                    }
+                                  }}
+                                />
+                                <button
+                                  onClick={() => {
+                                    setIsEditingDisplayName(false);
+                                  }}
+                                  className="text-slate-10"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
                             ) : (
-                              <p>{selectedConnection?.name}</p>
+                              <>
+                                <p>{selectedConnection?.name}</p>
+
+                                <div
+                                  className="flex flex-row items-center gap-1 cursor-pointer text-[12px] text-slate-10"
+                                  onClick={() => {
+                                    setDisplayNameInputValue(
+                                      selectedConnection?.name || ""
+                                    );
+                                    setIsEditingDisplayName(true);
+                                    displayNameInputRef?.current?.focus();
+                                  }}
+                                >
+                                  <PencilSimpleLine size={16} weight="fill" />
+                                  Edit
+                                </div>
+                              </>
                             )}
-                            <PencilSimpleLine
-                              size={32}
-                              weight="fill"
-                              onClick={() => {
-                                setDisplayNameInputValue(
-                                  selectedConnection?.name || ""
-                                );
-                                setIsEditingDisplayName(true);
-                              }}
-                            />
                           </div>
                           <div className="flex flex-row gap-3 text-[13px]">
-                            <p className="w-[180px] text-slate-11">
+                            <p className="min-w-[180px] text-slate-11">
                               Account identifier
                             </p>
                             <p>{selectedConnection?.accountIdentifier}</p>
                           </div>
                           <div className="flex flex-row gap-3 text-[13px]">
-                            <p className="w-[180px] text-slate-11">Warehouse</p>
+                            <p className="min-w-[180px] text-slate-11">
+                              Warehouse
+                            </p>
                             <p>{selectedConnection?.warehouse}</p>
                           </div>
                           <div className="flex flex-row gap-3 text-[13px]">
-                            <p className="w-[180px] text-slate-11">
+                            <p className="min-w-[180px] text-slate-11">
                               Created at
                             </p>
                             <p>
@@ -243,15 +284,17 @@ export default function Connections() {
                             </p>
                           </div>
                           <div className="flex flex-row gap-3 text-[13px]">
-                            <p className="w-[180px] text-slate-11">Role</p>
+                            <p className="min-w-[180px] text-slate-11">Role</p>
                             <p>{selectedConnection?.role}</p>
                           </div>
                           <div className="flex flex-row gap-3 text-[13px]">
-                            <p className="w-[180px] text-slate-11">Username</p>
+                            <p className="min-w-[180px] text-slate-11">
+                              Username
+                            </p>
                             <p>{selectedConnection?.basicAuthUsername}</p>
                           </div>
                           <div className="flex flex-row gap-3 text-[13px]">
-                            <p className="w-[180px] text-slate-11">
+                            <p className="min-w-[180px] text-slate-11">
                               Connection type
                             </p>
                             <div className="flex flex-row gap-2 items-center">
@@ -287,7 +330,7 @@ export default function Connections() {
                                   href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
                                 >
                                   <div className="flex flex-row gap-4 items-center border-b border-slate-4 text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-white">
-                                    <div className="w-[180px]">
+                                    <div className="min-w-[180px]">
                                       {table.displayName}
                                     </div>
                                     <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px]">
