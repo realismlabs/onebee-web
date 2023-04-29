@@ -406,21 +406,6 @@
       "role": "READ_ONLY_TEST",
       "connectionType": "snowflake",
       "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-04-28T16:39:39.500Z",
-      "workspaceId": 6,
-      "id": 9
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
       "createdAt": "2023-04-28T17:33:10.361Z",
       "workspaceId": 6,
       "id": 10

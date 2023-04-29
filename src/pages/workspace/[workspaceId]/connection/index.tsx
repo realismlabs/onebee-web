@@ -80,6 +80,7 @@ export default function Connections() {
   const deleteConnectionMutation = useMutation(deleteConnection, {
     onSuccess: () => {
       queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
+      setSelectedConnectionId(null);
     },
   });
 
