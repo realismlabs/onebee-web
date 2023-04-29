@@ -425,6 +425,7 @@ export default function CreateTable() {
       displayName,
       connectionPath,
       rowCount: selectedTableRowCount,
+      connectionId: create_connection_response.id,
     };
 
     const create_table_response = await createTable(createTableRequestBody);

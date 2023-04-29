@@ -192,12 +192,6 @@ export default function Connections() {
                     {selectedConnectionId &&
                       selectedConnection?.connectionType === "snowflake" && (
                         <div className="flex flex-col gap-4 w-full">
-                          <div className="flex flex-row gap-3 text-[13px]">
-                            <p className="min-w-[180px] text-slate-11">
-                              Connection ID
-                            </p>
-                            <p className="">{selectedConnection?.id}</p>
-                          </div>
                           <div className="flex flex-row gap-3 text-[13px] relative">
                             <p className="min-w-[180px] text-slate-11">
                               Display name
@@ -303,6 +297,12 @@ export default function Connections() {
                               </div>
                               <p>Snowflake</p>
                             </div>
+                          </div>
+                          <div className="flex flex-row gap-3 text-[13px]">
+                            <p className="min-w-[180px] text-slate-11">
+                              Connection ID
+                            </p>
+                            <p className="">{selectedConnection?.id}</p>
                           </div>
                         </div>
                       )}
