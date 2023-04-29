@@ -70,7 +70,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   });
 
   if (isWorkspacesForUserLoading) {
-    return <div>Loading...</div>;
+    return <div className="h-screen bg-slate-1 text-white">Loading...</div>;
   }
 
   if (workspacesForUserError) {

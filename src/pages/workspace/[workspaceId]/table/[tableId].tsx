@@ -38,7 +38,7 @@ export default function Table() {
   });
 
   if (isTableLoading) {
-    return <div>Loading...</div>;
+    return <div className="h-screen bg-slate-1 text-white"></div>;
   }
 
   if (tableError) {
