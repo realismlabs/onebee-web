@@ -91,8 +91,11 @@ export default function Connections() {
     <WorkspaceLayout>
       <div className="bg-slate-1 h-screen text-white flex flex-row divide-slate-4 divide-y">
         <div className="min-w-[360px] border-r border-slate-4 overflow-y-scroll grow">
-          <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] px-[20px] sticky top-0 bg-slate-1">
-            <p className="text-white text-[13px]">Connections</p>
+          <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[20px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
+            <p className="text-white text-[13px]">Data connections</p>
+            <button className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-[13px] text-white px-[12px] py-[4px] rounded-[4px] ml-auto">
+              + Add
+            </button>
           </div>
           <div className="grow flex flex-col items-start text-[13px] overflow-y-scroll">
             {connectionsData.map((connection: any) => (
@@ -105,9 +108,11 @@ export default function Connections() {
                 }`}
                 onClick={() => setSelectedConnectionId(connection.id)}
               >
-                <div className="h-[24px] w-[24px]">
+                <div className="h-[36px] w-[36px] bg-slate-2 flex items-center justify-center border border-slate-4 rounded-md">
                   {connection.connectionType === "snowflake" && (
-                    <LogoSnowflake />
+                    <div className="w-[20px] h-[20px]">
+                      <LogoSnowflake />
+                    </div>
                   )}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -123,25 +128,12 @@ export default function Connections() {
         <div className="w-full overflow-y-scroll grow ">
           {selectedConnectionId !== null && (
             <>
-              <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] px-[40px] sticky top-0 bg-slate-1">
-                <p className="text-white text-[13px]">
-                  {
-                    connectionsData.find(
-                      (connection: any) =>
-                        connection.id === selectedConnectionId
-                    )?.name
-                  }
-                </p>
-              </div>
               <div className="flex items-center justify-center">
                 <div className="max-w-[720px] w-full flex items-center">
-                  <div className="flex flex-col mt-[24px] gap-4 items-center w-full">
+                  <div className="flex flex-col mt-[48px] gap-4 items-center w-full">
                     <div className="flex flex-row pb-2 border-b border-slate-4 w-full items-center">
                       <p className="text-[14px]">Connection details</p>
-                      <button className="bg-slate-6 text-[13px] text-white px-[12px] py-[8px] rounded-md ml-auto">
-                        Edit
-                      </button>
-                      <button className="bg-red-5 text-[13px] text-white px-[12px] py-[8px] rounded-md ml-[8px]">
+                      <button className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-white px-[12px] py-[4px] rounded-[4px] ml-auto">
                         Delete
                       </button>
                     </div>
@@ -241,6 +233,13 @@ export default function Connections() {
                 </div>
               </div>
             </>
+          )}
+          {selectedConnectionId == null && (
+            <div className="flex flex-col items-center justify-center h-screen">
+              <p className="text-slate-11 text-[14px]">
+                No connection selected
+              </p>
+            </div>
           )}
         </div>
       </div>
