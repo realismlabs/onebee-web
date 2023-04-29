@@ -196,7 +196,7 @@ export default function Connections() {
                         </div>
                       )}
                     <div className="w-full">
-                      {selectedConnectionId && (
+                      {selectedConnectionId && tablesFromConnectionData && (
                         <>
                           <div className="flex flex-row gap-3 mt-8 text-[14px] items-center">
                             Connected tables{" "}
