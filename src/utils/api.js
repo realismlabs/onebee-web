@@ -190,25 +190,26 @@ export const getConnection = async (workspaceId, connectionId) => {
 export const updateConnectionDisplayName = async ({
   workspaceId,
   connectionId,
-  displayName,
+  data,
 }
 ) => {
   //  print all args
-  console.log("updateConnectionDisplayName", workspaceId, connectionId, displayName)
+  console.log("updateConnectionDisplayName", workspaceId, connectionId, data)
+
+  const displayName = data.name;
 
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/update`,
     {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name: displayName,
-      }),
+      body: JSON.stringify({ name: displayName }),
     }
   );
   const updatedConnection = await response.json();
+  console.log("updatedConnection", updatedConnection)
   return updatedConnection;
 };
 

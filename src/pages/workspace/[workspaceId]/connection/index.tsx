@@ -87,20 +87,19 @@ export default function Connections() {
     },
   });
 
-  const updateConnectionDisplayNameMutation = useMutation(
-    updateConnectionDisplayName,
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
-      },
-    }
-  );
+  const updateConnectionMutation = useMutation(updateConnectionDisplayName, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
+    },
+  });
 
   const handleUpdateDisplayName = async () => {
-    await updateConnectionDisplayNameMutation.mutateAsync({
+    await updateConnectionMutation.mutateAsync({
       workspaceId: currentWorkspace.id,
       connectionId: selectedConnectionId,
-      displayName: displayNameInputValue,
+      data: {
+        name: displayNameInputValue,
+      },
     });
     setIsEditingDisplayName(false);
   };
