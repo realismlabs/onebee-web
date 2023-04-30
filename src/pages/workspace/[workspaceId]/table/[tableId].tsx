@@ -46,7 +46,7 @@ export default function Table() {
     isLoading: isConnectionLoading,
     error: connectionError,
   } = useQuery({
-    queryKey: ["getConnection", currentWorkspace.id, tableData.connectionId],
+    queryKey: ["getConnection", currentWorkspace?.id, tableData?.connectionId],
     queryFn: async () => {
       const response = await getConnection(
         currentWorkspace.id,
