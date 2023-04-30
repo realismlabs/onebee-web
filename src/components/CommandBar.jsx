@@ -26,6 +26,11 @@ export const CommandBar = () => {
   }, [])
 
 
+  React.useEffect(() => {
+    console.log("selected value", value)
+  }, [value])
+
+
   const {
     data: currentUser,
     isLoading: isUserLoading,
@@ -115,15 +120,15 @@ export const CommandBar = () => {
             setValue(v)
           }}
           label="Global Command Menu"
-          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] max-h-[50vh] overflow-y-auto bg-[#101112] text-white text-[14px] rounded-xl data-[state=open]:animate-commandBar">
+          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] bg-[#101112] text-white text-[14px] h-fit rounded-xl data-[state=open]:animate-commandBar">
           <div className={`command-dialog-content ${open ? 'open' : ''}`}>
-            <div className="sticky top-0 flex flex-col border-b border-slate-4 px-[16px] pt-[12px] bg-[#101112]">
+            <div className="flex flex-col border-b border-slate-4 px-[16px] pt-[12px] bg-[#101112]">
               <div cmdk-linear-badge="" className="text-[13px] text-slate-11 px-[6px] py-[3px] rounded-md bg-slate-2 w-fit">Jump to:</div>
               <Command.Input autoFocus placeholder="Type a command or search..."
                 className="bg-[#101112] placeholder:text-slate-10 w-full border-none text-[14px] focus:outline-none focus:ring-0 px-[0px]"
               />
             </div>
-            <div className="mx-[6px]">
+            <div className="mx-[6px] overflow-y-auto h-[40vh]">
               <Command.List className="py-[6px]"
               >
                 <Command.Empty><div className="px-[10px] pt-[8px] text-slate-11">No results found.</div></Command.Empty>

@@ -365,6 +365,7 @@ a {
 }
 
 /* Contains items and groups. Animate height using the --cmdk-list-height CSS variable. */
+/* Commenting out because position is weird - it centers the div in the middle, haven't figured out a way to fix the positioning yet */
 /* [cmdk-list] {
   min-height: 200px;
   height: var(--cmdk-list-height);
