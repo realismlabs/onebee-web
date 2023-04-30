@@ -113,7 +113,7 @@ export const CommandBar = () => {
             setValue(v)
           }}
           label="Global Command Menu"
-          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%] max-h-[40vh] overflow-y-auto bg-[#101112] text-white text-[14px] rounded-xl data-[state=open]:animate-commandBar">
+          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] max-h-[40vh] overflow-y-auto bg-[#101112] text-white text-[14px] rounded-xl data-[state=open]:animate-commandBar">
           <div className={`command-dialog-content ${open ? 'open' : ''}`}>
             <div className="sticky top-0 flex flex-col border-b border-slate-4 px-[16px] pt-[12px] bg-[#101112]">
               <div cmdk-linear-badge="" className="text-[13px] text-slate-11 px-[6px] py-[3px] rounded-md bg-slate-2 w-fit">Jump to:</div>
@@ -149,8 +149,8 @@ export const CommandBar = () => {
                       }
                     >
                       <div className="flex flex-row gap-2 w-full">
-                        <div className="w-[24px] text-slate-10">{item.icon}</div>
-                        <div className="w-[240px]">{item.name}</div>
+                        <div className="min-w-[24px] text-slate-10">{item.icon}</div>
+                        <div className="min-w-[240px]">{item.name}</div>
                         <div className="text-slate-11">{item.description}</div>
                       </div>
                     </Command.Item>
