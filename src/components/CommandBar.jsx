@@ -12,8 +12,7 @@ import { useRouter } from 'next/router';
 export const CommandBar = () => {
   const router = useRouter();
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState('connections')
-
+  const [value, setValue] = React.useState('homehome')
 
   // Toggle the menu when ⌘K is pressed
   React.useEffect(() => {
@@ -69,20 +68,20 @@ export const CommandBar = () => {
 
   const allItems = [
     {
-      name: 'Connections',
-      description: 'View and manage your connections',
-      icon: <TreeStructure width={20} height={20} weight="fill" />,
-      type: 'navigation',
-      id: 'connections',
-      link: `/workspace/${currentWorkspace?.id}/connection`,
-    },
-    {
       name: 'Home',
       description: 'Go back home',
       icon: <House width={20} height={20} weight="fill" />,
       type: 'navigation',
       id: 'home',
       link: `/workspace/${currentWorkspace?.id}/`,
+    },
+    {
+      name: 'Connections',
+      description: 'View and manage your connections',
+      icon: <TreeStructure width={20} height={20} weight="fill" />,
+      type: 'navigation',
+      id: 'connections',
+      link: `/workspace/${currentWorkspace?.id}/connection`,
     }
   ];
 
@@ -123,7 +122,9 @@ export const CommandBar = () => {
               />
             </div>
             <div className="mx-[6px]">
-              <Command.List className="py-[6px]">
+              <Command.List className="py-[6px]"
+
+              >
                 <Command.Empty><div className="px-[10px] pt-[8px] text-slate-11">No results found.</div></Command.Empty>
                 {allItems.map((item) => {
                   const id = item.id;
