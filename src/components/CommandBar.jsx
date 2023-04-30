@@ -66,7 +66,7 @@ export const CommandBar = () => {
     return <div className="text-white">There was an error loading your tables</div>;
   }
 
-  const allItems = [
+  const navigationItems = [
     {
       name: 'Home',
       description: 'Go back home',
@@ -85,9 +85,11 @@ export const CommandBar = () => {
     }
   ];
 
+  const tables = [];
+
   if (tablesData.length > 0) {
     tablesData.forEach((table) => {
-      allItems.push({
+      tables.push({
         name: table.displayName,
         description: table.fullName,
         icon: table.iconUrl ?? <Table width={20} height={20} weight="fill" />,
@@ -96,7 +98,7 @@ export const CommandBar = () => {
         link: `/workspace/${currentWorkspace?.id}/table/${table.id}`,
       });
     });
-    console.log('allItems', allItems)
+    console.log('navigationItems', tables)
   }
 
   return (
@@ -113,7 +115,7 @@ export const CommandBar = () => {
             setValue(v)
           }}
           label="Global Command Menu"
-          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] max-h-[40vh] overflow-y-auto bg-[#101112] text-white text-[14px] rounded-xl data-[state=open]:animate-commandBar">
+          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] max-h-[50vh] overflow-y-auto bg-[#101112] text-white text-[14px] rounded-xl data-[state=open]:animate-commandBar">
           <div className={`command-dialog-content ${open ? 'open' : ''}`}>
             <div className="sticky top-0 flex flex-col border-b border-slate-4 px-[16px] pt-[12px] bg-[#101112]">
               <div cmdk-linear-badge="" className="text-[13px] text-slate-11 px-[6px] py-[3px] rounded-md bg-slate-2 w-fit">Jump to:</div>
@@ -123,39 +125,72 @@ export const CommandBar = () => {
             </div>
             <div className="mx-[6px]">
               <Command.List className="py-[6px]"
-
               >
                 <Command.Empty><div className="px-[10px] pt-[8px] text-slate-11">No results found.</div></Command.Empty>
-                {allItems.map((item) => {
-                  const id = item.id;
-                  const searchable_id_name = `${item.id}${item.name}`;
-                  return (
-                    <Command.Item
-                      key={searchable_id_name}
-                      value={searchable_id_name}
-                      className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-2" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
-                      onMouseEnter={() => {
-                        console.log("hovering", searchable_id_name);
-                        setValue(searchable_id_name);
-                        console.log("value", value);
-                      }}
-                      onSelect={
-                        () => {
-                          // route to table
-                          router.push(item.link)
-                          // toggle closed
-                          setOpen(false);
+                <Command.Group heading="Navigation" className="py-[8px]">
+                  {navigationItems.map((item) => {
+                    const id = item.id;
+                    const searchable_id_name = `${item.id}${item.name}`;
+                    return (
+                      <Command.Item
+                        key={searchable_id_name}
+                        value={searchable_id_name}
+                        className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-2" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
+                        onMouseEnter={() => {
+                          console.log("hovering", searchable_id_name);
+                          setValue(searchable_id_name);
+                          console.log("value", value);
+                        }}
+                        onSelect={
+                          () => {
+                            // route to table
+                            router.push(item.link)
+                            // toggle closed
+                            setOpen(false);
+                          }
                         }
-                      }
-                    >
-                      <div className="flex flex-row gap-2 w-full">
-                        <div className="min-w-[24px] text-slate-10">{item.icon}</div>
-                        <div className="min-w-[240px]">{item.name}</div>
-                        <div className="text-slate-11">{item.description}</div>
-                      </div>
-                    </Command.Item>
-                  )
-                })}
+                      >
+                        <div className="flex flex-row gap-2 w-full">
+                          <div className="min-w-[24px] text-slate-10">{item.icon}</div>
+                          <div className="min-w-[240px]">{item.name}</div>
+                          <div className="text-slate-11">{item.description}</div>
+                        </div>
+                      </Command.Item>
+                    )
+                  })}
+                </Command.Group>
+                <Command.Group heading="Tables" className="mt-2">
+                  {tables.map((item) => {
+                    const id = item.id;
+                    const searchable_id_name = `${item.id}${item.name}`;
+                    return (
+                      <Command.Item
+                        key={searchable_id_name}
+                        value={searchable_id_name}
+                        className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-2" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
+                        onMouseEnter={() => {
+                          console.log("hovering", searchable_id_name);
+                          setValue(searchable_id_name);
+                          console.log("value", value);
+                        }}
+                        onSelect={
+                          () => {
+                            // route to table
+                            router.push(item.link)
+                            // toggle closed
+                            setOpen(false);
+                          }
+                        }
+                      >
+                        <div className="flex flex-row gap-2 w-full">
+                          <div className="min-w-[24px] text-slate-10">{item.icon}</div>
+                          <div className="min-w-[240px]">{item.name}</div>
+                          <div className="text-slate-11">{item.description}</div>
+                        </div>
+                      </Command.Item>
+                    )
+                  })}
+                </Command.Group>
               </Command.List>
             </div>
           </div>

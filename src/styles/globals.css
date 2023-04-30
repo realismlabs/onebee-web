@@ -365,12 +365,12 @@ a {
 }
 
 /* Contains items and groups. Animate height using the --cmdk-list-height CSS variable. */
-[cmdk-list] {
+/* [cmdk-list] {
   min-height: 200px;
   height: var(--cmdk-list-height);
-  max-height: 500px;
+  max-height: 600px;
   transition: height 100ms ease;
-}
+} */
 
 /* To scroll item into view earlier near the edges of the viewport, use scroll-padding: */
 [cmdk-list] {
@@ -382,4 +382,10 @@ a {
   /* heavy box shadow */
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3),
     0 8px 10px -6px rgb(0 0 0 / 0.3);
+}
+
+[cmdk-group-heading] {
+  padding-left: 12px;
+  padding-bottom: 8px;
+  color: var(--slate11);
 }
