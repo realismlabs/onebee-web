@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
-import { CircleNotch, TreeStructure, House } from '@phosphor-icons/react';
+import { CircleNotch, TreeStructure, House, Table } from '@phosphor-icons/react';
 import { getTables } from '@/utils/api';
 import { useRouter } from 'next/router';
 
@@ -71,7 +71,7 @@ export const CommandBar = () => {
     {
       name: 'Connections',
       description: 'View and manage your connections',
-      icon: <TreeStructure width={20} height={20} />,
+      icon: <TreeStructure width={20} height={20} weight="fill" />,
       type: 'navigation',
       id: 'connections',
       link: `/workspace/${currentWorkspace?.id}/connection`,
@@ -79,7 +79,7 @@ export const CommandBar = () => {
     {
       name: 'Home',
       description: '',
-      icon: <House width={20} height={20} />,
+      icon: <House width={20} height={20} weight="fill" />,
       type: 'navigation',
       id: 'home',
       link: `/workspace/${currentWorkspace?.id}/`,
@@ -91,7 +91,7 @@ export const CommandBar = () => {
       allItems.push({
         name: table.displayName,
         description: table.fullName,
-        icon: table.iconUrl,
+        icon: table.iconUrl ?? <Table width={20} height={20} weight="fill" />,
         type: 'table',
         id: String(table.id),
         link: `/workspace/${currentWorkspace?.id}/table/${table.id}`,
@@ -148,6 +148,7 @@ export const CommandBar = () => {
                       }
                     >
                       <div className="flex flex-row gap-2 w-full">
+                        <div className="w-[24px] text-slate-10">{item.icon}</div>
                         <div className="w-[240px]">{item.name}</div>
                         <div className="text-slate-11">{item.description}</div>
                       </div>
