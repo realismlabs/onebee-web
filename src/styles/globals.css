@@ -364,14 +364,16 @@ a {
   position: absolute;
 }
 
-/* Commandbar */
-.command-dialog-content {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+/* Contains items and groups. Animate height using the --cmdk-list-height CSS variable. */
+[cmdk-list] {
+  min-height: 200px;
+  height: var(--cmdk-list-height);
+  max-height: 500px;
+  transition: height 100ms ease;
 }
 
-.command-dialog-content.open {
-  opacity: 1;
-  transform: translateY(0);
+/* To scroll item into view earlier near the edges of the viewport, use scroll-padding: */
+[cmdk-list] {
+  scroll-padding-block-start: 8px;
+  scroll-padding-block-end: 8px;
 }
