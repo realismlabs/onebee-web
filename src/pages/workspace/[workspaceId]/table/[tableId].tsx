@@ -72,7 +72,7 @@ export default function Table() {
   return (
     <WorkspaceLayout>
       <div className="bg-slate-1 max-h-screen text-white flex flex-col divide-slate-4 divide-y">
-        <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] px-[20px]">
+        <div className="flex flex-row gap-2 items-center  py-[12px] px-[20px]">
           <p className="text-white text-[13px]">{tableData.displayName}</p>
           <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[11px]">
             {tableData.connectionPath}

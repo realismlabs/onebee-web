@@ -330,7 +330,7 @@
       "keyPairAuthPrivateKeyPassphrase": "",
       "role": "READ_ONLY_TEST",
       "connectionType": "snowflake",
-      "name": "Snowflake - ARTHUR_TESTsdfsdf",
+      "name": "Snowflake - ARTHUR_TEST 2023-04-30",
       "createdAt": "2023-04-28T14:16:27.754Z",
       "workspaceId": 6,
       "id": 1
