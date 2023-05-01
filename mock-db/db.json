@@ -125,7 +125,8 @@
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
       "id": 3,
-      "connectionId": 1
+      "connectionId": 1,
+      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" fill=\"#0091FF\" viewBox=\"0 0 256 256\"><path d=\"M160,112a24,24,0,1,1-24-24A24,24,0,0,1,160,112Zm64-72V216a16,16,0,0,1-16,16H64a16,16,0,0,1-16-16V192H32a8,8,0,0,1,0-16H48V136H32a8,8,0,0,1,0-16H48V80H32a8,8,0,0,1,0-16H48V40A16,16,0,0,1,64,24H208A16,16,0,0,1,224,40ZM190.4,163.2A67.88,67.88,0,0,0,163,141.51a40,40,0,1,0-53.94,0A67.88,67.88,0,0,0,81.6,163.2a8,8,0,1,0,12.8,9.6,52,52,0,0,1,83.2,0,8,8,0,1,0,12.8-9.6Z\"></path></svg>"
     },
     {
       "workspaceId": 6,
@@ -134,7 +135,10 @@
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 100000000,
       "id": 4,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     },
     {
       "workspaceId": 6,
@@ -143,7 +147,10 @@
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF10/",
       "rowCount": 59986052,
       "id": 5,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     },
     {
       "workspaceId": 6,
@@ -152,7 +159,10 @@
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 50000,
       "id": 6,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     },
     {
       "workspaceId": 6,
@@ -161,7 +171,10 @@
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 20,
       "id": 7,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     },
     {
       "workspaceId": 6,
@@ -170,7 +183,10 @@
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF10TCL/",
       "rowCount": 28800239865,
       "id": 8,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     },
     {
       "workspaceId": 6,
@@ -179,7 +195,10 @@
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF100/",
       "rowCount": 5,
       "id": 9,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     },
     {
       "workspaceId": 6,
@@ -188,7 +207,10 @@
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF1000/",
       "rowCount": 10000000,
       "id": 10,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     },
     {
       "workspaceId": 6,
@@ -197,7 +219,10 @@
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 50000,
       "id": 11,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     },
     {
       "workspaceId": 6,
@@ -206,7 +231,10 @@
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
       "id": 12,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     },
     {
       "workspaceId": 6,
@@ -215,7 +243,10 @@
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
       "id": 13,
-      "connectionId": 1
+      "connectionId": 1,
+      "icon": "AddressBook",
+      "iconSvg": "",
+      "iconColor": "#FFC107"
     }
   ],
   "verifyEmail": [

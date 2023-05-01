@@ -18,6 +18,8 @@ import {
 } from "@phosphor-icons/react";
 import { useState, lazy, Suspense } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
+import { IconLoaderFromSVGString } from "@/components/IconLoaderFromSVGString";
+import parse from "html-react-parser";
 
 const IconPickerPopoverInline = lazy(
   () => import("@/components/IconPickerPopoverInline")
@@ -108,6 +110,7 @@ export default function TablePage() {
     queryKey: ["getTable", currentWorkspace?.id, tableId],
     queryFn: async () => {
       const response = await getTable(currentWorkspace?.id, tableId);
+      console.log("awu response", JSON.stringify(response));
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -146,13 +149,9 @@ export default function TablePage() {
       <div className="bg-slate-1 max-h-screen text-slate-12 flex flex-col divide-slate-4 divide-y">
         <div className="flex flex-row gap-2 items-center py-[12px] px-[12px] h-[48px]">
           <div className="flex flex-row gap-2 items-center justify-center">
-            <Table
-              size={20}
-              weight="fill"
-              className=""
-              style={{
-                color: assignColor(tableData.displayName),
-              }}
+            <IconLoaderFromSVGString
+              iconSvgString={tableData.iconSvgString}
+              tableName={tableData.displayName}
             />
             <p className="text-slate-12 text-[13px]">{tableData.displayName}</p>
             <IconPickerPopoverInline />

@@ -10,6 +10,7 @@ import { stringToVibrantColor, assignColor } from '@/utils/util';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
 import { getWorkspaces } from '@/utils/api';
+import { IconLoaderFromSVGString } from './IconLoaderFromSVGString';
 
 function AccountPopover() {
   const router = useRouter();
@@ -114,7 +115,6 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
         ))
         }
       </div>
-
       <div className="flex flex-col px-[8px] py-[13px] mt-[13px] border-t border-slate-4 w-full text-[13px] text-slate-11">
         <Popover.Button>
           <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
@@ -261,14 +261,7 @@ const WorkspaceShell = () => {
             {tablesData.map((item) => (
               <Link key={item.id} href={`/workspace/${currentWorkspace.id}/table/${item.id}`}>
                 <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/table/${item.id}` ? "bg-slate-3" : ""}`}>
-                  <Table
-                    size={20}
-                    weight="fill"
-                    className="text-slate-10 group-hover:text-slate-11 transition-all duration-100"
-                    style={{
-                      color: assignColor(item.displayName)
-                    }}
-                  />
+                  <IconLoaderFromSVGString iconSvgString={item.iconSvgString} tableName={item.displayName} />
                   <div>{item.displayName}</div>
                 </div>
               </Link>

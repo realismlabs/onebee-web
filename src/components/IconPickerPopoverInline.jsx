@@ -1,15 +1,95 @@
 // IconPicker.jsx
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useRef } from 'react';
 import * as allIcons from '@phosphor-icons/react';
 import { Popover, Transition } from '@headlessui/react'
+import { updateTable } from '../utils/api';
+import { useQuery, useMutation } from '@tanstack/react-query';
+
+const ColorPicker = ({ selectedColor, setSelectedColor }) => {
+  const colors = [
+    '#0091FF',
+    '#3E63DD',
+    '#6E56CF',
+    '#8E4EC6',
+    '#AB4ABA',
+    '#E93D82',
+    '#E5484D',
+    '#F76808',
+    '#FFB224',
+    '#F5D90A',
+    '#46A758',
+    '#99D52A',
+    '#9BA1A6',
+  ];
+
+  const handleColorClick = (color) => {
+    console.log("awu selected color", color)
+    setSelectedColor(color);
+  };
+
+  return (
+    <div className="flex flex-row flex-grow justify-between mb-[8px]">
+      {colors.map((color) => (
+        <div
+          key={color}
+          onClick={() => handleColorClick(color)}
+          className={`flex items-center justify-center h-[20px] w-[20px] rounded cursor-pointer`}
+        >
+          <div
+            className={`h-[18px] w-[18px] rounded-full ${selectedColor === color ? 'ring-1 border-slate-3 border-2 ring-slate-8' : ''
+              }`}
+            style={{
+              backgroundColor: color,
+              '--tw-ring-color': color,
+            }}
+          ></div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 
 const IconPickerPopoverInline = () => {
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [iconElement, setIconElement] = useState(null);
+  const [iconHTML, setIconHTML] = useState(null);
+
+  // const updateTableMutation = useMutation(updateTable, {
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["getTable", currentWorkspace?.id, tableId]);
+  //   },
+  // });
+
+  // const handleUpdateTable = async (iconHTML) => {
+  //   await updateTableMutation.mutateAsync({
+  //     workspaceId: currentWorkspace.id,
+  //     tableId: tableId,
+  //     tableData: {
+  //       iconSvgString: iconHTML,
+  //     },
+  //   });
+  // };
 
   const handleIconClick = (iconName) => {
     setSelectedIcon(iconName);
-    // Perform any required actions with the selected icon
+    console.log("awu selected icon", iconName)
+
+    const iconDiv = document.getElementById(iconName);
+
+    if (iconDiv) {
+      const childrenContents = Array.from(iconDiv.children).map((child) => child.outerHTML).join('\n');
+      setIconHTML(childrenContents);
+      console.log("awu Children contents:", childrenContents);
+      // TODO: Call table update API
+      // handleUpdateTable();
+
+      // TODO: Close the popover
+    } else {
+      console.error(`awu Div with id "${iconName}" not found.`);
+    }
+
   };
 
   const iconNames = Object.keys(allIcons).filter(
@@ -19,6 +99,8 @@ const IconPickerPopoverInline = () => {
   const filteredIconNames = iconNames.filter((iconName) =>
     iconName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  const [selectedColor, setSelectedColor] = useState("#0091FF");
 
   return (
     <Popover className="">
@@ -35,10 +117,10 @@ const IconPickerPopoverInline = () => {
           </Popover.Button>
           <Transition
             as={Fragment}
-            enter="transition ease-out duration-200"
+            enter="transition ease-out duration-100"
             enterFrom="opacity-0 translate-y-1"
             enterTo="opacity-100 translate-y-0"
-            leave="transition ease-in duration-150"
+            leave="transition ease-in duration-100"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
@@ -49,29 +131,27 @@ const IconPickerPopoverInline = () => {
                   placeholder="Search icons.."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="border rounded w-full mb-[12px] py-[6px] px-[12px] bg-slate-3 border-slate-8 placeholder:text-slate-10 text-[13px] focus:ring-1"
+                  className="border rounded w-full mb-[12px] py-[4px] px-[10px] bg-slate-3 border-slate-6 placeholder:text-slate-10 text-[13px] focus:ring-1"
                 />
-                <div className="flex flex-row gap-2 mb-[8px]">
-                  <div className="bg-red-9 h-[20px] w-[20px] rounded-full"></div>
-                  <div className="bg-amber-9 h-[20px] w-[20px] rounded-full"></div>
-                  <div className="bg-green-9 h-[20px] w-[20px] rounded-full"></div>
-                  <div className="bg-plum-9 h-[20px] w-[20px] rounded-full"></div>
-                </div>
+
+                <ColorPicker selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
+
                 {filteredIconNames.length > 0 && (
                   <div
-                    className="grid gap-2 max-h-[420px] overflow-scroll w-[360px]"
-                    style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(20px, 1fr))' }}
+                    className="grid gap-[8px] max-h-[420px] overflow-scroll w-[360px]"
+                    style={{ gridTemplateColumns: 'repeat(13, minmax(20px, 1fr))' }}
                   >
                     {filteredIconNames.map((iconName) => {
-                      const IconComponent = allIcons[iconName];
                       return (
                         <div
                           key={iconName}
+                          id={iconName}
                           onClick={() => handleIconClick(iconName)}
-                          className={`border flex items-center justify-center h-[20px] w-[20px] rounded ${selectedIcon === iconName ? 'border-blue-500' : 'border-none'
+                          className={`flex items-center justify-center h-[20px] w-[20px] rounded ${selectedIcon === iconName ? 'bg-white/10 border border-white border-opacity-20' : 'border-none'
                             } cursor-pointer`}
                         >
-                          {React.createElement(allIcons[`${iconName}`], { size: 20, className: 'text-blue-500', weight: 'fill' })}
+                          {/* color transition desired */}
+                          {React.createElement(allIcons[`${iconName}`], { size: 18, weight: 'fill', color: selectedColor })}
                         </div>
                       );
                     })}
