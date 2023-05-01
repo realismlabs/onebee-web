@@ -9,8 +9,60 @@ import MockTable from "../../../../components/MockTable";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
-import { Table, CaretDown, MagnifyingGlass, Gear } from "@phosphor-icons/react";
-import { useState } from "react";
+import {
+  Table,
+  CaretDown,
+  MagnifyingGlass,
+  Gear,
+  X,
+} from "@phosphor-icons/react";
+import { useState, lazy, Suspense } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+
+const IconPicker = lazy(() => import("@/components/IconPicker"));
+
+function EditPopover() {
+  const [open, setOpen] = useState(false);
+  return (
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Trigger tabIndex={-1}>
+        <div className="bg-slate-2 hover:bg-slate-3 text-[13px] pl-[8px] pr-[12px] py-[6px] border border-slate-4 rounded-[4px] cursor-pointer flex flex-row gap-[6px] items-center">
+          <Gear size={16} className="text-slate-11" weight="fill" />
+          Config
+        </div>
+      </Dialog.Trigger>
+      <Dialog.Portal className="z-100">
+        <Dialog.Overlay className="z-20 bg-slate-1 opacity-75 fixed inset-0" />
+        <Dialog.Content className="z-30 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] max-w-[90vw] w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate-2 border border-slate-3 text-slate-12 p-5 focus:outline-none overflow-hidden">
+          <Dialog.Title className="m-0 text-[14px] font-medium">
+            Full table list
+          </Dialog.Title>
+          <div className="max-h-[85vh] overflow-scroll mt-4 rounded-sm">
+            Hello
+          </div>
+          <Suspense fallback={<div>Loading Icon Picker...</div>}>
+            <IconPicker />
+          </Suspense>
+          <div className="mt-5 flex justify-end">
+            <Dialog.Close asChild>
+              <button className="px-4 py-3 bg-slate-3 rounded-md text-[13px] font-medium leading-none focus:outline-none hover:bg-slate-4">
+                Close preview
+              </button>
+            </Dialog.Close>
+          </div>
+          <Dialog.Close asChild>
+            <button
+              className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+              aria-label="Close"
+            >
+              <X size={16} weight="bold" />
+            </button>
+          </Dialog.Close>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
 
 export default function TablePage() {
   const router = useRouter();
@@ -122,10 +174,7 @@ export default function TablePage() {
                 onKeyDown={handleKeyDown}
               />
             </div>
-            <div className="bg-slate-2 hover:bg-slate-3 text-[13px] pl-[8px] pr-[12px] py-[6px] border border-slate-4 rounded-[4px] cursor-pointer flex flex-row gap-[6px] items-center">
-              <Gear size={16} className="text-slate-11" weight="fill" />
-              Config
-            </div>
+            <EditPopover />
           </div>
         </div>
         <div className="grow-1 overflow-x-auto overflow-y-scroll max-w-screen">
