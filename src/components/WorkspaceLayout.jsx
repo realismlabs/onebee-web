@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
     <div className="flex h-screen">
       <WorkspaceShell />
       <CommandBar />
-      <div className="flex-grow">{children}</div>
+      <div className="w-0 flex-grow overflow-auto">{children}</div>
     </div>
   );
 };

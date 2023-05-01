@@ -69,7 +69,7 @@ const MockTable = () => {
             <th
               key={i}
               style={{ minWidth: columnWidths[i] }}
-              className="px-4 py-2 text-left text-slate-12 text-[12px] font-normal border-r border-slate-6"
+              className="px-4 py-2 text-left text-slate-12 text-[12px] tracking-wide font-normal border-r border-slate-6"
             >
               {columnNames[i]}
             </th>
@@ -83,7 +83,7 @@ const MockTable = () => {
               <td
                 key={cellIndex}
                 style={{ minWidth: columnWidths[cellIndex] }}
-                className="px-4 py-2 whitespace-nowrap text-[12px] text-slate-12 border-r border-slate-6"
+                className="px-4 py-2 whitespace-nowrap text-[12px] tracking-wide text-slate-12 border-r border-slate-6"
               >
                 {cellIndex === 0 ? (<span className="text-slate-11">{rowIndex}</span>) : (cellIndex === 1 ? (<span>{(rowIndex + 123) * 123}</span>) : (cellIndex === 3 ? (
                   getPaymentStatus(rowIndex)
