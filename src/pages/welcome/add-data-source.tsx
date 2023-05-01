@@ -24,11 +24,11 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
         <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -191,7 +191,7 @@ const InviteTeammateDialog = ({
         <div className="pl-4 py-2 border-l border-slate-12 italic">
           <p>{message}</p>
         </div>
-        <button className="bg-blue-600 px-3 py-1.5 rounded-md text-white font-medium pointer-events-none">
+        <button className="bg-blue-600 px-3 py-1.5 rounded-md text-slate-12 font-medium pointer-events-none">
           Accept invite
         </button>
         <p>You can also copy + paste this link into your browser:</p>
@@ -221,13 +221,13 @@ const InviteTeammateDialog = ({
             tabIndex={-1}
           >
             <p className="text-slate-10">Don&apos;t have credentials?</p>
-            <p className="text-white">Invite a teammate to help →</p>
+            <p className="text-slate-12">Invite a teammate to help →</p>
           </div>
         </Dialog.Trigger>
         <Dialog.Portal className="z-100">
           <Dialog.Overlay className="z-20 bg-slate-1 opacity-[90%] fixed inset-0" />
           <div className="fixed inset-0 flex items-start justify-center z-30">
-            <Dialog.Content className="fixed mx-auto max-h-[85vh] top-[60px] max-w-[90vw] w-[480px] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
+            <Dialog.Content className="fixed mx-auto max-h-[85vh] top-[60px] max-w-[90vw] w-[480px] rounded-[6px] bg-slate-2 border border-slate-3 text-slate-12 p-5 focus:outline-none overflow-hidden">
               <Dialog.Title className="m-0 text-[14px] font-medium">
                 Invite a teammate to help
               </Dialog.Title>
@@ -239,7 +239,7 @@ const InviteTeammateDialog = ({
                         Email address(es)
                       </label>
                       <input
-                        className={`rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
+                        className={`rounded-md block w-full bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
                     ${
                       isValid === false
                         ? "border-red-500"
@@ -261,7 +261,7 @@ const InviteTeammateDialog = ({
                     <div className="flex flex-col gap-2">
                       <label className="text-[14px] w-[120px]">Message</label>
                       <textarea
-                        className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 h-48 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10 leading-normal"
+                        className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 h-48 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10 leading-normal"
                         required
                         title="Custom message"
                         value={customMessage}
@@ -275,7 +275,7 @@ const InviteTeammateDialog = ({
                       {({ open }) => (
                         <>
                           <Disclosure.Button
-                            className="flex w-full rounded-sm text-left text-[12px] text-white gap-1 items-center"
+                            className="flex w-full rounded-sm text-left text-[12px] text-slate-12 gap-1 items-center"
                             tabIndex={-1}
                           >
                             <CaretRight
@@ -344,7 +344,7 @@ const InviteTeammateDialog = ({
         enterTo="opacity-100 translate-y-0"
         className="fixed top-0 left-1/2 -translate-x-1/2"
       >
-        <div className=" text-white rounded-md shadow-lg transform -translate-y-25 transition-transform">
+        <div className=" text-slate-12 rounded-md shadow-lg transform -translate-y-25 transition-transform">
           <Toast
             message={toastMessage}
             duration={3000} // Duration of the Toast in milliseconds
@@ -374,7 +374,7 @@ const Toast: React.FC<ToastProps> = ({ message, duration }) => {
   if (!visible) return null;
 
   return (
-    <div className="mt-12 pl-2 pr-4 py-2 text-[12px] bg-slate-4 text-white rounded-md shadow-lg z-50 flex flex-row gap-2 items-center">
+    <div className="mt-12 pl-2 pr-4 py-2 text-[12px] bg-slate-4 text-slate-12 rounded-md shadow-lg z-50 flex flex-row gap-2 items-center">
       <CheckCircle size={20} weight="fill" className="text-green-500" />
       {message}
     </div>
@@ -413,13 +413,13 @@ export default function AddDataSource() {
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
+        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4">
           Connect a data source
         </div>
         <form className="flex flex-col gap-4 mt-4">
           <div className="flex gap-4">
             <Link href="/welcome/add-snowflake">
-              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+              <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
                   <LogoSnowflake />
                 </div>
@@ -427,7 +427,7 @@ export default function AddDataSource() {
               </div>
             </Link>
             <Link href="/welcome/add-bigquery">
-              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+              <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
                   <LogoBigQuery />
                 </div>
@@ -435,7 +435,7 @@ export default function AddDataSource() {
               </div>
             </Link>
             <Link href="/welcome/add-postgres">
-              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+              <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
                   <LogoPostgres />
                 </div>
@@ -445,7 +445,7 @@ export default function AddDataSource() {
           </div>
           <InviteTeammateDialog email={email} workspace={workspace_name} />
           <Link href={`/workspace/${currentWorkspace.id}`}>
-            <div className="text-white text-[14px] text-center w-full cursor-pointer">
+            <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">
               Do this later
             </div>
           </Link>

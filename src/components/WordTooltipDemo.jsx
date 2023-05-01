@@ -6,13 +6,13 @@ const WordTooltipDemo = ({ display_text, tooltip_content }) => {
     <Tooltip.Provider>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
-          <button className="text-white border-b border-slate-11 border-dotted text-[13px] text-left" tabIndex={-1}>
+          <button className="text-slate-12 border-b border-slate-11 border-dotted text-[13px] text-left" tabIndex={-1}>
             {display_text}
           </button>
         </Tooltip.Trigger>
         <Tooltip.Portal>
           <Tooltip.Content
-            className="text-white text-[11px] rounded-[4px] bg-black px-4 py-3 z-20 shadow-2xl"
+            className="text-slate-12 text-[11px] rounded-[4px] bg-black px-4 py-3 z-20 shadow-2xl"
             sideOffset={12}
             side="left"
           >

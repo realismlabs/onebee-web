@@ -59,7 +59,7 @@ export default function Table() {
 
   if (isTableLoading || isConnectionLoading) {
     return (
-      <div className="h-screen bg-slate-1 text-white text-[11px] text-slate-11 flex items-center justify-center">
+      <div className="h-screen bg-slate-1 text-slate-12 text-[11px] text-slate-11 flex items-center justify-center">
         Loading..
       </div>
     );
@@ -71,9 +71,9 @@ export default function Table() {
 
   return (
     <WorkspaceLayout>
-      <div className="bg-slate-1 max-h-screen text-white flex flex-col divide-slate-4 divide-y">
+      <div className="bg-slate-1 max-h-screen text-slate-12 flex flex-col divide-slate-4 divide-y">
         <div className="flex flex-row gap-2 items-center  py-[12px] px-[20px]">
-          <p className="text-white text-[13px]">{tableData.displayName}</p>
+          <p className="text-slate-12 text-[13px]">{tableData.displayName}</p>
           <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[11px]">
             {tableData.connectionPath}
           </pre>

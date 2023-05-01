@@ -79,11 +79,11 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
         <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -122,7 +122,7 @@ const PreviewTableUI = ({
     <>
       <div className="flex flex-row gap-6 w-full px-12">
         <div>
-          <p className="text-white text-[14px]">Choose a table</p>
+          <p className="text-slate-12 text-[14px]">Choose a table</p>
           <FileTree
             data={data}
             selectedTable={selectedTable}
@@ -132,12 +132,12 @@ const PreviewTableUI = ({
           />
         </div>
         <div className="flex-grow flex-shrink-0 w-0">
-          <p className="text-white text-[14px]">Preview</p>
+          <p className="text-slate-12 text-[14px]">Preview</p>
           <div className="relative bg-slate-2 rounded-md mt-4 h-[80vh] border border-slate-4 flex flex-col">
             {selectedTable ? (
               <>
                 <div className="flex flex-row gap-2 items-center px-4 py-2 border-b border-slate-4">
-                  <p className="text-white text-[14px]">{tableName}</p>
+                  <p className="text-slate-12 text-[14px]">{tableName}</p>
                   <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
                     {path}
                   </pre>
@@ -148,7 +148,7 @@ const PreviewTableUI = ({
                 <div className="flex-grow-0 overflow-x-auto overflow-y-scroll">
                   <MockTable />
                 </div>
-                <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-white flex items-center justify-center">
+                <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-slate-12 flex items-center justify-center">
                   <button
                     className={`text-[16px] px-4 py-2 bg-blue-600 rounded-md`}
                     type="button"
@@ -159,7 +159,7 @@ const PreviewTableUI = ({
                 </div>
               </>
             ) : (
-              <div className="pl-24 flex items-center justify-center text-white h-full flex-col gap-2">
+              <div className="pl-24 flex items-center justify-center text-slate-12 h-full flex-col gap-2">
                 <p className="text-[14px]"> No table selected </p>
                 <p className="text-[13px] text-slate-11">
                   {" "}
@@ -312,7 +312,7 @@ const FileTree: React.FC<FileTreeProps> = ({
                                 className={`flex flex-row ml-2 rounded-md px-2 py-1.5 flex-grow cursor-pointer ${
                                   selectedTable ===
                                   createUniqueId(dbName, schemaName, tableName)
-                                    ? "bg-blue-900 text-white"
+                                    ? "bg-blue-900 text-slate-12"
                                     : "hover:bg-slate-4 active:bg-slate-5"
                                 }`}
                               >
@@ -470,7 +470,7 @@ export default function CreateTable() {
   if (isUserLoading || isTablesQueryLoading) {
     return (
       <div className="h-screen bg-slate-1">
-        <div className="h-screen flex flex-col items-center justify-center text-white text-[13px]">
+        <div className="h-screen flex flex-col items-center justify-center text-slate-12 text-[13px]">
           Loading...
         </div>
       </div>
@@ -489,7 +489,7 @@ export default function CreateTable() {
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full">
-        <div className="bg-slate-1 text-white text-center text-[22px] pb-4"></div>
+        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"></div>
         <PreviewTableUI
           tablesQueryData={tablesQueryData}
           handleSubmit={handleSubmit}

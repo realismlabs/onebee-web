@@ -70,7 +70,7 @@ export default function Login() {
       >
         <div className="w-full flex flex-row flex-grow h-screen">
           <div className="w-full flex justify-center border-r border-slate-3">
-            <div className="w-[600px] text-white flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
+            <div className="w-[600px] text-slate-12 flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
               <header className="fixed top-8">
                 <Link href="/">
                   <Image
@@ -89,7 +89,7 @@ export default function Login() {
                     <div className="mt-2 flex flex-row items-center">
                       <label
                         htmlFor="password"
-                        className="text-white text-[14px] font-medium flex-grow"
+                        className="text-slate-12 text-[14px] font-medium flex-grow"
                       >
                         New password
                       </label>
@@ -102,7 +102,7 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="•••••••••••••"
                         required
-                        className={`w-full bg-slate-3 hover:border-slate-7 border  text-white text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9
+                        className={`w-full bg-slate-3 hover:border-slate-7 border  text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9
                           ${
                             errorMessage !== ""
                               ? "border-red-9"
@@ -122,7 +122,7 @@ export default function Login() {
                     <div className="mt-2 flex flex-row items-center">
                       <label
                         htmlFor="password"
-                        className="text-white text-[14px] font-medium flex-grow"
+                        className="text-slate-12 text-[14px] font-medium flex-grow"
                       >
                         Confirm new password
                       </label>
@@ -135,7 +135,7 @@ export default function Login() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="•••••••••••••"
                         required
-                        className={`w-full bg-slate-3 hover:border-slate-7 border  text-white text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9
+                        className={`w-full bg-slate-3 hover:border-slate-7 border  text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9
                           ${
                             errorMessage !== ""
                               ? "border-red-9"
@@ -160,7 +160,7 @@ export default function Login() {
                       </div>
                     )}
                     <button
-                      className={`bg-blue-600 text-white text-[14px] font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center mt-4
+                      className={`bg-blue-600 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center mt-4
                       ${loading ? "opacity-50 hover:bg-blue-600" : ""}`}
                       type="submit"
                       disabled={loading}

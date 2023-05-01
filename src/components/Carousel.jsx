@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const AnimatedDiv = ({ obj, position }) => (
   <motion.div
-    className={`animated-div flex flex-row gap-4 p-4 bg-[#0F172C] text-white rounded-md`}
+    className={`animated-div flex flex-row gap-4 p-4 bg-[#0F172C] text-slate-12 rounded-md`}
     style={{
       zIndex: position.zIndex,
       backgroundColor: position.backgroundColor,

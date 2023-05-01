@@ -59,7 +59,7 @@ export const CommandBar = () => {
 
   if (areTablesLoading || isWorkspaceLoading || isUserLoading) {
     return (
-      <div className="bg-slate-1 py-[16px] w-[240px] text-[13px] text-white flex flex-col gap-2 border-r border-slate-6 items-center justify-center">
+      <div className="bg-slate-1 py-[16px] w-[240px] text-[13px] text-slate-12 flex flex-col gap-2 border-r border-slate-6 items-center justify-center">
         <span className="animate-spin">
           <CircleNotch width={20} height={20} />
         </span>
@@ -68,7 +68,7 @@ export const CommandBar = () => {
   }
 
   if (tablesError || workspaceError || userError) {
-    return <div className="text-white">There was an error loading your tables</div>;
+    return <div className="text-slate-12">There was an error loading your tables</div>;
   }
 
   const navigationItems = [
@@ -120,7 +120,7 @@ export const CommandBar = () => {
             setValue(v)
           }}
           label="Global Command Menu"
-          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] bg-[#101112] text-white text-[14px] h-fit rounded-xl data-[state=open]:animate-commandBar">
+          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] bg-[#101112] text-slate-12 text-[14px] h-fit rounded-xl data-[state=open]:animate-commandBar">
           <div className={`command-dialog-content ${open ? 'open' : ''}`}>
             <div className="flex flex-col border-b border-slate-4 px-[16px] pt-[12px] bg-[#101112]">
               <div cmdk-linear-badge="" className="text-[13px] text-slate-11 px-[6px] py-[3px] rounded-md bg-slate-2 w-fit">Jump to:</div>

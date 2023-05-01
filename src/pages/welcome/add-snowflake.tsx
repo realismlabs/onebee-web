@@ -34,11 +34,11 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
         <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -63,7 +63,7 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
       <CopySimple size={16} weight="bold" className="text-slate-11" />
       <p>{ip}</p>
       {isCopied && (
-        <div className="absolute top-6 px-2 py-1 text-white bg-black rounded flex flex-row items-center gap-1">
+        <div className="absolute top-6 px-2 py-1 text-slate-12 bg-black rounded flex flex-row items-center gap-1">
           <Check size={12} weight="bold" className="text-green-500" />
           Copied!
         </div>
@@ -232,7 +232,7 @@ export default function AddSnowflake() {
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col mx-auto w-[640px] text-white gap-2 mt-4">
+      <div className="flex flex-col mx-auto w-[640px] text-slate-12 gap-2 mt-4">
         <Link href="/welcome/add-data-source" className="self-start">
           <div className="flex flex-row items-center gap-2 text-[13px] text-slate-11 self-start">
             <CaretLeft size={16} weight="bold" />
@@ -278,13 +278,13 @@ export default function AddSnowflake() {
                 </label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-l block w-full bg-slate-3 z-10 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="rounded-l block w-full bg-slate-3 z-10 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={accountIdentifier}
                     onChange={(e) => setAccountIdentifier(e.target.value)}
                     placeholder="account_identifier"
                   />
-                  <div className="rounded-r block bg-slate-6 text-white border-t border-r border-b border-slate-6 text-[13px] py-2 px-2 ">
+                  <div className="rounded-r block bg-slate-6 text-slate-12 border-t border-r border-b border-slate-6 text-[13px] py-2 px-2 ">
                     .snowflakecomputing.com
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export default function AddSnowflake() {
                 <label className="text-[13px] w-[120px]">Custom host</label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="rounded-md block w-full bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={customHost}
                     onChange={(e) => setCustomHost(e.target.value)}
@@ -352,7 +352,7 @@ export default function AddSnowflake() {
                 </label>
                 <div className="flex flex-row items-center flex-grow">
                   <input
-                    className="rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="rounded-md block w-full bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     value={customHostAccountIdentifier}
                     onChange={(e) =>
@@ -380,7 +380,7 @@ export default function AddSnowflake() {
             </label>
             <div className="flex flex-row items-center flex-grow">
               <input
-                className="rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                className="rounded-md block w-full bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                 required
                 placeholder="i.e. SMALL_WH"
                 value={warehouse}
@@ -392,7 +392,7 @@ export default function AddSnowflake() {
             <label className="text-[13px] w-[120px]">Auth method</label>
             <select
               title="Auth method"
-              className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
+              className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600"
               onChange={(e) => setSnowflakeAuthMethod(e.target.value)}
               value={snowflakeAuthMethod}
             >
@@ -406,7 +406,7 @@ export default function AddSnowflake() {
                 <div className="flex flex-row items-center mt-4 gap-4">
                   <label className="text-[13px] w-[120px]">Username</label>
                   <input
-                    className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     placeholder=""
                     title="Username"
@@ -417,7 +417,7 @@ export default function AddSnowflake() {
                 <div className="flex flex-row items-center gap-4">
                   <label className="text-[13px] w-[120px]">Password</label>
                   <input
-                    className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                    className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                     required
                     placeholder=""
                     title="Password"
@@ -432,7 +432,7 @@ export default function AddSnowflake() {
                   <div className="flex flex-row items-center mt-4 gap-4">
                     <label className="text-[13px] w-[120px]">Username</label>
                     <input
-                      className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                      className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                       required
                       placeholder=""
                       title="Key Pair Username"
@@ -462,7 +462,7 @@ export default function AddSnowflake() {
                       />
                     </label>
                     <textarea
-                      className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 h-20 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                      className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 h-20 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                       required
                       placeholder={`-----BEGIN ENCRYPTED PRIVATE KEY-----
 {{private_key_value}}
@@ -501,7 +501,7 @@ export default function AddSnowflake() {
                       />
                     </label>
                     <input
-                      className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                      className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                       required
                       placeholder="•••••••••••"
                       title="Private key passphrase"
@@ -544,7 +544,7 @@ export default function AddSnowflake() {
             </label>
             <div className="flex flex-row items-center flex-grow">
               <input
-                className="rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
+                className="rounded-md block w-full bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
                 placeholder="i.e. PUBLIC"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -593,7 +593,7 @@ export default function AddSnowflake() {
               </button>
               {connectionResult.status !== "success" && (
                 <div
-                  className="absolute left-0 bottom-full mb-2 w-max bg-black text-white text-[11px] py-1 px-2 rounded"
+                  className="absolute left-0 bottom-full mb-2 w-max bg-black text-slate-12 text-[11px] py-1 px-2 rounded"
                   style={{
                     visibility: isHoveringOnContinueButton
                       ? "visible"
@@ -613,7 +613,7 @@ export default function AddSnowflake() {
             <div className="flex flex-row gap-4 mt-4">
               <label className="text-[13px] min-w-[120px]"></label>
               <div
-                className={` text-white p-4 mt-4 rounded-md flex-grow ${
+                className={` text-slate-12 p-4 mt-4 rounded-md flex-grow ${
                   connectionResult.status === "error"
                     ? "bg-red-900/10  border-red-900 border"
                     : ""

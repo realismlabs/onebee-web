@@ -19,11 +19,11 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
         <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -60,7 +60,7 @@ export default function WorkspaceHome() {
     <WorkspaceLayout>
       <div className="h-screen bg-slate-1">
         <div className="flex flex-col justify-center items-center w-full pt-32">
-          <div className="bg-slate-1 text-white text-left flex flex-col items-start text-[22px] pb-4 w-[800px] gap-4">
+          <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[800px] gap-4">
             <div className="items-start text-left">
               Hi {email ?? "there"}! Let&apos;s get started.
             </div>

@@ -70,7 +70,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   });
 
   if (isWorkspacesForUserLoading) {
-    return <div className="h-screen bg-slate-1 text-white">Loading...</div>;
+    return <div className="h-screen bg-slate-1 text-slate-12">Loading...</div>;
   }
 
   if (workspacesForUserError) {
@@ -95,15 +95,15 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
                       backgroundSize: 'cover',
                     }}
                   >
-                    <div className="text-[10px] text-white">{workspace.name.slice(0, 1)}</div>
+                    <div className="text-[10px] text-slate-12">{workspace.name.slice(0, 1)}</div>
                   </div>
                   <div className="max-w-[140px] truncate">{workspace.name}</div>
                   {workspace.id === currentWorkspace.id && (
-                    <div className="ml-auto text-white">
+                    <div className="ml-auto text-slate-12">
                       <Check
                         size={16}
                         weight="bold"
-                        className="text-white group-hover:text-slate-11 transition-all duration-100"
+                        className="text-slate-12 group-hover:text-slate-11 transition-all duration-100"
                       />
                     </div>
                   )}
@@ -163,9 +163,9 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
                 backgroundSize: 'cover',
               }}
             >
-              <div className="text-[10px] text-white">{currentWorkspace.name.slice(0, 1)}</div>
+              <div className="text-[10px] text-slate-12">{currentWorkspace.name.slice(0, 1)}</div>
             </div>
-            <p className="text-white flex-grow truncate max-w-[160px]">
+            <p className="text-slate-12 flex-grow truncate max-w-[160px]">
               {currentWorkspace.name}
             </p>
           </Popover.Button>
@@ -224,7 +224,7 @@ const WorkspaceShell = () => {
 
   if (areTablesLoading || isWorkspaceLoading || isUserLoading) {
     return (
-      <div className="bg-slate-1 py-[16px] w-[240px] text-[13px] text-white flex flex-col gap-2 border-r border-slate-6 items-center justify-center">
+      <div className="bg-slate-1 py-[16px] w-[240px] text-[13px] text-slate-12 flex flex-col gap-2 border-r border-slate-6 items-center justify-center">
         <span className="animate-spin">
           <CircleNotch width={20} height={20} />
         </span>
@@ -233,13 +233,13 @@ const WorkspaceShell = () => {
   }
 
   if (tablesError || workspaceError || userError) {
-    return <div className="text-white">There was an error loading your tables</div>;
+    return <div className="text-slate-12">There was an error loading your tables</div>;
   }
 
   console.log(tablesData);
 
   return (
-    <div className="bg-slate-1 py-[10px] min-w-[240px] max-w-[240px] text-[13px] text-white flex flex-col border-r border-slate-4">
+    <div className="bg-slate-1 py-[10px] min-w-[240px] max-w-[240px] text-[13px] text-slate-12 flex flex-col border-r border-slate-4">
       <WorkspacePopover currentWorkspace={currentWorkspace} currentUser={currentUser} />
       {/* core */}
       <div className="mt-2 flex flex-col gap-4 px-[9px]">

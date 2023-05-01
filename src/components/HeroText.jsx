@@ -60,7 +60,7 @@ function HeroText(type) {
       }}
     >
       <h1
-        className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-white pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
+        className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-slate-12 pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
       >
         Browse your data warehouse, fast
       </h1>
@@ -118,7 +118,7 @@ function HeroText(type) {
       }}
     >
       <h1
-        className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-white pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
+        className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-slate-12 pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
       >
         Level up how your company works with data
       </h1>
@@ -176,7 +176,7 @@ function HeroText(type) {
       }}
     >
       <h1
-        className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-white pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
+        className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-slate-12 pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
       >
         Fast data browsing <br className="sm:hidden"></br>for every role
       </h1>
@@ -233,7 +233,7 @@ function HeroText(type) {
       }}
     >
       <h1
-        className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-white pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
+        className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[32px] text-slate-12 pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
       >
         <TextCycler />
       </h1>
@@ -290,7 +290,7 @@ function HeroText(type) {
     }}
   >
     <h1
-      className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[24px] text-white pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
+      className={`font-regular md:text-[48px] sm:text-[32px] text-center leading-tight text-[24px] text-slate-12 pt-2 md:pt-8 ${styles.heroHeadlineMask}`}
     >
       The ultimate data browser for
     </h1>

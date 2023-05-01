@@ -42,7 +42,7 @@ export default function Login() {
       >
         <div className="w-full flex flex-row flex-grow h-screen">
           <div className="w-full flex justify-center border-r border-slate-3">
-            <div className="w-[600px] text-white flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
+            <div className="w-[600px] text-slate-12 flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
               <header className="fixed top-8">
                 <Link href="/">
                   <Image
@@ -68,7 +68,7 @@ export default function Login() {
                 <form onSubmit={handleSubmit}>
                   <div className="flex flex-row items-center gap-2  mt-4">
                     <button
-                      className={`bg-slate-3 text-white text-[14px] font-medium rounded-md px-4 py-2 gap-3  justify-center h-10 items-center self-start flex flex-row
+                      className={`bg-slate-3 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 gap-3  justify-center h-10 items-center self-start flex flex-row
                       ${loading ? "opacity-50 " : "hover:bg-slate-4"}`}
                       type="submit"
                       disabled={loading}

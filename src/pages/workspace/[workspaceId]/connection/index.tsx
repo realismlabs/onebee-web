@@ -119,7 +119,7 @@ export default function Connections() {
 
   if (isConnectionsLoading) {
     return (
-      <div className="h-screen bg-slate-1 text-white text-[11px] text-slate-11 flex items-center justify-center">
+      <div className="h-screen bg-slate-1 text-slate-12 text-[11px] text-slate-11 flex items-center justify-center">
         Loading..
       </div>
     );
@@ -131,11 +131,11 @@ export default function Connections() {
 
   return (
     <WorkspaceLayout>
-      <div className="bg-slate-1 h-screen text-white flex flex-row divide-slate-4 divide-y">
+      <div className="bg-slate-1 h-screen text-slate-12 flex flex-row divide-slate-4 divide-y">
         <div className="min-w-[360px] max-w-[360px] border-r border-slate-4 overflow-y-scroll grow">
           <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[20px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
-            <p className="text-white text-[13px]">Data connections</p>
-            <button className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-[13px] text-white px-[12px] py-[4px] rounded-[4px] ml-auto">
+            <p className="text-slate-12 text-[13px]">Data connections</p>
+            <button className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px] ml-auto">
               + Add
             </button>
           </div>
@@ -158,7 +158,7 @@ export default function Connections() {
                   )}
                 </div>
                 <div className="flex flex-col gap-2 flex-grow-1 min-w-0">
-                  <p className="text-white text-[13px] truncate max-w-full">
+                  <p className="text-slate-12 text-[13px] truncate max-w-full">
                     {connection.name}
                   </p>
                   <p className="text-slate-11 text-[12px]">
@@ -178,7 +178,7 @@ export default function Connections() {
                     <div className="flex flex-row pb-2 border-b border-slate-4 w-full items-center">
                       <p className="text-[14px]">Connection details</p>
                       <button
-                        className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-white px-[12px] py-[4px] rounded-[4px] ml-auto"
+                        className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px] ml-auto"
                         onClick={() =>
                           deleteConnectionMutation.mutate({
                             workspaceId: currentWorkspace.id,
@@ -210,7 +210,7 @@ export default function Connections() {
                                   onChange={(e) =>
                                     setDisplayNameInputValue(e.target.value)
                                   }
-                                  className="border border-blue-700 rounded-md text-white bg-transparent py-[2px] px-[8px] mr-2 text-[13px] w-[240px]"
+                                  className="border border-blue-700 rounded-md text-slate-12 bg-transparent py-[2px] px-[8px] mr-2 text-[13px] w-[240px]"
                                   ref={displayNameInputRef}
                                   onBlur={handleUpdateDisplayName}
                                   onKeyDown={(e) => {
@@ -329,7 +329,7 @@ export default function Connections() {
                                   key={table.id}
                                   href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
                                 >
-                                  <div className="flex flex-row gap-4 items-center border-b border-slate-4 text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-white">
+                                  <div className="flex flex-row gap-4 items-center border-b border-slate-4 text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-slate-12">
                                     <div className="min-w-[180px]">
                                       {table.displayName}
                                     </div>
