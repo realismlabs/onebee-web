@@ -19,9 +19,11 @@ import {
 import { useState, lazy, Suspense } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 
-const IconPicker = lazy(() => import("@/components/IconPicker"));
+const IconPickerPopoverInline = lazy(
+  () => import("@/components/IconPickerPopoverInline")
+);
 
-function EditPopover() {
+function EditTableDialog() {
   const [open, setOpen] = useState(false);
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -35,14 +37,14 @@ function EditPopover() {
         <Dialog.Overlay className="z-20 bg-slate-1 opacity-75 fixed inset-0" />
         <Dialog.Content className="z-30 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] max-w-[90vw] w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate-2 border border-slate-3 text-slate-12 p-5 focus:outline-none overflow-hidden">
           <Dialog.Title className="m-0 text-[14px] font-medium">
-            Full table list
+            Edit table config
           </Dialog.Title>
-          <div className="max-h-[85vh] overflow-scroll mt-4 rounded-sm">
+          <div className="h-[85vh] overflow-scroll mt-4 rounded-sm">
             Hello
+            <Suspense fallback={<div>Loading Icon Picker...</div>}>
+              <IconPickerPopoverInline />
+            </Suspense>
           </div>
-          <Suspense fallback={<div>Loading Icon Picker...</div>}>
-            <IconPicker />
-          </Suspense>
           <div className="mt-5 flex justify-end">
             <Dialog.Close asChild>
               <button className="px-4 py-3 bg-slate-3 rounded-md text-[13px] font-medium leading-none focus:outline-none hover:bg-slate-4">
@@ -129,7 +131,7 @@ export default function TablePage() {
 
   if (isTableLoading || isConnectionLoading) {
     return (
-      <div className="h-screen bg-slate-1 text-slate-12 text-[11px] text-slate-11 flex items-center justify-center">
+      <div className="h-screen bg-slate-1 text-slate-12 text-[11px] flex items-center justify-center">
         Loading..
       </div>
     );
@@ -153,6 +155,7 @@ export default function TablePage() {
               }}
             />
             <p className="text-slate-12 text-[13px]">{tableData.displayName}</p>
+            <IconPickerPopoverInline />
           </div>
           <div className="flex flex-row gap-2 ml-auto">
             <div className="bg-slate-2 hover:bg-slate-3 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
@@ -174,7 +177,7 @@ export default function TablePage() {
                 onKeyDown={handleKeyDown}
               />
             </div>
-            <EditPopover />
+            <EditTableDialog />
           </div>
         </div>
         <div className="grow-1 overflow-x-auto overflow-y-scroll max-w-screen">
