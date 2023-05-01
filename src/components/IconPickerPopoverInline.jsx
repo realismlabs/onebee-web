@@ -56,21 +56,6 @@ const IconPickerPopoverInline = () => {
   const [iconElement, setIconElement] = useState(null);
   const [iconHTML, setIconHTML] = useState(null);
 
-  // const updateTableMutation = useMutation(updateTable, {
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(["getTable", currentWorkspace?.id, tableId]);
-  //   },
-  // });
-
-  // const handleUpdateTable = async (iconHTML) => {
-  //   await updateTableMutation.mutateAsync({
-  //     workspaceId: currentWorkspace.id,
-  //     tableId: tableId,
-  //     tableData: {
-  //       iconSvgString: iconHTML,
-  //     },
-  //   });
-  // };
 
   const handleIconClick = (iconName) => {
     setSelectedIcon(iconName);

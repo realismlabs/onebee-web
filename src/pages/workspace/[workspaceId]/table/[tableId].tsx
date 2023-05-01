@@ -20,10 +20,7 @@ import { useState, lazy, Suspense } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { IconLoaderFromSVGString } from "@/components/IconLoaderFromSVGString";
 import parse from "html-react-parser";
-
-const IconPickerPopoverInline = lazy(
-  () => import("@/components/IconPickerPopoverInline")
-);
+import IconPickerPopoverInline from "@/components/IconPickerPopoverInline";
 
 function EditTableDialog() {
   const [open, setOpen] = useState(false);
