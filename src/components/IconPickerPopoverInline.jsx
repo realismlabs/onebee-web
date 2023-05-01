@@ -1,9 +1,10 @@
 // IconPicker.jsx
-import React, { useState, Fragment, useRef } from 'react';
-import * as allIcons from '@phosphor-icons/react';
+import React, { useState, Fragment, useRef, lazy, Suspense } from 'react';
 import { Popover, Transition } from '@headlessui/react'
 import { updateTable } from '../utils/api';
 import { useQuery, useMutation } from '@tanstack/react-query';
+
+const LazyIconGrid = lazy(() => import('./IconGrid'));
 
 const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   const colors = [
@@ -53,7 +54,6 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
 const IconPickerPopoverInline = () => {
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [iconElement, setIconElement] = useState(null);
   const [iconHTML, setIconHTML] = useState(null);
 
 
@@ -74,16 +74,8 @@ const IconPickerPopoverInline = () => {
     } else {
       console.error(`awu Div with id "${iconName}" not found.`);
     }
-
   };
 
-  const iconNames = Object.keys(allIcons).filter(
-    (iconName) => iconName !== 'PhosphorIcon' && iconName !== 'IconBase' && iconName !== 'IconContext',
-  );
-
-  const filteredIconNames = iconNames.filter((iconName) =>
-    iconName.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
 
   const [selectedColor, setSelectedColor] = useState("#0091FF");
 
@@ -118,40 +110,19 @@ const IconPickerPopoverInline = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="border rounded w-full mb-[12px] py-[4px] px-[10px] bg-slate-3 border-slate-6 placeholder:text-slate-10 text-[13px] focus:ring-1"
                 />
-
                 <ColorPicker selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
-
-                {filteredIconNames.length > 0 && (
-                  <div
-                    className="grid gap-[8px] max-h-[420px] overflow-scroll w-[360px]"
-                    style={{ gridTemplateColumns: 'repeat(13, minmax(20px, 1fr))' }}
-                  >
-                    {filteredIconNames.map((iconName) => {
-                      return (
-                        <div
-                          key={iconName}
-                          id={iconName}
-                          onClick={() => handleIconClick(iconName)}
-                          className={`flex items-center justify-center h-[20px] w-[20px] rounded ${selectedIcon === iconName ? 'bg-white/10 border border-white border-opacity-20' : 'border-none'
-                            } cursor-pointer`}
-                        >
-                          {/* color transition desired */}
-                          {React.createElement(allIcons[`${iconName}`], { size: 18, weight: 'fill', color: selectedColor })}
-                        </div>
-                      );
-                    })}
-                  </div>)}
-                {filteredIconNames.length === 0 && (
-                  <div className="flex items-center justify-center w-[360px]">
-                    <p className="text-slate-11 text-[13px] mt-[48px]">No results found</p>
-                  </div>)}
+                <Suspense fallback={<div className="flex items-center justify-center w-[360px]">
+                  <p className="text-slate-11 text-[13px] mt-[48px]">Loading..</p>
+                </div>}>
+                  <LazyIconGrid handleIconClick={handleIconClick} selectedColor={selectedColor} searchTerm={searchTerm} selectedIcon={selectedIcon} />
+                </Suspense>
               </div>
             </Popover.Panel>
           </Transition>
         </>
       )
       }
-    </Popover>
+    </Popover >
   )
 };
 

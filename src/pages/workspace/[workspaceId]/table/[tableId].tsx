@@ -9,17 +9,10 @@ import MockTable from "../../../../components/MockTable";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
-import {
-  Table,
-  CaretDown,
-  MagnifyingGlass,
-  Gear,
-  X,
-} from "@phosphor-icons/react";
-import { useState, lazy, Suspense } from "react";
+import { CaretDown, MagnifyingGlass, Gear, X } from "@phosphor-icons/react";
+import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { IconLoaderFromSVGString } from "@/components/IconLoaderFromSVGString";
-import parse from "html-react-parser";
 import IconPickerPopoverInline from "@/components/IconPickerPopoverInline";
 
 function EditTableDialog() {
@@ -40,9 +33,7 @@ function EditTableDialog() {
           </Dialog.Title>
           <div className="h-[85vh] overflow-scroll mt-4 rounded-sm">
             Hello
-            <Suspense fallback={<div>Loading Icon Picker...</div>}>
-              <IconPickerPopoverInline />
-            </Suspense>
+            <IconPickerPopoverInline />
           </div>
           <div className="mt-5 flex justify-end">
             <Dialog.Close asChild>
