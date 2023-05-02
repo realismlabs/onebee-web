@@ -11,7 +11,6 @@ import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
 import { CaretDown, MagnifyingGlass, Gear, X } from "@phosphor-icons/react";
 import { useState, Fragment, useRef } from "react";
-import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSvgString";
 import IconPickerPopoverInline from "@/components/IconPickerPopoverInline";
 import { Popover, Transition, Dialog } from "@headlessui/react";
 

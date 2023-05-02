@@ -119,7 +119,7 @@ export default function Connections() {
 
   if (isConnectionsLoading) {
     return (
-      <div className="h-screen bg-slate-1 text-slate-12 text-[11px] text-slate-11 flex items-center justify-center">
+      <div className="h-screen bg-slate-1 text-slate-12 text-[11px] flex items-center justify-center">
         Loading..
       </div>
     );
