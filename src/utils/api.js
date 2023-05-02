@@ -150,7 +150,7 @@ export const updateTable = async ({ workspaceId, tableId, tableData }) => {
 };
 
 // Delete a specific table in a workspace
-export const deleteTable = async (workspaceId, tableId) => {
+export const deleteTable = async ({ workspaceId, tableId }) => {
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/delete`,
     {

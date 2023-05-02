@@ -10,19 +10,19 @@ const LazyIconGrid = lazy(() => import('./IconGrid'));
 
 const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   const colors = [
-    '#0091FF',
-    '#3E63DD',
-    '#6E56CF',
-    '#8E4EC6',
-    '#AB4ABA',
-    '#E93D82',
-    '#E5484D',
-    '#F76808',
-    '#FFB224',
-    '#F5D90A',
-    '#46A758',
-    '#99D52A',
-    '#9BA1A6',
+    '#0091FF', // blue
+    '#3E63DD', // indigo
+    '#6E56CF', // violet
+    '#8E4EC6', // purple
+    '#AB4ABA', // plum
+    '#E93D82', // pink
+    '#E5484D', // red
+    '#F76808', // orange
+    '#FFB224', // amber
+    '#F5D90A', // yellow
+    '#99D52A', // lime
+    '#46A758', // green
+    '#9BA1A6', // slate
   ];
 
   const handleColorClick = (color) => {

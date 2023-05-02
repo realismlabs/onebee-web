@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { getTable, getConnection, updateTable } from "@/utils/api";
+import { getTable, getConnection, updateTable, deleteTable } from "@/utils/api";
 import { assignColor } from "@/utils/util";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -20,6 +20,7 @@ const TablePopover = ({
   tableId,
   workspaceId,
 }) => {
+  const router = useRouter();
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -75,6 +76,15 @@ const TablePopover = ({
     }
   };
 
+  const handleDeleteTable = async () => {
+    try {
+      await deleteTableMutation.mutateAsync({ workspaceId, tableId });
+      closeDeleteDialog();
+    } catch (error) {
+      console.error('Error deleting table:', error);
+    }
+  };
+
   const queryClient = useQueryClient();
 
   const updateTableMutation = useMutation(updateTable, {
@@ -94,6 +104,18 @@ const TablePopover = ({
       ["getTable", workspaceId, tableId],
       ["workspaceTables", workspaceId],
     ],
+  });
+
+  const deleteTableMutation = useMutation(deleteTable, {
+    onSuccess: async (deletedTable) => {
+      console.log("Table deleted:", deletedTable);
+      await queryClient.refetchQueries(["workspaceTables", workspaceId]);
+      router.push(`/workspace/${workspaceId}`);
+    },
+    onError: (error) => {
+      console.error("Error deleting table:", error);
+    },
+    invalidateQueries: [["workspaceTables", workspaceId]],
   });
 
   return (
@@ -196,7 +218,7 @@ const TablePopover = ({
         <Dialog.Overlay>
           <div className="fixed inset-0 bg-slate-1 opacity-50" />
         </Dialog.Overlay>
-        <Dialog.Panel className="absolute z-30 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[400px]">
+        <Dialog.Panel className="absolute z-30 top-[25%] left-[50%] translate-x-[-50%] translate-y-[-25%] w-[400px]">
           <div className="flex flex-col bg-slate-2 border border-slate-4 rounded-[8px] w-full p-[24px] text-slate-12">
             {/* Close */}
             <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
@@ -209,12 +231,12 @@ const TablePopover = ({
                 <X size={16} />
               </button>
             </div>
-            <Dialog.Title className="text-[16px]">Delete table</Dialog.Title>
-            <Dialog.Description className="text-[14px] mt-[16px]">Are you sure you want to delete this table? <br />This action is irreversible.</Dialog.Description>
-            <div className="font-mono w-full break-all bg-slate-3 text-slate-12 border border-slate-4 rounded-md font-medium text-[14px] px-[8px] py-[4px] mt-[12px]">{tableName}</div>
-            <div className="flex w-full justify-end mt-[16px] gap-2">
+            <Dialog.Title className="text-[14px]">Delete table</Dialog.Title>
+            <Dialog.Description className="text-[13px] mt-[16px]">Are you sure you want to delete this table? <br />This action is irreversible.</Dialog.Description>
+            <div className="font-mono w-full break-all bg-slate-3 text-slate-12 border border-slate-4 rounded-md font-medium text-[13px] px-[8px] py-[4px] mt-[12px]">{tableName}</div>
+            <div className="flex w-full justify-end mt-[24px] gap-2">
               <button
-                className="ml-auto bg-slate-5 hover:bg-slate-6 border-slate-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
                 onClick={() => {
                   closeDeleteDialog();
                 }
@@ -225,10 +247,7 @@ const TablePopover = ({
               <button
                 className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
                 onClick={() => {
-                  deleteConnectionMutation.mutate({
-                    workspaceId: currentWorkspace.id,
-                    connectionId: selectedConnectionId,
-                  })
+                  handleDeleteTable();
                   closeDeleteDialog();
                 }
                 }
@@ -256,13 +275,6 @@ export default function TablePage() {
 
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false);
-  const [isRenamePopoverOpen, setIsRenamePopoverOpen] = useState(false);
-
-  const openRenamePopover = () => {
-    setIsRenamePopoverOpen(true);
-    console.log("open rename popover");
-    console.log("isRenamePopoverOpen", isRenamePopoverOpen);
-  };
 
   const handleSearchbarFocus = () => {
     setIsSearchFocused(true);
