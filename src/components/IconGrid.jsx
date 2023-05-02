@@ -654,7 +654,7 @@ const IconGrid = ({
     <>
       {filteredIconNames.length > 0 && (
         <div
-          className="grid gap-1 max-h-[420px] overflow-scroll w-[360px]"
+          className="grid gap-1 h-fit overflow-scroll w-[360px]"
           style={{
             gridTemplateColumns: "repeat(auto-fill, 24px)",
             gridTemplateRows: "repeat(auto-fill, 24px)",
