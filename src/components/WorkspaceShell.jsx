@@ -10,7 +10,7 @@ import { stringToVibrantColor, assignColor } from '@/utils/util';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
 import { getWorkspaces } from '@/utils/api';
-import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSvgString';
+import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 import * as Tooltip from '@radix-ui/react-tooltip';
 
 function AccountPopover() {
