@@ -1,7 +1,7 @@
 import React, { useState, FC, lazy } from "react";
 import { useQueryClient, QueryClient, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import useCopyToClipboard from "../../components/useCopyToClipboard";
+import useCopyToClipboard from "@/components/useCopyToClipboard";
 import router from "next/router";
 import Image from "next/image";
 import {
@@ -13,12 +13,13 @@ import {
   XCircle,
 } from "@phosphor-icons/react";
 import { Switch } from "@headlessui/react";
-import WordTooltipDemo from "../../components/WordTooltipDemo";
-import { useLocalStorageState } from "../../utils/util";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import WordTooltipDemo from "@/components/WordTooltipDemo";
+import { useLocalStorageState } from "@/utils/util";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 
 const PreviewTablesDialog = lazy(
-  () => import("../../components/PreviewTablesDialog")
+  () => import("@/components/PreviewTablesDialog")
 );
 
 interface AccountHeaderProps {
@@ -136,7 +137,7 @@ export default function AddSnowflake() {
     e.preventDefault();
     console.log("clicked Continue button");
     if (connectionResult.status === "success") {
-      router.push("/welcome/create-table");
+      router.push(`/workspace/${currentWorkspace?.id}/onboarding/create-table`);
     } else {
       console.log("Connection failed, try again");
     }
@@ -219,29 +220,47 @@ export default function AddSnowflake() {
     error: userError,
   } = useCurrentUser();
 
-  if (isUserLoading) {
+  const {
+    data: currentWorkspace,
+    isLoading: isWorkspaceLoading,
+    error: workspaceError,
+  } = useCurrentWorkspace();
+
+  if (isUserLoading || isWorkspaceLoading) {
     return <div className="h-screen bg-slate-1"></div>;
   }
 
-  if (userError) {
-    return <div>Error: {JSON.stringify(userError)}</div>;
+  if (userError || workspaceError) {
+    return (
+      <div>
+        Error: {JSON.stringify(userError)} {JSON.stringify(workspaceError)}
+      </div>
+    );
   }
 
   const email = currentUser.email;
+
+  const handleBackToSourcesClick = (e: any) => {
+    e.preventDefault();
+    router.push(
+      `/workspace/${currentWorkspace?.id}/onboarding/add-data-source`
+    );
+  };
 
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col mx-auto w-[640px] text-slate-12 gap-2 mt-4">
-        <Link href="/welcome/add-data-source" className="self-start">
-          <div className="flex flex-row items-center gap-2 text-[13px] text-slate-11 self-start">
-            <CaretLeft size={16} weight="bold" />
-            <p>Back to sources</p>
-          </div>
-        </Link>
+        <div
+          className="flex flex-row items-center gap-2 text-[13px] text-slate-11 self-start cursor-pointer"
+          onClick={handleBackToSourcesClick}
+        >
+          <CaretLeft size={16} weight="bold" />
+          <p>Back to sources</p>
+        </div>
         <div className="flex flex-row items-center gap-4 mt-4">
           <Image
-            src="../../images/logos/logo_snowflake.svg"
+            src="/images/logos/logo_snowflake.svg"
             width={24}
             height={24}
             alt="Snowflake logo"

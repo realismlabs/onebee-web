@@ -59,11 +59,11 @@ export default function CreateWorkspace() {
         });
 
         console.log("Created workspace", response);
+        const workspaceId = response.id;
+        router.push(`/workspace/${workspaceId}/onboarding/add-data-source`);
       } catch (e) {
         console.log("Couldn't create workspace", e);
       }
-
-      router.push("/welcome/add-data-source");
     }
   };
 

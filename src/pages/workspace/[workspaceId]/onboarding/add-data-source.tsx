@@ -5,11 +5,11 @@ import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X, CaretRight, CircleNotch, CheckCircle } from "@phosphor-icons/react";
 import { Disclosure, Transition } from "@headlessui/react";
-import LogoSnowflake from "../../components/LogoSnowflake";
-import LogoBigQuery from "../../components/LogoBigQuery";
-import LogoPostgres from "../../components/LogoPostgres";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { useCurrentWorkspace } from "../../hooks/useCurrentWorkspace";
+import LogoSnowflake from "@/components/LogoSnowflake";
+import LogoBigQuery from "@/components/LogoBigQuery";
+import LogoPostgres from "@/components/LogoPostgres";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 
 interface AccountHeaderProps {
   email: string;
@@ -406,6 +406,16 @@ export default function AddDataSource() {
     );
   }
 
+  const handleSourceClick = (source: string) => {
+    if (source === "snowflake") {
+      router.push(`/workspace/${currentWorkspace.id}/onboarding/add-snowflake`);
+    } else if (source === "bigquery") {
+      router.push(`/workspace/${currentWorkspace.id}/onboarding/add-bigquery`);
+    } else if (source === "postgres") {
+      router.push(`/workspace/${currentWorkspace.id}/onboarding/add-postgres`);
+    }
+  };
+
   const email = currentUser.email;
   const workspace_name = currentWorkspace.name;
 
@@ -418,14 +428,15 @@ export default function AddDataSource() {
         </div>
         <form className="flex flex-col gap-4 mt-4">
           <div className="flex gap-4">
-            <Link href="/welcome/add-snowflake">
-              <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
-                <div className="h-[32px] w-[32px]">
-                  <LogoSnowflake />
-                </div>
-                <p>Snowflake</p>
+            <div
+              className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer"
+              onClick={(e) => handleSourceClick("snowflake")}
+            >
+              <div className="h-[32px] w-[32px]">
+                <LogoSnowflake />
               </div>
-            </Link>
+              <p>Snowflake</p>
+            </div>
             <Link href="/welcome/add-bigquery">
               <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
                 <div className="h-[32px] w-[32px]">
