@@ -264,7 +264,7 @@
     {
       "workspaceId": 6,
       "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.CATALOG_PAGE",
-      "displayName": "CATALOG_PAGE",
+      "displayName": "CATALOG_PAGECATALOG_PAGECATALOG_PAGE",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 50000,
       "id": 11,
