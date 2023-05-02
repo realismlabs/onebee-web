@@ -9,7 +9,7 @@ import MockTable from "@/components/MockTable";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
-import { CaretDown, MagnifyingGlass, Gear, X } from "@phosphor-icons/react";
+import { CaretDown, MagnifyingGlass, Gear, X, Pencil, Trash } from "@phosphor-icons/react";
 import { useState, Fragment, useRef } from "react";
 import IconPickerPopoverInline from "@/components/IconPickerPopoverInline";
 import { Popover, Transition, Dialog } from "@headlessui/react";
@@ -146,14 +146,20 @@ const TablePopover = ({
                         className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 w-full rounded-md items-center"
                         onClick={openRenameDialog}
                       >
-                        Rename table
+                        <div className="flex flex-row w-full gap-2 items-center">
+                          <Pencil size={16} weight="fill" className="text-slate-10" />
+                          Rename table
+                        </div>
                       </button>
                     </Popover.Button>
                     <Popover.Button className="w-full">
                       <button className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 w-full rounded-md items-center"
                         onClick={openDeleteDialog}
                       >
-                        Delete table
+                        <div className="flex flex-row w-full gap-2 items-center">
+                          <Trash size={16} weight="bold" className="text-slate-10" />
+                          Delete table
+                        </div>
                       </button>
                     </Popover.Button>
                   </>
