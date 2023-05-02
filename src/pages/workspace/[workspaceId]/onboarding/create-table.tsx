@@ -433,7 +433,9 @@ export default function CreateTable() {
     console.log("createTableRequestBody", createTableRequestBody);
 
     //  route to the table page
-    router.push(`/table/${create_table_response.id}`);
+    router.push(
+      `/workspace/${currentWorkspace.id}/table/${create_table_response.id}`
+    );
   };
 
   const {

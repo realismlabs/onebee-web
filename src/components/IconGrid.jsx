@@ -1,3 +1,5 @@
+// See here for how to edit this file easily
+// https://docs.google.com/spreadsheets/d/1JKiFu2-gkaaCoWvYPQeSEztptxnJO-yUW0-pIDq6fD8/edit?usp=sharing
 import {
   Activity,
   AddressBook,
