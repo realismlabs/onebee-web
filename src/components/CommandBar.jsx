@@ -82,11 +82,11 @@ export const CommandBar = () => {
       link: `/workspace/${currentWorkspace?.id}/`,
     },
     {
-      name: 'Connections',
+      name: 'Data connections',
       description: 'View and manage your connections',
       icon: <TreeStructure width={20} height={20} weight="fill" />,
       type: 'navigation',
-      id: 'connections',
+      id: 'dataconnections',
       link: `/workspace/${currentWorkspace?.id}/connection`,
     }
   ];

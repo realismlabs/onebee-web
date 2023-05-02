@@ -5,7 +5,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery } from '@tanstack/react-query';
 import { getTables } from '../utils/api';
-import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database } from '@phosphor-icons/react';
+import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut } from '@phosphor-icons/react';
 import { stringToVibrantColor, assignColor } from '@/utils/util';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
@@ -27,7 +27,7 @@ function AccountPopover() {
           <Popover.Button
             className={`
                 ${open ? '' : 'text-opacity-90'}
-                flex flex-row gap-2 group hover:bg-slate-4 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md w-full`}
+                flex flex-row gap-3 group hover:bg-slate-4 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md w-full`}
           >
             <UserCircle
               size={20}
@@ -47,7 +47,10 @@ function AccountPopover() {
           >
             <Popover.Panel className="absolute mb-[32px] bottom-0 ">
               <div className="overflow-hidden rounded-md shadow-2xl ring-1 ring-black ring-opacity-5 bg-slate-2 w-[180px] p-[8px] text-[13px] cursor-pointer">
-                <div className="hover:bg-slate-4 px-[8px] py-[4px]" onClick={handleLogout}>Log out</div>
+                <div className="hover:bg-slate-4 px-[8px] py-[4px] flex flex-row items-center gap-2" onClick={handleLogout}>
+                  <SignOut size={16} weight="bold" className="text-slate-10" />
+                  Log out
+                </div>
               </div>
             </Popover.Panel>
           </Transition>
@@ -289,7 +292,7 @@ const WorkspaceShell = () => {
       {/* footer */}
       <div className="mt-auto flex flex-col px-[13px]">
         <Link href={`/workspace/${currentWorkspace.id}/connection`}>
-          <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
+          <div className="flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
             <TreeStructure
               size={20}
               weight="fill"
@@ -298,7 +301,7 @@ const WorkspaceShell = () => {
             <div className="">Data connections</div>
           </div>
         </Link>
-        <div className="flex flex-row gap-2 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
+        <div className="flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
           <PaperPlaneTilt
             size={20}
             weight="fill"
