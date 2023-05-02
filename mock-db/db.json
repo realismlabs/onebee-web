@@ -163,7 +163,7 @@
     {
       "workspaceId": 6,
       "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
-      "displayName": "DIM_CUSTOMERS",
+      "displayName": "Customers",
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
       "id": 3,
@@ -173,7 +173,7 @@
     {
       "workspaceId": 6,
       "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.CUSTOMER",
-      "displayName": "CUSTOMER",
+      "displayName": "Customers - Asia",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 100000000,
       "id": 4,
@@ -186,7 +186,7 @@
     {
       "workspaceId": 6,
       "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCH_SF10.LINEITEM",
-      "displayName": "LINEITEM",
+      "displayName": "Order Line Items",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF10/",
       "rowCount": 59986052,
       "id": 5,
@@ -199,7 +199,7 @@
     {
       "workspaceId": 6,
       "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.CATALOG_PAGE",
-      "displayName": "CATALOG_PAGE",
+      "displayName": "Catalogs",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 50000,
       "id": 6,
@@ -212,7 +212,7 @@
     {
       "workspaceId": 6,
       "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.INCOME_BAND",
-      "displayName": "INCOME_BAND",
+      "displayName": "Customer income bands",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 20,
       "id": 7,
@@ -225,7 +225,7 @@
     {
       "workspaceId": 6,
       "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.STORE_SALES",
-      "displayName": "STORE_SALES",
+      "displayName": "Store sales split across several geographies",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF10TCL/",
       "rowCount": 28800239865,
       "id": 8,
@@ -238,7 +238,7 @@
     {
       "workspaceId": 6,
       "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCH_SF100.REGION",
-      "displayName": "REGION",
+      "displayName": "Region across all sales",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF100/",
       "rowCount": 5,
       "id": 9,
@@ -251,7 +251,7 @@
     {
       "workspaceId": 6,
       "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCH_SF1000.SUPPLIER",
-      "displayName": "SUPPLIER",
+      "displayName": "Supplier",
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCH_SF1000/",
       "rowCount": 10000000,
       "id": 10,
@@ -277,7 +277,7 @@
     {
       "workspaceId": 6,
       "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
-      "displayName": "DIM_CUSTOMERS",
+      "displayName": "Hamburgers",
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
       "id": 12,
@@ -290,7 +290,7 @@
     {
       "workspaceId": 6,
       "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
-      "displayName": "DIM_CUSTOMERS",
+      "displayName": "DIM_CUSTOMERS_RAW",
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
       "id": 13,
@@ -313,7 +313,7 @@
     {
       "workspaceId": 6,
       "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
-      "displayName": "DIM_CUSTOMERS",
+      "displayName": "DIM_CUSTOMERS_STAGING_lskdfjsdf000000000000maxlengtsdfksjdfsdfk",
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
       "connectionId": 9,
