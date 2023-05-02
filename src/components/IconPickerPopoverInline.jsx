@@ -3,7 +3,7 @@ import React, { useState, Fragment, useRef, lazy, Suspense } from 'react';
 import { Popover, Transition } from '@headlessui/react'
 import { updateTable } from '@/utils/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { IconLoaderFromSvgString } from './IconLoaderFromSvgString';
+import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSvgString';
 
 
 const LazyIconGrid = lazy(() => import('./IconGrid'));

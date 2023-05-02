@@ -7,7 +7,7 @@ import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { CircleNotch, TreeStructure, House, Table } from '@phosphor-icons/react';
 import { getTables } from '@/utils/api';
 import { useRouter } from 'next/router';
-import { IconLoaderFromSvgString } from './IconLoaderFromSvgString';
+import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSvgString';
 
 
 export const CommandBar = () => {
