@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
 import { getWorkspaces } from '@/utils/api';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSvgString';
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 function AccountPopover() {
   const router = useRouter();
@@ -262,7 +263,23 @@ const WorkspaceShell = () => {
               <Link key={item.id} href={`/workspace/${currentWorkspace.id}/table/${item.id}`}>
                 <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/table/${item.id}` ? "bg-slate-3" : ""}`}>
                   <IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.displayName} />
-                  <div>{item.displayName}</div>
+                  <Tooltip.Provider>
+                    <Tooltip.Root>
+                      <Tooltip.Trigger asChild>
+                        <div className="truncate w-full">{item.displayName}</div>
+                      </Tooltip.Trigger>
+                      <Tooltip.Portal>
+                        <Tooltip.Content
+                          className="text-slate-12 text-[13px] rounded-[4px] bg-black px-[12px] py-[8px] z-20 shadow-2xl"
+                          sideOffset={12}
+                          side="left"
+                        >
+                          {item.displayName}
+                          <Tooltip.Arrow className="fill-black" />
+                        </Tooltip.Content>
+                      </Tooltip.Portal>
+                    </Tooltip.Root>
+                  </Tooltip.Provider>
                 </div>
               </Link>
             ))}
