@@ -61,15 +61,15 @@ export default function TablePage() {
 
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
-  const handleFocus = () => {
+  const handleSearchbarFocus = () => {
     setIsSearchFocused(true);
   };
 
-  const handleBlur = () => {
+  const handleSearchbarBlur = () => {
     setIsSearchFocused(false);
   };
 
-  const handleKeyDown = (e: any) => {
+  const handleSearchbarKeyDown = (e: any) => {
     if (e.key === "Escape") {
       e.target.blur();
     }
@@ -157,9 +157,9 @@ export default function TablePage() {
                 title="Search"
                 className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10"
                 placeholder="Search.."
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
+                onFocus={handleSearchbarFocus}
+                onBlur={handleSearchbarBlur}
+                onKeyDown={handleSearchbarKeyDown}
               />
             </div>
             <EditTableDialog />
