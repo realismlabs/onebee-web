@@ -10,7 +10,7 @@ import { stringToVibrantColor, assignColor } from '@/utils/util';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
 import { getWorkspaces } from '@/utils/api';
-import { IconLoaderFromSVGString } from './IconLoaderFromSVGString';
+import { IconLoaderFromSvgString } from './IconLoaderFromSvgString';
 
 function AccountPopover() {
   const router = useRouter();
@@ -261,7 +261,7 @@ const WorkspaceShell = () => {
             {tablesData.map((item) => (
               <Link key={item.id} href={`/workspace/${currentWorkspace.id}/table/${item.id}`}>
                 <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/table/${item.id}` ? "bg-slate-3" : ""}`}>
-                  <IconLoaderFromSVGString iconSvgString={item.iconSvgString} tableName={item.displayName} />
+                  <IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.displayName} />
                   <div>{item.displayName}</div>
                 </div>
               </Link>

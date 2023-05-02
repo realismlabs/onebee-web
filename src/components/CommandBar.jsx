@@ -7,7 +7,7 @@ import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { CircleNotch, TreeStructure, House, Table } from '@phosphor-icons/react';
 import { getTables } from '@/utils/api';
 import { useRouter } from 'next/router';
-import { IconLoaderFromSVGString } from './IconLoaderFromSVGString';
+import { IconLoaderFromSvgString } from './IconLoaderFromSvgString';
 
 
 export const CommandBar = () => {
@@ -189,7 +189,7 @@ export const CommandBar = () => {
                         }
                       >
                         <div className="flex flex-row gap-2 w-full">
-                          <div className="min-w-[24px] text-slate-10"><IconLoaderFromSVGString iconSvgString={item.iconSvgString} tableName={item.name} /></div>
+                          <div className="min-w-[24px] text-slate-10"><IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.name} /></div>
                           <div className="min-w-[240px]">{item.name}</div>
                           <div className="text-slate-11">{item.description}</div>
                         </div>

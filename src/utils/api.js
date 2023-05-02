@@ -134,7 +134,7 @@ export const getTable = async (workspaceId, tableId) => {
 };
 
 // Update a specific table in a workspace
-export const updateTable = async (workspaceId, tableId, tableData) => {
+export const updateTable = async ({ workspaceId, tableId, tableData }) => {
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/update`,
     {

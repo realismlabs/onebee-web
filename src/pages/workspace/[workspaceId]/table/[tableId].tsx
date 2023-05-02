@@ -12,7 +12,7 @@ import LogoPostgres from "@/components/LogoPostgres";
 import { CaretDown, MagnifyingGlass, Gear, X } from "@phosphor-icons/react";
 import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { IconLoaderFromSVGString } from "@/components/IconLoaderFromSVGString";
+import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSvgString";
 import IconPickerPopoverInline from "@/components/IconPickerPopoverInline";
 
 function EditTableDialog() {
@@ -31,10 +31,7 @@ function EditTableDialog() {
           <Dialog.Title className="m-0 text-[14px] font-medium">
             Edit table config
           </Dialog.Title>
-          <div className="h-[85vh] overflow-scroll mt-4 rounded-sm">
-            Hello
-            <IconPickerPopoverInline />
-          </div>
+          <div className="h-[85vh] overflow-scroll mt-4 rounded-sm">Hello</div>
           <div className="mt-5 flex justify-end">
             <Dialog.Close asChild>
               <button className="px-4 py-3 bg-slate-3 rounded-md text-[13px] font-medium leading-none focus:outline-none hover:bg-slate-4">
@@ -137,12 +134,13 @@ export default function TablePage() {
       <div className="bg-slate-1 max-h-screen text-slate-12 flex flex-col divide-slate-4 divide-y">
         <div className="flex flex-row gap-2 items-center py-[12px] px-[12px] h-[48px]">
           <div className="flex flex-row gap-2 items-center justify-center">
-            <IconLoaderFromSVGString
+            <IconPickerPopoverInline
               iconSvgString={tableData.iconSvgString}
               tableName={tableData.displayName}
+              tableId={tableData.id}
+              workspaceId={currentWorkspace?.id}
             />
             <p className="text-slate-12 text-[13px]">{tableData.displayName}</p>
-            <IconPickerPopoverInline />
           </div>
           <div className="flex flex-row gap-2 ml-auto">
             <div className="bg-slate-2 hover:bg-slate-3 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
