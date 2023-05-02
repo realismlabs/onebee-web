@@ -23,7 +23,8 @@
     "**/*.ts",
     "**/*.tsx",
     "src/components/GradientBorder.jsx",
-    "src/pages/index.tsx"
+    "src/pages/index.tsx",
+    "src/pages/workspace/[workspaceId]/table/[tableId].jsx"
   ],
   "exclude": ["node_modules"]
 }
