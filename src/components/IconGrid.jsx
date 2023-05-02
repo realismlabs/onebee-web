@@ -81,8 +81,8 @@ import {
   Envelope,
 
 
-
-
+  Globe,
+  MapPin,
 
 
   Factory,
@@ -476,6 +476,8 @@ const IconGrid = ({
 
 
     { name: 'Magnet', icon: Magnet },
+    { name: 'Globe', icon: Globe },
+    { name: 'MapPin', icon: MapPin },
 
 
 
