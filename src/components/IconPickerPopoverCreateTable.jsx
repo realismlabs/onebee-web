@@ -1,10 +1,7 @@
 // IconPicker.jsx
 import React, { useState, Fragment, useRef, lazy, Suspense } from 'react';
 import { Popover, Transition } from '@headlessui/react'
-import { updateTable } from '@/utils/api';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
-
 
 const LazyIconGrid = lazy(() => import('./IconGrid'));
 
@@ -52,42 +49,20 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   );
 };
 
-const IconPickerPopoverInline = ({ iconSvgString, tableName, tableId, workspaceId }) => {
+const IconPickerPopoverCreateTable = ({ iconSvgString }) => {
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-
-  const queryClient = useQueryClient();
-
-  const updateTableMutation = useMutation(updateTable, {
-    onSuccess: async (updatedTable) => {
-      console.log('Table updated:', updatedTable);
-      await queryClient.refetchQueries(['getTable', workspaceId, String(tableId)]);
-      await queryClient.refetchQueries(['workspaceTables', workspaceId]);
-    },
-    onError: (error) => {
-      console.error('Error updating table:', error);
-    },
-    invalidateQueries: [['getTable', workspaceId, tableId], ['workspaceTables', workspaceId],],
-  });
 
   const handleIconClick = async (iconName) => {
     setSelectedIcon(iconName);
     const iconDiv = document.getElementById(iconName);
     if (iconDiv) {
       const iconSvgString = Array.from(iconDiv.children).map((child) => child.outerHTML).join('\n');
-      const tableData = {
-        iconSvgString,
-      };
-      try {
-        await updateTableMutation.mutateAsync({ workspaceId, tableId, tableData });
-      } catch (error) {
-        console.error('Error updating table:', error);
-      }
+      console.log("awu iconSvgString", iconSvgString)
     } else {
       console.error(`awu Div with id "${iconName}" not found.`);
     }
   };
-
 
   const [selectedColor, setSelectedColor] = useState("#0091FF");
 
@@ -101,7 +76,7 @@ const IconPickerPopoverInline = ({ iconSvgString, tableName, tableId, workspaceI
               flex flex-row gap-3 items-center justify-center focus:outline-none py-[6px] rounded-[3px] w-[24px] h-[24px]`}
           >
             <div>
-              <div className="text-[13px] text-slate-12"><IconLoaderFromSvgString iconSvgString={iconSvgString} tableName={tableName} /></div>
+              <div className="text-[13px] text-slate-12"><IconLoaderFromSvgString iconSvgString={iconSvgString} /></div>
             </div>
           </Popover.Button>
           <Transition
@@ -137,4 +112,4 @@ const IconPickerPopoverInline = ({ iconSvgString, tableName, tableId, workspaceI
   )
 };
 
-export default IconPickerPopoverInline;
+export default IconPickerPopoverCreateTable;

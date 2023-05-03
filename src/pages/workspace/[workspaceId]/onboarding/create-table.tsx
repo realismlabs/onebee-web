@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, FC } from "react";
+import ReactDOM from "react-dom";
 import router from "next/router";
 import Image from "next/image";
 import { CaretRight, Table } from "@phosphor-icons/react";
@@ -12,8 +13,9 @@ import { createTable, createConnection } from "@/utils/api";
 import MockTable from "@/components/MockTable";
 import { IconList } from "@/components/IconList";
 import { Transition } from "@headlessui/react";
+import IconPickerPopoverCreateTable from "@/components/IconPickerPopoverCreateTable";
 
-function getIconByName(iconName: string): React.ReactNode {
+function getIconByName(iconName: string): string {
   const iconItem = IconList.find((icon) => icon.name === iconName);
   const colors = [
     "#0091FF", // blue
@@ -32,23 +34,33 @@ function getIconByName(iconName: string): React.ReactNode {
 
   const random_color = colors[Math.floor(Math.random() * colors.length)];
 
-  return iconItem ? (
-    <iconItem.icon
-      weight="fill"
-      size={20}
-      style={{
-        color: random_color,
-      }}
-    />
+  const iconDiv = iconItem ? (
+    <div id={iconName}>
+      <iconItem.icon
+        weight="fill"
+        size={20}
+        style={{
+          color: random_color,
+        }}
+      />
+    </div>
   ) : (
-    <Table
-      weight="fill"
-      size={20}
-      style={{
-        color: random_color,
-      }}
-    />
+    <div id="Table">
+      <Table
+        weight="fill"
+        size={20}
+        style={{
+          color: random_color,
+        }}
+      />
+    </div>
   );
+  const svgContainer = document.createElement("div");
+  ReactDOM.render(iconDiv, svgContainer);
+  console.log("awu svgContainer", svgContainer);
+  const svgElement = svgContainer.querySelector("svg");
+  console.log("awu svgElement", svgElement);
+  return "";
 }
 
 interface AccountHeaderProps {
@@ -198,7 +210,9 @@ const PreviewTableUI = ({
                       leave="transition-all transform origin-center"
                       leaveFrom="scale-100"
                       leaveTo="scale-0"
+                      className="flex-row flex"
                     >
+                      <IconPickerPopoverCreateTable iconSvgString={""} />
                       {getIconByName(selectedIconName)}
                     </Transition>
                     {isIconSuggestionLoading && (

@@ -33,7 +33,6 @@ import {
   Buildings,
   Car,
   ShoppingCart,
-  ShoppingBag,
   Cardholder,
   Cards,
   Chair,
@@ -321,6 +320,7 @@ const IconGrid = ({
   selectedColor,
   searchTerm,
   selectedIcon,
+  ...props
 }) => {
   const allIcons = [
     { name: 'Activity', icon: Activity },
@@ -450,7 +450,6 @@ const IconGrid = ({
     { name: 'Ruler', icon: Ruler },
     { name: 'Shapes', icon: Shapes },
     { name: 'ShoppingCart', icon: ShoppingCart },
-    { name: 'ShoppingBag', icon: ShoppingBag },
     { name: 'Share', icon: Share },
     { name: 'Sidebar', icon: Sidebar },
     { name: 'Skull', icon: Skull },
@@ -501,7 +500,7 @@ const IconGrid = ({
   );
 
   return (
-    <>
+    <div {...props}>
       {filteredIconNames.length > 0 && (
         <div
           className="grid gap-1 h-fit overflow-scroll w-[360px]"
@@ -531,7 +530,7 @@ const IconGrid = ({
           <p className="text-slate-11 text-[13px] mt-[48px]">No results found</p>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
