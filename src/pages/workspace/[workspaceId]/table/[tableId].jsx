@@ -11,7 +11,7 @@ import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
 import { CaretDown, MagnifyingGlass, Gear, X, Pencil, Trash } from "@phosphor-icons/react";
 import { useState, Fragment, useRef } from "react";
-import IconPickerPopoverInline from "@/components/IconPickerPopoverInline";
+import IconPickerPopoverEditTable from "@/components/IconPickerPopoverEditTable";
 import { Popover, Transition, Dialog } from "@headlessui/react";
 
 const TablePopover = ({
@@ -355,7 +355,7 @@ export default function TablePage() {
       <div className="bg-slate-1 max-h-screen text-slate-12 flex flex-col divide-slate-4 divide-y">
         <div className="flex flex-row gap-2 items-center py-[12px] px-[12px] h-[48px]">
           <div className="flex flex-row items-center justify-center">
-            <IconPickerPopoverInline
+            <IconPickerPopoverEditTable
               iconSvgString={tableData.iconSvgString}
               tableName={tableData.displayName}
               tableId={tableData.id}
