@@ -10,7 +10,12 @@ import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { capitalizeString } from "@/utils/util";
 import { createTable, createConnection } from "@/utils/api";
 import MockTable from "@/components/MockTable";
-import { create } from "domain";
+import { IconList } from "@/components/IconList";
+
+function getIconByName(iconName: string): React.ReactNode {
+  const iconItem = IconList.find((icon) => icon.name === iconName);
+  return iconItem ? <iconItem.icon /> : null;
+}
 
 interface AccountHeaderProps {
   email: string;
@@ -35,6 +40,8 @@ interface FileTreeProps {
   setSelectedTable: React.Dispatch<React.SetStateAction<string | null>>;
   selectedTableRowCount: number | null;
   setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
+  selectedIconName: string;
+  setSelectedIconName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // helper functions
@@ -100,6 +107,8 @@ const PreviewTableUI = ({
   setSelectedTable,
   selectedTableRowCount,
   setSelectedTableRowCount,
+  selectedIconName,
+  setSelectedIconName,
 }: {
   tablesQueryData: any;
   handleSubmit: any;
@@ -107,11 +116,10 @@ const PreviewTableUI = ({
   setSelectedTable: React.Dispatch<React.SetStateAction<string | null>>;
   selectedTableRowCount: number | null;
   setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
+  selectedIconName: string;
+  setSelectedIconName: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  console.log("awu1 tablesQueryData", tablesQueryData);
-
   const data = tablesQueryData.listed_tables;
-  console.log("awu data", data);
 
   // based on the selected table, get the tablename and path differently
   const tableName = selectedTable?.split(".")[2];
@@ -129,6 +137,8 @@ const PreviewTableUI = ({
             setSelectedTable={setSelectedTable}
             selectedTableRowCount={selectedTableRowCount}
             setSelectedTableRowCount={setSelectedTableRowCount}
+            selectedIconName={selectedIconName}
+            setSelectedIconName={setSelectedIconName}
           />
         </div>
         <div className="flex-grow flex-shrink-0 w-0">
@@ -137,6 +147,9 @@ const PreviewTableUI = ({
             {selectedTable ? (
               <>
                 <div className="flex flex-row gap-2 items-center px-4 py-2 border-b border-slate-4">
+                  <p className="text-white">
+                    {getIconByName(selectedIconName)}
+                  </p>
                   <p className="text-slate-12 text-[14px]">{tableName}</p>
                   <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
                     {path}
@@ -180,6 +193,8 @@ const FileTree: React.FC<FileTreeProps> = ({
   setSelectedTable,
   selectedTableRowCount,
   setSelectedTableRowCount,
+  selectedIconName,
+  setSelectedIconName,
 }) => {
   const nestedData = createNestedStructure(data);
   console.log("nestedData", nestedData);
@@ -226,13 +241,33 @@ const FileTree: React.FC<FileTreeProps> = ({
     );
   };
 
-  const toggleTable = (
+  const toggleTable = async (
     dbName: string,
     schemaName: string,
     tableName: string
   ) => {
     const uniqueId = createUniqueId(dbName, schemaName, tableName);
     setSelectedTable((prev) => (prev === uniqueId ? null : uniqueId));
+    console.log("awu", selectedTable);
+    try {
+      const icon_suggestion = await fetch("/api/guess-icon/", {
+        method: "POST",
+        body: JSON.stringify({
+          tableName,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const icon_suggestion_json = await icon_suggestion.json();
+      const icon_suggestion_name = icon_suggestion_json.bestMatch;
+      console.log("awu", icon_suggestion_name);
+      if (typeof icon_suggestion_name === "string") {
+        setSelectedIconName(icon_suggestion_name);
+      }
+    } catch (error) {
+      console.log("awu error", error);
+    }
     // find row count for table
     const table = data.find(
       (item) =>
@@ -391,6 +426,7 @@ export default function CreateTable() {
   };
 
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
+  const [selectedIconName, setSelectedIconName] = useState<string>("");
   const [selectedTableRowCount, setSelectedTableRowCount] = useState<
     number | null
   >(null);
@@ -499,6 +535,8 @@ export default function CreateTable() {
           setSelectedTable={setSelectedTable}
           selectedTableRowCount={selectedTableRowCount}
           setSelectedTableRowCount={setSelectedTableRowCount}
+          selectedIconName={selectedIconName}
+          setSelectedIconName={setSelectedIconName}
         />
       </div>
     </div>
