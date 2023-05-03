@@ -390,3 +390,7 @@ a {
   padding-bottom: 8px;
   color: var(--slate11);
 }
+
+.perspective-high {
+  perspective: 1000px;
+}

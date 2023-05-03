@@ -11,10 +11,44 @@ import { capitalizeString } from "@/utils/util";
 import { createTable, createConnection } from "@/utils/api";
 import MockTable from "@/components/MockTable";
 import { IconList } from "@/components/IconList";
+import { Transition } from "@headlessui/react";
 
 function getIconByName(iconName: string): React.ReactNode {
   const iconItem = IconList.find((icon) => icon.name === iconName);
-  return iconItem ? <iconItem.icon /> : null;
+  const colors = [
+    "#0091FF", // blue
+    "#3E63DD", // indigo
+    "#6E56CF", // violet
+    "#8E4EC6", // purple
+    "#AB4ABA", // plum
+    "#E93D82", // pink
+    "#E5484D", // red
+    "#F76808", // orange
+    "#FFB224", // amber
+    "#F5D90A", // yellow
+    "#99D52A", // lime
+    "#46A758", // green
+  ];
+
+  const random_color = colors[Math.floor(Math.random() * colors.length)];
+
+  return iconItem ? (
+    <iconItem.icon
+      weight="fill"
+      size={20}
+      style={{
+        color: random_color,
+      }}
+    />
+  ) : (
+    <Table
+      weight="fill"
+      size={20}
+      style={{
+        color: random_color,
+      }}
+    />
+  );
 }
 
 interface AccountHeaderProps {
@@ -42,6 +76,8 @@ interface FileTreeProps {
   setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
   selectedIconName: string;
   setSelectedIconName: React.Dispatch<React.SetStateAction<string>>;
+  isIconSuggestionLoading: boolean;
+  setIsIconSuggestionLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // helper functions
@@ -109,6 +145,8 @@ const PreviewTableUI = ({
   setSelectedTableRowCount,
   selectedIconName,
   setSelectedIconName,
+  isIconSuggestionLoading,
+  setIsIconSuggestionLoading,
 }: {
   tablesQueryData: any;
   handleSubmit: any;
@@ -118,6 +156,8 @@ const PreviewTableUI = ({
   setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
   selectedIconName: string;
   setSelectedIconName: React.Dispatch<React.SetStateAction<string>>;
+  isIconSuggestionLoading: boolean;
+  setIsIconSuggestionLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const data = tablesQueryData.listed_tables;
 
@@ -139,6 +179,8 @@ const PreviewTableUI = ({
             setSelectedTableRowCount={setSelectedTableRowCount}
             selectedIconName={selectedIconName}
             setSelectedIconName={setSelectedIconName}
+            isIconSuggestionLoading={isIconSuggestionLoading}
+            setIsIconSuggestionLoading={setIsIconSuggestionLoading}
           />
         </div>
         <div className="flex-grow flex-shrink-0 w-0">
@@ -146,10 +188,40 @@ const PreviewTableUI = ({
           <div className="relative bg-slate-2 rounded-md mt-4 h-[80vh] border border-slate-4 flex flex-col">
             {selectedTable ? (
               <>
-                <div className="flex flex-row gap-2 items-center px-4 py-2 border-b border-slate-4">
-                  <p className="text-white">
-                    {getIconByName(selectedIconName)}
-                  </p>
+                <div className="flex flex-row gap-2 items-center px-[12px] py-2 border-b border-slate-4">
+                  <div className="min-w-[24px] min-h-[24px] flex items-center justify-center ">
+                    <Transition
+                      show={!isIconSuggestionLoading}
+                      enter="transition-all transform origin-center"
+                      enterFrom="scale-0"
+                      enterTo="scale-100"
+                      leave="transition-all transform origin-center"
+                      leaveFrom="scale-100"
+                      leaveTo="scale-0"
+                    >
+                      {getIconByName(selectedIconName)}
+                    </Transition>
+                    {isIconSuggestionLoading && (
+                      <div
+                        id="loading-icon-suggestion"
+                        className="absolute w-[24px] h-[24px] flex items-center justify-center"
+                      >
+                        <div
+                          className="w-[15px] h-[15px] rounded-full animate-spin flex items-center justify-center"
+                          style={{
+                            background:
+                              "conic-gradient(from 0deg, #0091FF, #3E63DD, #6E56CF, #8E4EC6, #AB4ABA, #E93D82, #E5484D, #F76808, #FFB224, #F5D90A, #99D52A, #46A758, #0091FF)",
+                            // filter: "brightness(2)",
+                            // background:
+                            //   "conic-gradient(from 0deg, #BF7AF0, #52A9FF, #BF7AF0)",
+                            transformOrigin: "center",
+                          }}
+                        >
+                          <div className="absolute h-[12px] w-[12px] bg-slate-2 rounded-full"></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <p className="text-slate-12 text-[14px]">{tableName}</p>
                   <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
                     {path}
@@ -195,6 +267,8 @@ const FileTree: React.FC<FileTreeProps> = ({
   setSelectedTableRowCount,
   selectedIconName,
   setSelectedIconName,
+  isIconSuggestionLoading,
+  setIsIconSuggestionLoading,
 }) => {
   const nestedData = createNestedStructure(data);
   console.log("nestedData", nestedData);
@@ -248,26 +322,6 @@ const FileTree: React.FC<FileTreeProps> = ({
   ) => {
     const uniqueId = createUniqueId(dbName, schemaName, tableName);
     setSelectedTable((prev) => (prev === uniqueId ? null : uniqueId));
-    console.log("awu", selectedTable);
-    try {
-      const icon_suggestion = await fetch("/api/guess-icon/", {
-        method: "POST",
-        body: JSON.stringify({
-          tableName,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const icon_suggestion_json = await icon_suggestion.json();
-      const icon_suggestion_name = icon_suggestion_json.bestMatch;
-      console.log("awu", icon_suggestion_name);
-      if (typeof icon_suggestion_name === "string") {
-        setSelectedIconName(icon_suggestion_name);
-      }
-    } catch (error) {
-      console.log("awu error", error);
-    }
     // find row count for table
     const table = data.find(
       (item) =>
@@ -276,6 +330,37 @@ const FileTree: React.FC<FileTreeProps> = ({
         item.table_name === tableName
     );
     setSelectedTableRowCount(table?.row_count ?? null);
+    setIsIconSuggestionLoading(true);
+    console.log("awu", selectedTable);
+
+    let timeoutId = setTimeout(() => {
+      setSelectedIconName("Table");
+      setIsIconSuggestionLoading(false);
+    }, 5000);
+
+    try {
+      const icon_suggestion = await fetch("/api/guess-icon/", {
+        method: "POST",
+        body: JSON.stringify({ tableName }),
+        headers: { "Content-Type": "application/json" },
+      });
+      clearTimeout(timeoutId);
+      const icon_suggestion_json = await icon_suggestion.json();
+      const icon_suggestion_name = icon_suggestion_json.bestMatch;
+      console.log("awu", icon_suggestion_name);
+      if (typeof icon_suggestion_name === "string") {
+        const icon_suggestion_name_cleaned = icon_suggestion_name.replace(
+          /[^a-zA-Z0-9]/g,
+          ""
+        );
+        setSelectedIconName(icon_suggestion_name_cleaned);
+      }
+      setIsIconSuggestionLoading(false);
+    } catch (error) {
+      console.log("awu error", error);
+      setIsIconSuggestionLoading(false);
+      clearTimeout(timeoutId);
+    }
   };
 
   return (
@@ -430,6 +515,8 @@ export default function CreateTable() {
   const [selectedTableRowCount, setSelectedTableRowCount] = useState<
     number | null
   >(null);
+  const [isIconSuggestionLoading, setIsIconSuggestionLoading] =
+    useState<boolean>(false);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -537,6 +624,8 @@ export default function CreateTable() {
           setSelectedTableRowCount={setSelectedTableRowCount}
           selectedIconName={selectedIconName}
           setSelectedIconName={setSelectedIconName}
+          isIconSuggestionLoading={isIconSuggestionLoading}
+          setIsIconSuggestionLoading={setIsIconSuggestionLoading}
         />
       </div>
     </div>
