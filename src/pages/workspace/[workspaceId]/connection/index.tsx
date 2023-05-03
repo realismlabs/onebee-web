@@ -11,7 +11,9 @@ import { useState, useRef, useEffect } from "react";
 import { formatFriendlyDate, abbreviateNumber } from "@/utils/util";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { deleteConnection, updateConnectionDisplayName } from "@/utils/api";
-import { PencilSimpleLine } from "@phosphor-icons/react";
+import { PencilSimpleLine, X } from "@phosphor-icons/react";
+import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
+import { Popover, Transition, Dialog } from "@headlessui/react";
 
 function findSelectedConnection(
   connectionsData: any,
@@ -32,6 +34,18 @@ export default function Connections() {
   const [selectedConnectionId, setSelectedConnectionId] = useState(null);
   const [displayNameInputValue, setDisplayNameInputValue] = useState("");
   const [isEditingDisplayName, setIsEditingDisplayName] = useState(false);
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState("");
+
+  const openDeleteDialog = () => {
+    console.log("awu: open delete dialog");
+    setIsDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+  };
 
   useEffect(() => {
     if (isEditingDisplayName && displayNameInputRef.current) {
@@ -94,6 +108,18 @@ export default function Connections() {
       setSelectedConnectionId(null);
     },
   });
+
+  const handleDeleteConnection = async () => {
+    try {
+      await deleteConnectionMutation.mutateAsync({
+        workspaceId: currentWorkspace.id,
+        connectionId: selectedConnectionId,
+      });
+      setIsDeleteDialogOpen(false);
+    } catch (error: any) {
+      setDeleteErrorMessage(JSON.stringify(error));
+    }
+  };
 
   const updateConnectionMutation = useMutation(updateConnectionDisplayName, {
     onSuccess: () => {
@@ -179,16 +205,81 @@ export default function Connections() {
                       <p className="text-[14px]">Connection details</p>
                       <button
                         className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px] ml-auto"
-                        onClick={() =>
-                          deleteConnectionMutation.mutate({
-                            workspaceId: currentWorkspace.id,
-                            connectionId: selectedConnectionId,
-                          })
-                        }
+                        onClick={openDeleteDialog}
                       >
                         Delete
                       </button>
                     </div>
+                    <Dialog
+                      as="div"
+                      open={isDeleteDialogOpen}
+                      onClose={() => setIsDeleteDialogOpen(false)}
+                      className="absolute inset-0 flex min-w-full h-screen"
+                    >
+                      <Dialog.Overlay>
+                        <div className="fixed inset-0 bg-slate-1 opacity-50" />
+                      </Dialog.Overlay>
+                      <Dialog.Panel className="absolute z-30 top-[25%] left-[50%] translate-x-[-50%] translate-y-[-25%] w-[400px]">
+                        <div className="flex flex-col bg-slate-2 border border-slate-4 rounded-[8px] w-full p-[24px] text-slate-12">
+                          {/* Close */}
+                          <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
+                            <button
+                              onClick={() => {
+                                closeDeleteDialog();
+                              }}
+                              className="text-slate-11 hover:bg-slate-4 rounded-md h-[24px] w-[24px] ml-[12px] flex items-center justify-center"
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                          <Dialog.Title className="text-[14px]">
+                            Delete connection
+                          </Dialog.Title>
+                          <Dialog.Description className="text-[13px] mt-[16px] gap-2 flex flex-col">
+                            {tablesFromConnectionData.length > 0 && (
+                              <div className="">
+                                This connection has{" "}
+                                {tablesFromConnectionData.length} tables
+                                associated with it. <br />
+                                Deleting this connection will disconnect these
+                                tables from getting updates.
+                              </div>
+                            )}
+                            <div>
+                              Are you sure you want to delete this connection?
+                              This action is irreversible.
+                            </div>
+                          </Dialog.Description>
+                          <div className="font-mono w-full break-all bg-slate-3 text-slate-12 border border-slate-4 rounded-md font-medium text-[13px] px-[8px] py-[4px] mt-[12px]">
+                            {selectedConnection.name}
+                          </div>
+                          <div className="flex w-full justify-end mt-[24px] gap-2">
+                            <button
+                              className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                              onClick={() => {
+                                closeDeleteDialog();
+                              }}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                              onClick={() => {
+                                handleDeleteConnection();
+                                closeDeleteDialog();
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                          {deleteErrorMessage && (
+                            <div className="text-red-5 text-[13px] mt-[12px]">
+                              {deleteErrorMessage}
+                            </div>
+                          )}
+                        </div>
+                      </Dialog.Panel>
+                    </Dialog>
                     {selectedConnectionId &&
                       selectedConnection?.connectionType === "snowflake" && (
                         <div className="flex flex-col gap-4 w-full">
@@ -330,10 +421,16 @@ export default function Connections() {
                                   href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
                                 >
                                   <div className="flex flex-row gap-4 items-center border-b border-slate-4 text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-slate-12">
-                                    <div className="min-w-[180px]">
+                                    <div className="text-[13px] text-slate-12">
+                                      <IconLoaderFromSvgString
+                                        iconSvgString={table.iconSvgString}
+                                        tableName={table.displayName}
+                                      />
+                                    </div>
+                                    <div className="w-[180px] truncate">
                                       {table.displayName}
                                     </div>
-                                    <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px]">
+                                    <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate">
                                       {table.connectionPath}
                                     </pre>
                                     <div className="ml-auto">
