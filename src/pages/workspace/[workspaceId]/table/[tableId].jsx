@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { getTable, getConnection, updateTable, deleteTable } from "@/utils/api";
-import { assignColor } from "@/utils/util";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";

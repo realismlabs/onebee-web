@@ -303,16 +303,6 @@
       "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#3E63DD\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM80,208H48V48H80Zm96-56H112a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm0-32H112a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Z\"></path></svg>"
     },
     {
-      "workspaceId": 6,
-      "fullName": "ARTHUR_TEST.PUBLIC.ORDERS_1500M",
-      "displayName": "ORDERS_1500",
-      "connectionPath": "ARTHUR_TEST/PUBLIC/",
-      "rowCount": 1500000000,
-      "connectionId": 11,
-      "id": 12,
-      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#8E4EC6\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z\"></path></svg>"
-    },
-    {
       "workspaceId": 23,
       "fullName": "SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.CATALOG_SALES",
       "displayName": "CATALOG_SALES",
@@ -332,23 +322,13 @@
     },
     {
       "workspaceId": 6,
-      "fullName": "ARTHUR_TEST.DBT_AWU.FCT_ORDERS",
-      "displayName": "FCT_ORDERS",
-      "connectionPath": "ARTHUR_TEST/DBT_AWU/",
-      "rowCount": 120,
-      "connectionId": 15,
-      "id": 15,
-      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#AB4ABA\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M80,128V64a48,48,0,0,1,96,0v64a48,48,0,0,1-96,0Zm128,0a8,8,0,0,0-16,0,64,64,0,0,1-128,0,8,8,0,0,0-16,0,80.11,80.11,0,0,0,72,79.6V232a8,8,0,0,0,16,0V207.6A80.11,80.11,0,0,0,208,128Z\"></path></svg>"
-    },
-    {
-      "workspaceId": 6,
       "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
-      "displayName": "lfksjdljskf",
+      "displayName": "DIM_CUSTOMERS",
       "connectionPath": "ARTHUR_TEST/DBT_AWU/",
       "rowCount": 100,
-      "connectionId": 24,
+      "connectionId": 15,
       "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#8E4EC6\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z\"></path></svg>",
-      "id": 16
+      "id": 15
     }
   ],
   "verifyEmail": [
@@ -482,21 +462,6 @@
       "role": "READ_ONLY_TEST",
       "connectionType": "snowflake",
       "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T15:38:04.992Z",
-      "workspaceId": 6,
-      "id": 11
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
       "createdAt": "2023-05-03T17:29:46.693Z",
       "workspaceId": 23,
       "id": 12
@@ -542,7 +507,7 @@
       "role": "READ_ONLY_TEST",
       "connectionType": "snowflake",
       "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T19:26:28.914Z",
+      "createdAt": "2023-05-03T20:16:17.875Z",
       "workspaceId": 6,
       "id": 15
     },
@@ -557,7 +522,7 @@
       "role": "READ_ONLY_TEST",
       "connectionType": "snowflake",
       "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T19:31:48.667Z",
+      "createdAt": "2023-05-03T20:16:51.525Z",
       "workspaceId": 6,
       "id": 16
     },
@@ -572,114 +537,9 @@
       "role": "READ_ONLY_TEST",
       "connectionType": "snowflake",
       "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T19:32:09.868Z",
+      "createdAt": "2023-05-03T20:17:25.510Z",
       "workspaceId": 6,
       "id": 17
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T19:32:28.302Z",
-      "workspaceId": 6,
-      "id": 18
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T19:32:35.969Z",
-      "workspaceId": 6,
-      "id": 19
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T19:32:45.321Z",
-      "workspaceId": 6,
-      "id": 20
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T19:36:57.754Z",
-      "workspaceId": 6,
-      "id": 21
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T20:01:31.853Z",
-      "workspaceId": 6,
-      "id": 22
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T20:01:50.386Z",
-      "workspaceId": 6,
-      "id": 23
-    },
-    {
-      "accountIdentifier": "pwkesfj-uo88877",
-      "warehouse": "ARTHUR_TEST",
-      "basicAuthUsername": "test_read_only_some",
-      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
-      "keyPairAuthUsername": "",
-      "keyPairAuthPrivateKey": "",
-      "keyPairAuthPrivateKeyPassphrase": "",
-      "role": "READ_ONLY_TEST",
-      "connectionType": "snowflake",
-      "name": "Snowflakepwkesfj-uo88877",
-      "createdAt": "2023-05-03T20:02:26.168Z",
-      "workspaceId": 6,
-      "id": 24
     }
   ]
 }

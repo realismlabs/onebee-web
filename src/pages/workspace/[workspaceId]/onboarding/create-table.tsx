@@ -99,6 +99,8 @@ interface FileTreeProps {
   setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
   tableDisplayName: string;
   setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
+  tableDisplayNameErrorMessage: string;
+  setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // helper functions
@@ -174,6 +176,8 @@ const PreviewTableUI = ({
   setSelectedColor,
   tableDisplayName,
   setTableDisplayName,
+  tableDisplayNameErrorMessage,
+  setTableDisplayNameErrorMessage,
 }: {
   tablesQueryData: any;
   handleSubmit: any;
@@ -191,6 +195,8 @@ const PreviewTableUI = ({
   setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
   tableDisplayName: string;
   setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
+  tableDisplayNameErrorMessage: string;
+  setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const data = tablesQueryData.listed_tables;
 
@@ -219,6 +225,8 @@ const PreviewTableUI = ({
             setSelectedColor={setSelectedColor}
             tableDisplayName={tableDisplayName}
             setTableDisplayName={setTableDisplayName}
+            tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
+            setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
           />
         </div>
         {/* render all icons but hide them, so that SVG contents can be found*/}
@@ -285,9 +293,15 @@ const PreviewTableUI = ({
                     value={tableDisplayName}
                     className="bg-slate-5 text-white text-[14px] px-[8px] py-[4px] border border-slate-6 rounded-md w-[360px] focus:outline-none focus:ring-2 focus:ring-blue-600"
                     onChange={(e) => {
+                      setTableDisplayNameErrorMessage("");
                       setTableDisplayName(e.target.value);
                     }}
                   />
+                  {tableDisplayNameErrorMessage && (
+                    <div className="text-red-500 text-[13px]">
+                      {tableDisplayNameErrorMessage}
+                    </div>
+                  )}
                   <div className="ml-auto flex flex-row gap-2">
                     <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
                       {fullPathWithSlashes}
@@ -340,8 +354,6 @@ const FileTree: React.FC<FileTreeProps> = ({
   setIconSvgString,
 }) => {
   const nestedData = createNestedStructure(data);
-  console.log("nestedData", nestedData);
-
   const allDbNames = Object.keys(nestedData);
   const allSchemaNames = Object.values(nestedData).flatMap((schemas) =>
     Object.keys(schemas)
@@ -351,9 +363,6 @@ const FileTree: React.FC<FileTreeProps> = ({
   const [expandedDbs, setExpandedDbs] = useState<string[]>(allDbNames);
   const [expandedSchemas, setExpandedSchemas] =
     useState<string[]>(allSchemaNames);
-
-  console.log("expandedDbs", expandedDbs);
-
   // update when data itself updates
   useEffect(() => {
     setExpandedDbs(allDbNames);
@@ -592,6 +601,8 @@ export default function CreateTable() {
   );
   const [selectedColor, setSelectedColor] = useState<string>("#0091FF");
   const [tableDisplayName, setTableDisplayName] = useState<string>("");
+  const [tableDisplayNameErrorMessage, setTableDisplayNameErrorMessage] =
+    useState<string>("");
 
   // whenever selectedTable changes, fetch the new tableDisplayName
   useEffect(() => {
@@ -603,7 +614,10 @@ export default function CreateTable() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log("test");
+    if (tableDisplayName === "") {
+      setTableDisplayNameErrorMessage("Table display name cannot be empty");
+      return;
+    }
 
     const createConnectionRequestBody = {
       ...connectionRequestBody,
@@ -716,6 +730,8 @@ export default function CreateTable() {
           setSelectedColor={setSelectedColor}
           tableDisplayName={tableDisplayName}
           setTableDisplayName={setTableDisplayName}
+          tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
+          setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
         />
       </div>
     </div>

@@ -236,15 +236,16 @@ export default function Connections() {
                             Delete connection
                           </Dialog.Title>
                           <Dialog.Description className="text-[13px] mt-[16px] gap-2 flex flex-col">
-                            {tablesFromConnectionData.length > 0 && (
-                              <div className="">
-                                This connection has{" "}
-                                {tablesFromConnectionData.length} tables
-                                associated with it. <br />
-                                Deleting this connection will disconnect these
-                                tables from getting updates.
-                              </div>
-                            )}
+                            {tablesFromConnectionData &&
+                              tablesFromConnectionData.length > 0 && (
+                                <div className="">
+                                  This connection has{" "}
+                                  {tablesFromConnectionData.length} tables
+                                  associated with it. <br />
+                                  Deleting this connection will disconnect these
+                                  tables from getting updates.
+                                </div>
+                              )}
                             <div>
                               Are you sure you want to delete this connection?
                               This action is irreversible.
