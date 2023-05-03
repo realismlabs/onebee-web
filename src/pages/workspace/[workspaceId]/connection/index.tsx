@@ -11,7 +11,7 @@ import { useState, useRef, useEffect } from "react";
 import { formatFriendlyDate, abbreviateNumber } from "@/utils/util";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { deleteConnection, updateConnectionDisplayName } from "@/utils/api";
-import { PencilSimpleLine, X } from "@phosphor-icons/react";
+import { PencilSimpleLine, X, TreeStructure } from "@phosphor-icons/react";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { Popover, Transition, Dialog } from "@headlessui/react";
 
@@ -159,9 +159,24 @@ export default function Connections() {
     <WorkspaceLayout>
       <div className="bg-slate-1 h-screen text-slate-12 flex flex-row divide-slate-4 divide-y">
         <div className="min-w-[360px] max-w-[360px] border-r border-slate-4 overflow-y-scroll grow">
-          <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[20px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
+          <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[12px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
+            <div className="h-[24px] w-[24px] flex items-center justify-center">
+              <TreeStructure
+                size={20}
+                weight="fill"
+                className="text-slate-10"
+              />
+            </div>
             <p className="text-slate-12 text-[13px]">Data connections</p>
-            <button className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px] ml-auto">
+
+            <button
+              className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px] ml-auto"
+              onClick={() => {
+                router.push(
+                  `/workspace/${currentWorkspace?.id}/connection/new`
+                );
+              }}
+            >
               + Add
             </button>
           </div>

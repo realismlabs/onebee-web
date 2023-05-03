@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
-import { CircleNotch, TreeStructure, House, Table } from '@phosphor-icons/react';
+import { CircleNotch, TreeStructure, House, Table, Plus } from '@phosphor-icons/react';
 import { getTables } from '@/utils/api';
 import { useRouter } from 'next/router';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
@@ -88,7 +88,15 @@ export const CommandBar = () => {
       type: 'navigation',
       id: 'dataconnections',
       link: `/workspace/${currentWorkspace?.id}/connection`,
-    }
+    },
+    {
+      name: 'Add new data connection',
+      description: 'Connect to sources like Snowflake, BigQuery, and Postgres',
+      icon: <Plus width={20} height={20} weight="bold" />,
+      type: 'navigation',
+      id: 'newdataconnection',
+      link: `/workspace/${currentWorkspace?.id}/connection/new`,
+    },
   ];
 
   const tables = [];
