@@ -515,7 +515,7 @@ const IconGrid = ({
               <Popover.Button key={icon.name} className="cursor-default">
                 <div
                   id={icon.name}
-                  onClick={() => handleIconClick(icon.name)}
+                  onClick={() => handleIconClick(icon.name, selectedColor)}
                   className={`flex items-center justify-center h-[24px] min-w-[24px] rounded hover:bg-white/10 cursor-default hover:brightness-200`}
                 >
                   {/* color transition desired */}

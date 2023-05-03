@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
-import MockTable from "@/components/MockTable";
+import MemoizedMockTable from "@/components/MemoizedMockTable";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
@@ -316,7 +316,6 @@ export default function TablePage() {
     queryKey: ["getTable", currentWorkspace?.id, tableId],
     queryFn: async () => {
       const response = await getTable(currentWorkspace?.id, tableId);
-      console.log("awu response", JSON.stringify(response));
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -392,7 +391,7 @@ export default function TablePage() {
           </div>
         </div>
         <div className="grow-1 overflow-x-auto overflow-y-scroll max-w-screen">
-          <MockTable />
+          <MemoizedMockTable />
         </div>
         <div className="flex flex-row gap-2 items-center border-b border-slate-4 px-[20px] py-[8px] text-[13px] text-slate-11">
           <div>Full path</div>

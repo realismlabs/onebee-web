@@ -24,6 +24,6 @@
   "/api/workspaces/:workspaceId/connections/create": "/connections",
   "/api/workspaces/:workspaceId/connections/:connectionId": "/connections/:connectionId",
   "/api/workspaces/:workspaceId/connections/:connectionId/update": "/connections/:connectionId",
-  "/api/workspaces/:workspaceId/connections": "/connections",
+  "/api/workspaces/:workspaceId/connections": "/connections?workspaceId=:workspaceId",
   "/api/connections": "/connections"
 }

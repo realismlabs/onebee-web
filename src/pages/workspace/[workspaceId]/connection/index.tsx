@@ -415,31 +415,40 @@ export default function Connections() {
                           )}
                           {tablesFromConnectionData.length > 0 && (
                             <div className="flex flex-col border-slate-4 rounded-lg border overflow-clip">
-                              {tablesFromConnectionData.map((table: any) => (
-                                <Link
-                                  key={table.id}
-                                  href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
-                                >
-                                  <div className="flex flex-row gap-4 items-center border-b border-slate-4 text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-slate-12">
-                                    <div className="text-[13px] text-slate-12">
-                                      <IconLoaderFromSvgString
-                                        iconSvgString={table.iconSvgString}
-                                        tableName={table.displayName}
-                                      />
+                              {tablesFromConnectionData.map(
+                                (table: any, index: number) => (
+                                  <Link
+                                    key={table.id}
+                                    href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
+                                  >
+                                    <div
+                                      className={`flex flex-row gap-4 items-center ${
+                                        index <
+                                        tablesFromConnectionData.length - 1
+                                          ? "border-b border-slate-4"
+                                          : ""
+                                      } text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-slate-12`}
+                                    >
+                                      <div className="text-[13px] text-slate-12">
+                                        <IconLoaderFromSvgString
+                                          iconSvgString={table.iconSvgString}
+                                          tableName={table.displayName}
+                                        />
+                                      </div>
+                                      <div className="w-[180px] truncate">
+                                        {table.displayName}
+                                      </div>
+                                      <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate">
+                                        {table.connectionPath}
+                                      </pre>
+                                      <div className="ml-auto">
+                                        {abbreviateNumber(table.rowCount) +
+                                          " rows"}
+                                      </div>
                                     </div>
-                                    <div className="w-[180px] truncate">
-                                      {table.displayName}
-                                    </div>
-                                    <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate">
-                                      {table.connectionPath}
-                                    </pre>
-                                    <div className="ml-auto">
-                                      {abbreviateNumber(table.rowCount) +
-                                        " rows"}
-                                    </div>
-                                  </div>
-                                </Link>
-                              ))}
+                                  </Link>
+                                )
+                              )}
                             </div>
                           )}
                         </>

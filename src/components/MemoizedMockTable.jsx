@@ -101,4 +101,8 @@ const MockTable = () => {
   );
 };
 
-export default MockTable;
+
+const MemoizedMockTable = React.memo(MockTable);
+MemoizedMockTable.displayName = 'MockTable';
+
+export default MemoizedMockTable;

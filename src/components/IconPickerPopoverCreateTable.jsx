@@ -85,8 +85,8 @@ const IconPickerPopoverCreateTable = ({ iconSvgString, setIconSvgString, selecte
         <>
           <Popover.Button
             className={`
-              ${open ? 'bg-slate-3' : 'hover:bg-slate-5 active:bg-slate-6 hover:border hover:border-slate-8'}
-              flex flex-row gap-3 items-center justify-center focus:outline-none py-[6px] rounded-[3px] w-[24px] h-[24px]`}
+              ${open ? 'bg-slate-5' : ''}
+              flex flex-row gap-3 items-center justify-center focus:outline-none py-[6px] rounded-[3px] w-[31px] h-[31px] bg-slate-4 border-slate-6 hover:bg-slate-5 hover:border-slate-8 active:bg-slate-6 border `}
           >
             <div>
               <div className="text-[13px] text-slate-12"><IconLoaderFromSvgString iconSvgString={iconSvgString} /></div>

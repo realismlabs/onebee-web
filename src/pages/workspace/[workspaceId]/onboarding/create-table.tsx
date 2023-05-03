@@ -10,17 +10,16 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { capitalizeString } from "@/utils/util";
 import { createTable, createConnection } from "@/utils/api";
-import MockTable from "@/components/MockTable";
+import MemoizedMockTable from "@/components/MemoizedMockTable";
 import { IconList } from "@/components/IconList";
 import { Transition } from "@headlessui/react";
 import IconPickerPopoverCreateTable from "@/components/IconPickerPopoverCreateTable";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 
 function getIconSvgStringFromName(iconName: string): string {
+  const iconItem = IconList.find((icon) => icon.name === iconName);
   let iconSvgString =
     '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#8E4EC6" viewBox="0 0 256 256" class="min-w-[24px] transition-colors duration-300"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path></svg>';
-
-  const iconItem = IconList.find((icon) => icon.name === iconName);
 
   if (iconItem) {
     const iconDiv = document.getElementById(iconName);
@@ -28,7 +27,6 @@ function getIconSvgStringFromName(iconName: string): string {
       iconSvgString = Array.from(iconDiv.children)
         .map((child) => child.outerHTML)
         .join("\n");
-      console.log("awu iconSvgString", iconSvgString);
     } else {
       console.error(
         `awu Div with id "${iconName}" not found, using Table instead`
@@ -99,6 +97,8 @@ interface FileTreeProps {
   setIconSvgString: React.Dispatch<React.SetStateAction<string>>;
   selectedColor: string;
   setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
+  tableDisplayName: string;
+  setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // helper functions
@@ -172,6 +172,8 @@ const PreviewTableUI = ({
   setIconSvgString,
   selectedColor,
   setSelectedColor,
+  tableDisplayName,
+  setTableDisplayName,
 }: {
   tablesQueryData: any;
   handleSubmit: any;
@@ -187,13 +189,14 @@ const PreviewTableUI = ({
   setIconSvgString: React.Dispatch<React.SetStateAction<string>>;
   selectedColor: string;
   setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
+  tableDisplayName: string;
+  setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const data = tablesQueryData.listed_tables;
 
   // based on the selected table, get the tablename and path differently
   const tableName = selectedTable?.split(".")[2];
-  const path =
-    selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
+  const fullPathWithSlashes = selectedTable?.replaceAll(".", "/");
 
   return (
     <>
@@ -214,6 +217,8 @@ const PreviewTableUI = ({
             setIconSvgString={setIconSvgString}
             selectedColor={selectedColor}
             setSelectedColor={setSelectedColor}
+            tableDisplayName={tableDisplayName}
+            setTableDisplayName={setTableDisplayName}
           />
         </div>
         {/* render all icons but hide them, so that SVG contents can be found*/}
@@ -236,7 +241,7 @@ const PreviewTableUI = ({
             {selectedTable ? (
               <>
                 <div className="flex flex-row gap-2 items-center px-[12px] py-2 border-b border-slate-4">
-                  <div className="min-w-[24px] min-h-[24px] flex items-center justify-center ">
+                  <div className="min-w-[31px] min-h-[31px] flex items-center justify-center ">
                     <Transition
                       show={!isIconSuggestionLoading}
                       enter="transition-all transform origin-center"
@@ -257,7 +262,7 @@ const PreviewTableUI = ({
                     {isIconSuggestionLoading && (
                       <div
                         id="loading-icon-suggestion"
-                        className="absolute w-[24px] h-[24px] flex items-center justify-center"
+                        className="absolute w-[31px] h-[31px] flex items-center justify-center"
                       >
                         <div
                           className="w-[15px] h-[15px] rounded-full animate-spin flex items-center justify-center"
@@ -275,16 +280,25 @@ const PreviewTableUI = ({
                       </div>
                     )}
                   </div>
-                  <p className="text-slate-12 text-[14px]">{tableName}</p>
-                  <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
-                    {path}
-                  </pre>
-                  <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
-                    {abbreviateNumber(selectedTableRowCount) + " rows"}
-                  </pre>
+                  <input
+                    title="Display name"
+                    value={tableDisplayName}
+                    className="bg-slate-5 text-white text-[14px] px-[8px] py-[4px] border border-slate-6 rounded-md w-[360px] focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    onChange={(e) => {
+                      setTableDisplayName(e.target.value);
+                    }}
+                  />
+                  <div className="ml-auto flex flex-row gap-2">
+                    <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
+                      {fullPathWithSlashes}
+                    </pre>
+                    <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
+                      {abbreviateNumber(selectedTableRowCount) + " rows"}
+                    </pre>
+                  </div>
                 </div>
                 <div className="flex-grow-0 overflow-x-auto overflow-y-scroll">
-                  <MockTable />
+                  <MemoizedMockTable />
                 </div>
                 <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-slate-12 flex items-center justify-center">
                   <button
@@ -386,7 +400,6 @@ const FileTree: React.FC<FileTreeProps> = ({
     );
     setSelectedTableRowCount(table?.row_count ?? null);
     setIsIconSuggestionLoading(true);
-    console.log("awu", selectedTable);
 
     let timeoutId = setTimeout(() => {
       setSelectedIconName("Table");
@@ -402,7 +415,6 @@ const FileTree: React.FC<FileTreeProps> = ({
       clearTimeout(timeoutId);
       const icon_suggestion_json = await icon_suggestion.json();
       const icon_suggestion_name = icon_suggestion_json.bestMatch;
-      console.log("awu", icon_suggestion_name);
       if (typeof icon_suggestion_name === "string") {
         const icon_suggestion_name_cleaned = icon_suggestion_name.replace(
           /[^a-zA-Z0-9]/g,
@@ -416,7 +428,6 @@ const FileTree: React.FC<FileTreeProps> = ({
       }
       setIsIconSuggestionLoading(false);
     } catch (error) {
-      console.log("awu error", error);
       setIsIconSuggestionLoading(false);
       clearTimeout(timeoutId);
     }
@@ -576,8 +587,19 @@ export default function CreateTable() {
   >(null);
   const [isIconSuggestionLoading, setIsIconSuggestionLoading] =
     useState<boolean>(false);
-  const [iconSvgString, setIconSvgString] = useState<string>("");
+  const [iconSvgString, setIconSvgString] = useState<string>(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#8E4EC6" viewBox="0 0 256 256" class="min-w-[24px] transition-colors duration-300"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path></svg>'
+  );
   const [selectedColor, setSelectedColor] = useState<string>("#0091FF");
+  const [tableDisplayName, setTableDisplayName] = useState<string>("");
+
+  // whenever selectedTable changes, fetch the new tableDisplayName
+  useEffect(() => {
+    if (selectedTable) {
+      const displayName = selectedTable?.split(".")[2];
+      setTableDisplayName(displayName);
+    }
+  }, [selectedTable]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -606,10 +628,11 @@ export default function CreateTable() {
     const createTableRequestBody = {
       workspaceId: currentWorkspace?.id,
       fullName: selectedTable,
-      displayName,
+      displayName: tableDisplayName,
       connectionPath,
       rowCount: selectedTableRowCount,
       connectionId: create_connection_response.id,
+      iconSvgString: iconSvgString,
     };
 
     const create_table_response = await createTable(createTableRequestBody);
@@ -691,6 +714,8 @@ export default function CreateTable() {
           setIconSvgString={setIconSvgString}
           selectedColor={selectedColor}
           setSelectedColor={setSelectedColor}
+          tableDisplayName={tableDisplayName}
+          setTableDisplayName={setTableDisplayName}
         />
       </div>
     </div>
