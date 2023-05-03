@@ -190,7 +190,7 @@ export const CommandBar = () => {
                       >
                         <div className="flex flex-row gap-2 w-full">
                           <div className="min-w-[24px] text-slate-10"><IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.name} /></div>
-                          <div className="min-w-[240px]">{item.name}</div>
+                          <div className="w-[240px] truncate">{item.name}</div>
                           <div className="text-slate-11">{item.description}</div>
                         </div>
                       </Command.Item>

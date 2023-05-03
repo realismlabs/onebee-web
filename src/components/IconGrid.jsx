@@ -256,7 +256,7 @@ import {
   Sun,
 
 
-
+  Table,
 
 
 
@@ -466,6 +466,7 @@ const IconGrid = ({
     { name: 'Sticker', icon: Sticker },
     { name: 'Storefront', icon: Storefront },
     { name: 'Sun', icon: Sun },
+    { name: 'Table', icon: Table },
     { name: 'TennisBall', icon: TennisBall },
     { name: 'Tent', icon: Tent },
     { name: 'ThumbsUp', icon: ThumbsUp },

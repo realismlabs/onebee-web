@@ -14,9 +14,40 @@ import MockTable from "@/components/MockTable";
 import { IconList } from "@/components/IconList";
 import { Transition } from "@headlessui/react";
 import IconPickerPopoverCreateTable from "@/components/IconPickerPopoverCreateTable";
+import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 
-function getIconByName(iconName: string): string {
+function getIconSvgStringFromName(iconName: string): string {
+  let iconSvgString =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#8E4EC6" viewBox="0 0 256 256" class="min-w-[24px] transition-colors duration-300"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path></svg>';
+
   const iconItem = IconList.find((icon) => icon.name === iconName);
+
+  if (iconItem) {
+    const iconDiv = document.getElementById(iconName);
+    if (iconDiv) {
+      iconSvgString = Array.from(iconDiv.children)
+        .map((child) => child.outerHTML)
+        .join("\n");
+      console.log("awu iconSvgString", iconSvgString);
+    } else {
+      console.error(
+        `awu Div with id "${iconName}" not found, using Table instead`
+      );
+    }
+  }
+
+  function updateSvgColor(htmlString: string, newColor: string) {
+    const originalStyleAttribute = /style="color:\s*[^"]*"/;
+    const newStyleAttribute = `style="color: ${newColor};"`;
+
+    const updatedHtmlString = htmlString.replace(
+      originalStyleAttribute,
+      newStyleAttribute
+    );
+
+    return updatedHtmlString;
+  }
+
   const colors = [
     "#0091FF", // blue
     "#3E63DD", // indigo
@@ -33,34 +64,8 @@ function getIconByName(iconName: string): string {
   ];
 
   const random_color = colors[Math.floor(Math.random() * colors.length)];
-
-  const iconDiv = iconItem ? (
-    <div id={iconName}>
-      <iconItem.icon
-        weight="fill"
-        size={20}
-        style={{
-          color: random_color,
-        }}
-      />
-    </div>
-  ) : (
-    <div id="Table">
-      <Table
-        weight="fill"
-        size={20}
-        style={{
-          color: random_color,
-        }}
-      />
-    </div>
-  );
-  const svgContainer = document.createElement("div");
-  ReactDOM.render(iconDiv, svgContainer);
-  console.log("awu svgContainer", svgContainer);
-  const svgElement = svgContainer.querySelector("svg");
-  console.log("awu svgElement", svgElement);
-  return "";
+  const updatedSvgString = updateSvgColor(iconSvgString, random_color);
+  return updatedSvgString;
 }
 
 interface AccountHeaderProps {
@@ -90,6 +95,10 @@ interface FileTreeProps {
   setSelectedIconName: React.Dispatch<React.SetStateAction<string>>;
   isIconSuggestionLoading: boolean;
   setIsIconSuggestionLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  iconSvgString: string;
+  setIconSvgString: React.Dispatch<React.SetStateAction<string>>;
+  selectedColor: string;
+  setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // helper functions
@@ -159,6 +168,10 @@ const PreviewTableUI = ({
   setSelectedIconName,
   isIconSuggestionLoading,
   setIsIconSuggestionLoading,
+  iconSvgString,
+  setIconSvgString,
+  selectedColor,
+  setSelectedColor,
 }: {
   tablesQueryData: any;
   handleSubmit: any;
@@ -170,6 +183,10 @@ const PreviewTableUI = ({
   setSelectedIconName: React.Dispatch<React.SetStateAction<string>>;
   isIconSuggestionLoading: boolean;
   setIsIconSuggestionLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  iconSvgString: string;
+  setIconSvgString: React.Dispatch<React.SetStateAction<string>>;
+  selectedColor: string;
+  setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const data = tablesQueryData.listed_tables;
 
@@ -193,7 +210,25 @@ const PreviewTableUI = ({
             setSelectedIconName={setSelectedIconName}
             isIconSuggestionLoading={isIconSuggestionLoading}
             setIsIconSuggestionLoading={setIsIconSuggestionLoading}
+            iconSvgString={iconSvgString}
+            setIconSvgString={setIconSvgString}
+            selectedColor={selectedColor}
+            setSelectedColor={setSelectedColor}
           />
+        </div>
+        {/* render all icons but hide them, so that SVG contents can be found*/}
+        <div className="hidden">
+          {IconList.map((iconItem) => (
+            <div id={iconItem.name} key={iconItem.name}>
+              <iconItem.icon
+                weight="fill"
+                size={20}
+                style={{
+                  color: "#FFFFFF",
+                }}
+              />
+            </div>
+          ))}
         </div>
         <div className="flex-grow flex-shrink-0 w-0">
           <p className="text-slate-12 text-[14px]">Preview</p>
@@ -212,8 +247,12 @@ const PreviewTableUI = ({
                       leaveTo="scale-0"
                       className="flex-row flex"
                     >
-                      <IconPickerPopoverCreateTable iconSvgString={""} />
-                      {getIconByName(selectedIconName)}
+                      <IconPickerPopoverCreateTable
+                        iconSvgString={iconSvgString}
+                        setIconSvgString={setIconSvgString}
+                        selectedColor={selectedColor}
+                        setSelectedColor={setSelectedColor}
+                      />
                     </Transition>
                     {isIconSuggestionLoading && (
                       <div
@@ -283,6 +322,8 @@ const FileTree: React.FC<FileTreeProps> = ({
   setSelectedIconName,
   isIconSuggestionLoading,
   setIsIconSuggestionLoading,
+  iconSvgString,
+  setIconSvgString,
 }) => {
   const nestedData = createNestedStructure(data);
   console.log("nestedData", nestedData);
@@ -368,6 +409,10 @@ const FileTree: React.FC<FileTreeProps> = ({
           ""
         );
         setSelectedIconName(icon_suggestion_name_cleaned);
+        const iconSvgString = getIconSvgStringFromName(
+          icon_suggestion_name_cleaned
+        );
+        setIconSvgString(iconSvgString);
       }
       setIsIconSuggestionLoading(false);
     } catch (error) {
@@ -531,6 +576,8 @@ export default function CreateTable() {
   >(null);
   const [isIconSuggestionLoading, setIsIconSuggestionLoading] =
     useState<boolean>(false);
+  const [iconSvgString, setIconSvgString] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>("#0091FF");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -640,6 +687,10 @@ export default function CreateTable() {
           setSelectedIconName={setSelectedIconName}
           isIconSuggestionLoading={isIconSuggestionLoading}
           setIsIconSuggestionLoading={setIsIconSuggestionLoading}
+          iconSvgString={iconSvgString}
+          setIconSvgString={setIconSvgString}
+          selectedColor={selectedColor}
+          setSelectedColor={setSelectedColor}
         />
       </div>
     </div>

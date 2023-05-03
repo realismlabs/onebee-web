@@ -5,6 +5,18 @@ import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 
 const LazyIconGrid = lazy(() => import('./IconGrid'));
 
+function updateSvgColor(htmlString, newColor) {
+  const originalStyleAttribute = /style="color:\s*[^"]*"/;
+  const newStyleAttribute = `style="color: ${newColor};"`;
+
+  const updatedHtmlString = htmlString.replace(
+    originalStyleAttribute,
+    newStyleAttribute
+  );
+
+  return updatedHtmlString;
+}
+
 const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   const colors = [
     '#0091FF', // blue
@@ -49,22 +61,23 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   );
 };
 
-const IconPickerPopoverCreateTable = ({ iconSvgString }) => {
+const IconPickerPopoverCreateTable = ({ iconSvgString, setIconSvgString, selectedColor, setSelectedColor }) => {
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleIconClick = async (iconName) => {
+  const handleIconClick = async (iconName, selectedColor) => {
     setSelectedIcon(iconName);
     const iconDiv = document.getElementById(iconName);
     if (iconDiv) {
       const iconSvgString = Array.from(iconDiv.children).map((child) => child.outerHTML).join('\n');
-      console.log("awu iconSvgString", iconSvgString)
+      console.log("awu iconSvgString2", iconSvgString)
+      console.log("awu selectedColor2", selectedColor)
+      const iconSvgString_updated = updateSvgColor(iconSvgString, selectedColor);
+      setIconSvgString(iconSvgString_updated);
     } else {
       console.error(`awu Div with id "${iconName}" not found.`);
     }
   };
-
-  const [selectedColor, setSelectedColor] = useState("#0091FF");
 
   return (
     <Popover className="">
