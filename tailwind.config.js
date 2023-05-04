@@ -33,6 +33,7 @@ module.exports = {
       colors: {
         slate: radixColors.slateDark,
         purple: radixColors.purpleDark,
+        crimson: radixColors.crimsonDark,
         red: radixColors.redDark,
         orange: radixColors.orangeDark,
         amber: radixColors.amberDark,
@@ -42,6 +43,7 @@ module.exports = {
         blue: radixColors.blueDark,
         indigo: radixColors.indigoDark,
         purple: radixColors.purpleDark,
+        violet: radixColors.violetDark,
         plum: radixColors.plumDark,
         pink: radixColors.pinkDark,
       },

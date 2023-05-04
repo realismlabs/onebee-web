@@ -1,7 +1,12 @@
 import { useRouter } from "next/router";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { getWorkspaceConnections, getTablesFromConnection } from "@/utils/api";
+import {
+  getWorkspaceConnections,
+  getTablesFromConnection,
+  deleteConnection,
+  updateConnectionDisplayName,
+} from "@/utils/api";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
@@ -10,7 +15,6 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { formatFriendlyDate, abbreviateNumber } from "@/utils/util";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { deleteConnection, updateConnectionDisplayName } from "@/utils/api";
 import { PencilSimpleLine, X, TreeStructure } from "@phosphor-icons/react";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { Popover, Transition, Dialog } from "@headlessui/react";
