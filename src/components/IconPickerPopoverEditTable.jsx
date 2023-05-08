@@ -77,6 +77,7 @@ const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspa
       const iconSvgString = Array.from(iconDiv.children).map((child) => child.outerHTML).join('\n');
       const tableData = {
         iconSvgString,
+        iconColor: selectedColor,
       };
       try {
         await updateTableMutation.mutateAsync({ workspaceId, tableId, tableData });

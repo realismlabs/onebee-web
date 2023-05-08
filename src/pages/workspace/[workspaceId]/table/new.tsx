@@ -760,6 +760,7 @@ export default function CreateTable() {
       rowCount: selectedTableRowCount,
       connectionId: selectedConnection?.id,
       iconSvgString: iconSvgString,
+      iconColor: selectedColor,
     };
 
     const create_table_response = await createTable(createTableRequestBody);
@@ -834,7 +835,7 @@ export default function CreateTable() {
           <div className="h-[24px] w-[24px] flex items-center justify-center">
             <Plus size={20} weight="bold" className="text-slate-10" />
           </div>
-          <p className="text-slate-12 text-[13px]">Add table</p>
+          <p className="text-slate-12 text-[13px]">New table</p>
         </div>
         <div className="flex flex-1 flex-col justify-start items-start w-full mt-4">
           <PreviewTableUI

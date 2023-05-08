@@ -95,7 +95,7 @@ export default function WorkspaceHome() {
 
   return (
     <WorkspaceLayout>
-      <div className="h-screen bg-slate-1">
+      <div className="h-screen bg-slate-1 overflow-y-auto">
         <div className="flex flex-col justify-center items-center w-full pt-16">
           <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[1000px] gap-4">
             <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">

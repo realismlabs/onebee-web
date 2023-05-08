@@ -647,6 +647,7 @@ export default function CreateTable() {
       rowCount: selectedTableRowCount,
       connectionId: create_connection_response.id,
       iconSvgString: iconSvgString,
+      iconColor: selectedColor,
     };
 
     const create_table_response = await createTable(createTableRequestBody);

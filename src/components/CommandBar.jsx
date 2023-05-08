@@ -90,12 +90,20 @@ export const CommandBar = () => {
       link: `/workspace/${currentWorkspace?.id}/connection`,
     },
     {
-      name: 'Add new data connection',
+      name: 'New data connection',
       description: 'Connect to sources like Snowflake, BigQuery, and Postgres',
       icon: <Plus width={20} height={20} weight="bold" />,
       type: 'navigation',
       id: 'newdataconnection',
       link: `/workspace/${currentWorkspace?.id}/connection/new`,
+    },
+    {
+      name: 'New table',
+      description: 'Create a new table from a data connection',
+      icon: <Plus width={20} height={20} weight="bold" />,
+      type: 'navigation',
+      id: 'newtable',
+      link: `/workspace/${currentWorkspace?.id}/table/new`,
     },
   ];
 
@@ -137,7 +145,7 @@ export const CommandBar = () => {
                 className="bg-[#101112] placeholder:text-slate-10 w-full border-none text-[14px] focus:outline-none focus:ring-0 px-[0px]"
               />
             </div>
-            <div className="mx-[6px] overflow-y-auto h-[40vh]">
+            <div className="mx-[6px] overflow-y-auto h-[50vh]">
               <Command.List className="py-[6px]"
               >
                 <Command.Empty><div className="px-[10px] pt-[8px] text-slate-11">No results found.</div></Command.Empty>

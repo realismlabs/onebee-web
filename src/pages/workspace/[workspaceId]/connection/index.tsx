@@ -181,7 +181,7 @@ export default function Connections() {
                 );
               }}
             >
-              + Add
+              + New
             </button>
           </div>
           <div className="grow flex flex-col items-start text-[13px] overflow-y-scroll">
