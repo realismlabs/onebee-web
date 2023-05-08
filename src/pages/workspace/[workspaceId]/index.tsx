@@ -136,15 +136,18 @@ export default function WorkspaceHome() {
             )}
             {connectionsData?.length > 0 && tablesData?.length === 0 && (
               <div
-                className="bg-slate-2 rounded-lg border border-slate-3 w-full pt-[48px] pb-[128px] overflow-hidden items-center justify-center"
+                className="bg-blue-2 rounded-lg border border-blue-9 w-full pb-[200px] overflow-hidden items-center justify-center"
                 style={{
                   backgroundImage: "url('/images/gradient-table-circles.png')",
-                  backgroundPosition: "center -40px",
+                  backgroundPosition: "center -30px",
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "cover",
                 }}
               >
-                <div className="z-10 flex flex-col gap-2 items-center justify-center">
+                <div className="absolute text-blue-11 text-[14px] text-center py-[4px] px-[12px] bg-blue-2 border-opacity-10 border-blue-9 border-b border-r rounded-tl-lg rounded-br-lg">
+                  Finish setup
+                </div>
+                <div className="z-10 pt-[48px] flex flex-col gap-2 items-center justify-center">
                   <div className="text-slate-12 text-[16px] text-center">
                     Create a table
                   </div>
