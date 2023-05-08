@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery } from '@tanstack/react-query';
-import { getTables } from '../utils/api';
+import { getTables, getWorkspaceConnections } from '../utils/api';
 import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
@@ -217,7 +217,7 @@ const WorkspaceShell = () => {
     isLoading: areTablesLoading,
     error: tablesError,
   } = useQuery({
-    queryKey: ["workspaceTables", currentWorkspace?.id],
+    queryKey: ["getTables", currentWorkspace?.id],
     queryFn: async () => {
       return await getTables(currentWorkspace?.id)
     },
@@ -225,7 +225,22 @@ const WorkspaceShell = () => {
     staleTime: 1000
   });
 
-  if (areTablesLoading || isWorkspaceLoading || isUserLoading) {
+  const {
+    data: connectionsData,
+    isLoading: isConnectionsLoading,
+    error: connectionsError,
+  } = useQuery({
+    queryKey: ["getConnections", currentWorkspace?.id],
+    queryFn: async () => {
+      const response = await getWorkspaceConnections(currentWorkspace?.id);
+      return response;
+    },
+    enabled: currentWorkspace?.id !== null,
+  });
+
+
+
+  if (areTablesLoading || isWorkspaceLoading || isUserLoading || isConnectionsLoading) {
     return (
       <div className="bg-slate-1 py-[16px] w-[240px] text-[13px] text-slate-12 flex flex-col gap-2 border-r border-slate-6 items-center justify-center">
         <span className="animate-spin">
@@ -235,7 +250,7 @@ const WorkspaceShell = () => {
     )
   }
 
-  if (tablesError || workspaceError || userError) {
+  if (tablesError || workspaceError || userError || connectionsError) {
     return <div className="text-slate-12">There was an error loading your tables</div>;
   }
 
@@ -257,35 +272,49 @@ const WorkspaceShell = () => {
           </div>
         </Link>
         <div className="space-y-2">
-          <div className="px-[8px] text-slate-11 text-[13px] flex flex-row">
-            <div>Tables</div>
-            <div className="ml-auto">+ New</div></div>
-          <div>
-            {tablesData.map((item) => (
-              <Link key={item.id} href={`/workspace/${currentWorkspace.id}/table/${item.id}`}>
-                <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/table/${item.id}` ? "bg-slate-3" : ""}`}>
-                  <IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.displayName} />
-                  <Tooltip.Provider>
-                    <Tooltip.Root>
-                      <Tooltip.Trigger asChild>
-                        <div className="truncate w-full">{item.displayName}</div>
-                      </Tooltip.Trigger>
-                      <Tooltip.Portal>
-                        <Tooltip.Content
-                          className="text-slate-12 text-[13px] rounded-[4px] bg-black px-[12px] py-[8px] z-20 shadow-2xl"
-                          sideOffset={12}
-                          side="left"
-                        >
-                          {item.displayName}
-                          <Tooltip.Arrow className="fill-black" />
-                        </Tooltip.Content>
-                      </Tooltip.Portal>
-                    </Tooltip.Root>
-                  </Tooltip.Provider>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {connectionsData?.length > 0 && (
+            <>
+              <div className="px-[8px] text-slate-11 text-[13px] flex flex-row">
+                <div>Tables</div>
+                <div className="ml-auto">+ New</div></div>
+              <div>
+                {tablesData.length === 0 && (
+                  <div className="w-full flex flex-col gap-2 mt-4 items-center justify-center py-6 bg-slate-3 rounded-lg">
+                    <Image src="/images/table-splash-zero-state.svg"
+                      width={48}
+                      height={48}
+                      alt="Splash icon for tables zero state" />
+                    <p className="text-slate-11 px-[16px] text-center text-[13px] mt-2">No tables created yet</p>
+                    <p className="text-slate-10 px-[16px] text-center text-[12px]">Create a table by clicking the <br />+ New button in the top-right</p>
+                  </div>
+                )}
+                {tablesData.length > 0 && tablesData.map((item) => (
+                  <Link key={item.id} href={`/workspace/${currentWorkspace.id}/table/${item.id}`}>
+                    <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/table/${item.id}` ? "bg-slate-3" : ""}`}>
+                      <IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.displayName} />
+                      <Tooltip.Provider>
+                        <Tooltip.Root>
+                          <Tooltip.Trigger asChild>
+                            <div className="truncate w-full">{item.displayName}</div>
+                          </Tooltip.Trigger>
+                          <Tooltip.Portal>
+                            <Tooltip.Content
+                              className="text-slate-12 text-[13px] rounded-[4px] bg-black px-[12px] py-[8px] z-20 shadow-2xl"
+                              sideOffset={12}
+                              side="left"
+                            >
+                              {item.displayName}
+                              <Tooltip.Arrow className="fill-black" />
+                            </Tooltip.Content>
+                          </Tooltip.Portal>
+                        </Tooltip.Root>
+                      </Tooltip.Provider>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
       {/* footer */}
@@ -310,7 +339,7 @@ const WorkspaceShell = () => {
         </div>
         <AccountPopover />
       </div>
-    </div>
+    </div >
   );
 };
 

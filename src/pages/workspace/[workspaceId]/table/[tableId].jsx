@@ -94,27 +94,27 @@ const TablePopover = ({
         workspaceId,
         String(tableId),
       ]);
-      await queryClient.refetchQueries(["workspaceTables", workspaceId]);
+      await queryClient.refetchQueries(["getTables", workspaceId]);
     },
     onError: (error) => {
       console.error("Error updating table:", error);
     },
     invalidateQueries: [
       ["getTable", workspaceId, tableId],
-      ["workspaceTables", workspaceId],
+      ["getTables", workspaceId],
     ],
   });
 
   const deleteTableMutation = useMutation(deleteTable, {
     onSuccess: async (deletedTable) => {
       console.log("Table deleted:", deletedTable);
-      await queryClient.refetchQueries(["workspaceTables", workspaceId]);
+      await queryClient.refetchQueries(["getTables", workspaceId]);
       router.push(`/workspace/${workspaceId}`);
     },
     onError: (error) => {
       console.error("Error deleting table:", error);
     },
-    invalidateQueries: [["workspaceTables", workspaceId]],
+    invalidateQueries: [["getTables", workspaceId]],
   });
 
   return (

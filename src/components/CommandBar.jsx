@@ -50,7 +50,7 @@ export const CommandBar = () => {
     isLoading: areTablesLoading,
     error: tablesError,
   } = useQuery({
-    queryKey: ["workspaceTables", currentWorkspace?.id],
+    queryKey: ["getTables", currentWorkspace?.id],
     queryFn: async () => {
       return await getTables(currentWorkspace?.id)
     },
@@ -173,38 +173,41 @@ export const CommandBar = () => {
                     )
                   })}
                 </Command.Group>
-                <Command.Group heading="Tables" className="mt-2">
-                  {tables.map((item) => {
-                    const id = item.id;
-                    const searchable_id_name = `${item.id}${item.name}`;
-                    return (
-                      <Command.Item
-                        key={searchable_id_name}
-                        value={searchable_id_name}
-                        className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-2" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
-                        onMouseEnter={() => {
-                          console.log("hovering", searchable_id_name);
-                          setValue(searchable_id_name);
-                          console.log("value", value);
-                        }}
-                        onSelect={
-                          () => {
-                            // route to table
-                            router.push(item.link)
-                            // toggle closed
-                            setOpen(false);
+                {tablesData.length > 0 && (
+
+                  <Command.Group heading="Tables" className="mt-2">
+                    {tables.map((item) => {
+                      const id = item.id;
+                      const searchable_id_name = `${item.id}${item.name}`;
+                      return (
+                        <Command.Item
+                          key={searchable_id_name}
+                          value={searchable_id_name}
+                          className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-2" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
+                          onMouseEnter={() => {
+                            console.log("hovering", searchable_id_name);
+                            setValue(searchable_id_name);
+                            console.log("value", value);
+                          }}
+                          onSelect={
+                            () => {
+                              // route to table
+                              router.push(item.link)
+                              // toggle closed
+                              setOpen(false);
+                            }
                           }
-                        }
-                      >
-                        <div className="flex flex-row gap-2 w-full">
-                          <div className="min-w-[24px] text-slate-10"><IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.name} /></div>
-                          <div className="w-[240px] truncate">{item.name}</div>
-                          <div className="text-slate-11">{item.description}</div>
-                        </div>
-                      </Command.Item>
-                    )
-                  })}
-                </Command.Group>
+                        >
+                          <div className="flex flex-row gap-2 w-full">
+                            <div className="min-w-[24px] text-slate-10"><IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.name} /></div>
+                            <div className="w-[240px] truncate">{item.name}</div>
+                            <div className="text-slate-11">{item.description}</div>
+                          </div>
+                        </Command.Item>
+                      )
+                    })}
+                  </Command.Group>
+                )}
               </Command.List>
             </div>
           </div>
