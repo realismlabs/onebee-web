@@ -7,6 +7,7 @@ export const useCurrentWorkspace = () => {
 
   const router = useRouter();
   const workspaceId = router.query.workspaceId;
+  console.log("workspaceId", workspaceId)
 
   // Check if the workspaceId is available before fetching data
   const data = useQuery(['currentWorkspace', workspaceId], () => fetchCurrentWorkspace(workspaceId), {

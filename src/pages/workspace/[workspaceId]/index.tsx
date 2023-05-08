@@ -65,11 +65,16 @@ export default function WorkspaceHome() {
     enabled: currentWorkspace?.id !== null,
   });
 
-  if (isUserLoading) {
+  if (
+    isUserLoading ||
+    isWorkspaceLoading ||
+    isConnectionsLoading ||
+    isTablesLoading
+  ) {
     return <div className="h-screen bg-slate-1"></div>;
   }
 
-  if (userError) {
+  if (userError || workspaceError || connectionsError || tablesError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
@@ -117,13 +122,43 @@ export default function WorkspaceHome() {
                     Connect your Snowflake, BigQuery, or Postgres
                   </div>
                   <Link
-                    href={`/workspace/${currentWorkspace?.id}/connection/new`}
+                    href={`/workspace/${currentWorkspace?.id}/onboarding/add-data-source`}
                   >
                     <button
                       type="button"
-                      className="mt-[12px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
+                      className="mt-[8px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
                     >
                       Add connection
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            )}
+            {connectionsData?.length > 0 && tablesData?.length === 0 && (
+              <div
+                className="bg-slate-2 rounded-lg border border-slate-3 w-full pt-[48px] pb-[128px] overflow-hidden items-center justify-center"
+                style={{
+                  backgroundImage: "url('/images/gradient-table-circles.png')",
+                  backgroundPosition: "center -40px",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                }}
+              >
+                <div className="z-10 flex flex-col gap-2 items-center justify-center">
+                  <div className="text-slate-12 text-[16px] text-center">
+                    Create a table
+                  </div>
+                  <div className="text-slate-11 text-[14px]">
+                    Sync a source table from data connection
+                  </div>
+                  <Link
+                    href={`/workspace/${currentWorkspace?.id}/onboarding/add-data-source`}
+                  >
+                    <button
+                      type="button"
+                      className="mt-[8px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
+                    >
+                      Create table
                     </button>
                   </Link>
                 </div>
@@ -155,8 +190,14 @@ export default function WorkspaceHome() {
                           <div className="text-slate-12 text-[14px] font-medium truncate">
                             {table.displayName}
                           </div>
-                          <div className="text-[13px] text-slate-11 pt-[6px] font-mono">
+                          <p className="text-slate-11 text-[12px]">
+                            {table.description}
+                          </p>
+                          <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
                             {abbreviateNumber(table.rowCount)} rows
+                          </div>
+                          <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
+                            {table.fullName}
                           </div>
                         </div>
                       </div>
@@ -166,7 +207,7 @@ export default function WorkspaceHome() {
               </>
             )}
             <div className="w-full text-slate-12 text-[14px] mt-[32px] flex flex-row gap-4 items-end">
-              <div className="w-[84px]">Sandbox</div>
+              <div className="">Sandbox</div>
               <div className="text-slate-10 text-[13px]">
                 Play with example datasets in our sandbox
               </div>
@@ -178,7 +219,7 @@ export default function WorkspaceHome() {
                 </div>
                 <div className="flex flex-col">
                   <div className="text-[14px]">Hacker News comments</div>
-                  <div className="text-[13px] text-slate-11 pt-[6px] font-mono">
+                  <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
                     1.2B rows
                   </div>
                 </div>
@@ -189,7 +230,7 @@ export default function WorkspaceHome() {
                 </div>
                 <div className="flex flex-col">
                   <div className="text-[14px]">CFPB consumer complaints</div>
-                  <div className="text-[13px] text-slate-11 pt-[6px] font-mono">
+                  <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
                     1.6B rows
                   </div>
                 </div>
@@ -202,7 +243,7 @@ export default function WorkspaceHome() {
                   <div className="text-[14px]">
                     USPTO Patent Assignment Data
                   </div>
-                  <div className="text-[13px] text-slate-11 pt-[6px] font-mono">
+                  <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
                     1.2B rows
                   </div>
                 </div>
