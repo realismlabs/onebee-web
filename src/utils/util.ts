@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { format } from "date-fns";
+import { format, formatDistanceToNow, parseISO } from "date-fns";
 import { utcToZonedTime, format as tzFormat } from "date-fns-tz";
 
 export function abbreviateNumber(number: number | null) {
@@ -236,4 +236,20 @@ export function formatFriendlyDate(isoDateString: string) {
 
   // Transforms  2023-04-28T14:16:27.000Z into April 28th, 2023 at 10:16:27 AM EDT
   return `${formattedDate} ${timeZoneAbbr}`;
+}
+
+export function friendlyRelativeDateToNow(isoDateString: string) {
+  if (!isoDateString) return null;
+
+  const formattedDistance = formatDistanceToNow(parseISO(isoDateString), {
+    addSuffix: true,
+  });
+  return formattedDistance
+    .replace("minute", "min")
+    .replace("hour", "hr")
+    .replace("day", "d")
+    .replace("week", "w")
+    .replace("month", "mo")
+    .replace("year", "y")
+    .trim();
 }

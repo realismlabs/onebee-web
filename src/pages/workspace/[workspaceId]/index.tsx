@@ -19,13 +19,171 @@ import {
   Files,
   Gavel,
   MonitorPlay,
+  Table,
   Taxi,
   UserPlus,
   Warning,
 } from "@phosphor-icons/react";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
-import { abbreviateNumber } from "@/utils/util";
+import { abbreviateNumber, friendlyRelativeDateToNow } from "@/utils/util";
 
+const TableCard = ({
+  table,
+  currentWorkspace,
+}: {
+  table: any;
+  currentWorkspace: any;
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const colorMap: any = [
+    {
+      name: "red",
+      backgroundColor1: "#1F1315",
+      backgroundColor2: "#291415",
+      foregroundColor: "#E5484D",
+    },
+    {
+      name: "pink",
+      backgroundColor1: "#1F121B",
+      backgroundColor2: "#271421",
+      foregroundColor: "#E93D82",
+    },
+    {
+      name: "orange",
+      backgroundColor1: "#1F1206",
+      backgroundColor2: "#2B1400",
+      foregroundColor: "#F76808",
+    },
+    // '#0091FF', // blue
+    {
+      name: "blue",
+      backgroundColor1: "#0F1720",
+      backgroundColor2: "#0F1B2D",
+      foregroundColor: "#0091FF",
+    },
+    // '#3E63DD', // indigo
+    {
+      name: "indigo",
+      backgroundColor1: "#131620",
+      backgroundColor2: "#15192D",
+      foregroundColor: "#3E63DD",
+    },
+    // '#7C66DC', // violet
+    {
+      name: "violet",
+      backgroundColor1: "#17151F",
+      backgroundColor2: "#1C172B",
+      foregroundColor: "#7C66DC",
+    },
+    // '#9D5BD2', // purple
+    {
+      name: "purple",
+      backgroundColor1: "#1B141D",
+      backgroundColor2: "#221527",
+      foregroundColor: "#9D5BD2",
+    },
+    // '#AB4ABA', // plum
+    {
+      name: "plum",
+      backgroundColor1: "#1D131D",
+      backgroundColor2: "#251425",
+      foregroundColor: "#AB4ABA",
+    },
+    // '#FFB224', // amber
+    {
+      name: "amber",
+      backgroundColor1: "#1F1300",
+      backgroundColor2: "#271700",
+      foregroundColor: "#FFB224",
+    },
+    // '#F5D90A', // yellow
+    {
+      name: "yellow",
+      backgroundColor1: "#1C1500",
+      backgroundColor2: "#221A00",
+      foregroundColor: "#F5D90A",
+    },
+    // '#99D52A', // lime
+    {
+      name: "lime",
+      backgroundColor1: "#141807",
+      backgroundColor2: "#181D08",
+      foregroundColor: "#99D52A",
+    },
+    // '#46A758', // green
+    {
+      name: "green",
+      backgroundColor1: "#0D1912",
+      backgroundColor2: "#0C1F17",
+      foregroundColor: "#46A758",
+    },
+    // '#9BA1A6', // slate
+  ];
+
+  const backgroundColor1 = colorMap.find(
+    (color: any) => color.foregroundColor === table.iconColor
+  )?.backgroundColor1;
+  const backgroundColor2 = colorMap.find(
+    (color: any) => color.foregroundColor === table.iconColor
+  )?.backgroundColor2;
+
+  return (
+    <Link href={`/workspace/${currentWorkspace?.id}/table/${table.id}`}>
+      <div
+        className={`relative border hover:border-slate-6 border-slate-3 rounded-md w-full p-[16px] flex flex-col gap-3 overflow-clip
+    bg-[${table.iconColor}]
+    `}
+        style={{
+          backgroundColor: isHovered ? backgroundColor2 : backgroundColor1,
+
+          borderColor: isHovered
+            ? table.iconColor + "40"
+            : table.iconColor + "30",
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div
+          className="absolute top-0 left-0 w-full h-[1px]"
+          style={{
+            backgroundColor: table.iconColor,
+          }}
+        ></div>
+        <div className="flex flex-row gap-3 items-center w-full truncate">
+          <div
+            className="h-[32px] min-w-[32px] flex items-center justify-center rounded-md"
+            style={{
+              backgroundColor: table.iconColor + "30",
+            }}
+          >
+            <IconLoaderFromSvgString iconSvgString={table.iconSvgString} />
+          </div>
+          <div className="flex flex-col truncate">
+            <div className="text-slate-12 text-[14px] font-medium truncate block">
+              {table.displayName}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col truncate">
+          <div className="flex flex-row gap-2">
+            <div className="font-mono block truncate text-[12px] text-slate-11">
+              {table.fullName.replaceAll(".", "/")}
+            </div>
+          </div>
+          <div className="flex flex-row gap-2 items-center mt-2">
+            <div className="text-[12px] text-slate-11 font-mono">
+              {abbreviateNumber(table.rowCount)} rows •
+            </div>
+            <div className="text-[12px] text-slate-11 font-mono">
+              Updated {friendlyRelativeDateToNow(table.updatedAt)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+};
 export default function WorkspaceHome() {
   const {
     data: currentUser,
@@ -180,32 +338,11 @@ export default function WorkspaceHome() {
                 <div className="w-full grid grid-cols-3 gap-4">
                   {/* If there are no tables, get them to add a table */}
                   {tablesData.map((table: any) => (
-                    <Link
-                      href={`/workspace/${currentWorkspace?.id}/table/${table.id}`}
+                    <TableCard
+                      table={table}
+                      currentWorkspace={currentWorkspace}
                       key={table.id}
-                    >
-                      <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full p-[16px] flex flex-row gap-4">
-                        <div className="h-[20px] min-w-[20px] flex items-center justify-center">
-                          <IconLoaderFromSvgString
-                            iconSvgString={table.iconSvgString}
-                          />
-                        </div>
-                        <div className="flex flex-col truncate">
-                          <div className="text-slate-12 text-[14px] font-medium truncate">
-                            {table.displayName}
-                          </div>
-                          <p className="text-slate-11 text-[12px]">
-                            {table.description}
-                          </p>
-                          <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
-                            {abbreviateNumber(table.rowCount)} rows
-                          </div>
-                          <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
-                            {table.fullName}
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+                    />
                   ))}
                 </div>
               </>

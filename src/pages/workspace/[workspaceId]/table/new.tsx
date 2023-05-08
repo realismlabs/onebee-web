@@ -30,7 +30,7 @@ import { Listbox } from "@headlessui/react";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
-import { set } from "date-fns";
+import parse, { domToReact } from "html-react-parser";
 
 function getIconSvgStringFromName(iconName: string): string {
   const iconItem = IconList.find((icon) => icon.name === iconName);
@@ -752,6 +752,15 @@ export default function CreateTable() {
     const connectionPath =
       selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
 
+    // parse color from iconSvgString
+    const colorRegex = /style="color:\s*([^;]+);"/;
+    const colorMatch = iconSvgString.match(colorRegex);
+
+    let colorValue;
+    if (colorMatch) {
+      colorValue = colorMatch[1];
+    }
+
     const createTableRequestBody = {
       workspaceId: currentWorkspace?.id,
       fullName: selectedTable,
@@ -760,7 +769,9 @@ export default function CreateTable() {
       rowCount: selectedTableRowCount,
       connectionId: selectedConnection?.id,
       iconSvgString: iconSvgString,
-      iconColor: selectedColor,
+      iconColor: colorValue ?? selectedColor,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     const create_table_response = await createTable(createTableRequestBody);
