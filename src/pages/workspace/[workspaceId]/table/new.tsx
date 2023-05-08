@@ -763,8 +763,6 @@ export default function CreateTable() {
     };
 
     const create_table_response = await createTable(createTableRequestBody);
-    console.log("create_table_response", create_table_response);
-    console.log("createTableRequestBody", createTableRequestBody);
 
     //  route to the table page
     router.push(
@@ -779,7 +777,6 @@ export default function CreateTable() {
   } = useQuery({
     queryKey: ["connectionResult", selectedConnection],
     queryFn: async () => {
-      console.log("test");
       const response = await fetch("/api/test-snowflake-connection", {
         method: "POST",
         headers: {

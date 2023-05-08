@@ -105,7 +105,7 @@ export default function WorkspaceHome() {
             {/* If there are no connections, get them to add a connection */}
             {connectionsData?.length === 0 && (
               <div
-                className="bg-slate-2 rounded-lg border border-slate-3 w-full pt-[48px] pb-[128px] overflow-hidden items-center justify-center"
+                className="bg-blue-2 rounded-lg border border-blue-9 w-full pb-[200px] overflow-hidden items-center justify-center"
                 style={{
                   backgroundImage:
                     "url('/images/add-data-connection-splash-half-opacity.svg')",
@@ -114,8 +114,11 @@ export default function WorkspaceHome() {
                   backgroundSize: "contain",
                 }}
               >
-                <div className="z-10 flex flex-col gap-2 items-center justify-center">
-                  <div className="text-slate-12 text-[16px]">
+                <div className="absolute text-blue-11 text-[14px] text-center py-[4px] px-[12px] bg-blue-2 border-opacity-10 border-blue-9 border-b border-r rounded-tl-lg rounded-br-lg">
+                  Finish setup
+                </div>
+                <div className="z-10 pt-[48px] flex flex-col gap-2 items-center justify-center">
+                  <div className="text-slate-12 text-[16px] text-center">
                     Add a data connection
                   </div>
                   <div className="text-slate-11 text-[14px]">
@@ -154,9 +157,7 @@ export default function WorkspaceHome() {
                   <div className="text-slate-11 text-[14px]">
                     Sync a source table from data connection
                   </div>
-                  <Link
-                    href={`/workspace/${currentWorkspace?.id}/onboarding/add-data-source`}
-                  >
+                  <Link href={`/workspace/${currentWorkspace?.id}/table/new`}>
                     <button
                       type="button"
                       className="mt-[8px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
