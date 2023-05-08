@@ -1,20 +1,36 @@
-import React, { useState, useEffect, useRef, FC } from "react";
+import React, { useState, useEffect, useRef, FC, Fragment } from "react";
 import ReactDOM from "react-dom";
 import router from "next/router";
 import Image from "next/image";
-import { CaretRight, Table } from "@phosphor-icons/react";
+import {
+  CaretRight,
+  Table,
+  Plus,
+  CaretUpDown,
+  Check,
+} from "@phosphor-icons/react";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { capitalizeString } from "@/utils/util";
-import { createTable, createConnection } from "@/utils/api";
+import {
+  createTable,
+  createConnection,
+  getWorkspaceConnections,
+} from "@/utils/api";
 import MemoizedMockTable from "@/components/MemoizedMockTable";
 import { IconList } from "@/components/IconList";
 import { Transition } from "@headlessui/react";
 import IconPickerPopoverCreateTable from "@/components/IconPickerPopoverCreateTable";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
+import WorkspaceLayout from "@/components/WorkspaceLayout";
+import { Listbox } from "@headlessui/react";
+import LogoSnowflake from "@/components/LogoSnowflake";
+import LogoBigQuery from "@/components/LogoBigQuery";
+import LogoPostgres from "@/components/LogoPostgres";
+import { set } from "date-fns";
 
 function getIconSvgStringFromName(iconName: string): string {
   const iconItem = IconList.find((icon) => icon.name === iconName);
@@ -66,10 +82,6 @@ function getIconSvgStringFromName(iconName: string): string {
   return updatedSvgString;
 }
 
-interface AccountHeaderProps {
-  email: string;
-}
-
 interface databasePreviewTableItem {
   database_name: string;
   database_schema: string;
@@ -103,6 +115,116 @@ interface FileTreeProps {
   setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
+interface Connection {
+  accountIdentifier: string;
+  warehouse: string;
+  basicAuthUsername: string | null;
+  basicAuthPassword: string | null;
+  keyPairAuthUsername: string | null;
+  keyPairAuthPrivateKey: string | null;
+  keyPairAuthPrivateKeyPassphrase: string | null;
+  role: string | null;
+  connectionType: string;
+  name: string;
+  createdAt: string;
+  workspaceId: number;
+  id: number;
+}
+
+const ConnectionSelector = ({
+  selectedConnection,
+  setSelectedConnection,
+  connectionsData,
+}: {
+  selectedConnection: Connection | null;
+  setSelectedConnection: React.Dispatch<
+    React.SetStateAction<Connection | null>
+  >;
+  connectionsData: Connection[] | null;
+}) => {
+  // whenever connectionsData changes, set the selectedConnection
+  useEffect(() => {
+    if (connectionsData) {
+      setSelectedConnection(connectionsData[0]);
+    }
+  }, [connectionsData]);
+
+  return (
+    <div className="w-full mt-4">
+      <Listbox value={selectedConnection} onChange={setSelectedConnection}>
+        <div className="relative mt-1">
+          <Listbox.Button className="relative h-[40px] w-full text-slate-12 cursor-default border border-slate-4 rounded-lg bg-slate-2 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-600 focus-visible:ring-2 focus-visible:ring-slate-2 focus-visible:ring-opacity-75 focus-visible:ring-offset-1 focus-visible:ring-offset-blue-900 sm:text-sm">
+            {selectedConnection ? (
+              <div className="flex flex-row gap-2 items-center">
+                <div className="max-h-[18px] max-w-[18px]">
+                  <LogoSnowflake />
+                </div>
+                <span className="block truncate">
+                  {selectedConnection?.name}
+                </span>
+              </div>
+            ) : (
+              <span className="block truncate text-slate-10">
+                Select a connection..
+              </span>
+            )}
+            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+              <CaretUpDown
+                className="h-5 w-5 text-gray-400"
+                aria-hidden="true"
+              />
+            </span>
+          </Listbox.Button>
+          <Transition
+            as={Fragment}
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Listbox.Options className="absolute z-10 mt-1 max-h-60 max-w-[480px] overflow-auto rounded-md bg-[#101112] py-1 text-base shadow-lg focus:outline-none sm:text-sm">
+              {connectionsData?.map((connection, id) => (
+                <Listbox.Option
+                  key={id}
+                  className={({ active }) =>
+                    `relative cursor-default select-none py-2 pl-10 pr-4 text-slate-12 ${
+                      active ? "bg-slate-2" : ""
+                    }`
+                  }
+                  value={connection}
+                >
+                  {({ selected }) => (
+                    <div className="flex flex-row gap-2">
+                      <div className="max-h-[18px] max-w-[18px]">
+                        <LogoSnowflake />
+                      </div>
+                      <span
+                        className={`block truncate ${
+                          selected ? "font-normal" : "font-normal"
+                        }`}
+                      >
+                        {connection.name}
+                      </span>
+                      {selected ? (
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-12">
+                          <Check
+                            className="text-blue-9"
+                            size={20}
+                            aria-hidden="true"
+                          />
+                        </span>
+                      ) : null}
+                    </div>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
+        </div>
+      </Listbox>
+    </div>
+  );
+};
+
 // helper functions
 function createUniqueId(
   dbName: string,
@@ -119,45 +241,22 @@ function createNestedStructure(
 ): NestedStructure {
   const nestedStructure: NestedStructure = {};
 
-  data.forEach((item) => {
-    const { database_name, database_schema, table_name } = item;
-
-    if (!nestedStructure[database_name]) {
-      nestedStructure[database_name] = {};
-    }
-
-    if (!nestedStructure[database_name][database_schema]) {
-      nestedStructure[database_name][database_schema] = [];
-    }
-
-    nestedStructure[database_name][database_schema].push(table_name);
-  });
-
-  return nestedStructure;
+  if (data) {
+    data.forEach((item) => {
+      const { database_name, database_schema, table_name } = item;
+      if (!nestedStructure[database_name]) {
+        nestedStructure[database_name] = {};
+      }
+      if (!nestedStructure[database_name][database_schema]) {
+        nestedStructure[database_name][database_schema] = [];
+      }
+      nestedStructure[database_name][database_schema].push(table_name);
+    });
+    return nestedStructure;
+  } else {
+    return {};
+  }
 }
-
-const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const handleLogout = () => {
-    router.push("/login?lo=true");
-  };
-
-  return (
-    <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
-      <div className="flex flex-col grow items-start">
-        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
-      </div>
-      <div className="flex flex-col grow items-end">
-        <p
-          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
-          onClick={handleLogout}
-        >
-          Logout
-        </p>
-      </div>
-    </div>
-  );
-};
 
 const PreviewTableUI = ({
   tablesQueryData,
@@ -178,6 +277,9 @@ const PreviewTableUI = ({
   setTableDisplayName,
   tableDisplayNameErrorMessage,
   setTableDisplayNameErrorMessage,
+  selectedConnection,
+  setSelectedConnection,
+  connectionsData,
 }: {
   tablesQueryData: any;
   handleSubmit: any;
@@ -197,6 +299,11 @@ const PreviewTableUI = ({
   setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
   tableDisplayNameErrorMessage: string;
   setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  selectedConnection: Connection | null;
+  setSelectedConnection: React.Dispatch<
+    React.SetStateAction<Connection | null>
+  >;
+  connectionsData: Connection[] | null;
 }) => {
   const data = tablesQueryData.listed_tables;
 
@@ -206,9 +313,15 @@ const PreviewTableUI = ({
 
   return (
     <>
-      <div className="flex flex-row gap-6 w-full px-12">
-        <div>
-          <p className="text-slate-12 text-[14px]">Choose a table</p>
+      <div className="flex flex-row gap-6 w-full px-[20px]">
+        <div className="flex flex-col max-w-[384px]">
+          <p className="text-slate-12 text-[13px]">Choose a connection</p>
+          <ConnectionSelector
+            connectionsData={connectionsData}
+            setSelectedConnection={setSelectedConnection}
+            selectedConnection={selectedConnection}
+          />
+          <p className="text-slate-12 text-[13px] mt-6">Choose a table</p>
           <FileTree
             data={data}
             selectedTable={selectedTable}
@@ -243,9 +356,9 @@ const PreviewTableUI = ({
             </div>
           ))}
         </div>
-        <div className="flex-grow flex-shrink-0 w-0">
-          <p className="text-slate-12 text-[14px]">Preview</p>
-          <div className="relative bg-slate-2 rounded-md mt-4 h-[80vh] border border-slate-4 flex flex-col">
+        <div className="flex-1 flex-shrink-0 w-0">
+          <p className="text-slate-12 text-[13px]">Preview</p>
+          <div className="relative bg-slate-2 rounded-md mt-4 h-[85vh] border border-slate-4 flex flex-col">
             {selectedTable ? (
               <>
                 <div className="flex flex-row gap-2 items-center px-[12px] py-2 border-b border-slate-4">
@@ -291,7 +404,7 @@ const PreviewTableUI = ({
                   <input
                     title="Display name"
                     value={tableDisplayName}
-                    className="bg-slate-5 text-white text-[14px] px-[8px] py-[4px] border border-slate-6 rounded-sm w-[360px] focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="bg-slate-4 text-white text-[14px] px-[8px] py-[4px] border border-slate-6 rounded-sm w-[360px] focus:outline-none focus:ring-2 focus:ring-blue-600"
                     onChange={(e) => {
                       setTableDisplayNameErrorMessage("");
                       setTableDisplayName(e.target.value);
@@ -311,7 +424,7 @@ const PreviewTableUI = ({
                     </pre>
                   </div>
                 </div>
-                <div className="flex-grow-0 overflow-x-auto overflow-y-scroll">
+                <div className="flex-1-0 overflow-x-auto overflow-y-scroll">
                   <MemoizedMockTable />
                 </div>
                 <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-slate-12 flex items-center justify-center">
@@ -367,6 +480,9 @@ const FileTree: React.FC<FileTreeProps> = ({
   useEffect(() => {
     setExpandedDbs(allDbNames);
     setExpandedSchemas(allSchemaNames);
+
+    if (data == null) return;
+
     const first_table_id = createUniqueId(
       data[0].database_name,
       data[0].database_schema,
@@ -443,97 +559,107 @@ const FileTree: React.FC<FileTreeProps> = ({
   };
 
   return (
-    <div className="p-2 text-slate-11 h-[80vh] overflow-y-auto bg-slate-2 border border-slate-4 rounded-lg w-96 mt-4">
-      {Object.entries(nestedData).map(([dbName, schemas]) => (
-        <div key={dbName} className="">
-          <div
-            className="flex flex-row pr-[3px] items-center p-1.5 cursor-pointer hover:bg-slate-4 active:bg-slate-5 rounded-md"
-            onClick={() => toggleDb(dbName)}
-          >
-            <CaretRight
-              size={16}
-              style={{
-                transform: expandedDbs.includes(dbName)
-                  ? "rotate(90deg)"
-                  : "rotate(0deg)",
-                transition: "transform 0.3s",
-              }}
-            />
-            <p className="ml-[8px] text-[13px]">{dbName}</p>
-          </div>
-          <AnimatePresence>
-            {expandedDbs.includes(dbName) && (
-              <div>
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{
-                    height: expandedDbs.includes(dbName) ? "auto" : 0,
-                  }}
-                  exit={{ height: 0 }}
-                  className="ml-[14px] overflow-hidden"
-                >
-                  {Object.entries(schemas).map(([schemaName, tables]) => (
-                    <div key={schemaName} className="border-l border-slate-6">
-                      <div className="pl-2">
-                        <div
-                          className="flex flex-row pr-[3px] items-center p-1.5 cursor-pointer hover:bg-slate-4 active:bg-slate-5 rounded-md"
-                          onClick={() => toggleSchema(schemaName)}
-                        >
-                          <CaretRight
-                            size={16}
-                            style={{
-                              transform: expandedSchemas.includes(schemaName)
-                                ? "rotate(90deg)"
-                                : "rotate(0deg)",
-                              transition: "transform 0.3s",
+    <div className="flex flex-col h-0 flex-shrink-0 flex-grow p-2 text-slate-11 overflow-y-auto bg-slate-2 border border-slate-4 rounded-lg w-[384px] mt-4">
+      {Object.entries(nestedData) == null && (
+        <>
+          <div className="">Select a connection to continue</div>
+        </>
+      )}
+      {Object.entries(nestedData).length > 0 &&
+        Object.entries(nestedData).map(([dbName, schemas]) => (
+          <div key={dbName} className="">
+            <div
+              className="flex flex-row pr-[3px] items-center p-1.5 cursor-pointer hover:bg-slate-4 active:bg-slate-5 rounded-md"
+              onClick={() => toggleDb(dbName)}
+            >
+              <CaretRight
+                size={16}
+                style={{
+                  transform: expandedDbs.includes(dbName)
+                    ? "rotate(90deg)"
+                    : "rotate(0deg)",
+                  transition: "transform 0.3s",
+                }}
+              />
+              <p className="ml-[8px] text-[13px]">{dbName}</p>
+            </div>
+            <AnimatePresence>
+              {expandedDbs.includes(dbName) && (
+                <div>
+                  <motion.div
+                    initial={{ height: 0 }}
+                    animate={{
+                      height: expandedDbs.includes(dbName) ? "auto" : 0,
+                    }}
+                    exit={{ height: 0 }}
+                    className="ml-[14px] overflow-hidden"
+                  >
+                    {Object.entries(schemas).map(([schemaName, tables]) => (
+                      <div key={schemaName} className="border-l border-slate-6">
+                        <div className="pl-2">
+                          <div
+                            className="flex flex-row pr-[3px] items-center p-1.5 cursor-pointer hover:bg-slate-4 active:bg-slate-5 rounded-md"
+                            onClick={() => toggleSchema(schemaName)}
+                          >
+                            <CaretRight
+                              size={16}
+                              style={{
+                                transform: expandedSchemas.includes(schemaName)
+                                  ? "rotate(90deg)"
+                                  : "rotate(0deg)",
+                                transition: "transform 0.3s",
+                              }}
+                            />
+                            <p className="ml-[8px] text-[13px]">{schemaName}</p>
+                          </div>
+                          <motion.div
+                            initial={{ height: 0 }}
+                            animate={{
+                              height: expandedSchemas.includes(schemaName)
+                                ? "auto"
+                                : 0,
                             }}
-                          />
-                          <p className="ml-[8px] text-[13px]">{schemaName}</p>
-                        </div>
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{
-                            height: expandedSchemas.includes(schemaName)
-                              ? "auto"
-                              : 0,
-                          }}
-                          className="overflow-hidden"
-                        >
-                          {tables.map((tableName) => (
-                            <div
-                              key={tableName}
-                              className={`ml-[14px] border-l border-slate-6 flex flex-row items-center`}
-                              onClick={() =>
-                                toggleTable(dbName, schemaName, tableName)
-                              }
-                            >
+                            className="overflow-hidden"
+                          >
+                            {tables.map((tableName) => (
                               <div
-                                className={`flex flex-row ml-2 rounded-md px-2 py-1.5 flex-grow cursor-pointer ${
-                                  selectedTable ===
-                                  createUniqueId(dbName, schemaName, tableName)
-                                    ? "bg-blue-900 text-slate-12"
-                                    : "hover:bg-slate-4 active:bg-slate-5"
-                                }`}
+                                key={tableName}
+                                className={`ml-[14px] border-l border-slate-6 flex flex-row items-center`}
+                                onClick={() =>
+                                  toggleTable(dbName, schemaName, tableName)
+                                }
                               >
-                                <div className=" text-[13px]">
-                                  <Table size={20} />
+                                <div
+                                  className={`flex flex-row ml-2 rounded-md px-2 py-1.5 flex-1 cursor-pointer ${
+                                    selectedTable ===
+                                    createUniqueId(
+                                      dbName,
+                                      schemaName,
+                                      tableName
+                                    )
+                                      ? "bg-blue-900 text-slate-12"
+                                      : "hover:bg-slate-4 active:bg-slate-5"
+                                  }`}
+                                >
+                                  <div className=" text-[13px]">
+                                    <Table size={20} />
+                                  </div>
+                                  <p className="text-[13px] pl-2 rounded-md">
+                                    {tableName}
+                                  </p>
                                 </div>
-                                <p className="text-[13px] pl-2 rounded-md">
-                                  {tableName}
-                                </p>
                               </div>
-                            </div>
-                          ))}
-                        </motion.div>
+                            ))}
+                          </motion.div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </motion.div>
-              </div>
-            )}
-          </AnimatePresence>
-        </div>
-      ))}
+                    ))}
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
+          </div>
+        ))}
     </div>
   );
 };
@@ -604,6 +730,9 @@ export default function CreateTable() {
   const [tableDisplayNameErrorMessage, setTableDisplayNameErrorMessage] =
     useState<string>("");
 
+  const [selectedConnection, setSelectedConnection] =
+    useState<Connection | null>(null);
+
   // whenever selectedTable changes, fetch the new tableDisplayName
   useEffect(() => {
     if (selectedTable) {
@@ -619,22 +748,6 @@ export default function CreateTable() {
       return;
     }
 
-    const createConnectionRequestBody = {
-      ...connectionRequestBody,
-      name:
-        capitalizeString(connectionRequestBody.connectionType) +
-        connectionRequestBody.accountIdentifier,
-      createdAt: new Date().toISOString(),
-      workspaceId: currentWorkspace?.id,
-    };
-    console.log("createConnectionRequestBody", createConnectionRequestBody);
-
-    const create_connection_response = await createConnection(
-      currentWorkspace?.id,
-      createConnectionRequestBody
-    );
-    console.log("create_connection_response", create_connection_response);
-
     const displayName = selectedTable?.split(".")[2];
     const connectionPath =
       selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
@@ -645,7 +758,7 @@ export default function CreateTable() {
       displayName: tableDisplayName,
       connectionPath,
       rowCount: selectedTableRowCount,
-      connectionId: create_connection_response.id,
+      connectionId: selectedConnection?.id,
       iconSvgString: iconSvgString,
     };
 
@@ -664,7 +777,7 @@ export default function CreateTable() {
     isLoading: isTablesQueryLoading,
     error: tablesQueryError,
   } = useQuery({
-    queryKey: ["connectionResult", connectionRequestBody],
+    queryKey: ["connectionResult", selectedConnection],
     queryFn: async () => {
       console.log("test");
       const response = await fetch("/api/test-snowflake-connection", {
@@ -672,7 +785,7 @@ export default function CreateTable() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(connectionRequestBody),
+        body: JSON.stringify(selectedConnection),
       });
       return await response.json();
     },
@@ -690,50 +803,68 @@ export default function CreateTable() {
     error: workspaceError,
   } = useCurrentWorkspace();
 
-  if (isUserLoading || isTablesQueryLoading) {
+  const {
+    data: connectionsData,
+    isLoading: isConnectionsLoading,
+    error: connectionsError,
+  } = useQuery({
+    queryKey: ["getConnections", currentWorkspace?.id],
+    queryFn: async () => {
+      const response = await getWorkspaceConnections(currentWorkspace?.id);
+      return response;
+    },
+    enabled: currentWorkspace?.id !== null,
+  });
+
+  if (isUserLoading || isTablesQueryLoading || isConnectionsLoading) {
     return (
-      <div className="h-screen bg-slate-1">
-        <div className="h-screen flex flex-col items-center justify-center text-slate-12 text-[13px]">
+      <div className="h-screen flex bg-slate-1">
+        <div className="h-screen flex flex-col w-full items-center justify-center text-slate-12 text-[13px]">
           Loading...
         </div>
       </div>
     );
   }
 
-  if (userError || tablesQueryError) {
+  if (userError || tablesQueryError || connectionsError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
-  const email = currentUser.email;
-
-  console.log("first tablesQuery", tablesQueryData);
-
   return (
-    <div className="h-screen bg-slate-1">
-      <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full">
-        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"></div>
-        <PreviewTableUI
-          tablesQueryData={tablesQueryData}
-          handleSubmit={handleSubmit}
-          selectedTable={selectedTable}
-          setSelectedTable={setSelectedTable}
-          selectedTableRowCount={selectedTableRowCount}
-          setSelectedTableRowCount={setSelectedTableRowCount}
-          selectedIconName={selectedIconName}
-          setSelectedIconName={setSelectedIconName}
-          isIconSuggestionLoading={isIconSuggestionLoading}
-          setIsIconSuggestionLoading={setIsIconSuggestionLoading}
-          iconSvgString={iconSvgString}
-          setIconSvgString={setIconSvgString}
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-          tableDisplayName={tableDisplayName}
-          setTableDisplayName={setTableDisplayName}
-          tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
-          setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
-        />
+    <WorkspaceLayout>
+      <div className="h-screen bg-slate-1 flex flex-col">
+        <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[12px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
+          <div className="h-[24px] w-[24px] flex items-center justify-center">
+            <Plus size={20} weight="bold" className="text-slate-10" />
+          </div>
+          <p className="text-slate-12 text-[13px]">Add table</p>
+        </div>
+        <div className="flex flex-1 flex-col justify-start items-start w-full mt-4">
+          <PreviewTableUI
+            tablesQueryData={tablesQueryData}
+            handleSubmit={handleSubmit}
+            selectedTable={selectedTable}
+            setSelectedTable={setSelectedTable}
+            selectedTableRowCount={selectedTableRowCount}
+            setSelectedTableRowCount={setSelectedTableRowCount}
+            selectedIconName={selectedIconName}
+            setSelectedIconName={setSelectedIconName}
+            isIconSuggestionLoading={isIconSuggestionLoading}
+            setIsIconSuggestionLoading={setIsIconSuggestionLoading}
+            iconSvgString={iconSvgString}
+            setIconSvgString={setIconSvgString}
+            selectedColor={selectedColor}
+            setSelectedColor={setSelectedColor}
+            tableDisplayName={tableDisplayName}
+            setTableDisplayName={setTableDisplayName}
+            tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
+            setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
+            setSelectedConnection={setSelectedConnection}
+            selectedConnection={selectedConnection}
+            connectionsData={connectionsData}
+          />
+        </div>
       </div>
-    </div>
+    </WorkspaceLayout>
   );
 }

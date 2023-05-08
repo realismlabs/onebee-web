@@ -12,8 +12,8 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   const colors = [
     '#0091FF', // blue
     '#3E63DD', // indigo
-    '#6E56CF', // violet
-    '#8E4EC6', // purple
+    '#7C66DC', // violet
+    '#9D5BD2', // purple
     '#AB4ABA', // plum
     '#E93D82', // pink
     '#E5484D', // red
@@ -62,12 +62,12 @@ const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspa
     onSuccess: async (updatedTable) => {
       console.log('Table updated:', updatedTable);
       await queryClient.refetchQueries(['getTable', workspaceId, String(tableId)]);
-      await queryClient.refetchQueries(['workspaceTables', workspaceId]);
+      await queryClient.refetchQueries(["getTables", workspaceId]);
     },
     onError: (error) => {
       console.error('Error updating table:', error);
     },
-    invalidateQueries: [['getTable', workspaceId, tableId], ['workspaceTables', workspaceId],],
+    invalidateQueries: [['getTable', workspaceId, tableId], ['getTables', workspaceId],],
   });
 
   const handleIconClick = async (iconName) => {

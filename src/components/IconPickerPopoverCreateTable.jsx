@@ -21,8 +21,8 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   const colors = [
     '#0091FF', // blue
     '#3E63DD', // indigo
-    '#6E56CF', // violet
-    '#8E4EC6', // purple
+    '#7C66DC', // violet
+    '#9D5BD2', // purple
     '#AB4ABA', // plum
     '#E93D82', // pink
     '#E5484D', // red

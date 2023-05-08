@@ -274,12 +274,13 @@ const WorkspaceShell = () => {
         <div className="space-y-2">
           {connectionsData?.length > 0 && (
             <>
-              <div className="px-[8px] text-slate-11 text-[13px] flex flex-row">
+              <div className="pl-[8px] text-slate-11 text-[13px] flex flex-row items-center">
                 <div>Tables</div>
-                <div className="ml-auto">+ New</div></div>
+                <Link className="ml-auto hover:bg-slate-3 hover:text-white duration-100 transition-all py-[4px] pl-[8px] pr-[12px] rounded-md" href={`/workspace/${currentWorkspace?.id}/table/new`}><div>+ New</div></Link>
+              </div>
               <div>
                 {tablesData.length === 0 && (
-                  <div className="w-full flex flex-col gap-2 mt-4 items-center justify-center py-6 bg-slate-3 rounded-lg">
+                  <div className="w-full flex flex-col gap-2 mt-4 items-center justify-center py-6 rounded-lg">
                     <Image src="/images/table-splash-zero-state.svg"
                       width={48}
                       height={48}
@@ -339,7 +340,7 @@ const WorkspaceShell = () => {
         </div>
         <AccountPopover />
       </div>
-    </div >
+    </div>
   );
 };
 
