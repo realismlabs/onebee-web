@@ -185,6 +185,8 @@ const TableCard = ({
   );
 };
 export default function WorkspaceHome() {
+  const [tableLayout, setTableLayout] = useState("grid");
+
   const {
     data: currentUser,
     isLoading: isUserLoading,
@@ -345,6 +347,31 @@ export default function WorkspaceHome() {
                     />
                   ))}
                 </div>
+                <div className="flex flex-row gap-4 mt-4">
+                  <button
+                    className="bg-slate-2 border border-slate-3 hover:bg-slate-3 hover:border-slate-6 rounded-md px-3 py-2"
+                    onClick={() => setTableLayout("grid")}
+                  >
+                    Grid view
+                  </button>
+                  <button
+                    className="bg-slate-2 border border-slate-3 hover:bg-slate-3 hover:border-slate-6 rounded-md px-3 py-2"
+                    onClick={() => setTableLayout("list")}
+                  >
+                    List view
+                  </button>
+                </div>
+                {tableLayout === "list" && (
+                  <div className="w-full flex flex-col gap-4">
+                    {tablesData.map((table: any) => (
+                      <TableCard
+                        table={table}
+                        currentWorkspace={currentWorkspace}
+                        key={table.id}
+                      />
+                    ))}
+                  </div>
+                )}
               </>
             )}
             <div className="w-full text-slate-12 text-[14px] mt-[32px] flex flex-row gap-4 items-end">
