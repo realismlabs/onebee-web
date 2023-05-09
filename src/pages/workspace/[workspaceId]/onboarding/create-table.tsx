@@ -648,6 +648,8 @@ export default function CreateTable() {
       connectionId: create_connection_response.id,
       iconSvgString: iconSvgString,
       iconColor: selectedColor,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     const create_table_response = await createTable(createTableRequestBody);

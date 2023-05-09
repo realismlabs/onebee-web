@@ -17,6 +17,8 @@ import {
   Chat,
   Check,
   Files,
+  CaretDown,
+  CaretUp,
   Gavel,
   GridFour,
   List,
@@ -189,6 +191,25 @@ export default function WorkspaceHome() {
     "tableLayout",
     "grid"
   );
+  const [tableListSortField, setTableListSortField] = useLocalStorageState(
+    "tableListSortField",
+    "updatedAt"
+  ); // Default sort field
+  const [tableListSortDirection, setTableListSortDirection] =
+    useLocalStorageState("tableListSortDirection", "asc"); // Default sort direction: 'asc' or 'desc'
+
+  const handleTableListHeaderClick = (newSortField: string) => {
+    // If the user clicks the same field again, reverse the direction
+    if (newSortField === tableListSortField) {
+      setTableListSortDirection((prevDirection: string) =>
+        prevDirection === "asc" ? "desc" : "asc"
+      );
+    } else {
+      // If the user clicks a different field, change the field and set direction to 'asc'
+      setTableListSortField(newSortField);
+      setTableListSortDirection("asc");
+    }
+  };
 
   const {
     data: currentUser,
@@ -243,18 +264,13 @@ export default function WorkspaceHome() {
 
   const email = currentUser.email;
 
-  let needsOnboarding = false;
-  let nextOnboardingStep = "";
-
-  // if connectionsData.length === 0 and table sdata is 0 ,
-  if (connectionsData?.length === 0) {
-    needsOnboarding = true;
-    nextOnboardingStep = "next-add-connection";
-  }
-
-  // if only tables Data is 0:
-
-  // If connections data = 0  + tables data > 0, then no onboarding needed
+  const sortedTablesData = [...tablesData].sort((a, b) => {
+    if (a[tableListSortField] < b[tableListSortField])
+      return tableListSortDirection === "asc" ? -1 : 1;
+    if (a[tableListSortField] > b[tableListSortField])
+      return tableListSortDirection === "asc" ? 1 : -1;
+    return 0;
+  });
 
   return (
     <WorkspaceLayout>
@@ -372,9 +388,95 @@ export default function WorkspaceHome() {
                 </div>
                 {/* set up grid */}
                 {tableLayout === "list" && (
-                  <div className="w-full flex flex-col gap-4">
+                  <div className="w-full flex flex-col">
+                    <div className="flex flex-row gap-4 items-center text-[13px] text-slate-12 pb-3">
+                      <div
+                        className="text-[12px] text-slate-11 cursor-pointer w-[376px] flex flex-row gap-1 items-center"
+                        onClick={() =>
+                          handleTableListHeaderClick("displayName")
+                        }
+                      >
+                        <p>Name</p>
+                        {tableListSortField === "displayName" &&
+                          tableListSortDirection === "desc" && (
+                            <CaretDown
+                              className="w-3 h-3 text-slate-10"
+                              weight="fill"
+                            />
+                          )}
+                        {tableListSortField === "displayName" &&
+                          tableListSortDirection === "asc" && (
+                            <CaretUp
+                              className="w-3 h-3 text-slate-10"
+                              weight="fill"
+                            />
+                          )}
+                      </div>
+                      <div
+                        className="text-[12px] text-slate-11 cursor-pointer flex flex-row gap-1 items-center mr-auto"
+                        onClick={() =>
+                          handleTableListHeaderClick("connectionPath")
+                        }
+                      >
+                        <p>Connection path</p>
+                        {tableListSortField === "connectionPath" &&
+                          tableListSortDirection === "desc" && (
+                            <CaretDown
+                              className="w-3 h-3 text-slate-10"
+                              weight="fill"
+                            />
+                          )}
+                        {tableListSortField === "connectionPath" &&
+                          tableListSortDirection === "asc" && (
+                            <CaretUp
+                              className="w-3 h-3 text-slate-10"
+                              weight="fill"
+                            />
+                          )}
+                      </div>
+                      <div
+                        className="w-[164px] text-[12px] text-slate-11 cursor-pointer flex flex-row gap-1 items-center"
+                        onClick={() => handleTableListHeaderClick("updatedAt")}
+                      >
+                        Updated at
+                        {tableListSortField === "updatedAt" &&
+                          tableListSortDirection === "desc" && (
+                            <CaretDown
+                              className="w-3 h-3 text-slate-10"
+                              weight="fill"
+                            />
+                          )}
+                        {tableListSortField === "updatedAt" &&
+                          tableListSortDirection === "asc" && (
+                            <CaretUp
+                              className="w-3 h-3 text-slate-10"
+                              weight="fill"
+                            />
+                          )}
+                      </div>
+                      <div
+                        className="w-[80px] text-right cursor-pointer  text-[12px] text-slate-11  flex flex-row gap-1 items-center"
+                        onClick={() => handleTableListHeaderClick("rowCount")}
+                      >
+                        Row count
+                        {tableListSortField === "rowCount" &&
+                          tableListSortDirection === "desc" && (
+                            <CaretDown
+                              className="w-3 h-3 text-slate-10"
+                              weight="fill"
+                            />
+                          )}
+                        {tableListSortField === "rowCount" &&
+                          tableListSortDirection === "asc" && (
+                            <CaretUp
+                              className="w-3 h-3 text-slate-10"
+                              weight="fill"
+                            />
+                          )}
+                      </div>
+                    </div>
                     <div className="flex flex-col border-slate-4 rounded-lg border overflow-clip">
-                      {tablesData.map((table: any, index: number) => (
+                      {sortedTablesData.map((table: any, index: number) => (
                         <Link
                           key={table.id}
                           href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
@@ -392,30 +494,18 @@ export default function WorkspaceHome() {
                                 tableName={table.displayName}
                               />
                             </div>
-                            <div className="w-[180px] truncate">
+                            <div className="w-[320px] truncate">
                               {table.displayName}
-                            </div>
-                            <div className="min-h-4 max-h-4 min-w-4 max-w-4">
-                              {table.connectionType === "bigquery" && (
-                                <LogoBigQuery className="w-full h-full" />
-                              )}
-                              {table.connectionType === "postgres" && (
-                                <LogoPostgres className="w-full h-full" />
-                              )}
-                              {table.connectionType === "snowflake" && (
-                                <LogoSnowflake className="w-full h-full" />
-                              )}
                             </div>
 
                             <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate mr-auto">
                               {table.connectionPath}
                             </pre>
-                            <div className="min-w-[120px]">
-                              {"Updated " +
-                                friendlyRelativeDateToNow(table.updatedAt)}
+                            <div className="min-w-[60px]">
+                              {friendlyRelativeDateToNow(table.updatedAt)}
                             </div>
-                            <div className="w-[200px] text-right">
-                              {abbreviateNumber(table.rowCount) + " rows"}
+                            <div className="w-[120px] text-right lining-nums">
+                              {abbreviateNumber(table.rowCount)}
                             </div>
                           </div>
                         </Link>
