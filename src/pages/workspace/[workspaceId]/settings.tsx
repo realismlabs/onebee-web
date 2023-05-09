@@ -61,7 +61,14 @@ export default function Settings() {
       <div className="h-screen bg-slate-1">
         <div className="flex flex-col justify-center items-center w-full pt-32">
           <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[800px] gap-4">
-            <div className="items-start text-left">TODO: Settings!</div>
+            <div
+              className="items-start text-left"
+              style={{
+                color: "var(--mint-9)",
+              }}
+            >
+              TODO: Settings!
+            </div>
           </div>
         </div>
       </div>

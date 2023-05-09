@@ -30,21 +30,21 @@ const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
 
   createTheme("dark", {
     background: {
-      default: `var(--slate2)`,
+      default: `var(--slate-2)`,
     },
   });
 
   const customStyles = {
     headRow: {
       style: {
-        backgroundColor: `var(--slate3)`,
-        borderBottomColor: `var(--slate6)`,
+        backgroundColor: `var(--slate-3)`,
+        borderBottomColor: `var(--slate-6)`,
       },
     },
     rows: {
       style: {
         "&:not(:last-of-type)": {
-          borderBottomColor: `var(--slate4)`,
+          borderBottomColor: `var(--slate-4)`,
         },
       },
     },
