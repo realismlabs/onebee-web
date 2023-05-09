@@ -10,16 +10,16 @@ import { useRouter } from 'next/router';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 
 
-export const CommandBar = () => {
+export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
   const router = useRouter();
-  const [open, setOpen] = React.useState(false)
+  // const [commandBarOpen, setCommandBarOpen] = React.useState(false)
   const [value, setValue] = React.useState('homehome')
 
   // Toggle the menu when ⌘K is pressed
   React.useEffect(() => {
     const down = (e) => {
       if (e.key === 'k' && e.metaKey) {
-        setOpen((open) => !open)
+        setCommandBarOpen((open) => !open)
       }
     }
     document.addEventListener('keydown', down)
@@ -125,11 +125,11 @@ export const CommandBar = () => {
 
   return (
     <>
-      {open && (
+      {commandBarOpen && (
         <Command.Dialog
-          data-state={open ? 'open' : 'closed'}
-          open={open}
-          onOpenChange={setOpen}
+          data-state={commandBarOpen ? 'open' : 'closed'}
+          open={commandBarOpen}
+          onOpenChange={setCommandBarOpen}
           value={value}
           loop={true}
           onValueChange={(v) => {
@@ -137,8 +137,8 @@ export const CommandBar = () => {
             setValue(v)
           }}
           label="Global Command Menu"
-          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] bg-[#101112] text-slate-12 text-[14px] h-fit rounded-xl data-[state=open]:animate-commandBar">
-          <div className={`command-dialog-content ${open ? 'open' : ''}`}>
+          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] bg-[#101112] text-slate-12 text-[14px] h-fit rounded-xl overflow-clip data-[state=open]:animate-commandBar">
+          <div className={`command-dialog-content ${commandBarOpen ? 'open' : ''}`}>
             <div className="flex flex-col border-b border-slate-4 px-[16px] pt-[12px] bg-[#101112]">
               <div cmdk-linear-badge="" className="text-[13px] text-slate-11 px-[6px] py-[3px] rounded-md bg-slate-2 w-fit">Jump to:</div>
               <Command.Input autoFocus placeholder="Type a command or search..."
@@ -168,7 +168,7 @@ export const CommandBar = () => {
                             // route to table
                             router.push(item.link)
                             // toggle closed
-                            setOpen(false);
+                            setCommandBarOpen(false);
                           }
                         }
                       >
@@ -202,7 +202,7 @@ export const CommandBar = () => {
                               // route to table
                               router.push(item.link)
                               // toggle closed
-                              setOpen(false);
+                              setCommandBarOpen(false);
                             }
                           }
                         >

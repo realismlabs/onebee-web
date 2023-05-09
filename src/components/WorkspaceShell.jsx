@@ -213,7 +213,7 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
 }
 
 
-const WorkspaceShell = () => {
+const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   // Replace the items array with your dynamic data
   const router = useRouter();
   console.log("pathname", router.asPath);
@@ -375,7 +375,12 @@ const WorkspaceShell = () => {
         <Tooltip.Provider>
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
-              <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/home` ? "bg-slate-3" : ""}`}>
+              <div
+                className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/home` ? "bg-slate-3" : ""}`}
+                onClick={() => {
+                  console.log("awu: current", commandBarOpen, "set to:", !commandBarOpen)
+                  setCommandBarOpen(!commandBarOpen)
+                }}>
                 <Compass
                   size={20}
                   weight="fill"
