@@ -137,7 +137,7 @@ export default function AddSnowflake() {
     e.preventDefault();
     console.log("clicked Continue button");
     if (connectionResult.status === "success") {
-      router.push(`/workspace/${currentWorkspace?.id}/onboarding/create-table`);
+      router.push(`/workspace/${currentWorkspace?.id}/onboarding/import-table`);
     } else {
       console.log("Connection failed, try again");
     }

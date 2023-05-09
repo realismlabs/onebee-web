@@ -316,11 +316,11 @@ const PreviewTableUI = ({
                 </div>
                 <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-slate-12 flex items-center justify-center">
                   <button
-                    className={`text-[16px] px-4 py-2 bg-blue-600 rounded-md`}
+                    className={`text-[16px] px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md`}
                     type="button"
                     onClick={handleSubmit}
                   >
-                    Create table
+                    Import table
                   </button>
                 </div>
               </>

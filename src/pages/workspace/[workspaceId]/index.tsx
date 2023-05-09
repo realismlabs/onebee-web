@@ -342,7 +342,7 @@ export default function WorkspaceHome() {
                       type="button"
                       className="mt-[8px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
                     >
-                      Create table
+                      Import table
                     </button>
                   </Link>
                 </div>
