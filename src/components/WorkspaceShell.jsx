@@ -6,7 +6,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery } from '@tanstack/react-query';
 import { getTables, getWorkspaceConnections } from '../utils/api';
-import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, CaretDoubleRight } from '@phosphor-icons/react';
+import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
 import { getWorkspaces } from '@/utils/api';
@@ -60,6 +60,24 @@ function AccountPopover() {
     </Popover>
   )
 }
+
+const KeyCombination = ({ keys }) => {
+  const isMac = window.navigator.userAgent.includes('Mac');
+
+  return (
+    <div className="flex flex-row gap-1">
+      {keys.map((key, index) => {
+        let displayKey = key;
+        if (key.toLowerCase() === 'cmd' || key.toLowerCase() === 'meta') {
+          displayKey = isMac ? '⌘' : 'ctrl';
+        }
+        return (
+          <p key={index} className="min-h-[20px] min-w-[20px] bg-slate-3 flex items-center justify-center rounded-[3px]">{displayKey}</p>
+        );
+      })}
+    </div>
+  );
+};
 
 function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   const router = useRouter();
@@ -292,21 +310,40 @@ const WorkspaceShell = () => {
       }}>
       <div className="flex flex-row w-full items-center justify-start h-[36px]">
         {shellExpanded && (<WorkspacePopover currentWorkspace={currentWorkspace} currentUser={currentUser} />)}
-        <button
-          className={`${shellExpanded ? "ml-auto mr-[12px] h-[32px] w-[32px]" : "w-[37px] h-[32px] ml-[8px]"} flex items-center justify-center hover:bg-slate-3 rounded-md`}
-          onClick={toggleShell}
-        >
-          <motion.div
-            animate={{ rotateY: shellExpanded ? 0 : 180 }}
-            transition={{ duration: 0.15 }}
-            style={{ transformStyle: "preserve-3d" }}
-          >
-            <CaretDoubleLeft className="text-slate-11" size={18} />
-          </motion.div>
-        </button>
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <button
+                className={`${shellExpanded ? "ml-auto mr-[12px] h-[32px] w-[32px]" : "w-[37px] h-[32px] ml-[8px]"} flex items-center justify-center hover:bg-slate-3 rounded-md`}
+                onClick={toggleShell}
+              >
+                <motion.div
+                  animate={{ rotateY: shellExpanded ? 0 : 180 }}
+                  transition={{ duration: 0.15 }}
+                  style={{ transformStyle: "preserve-3d" }}
+                >
+                  <CaretDoubleLeft className="text-slate-11" size={18} />
+                </motion.div>
+              </button>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                className="text-slate-12 text-[13px] rounded-[4px] bg-black px-[12px] py-[8px] z-20 shadow-2xl"
+                sideOffset={12}
+                side="right"
+              >
+                <div className="flex flex-row gap-2">
+                  <p>Toggle sidebar</p>
+                  <KeyCombination keys={['cmd', '.']} />
+                </div>
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
       </div>
       {/* core */}
-      <div className="mt-2 flex flex-col gap-4 px-[9px]">
+      <div className="mt-2 flex flex-col px-[9px]">
         <Link href={`/workspace/${currentWorkspace.id}`}>
           <Tooltip.Provider>
             <Tooltip.Root>
@@ -326,14 +363,43 @@ const WorkspaceShell = () => {
                   sideOffset={12}
                   side="left"
                 >
-                  Home
+                  <div className="flex flex-row gap-2">
+                    <p>Home</p>
+                  </div>
                   <Tooltip.Arrow className="fill-black" />
                 </Tooltip.Content>
               </Tooltip.Portal>
             </Tooltip.Root>
           </Tooltip.Provider>
         </Link>
-        <div className="space-y-2">
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/home` ? "bg-slate-3" : ""}`}>
+                <Compass
+                  size={20}
+                  weight="fill"
+                  className="text-slate-10 group-hover:text-slate-11 transition-all duration-100 min-h-[20px] min-w-[20px]"
+                />
+                <div className="truncate w-full">Jump to..</div>
+              </div>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                className="text-slate-12 text-[13px] rounded-[4px] bg-black px-[12px] py-[8px] z-20 shadow-2xl"
+                sideOffset={12}
+                side="left"
+              >
+                <div className="flex flex-row gap-2">
+                  <p>Launch quick switcher</p>
+                  <KeyCombination keys={['cmd', 'K']} />
+                </div>
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
+        <div className="space-y-2 mt-4">
           {connectionsData?.length > 0 && (
             <>
               <div className="pl-[8px] text-slate-11 text-[13px] flex flex-row items-center h-[28px]">
