@@ -393,11 +393,10 @@ export default function TablePage() {
           <MemoizedMockTable />
         </div>
         <div className="flex flex-row gap-2 items-center border-b border-slate-4 px-[20px] py-[8px] text-[13px] text-slate-11">
-          <div>Full path</div>
-
-          <div>{tableData.fullName}</div>
+          <div>Table synced from</div>
+          <div className="font-mono text-[12px]">{tableData.fullName.replaceAll(".", "/")}</div>
           <div>from</div>
-          <div className="flex flex-row gap-1 items-center">
+          <div className="flex flex-row gap-2 items-center">
             {" "}
             {connectionData.connectionType === "snowflake" && (
               <div className="h-[16px] w-[16px]">

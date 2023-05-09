@@ -33,7 +33,7 @@ import { abbreviateNumber, friendlyRelativeDateToNow } from "@/utils/util";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
-import { useLocalStorageState } from "@/utils/util";
+import { useLocalStorageState, capitalizeString } from "@/utils/util";
 
 const TableCard = ({
   table,
@@ -263,6 +263,7 @@ export default function WorkspaceHome() {
   }
 
   const email = currentUser.email;
+  const email_content_before_at = capitalizeString(email.split("@")[0]);
 
   const sortedTablesData = [...tablesData].sort((a, b) => {
     if (a[tableListSortField] < b[tableListSortField])
@@ -278,7 +279,7 @@ export default function WorkspaceHome() {
         <div className="flex flex-col justify-center items-center w-full pt-16">
           <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[1000px] gap-4">
             <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
-              Hi {email ?? "there"}!
+              Welcome, {email_content_before_at ?? "there"}!
             </div>
             {/* Actions */}
             {/* If there are no connections, get them to add a connection */}
@@ -353,7 +354,7 @@ export default function WorkspaceHome() {
               <>
                 <div className="w-full text-[14px] flex flex-row gap-4 items-center">
                   <div className="w-[84px]">Tables</div>
-                  <div className="flex flex-row p-1 bg-slate-2 rounded-md ml-auto">
+                  <div className="flex flex-row p-1 bg-slate-2 gap-0.5 rounded-md ml-auto">
                     <button
                       className={`bg-slate-2 hover:bg-slate-5 hover:border-slate-6 rounded-md p-1 ${
                         tableLayout === "grid" && "bg-slate-5"
