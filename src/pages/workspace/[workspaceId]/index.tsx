@@ -31,6 +31,7 @@ import { abbreviateNumber, friendlyRelativeDateToNow } from "@/utils/util";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
+import { useLocalStorageState } from "@/utils/util";
 
 const TableCard = ({
   table,
@@ -150,7 +151,7 @@ const TableCard = ({
       >
         <div className="flex flex-row gap-3 items-center w-full truncate">
           <div
-            className="h-[32px] min-w-[32px] flex items-center justify-center rounded-md border"
+            className="h-[28px] min-w-[28px] flex items-center justify-center rounded-md border"
             style={{
               backgroundColor: table.iconColor + "30",
               borderColor: table.iconColor + "30",
@@ -184,7 +185,10 @@ const TableCard = ({
   );
 };
 export default function WorkspaceHome() {
-  const [tableLayout, setTableLayout] = useState("grid");
+  const [tableLayout, setTableLayout] = useLocalStorageState(
+    "tableLayout",
+    "grid"
+  );
 
   const {
     data: currentUser,
@@ -335,7 +339,7 @@ export default function WorkspaceHome() {
                   <div className="w-[84px]">Tables</div>
                   <div className="flex flex-row p-1 bg-slate-2 rounded-md ml-auto">
                     <button
-                      className={`bg-slate-2 hover:bg-slate-3 hover:border-slate-6 rounded-md p-1 ${
+                      className={`bg-slate-2 hover:bg-slate-5 hover:border-slate-6 rounded-md p-1 ${
                         tableLayout === "grid" && "bg-slate-5"
                       }`}
                       onClick={() => setTableLayout("grid")}
@@ -350,7 +354,7 @@ export default function WorkspaceHome() {
                       />
                     </button>
                     <button
-                      className={`bg-slate-2 hover:bg-slate-3 hover:border-slate-6 rounded-md p-1 ${
+                      className={`bg-slate-2 hover:bg-slate-5 hover:border-slate-6 rounded-md p-1 ${
                         tableLayout === "list" && "bg-slate-5"
                       }`}
                       onClick={() => setTableLayout("list")}

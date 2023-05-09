@@ -380,8 +380,8 @@
       "connectionPath": "SNOWFLAKE_SAMPLE_DATA/TPCDS_SF100TCL/",
       "rowCount": 1965337830,
       "connectionId": 1,
-      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#E5484D\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M152,112a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16h32A8,8,0,0,1,152,112Zm80-40V200a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16V72A16,16,0,0,1,40,56H80V48a24,24,0,0,1,24-24h48a24,24,0,0,1,24,24v8h40A16,16,0,0,1,232,72ZM96,56h64V48a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8Zm120,57.61V72H40v41.61A184,184,0,0,0,128,136,184,184,0,0,0,216,113.61Z\"></path></svg>",
-      "iconColor": "#E5484D",
+      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#9BA1A6\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm-8,96H188.64L159,188a8,8,0,0,1-6.95,4h-.46a8,8,0,0,1-6.89-4.84L103,89.92,79,132a8,8,0,0,1-7,4H48a8,8,0,0,1,0-16H67.36L97.05,68a8,8,0,0,1,14.3.82L153,166.08l24-42.05a8,8,0,0,1,6.95-4h24a8,8,0,0,1,0,16Z\"></path></svg>",
+      "iconColor": "#9BA1A6",
       "createdAt": "2023-05-08T22:27:07.470Z",
       "updatedAt": "2023-05-08T22:27:07.470Z",
       "id": 18
@@ -411,6 +411,17 @@
       "createdAt": "2023-05-08T22:39:59.922Z",
       "updatedAt": "2023-05-08T22:39:59.922Z",
       "id": 20
+    },
+    {
+      "workspaceId": 12,
+      "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
+      "displayName": "DIM_CUSTOMERS",
+      "connectionPath": "ARTHUR_TEST/DBT_AWU/",
+      "rowCount": 100,
+      "connectionId": 23,
+      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#E5484D\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,109.66-32,32a8,8,0,0,1-11.32-11.32L148.69,136H88a8,8,0,0,1,0-16h60.69l-18.35-18.34a8,8,0,0,1,11.32-11.32l32,32A8,8,0,0,1,173.66,133.66Z\"></path></svg>",
+      "iconColor": "#E5484D",
+      "id": 21
     }
   ],
   "verifyEmail": [
@@ -607,6 +618,21 @@
       "createdAt": "2023-05-08T18:33:01.579Z",
       "workspaceId": 6,
       "id": 22
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "arthurwu1",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "ACCOUNTADMIN",
+      "connectionType": "snowflake",
+      "name": "Snowflakepwkesfj-uo88877",
+      "createdAt": "2023-05-09T13:06:00.974Z",
+      "workspaceId": 12,
+      "id": 23
     }
   ]
 }

@@ -156,9 +156,21 @@ const ConnectionSelector = ({
           <Listbox.Button className="relative h-[40px] w-full text-slate-12 cursor-default border border-slate-4 rounded-lg bg-slate-2 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-600 focus-visible:ring-2 focus-visible:ring-slate-2 focus-visible:ring-opacity-75 focus-visible:ring-offset-1 focus-visible:ring-offset-blue-900 sm:text-sm">
             {selectedConnection ? (
               <div className="flex flex-row gap-2 items-center">
-                <div className="max-h-[18px] max-w-[18px]">
-                  <LogoSnowflake />
-                </div>
+                {selectedConnection?.connectionType === "snowflake" && (
+                  <div className="max-h-[18px] max-w-[18px]">
+                    <LogoSnowflake />
+                  </div>
+                )}
+                {selectedConnection?.connectionType === "bigquery" && (
+                  <div className="max-h-[18px] max-w-[18px]">
+                    <LogoBigQuery />
+                  </div>
+                )}
+                {selectedConnection?.connectionType === "postgres" && (
+                  <div className="max-h-[18px] max-w-[18px]">
+                    <LogoPostgres />
+                  </div>
+                )}
                 <span className="block truncate">
                   {selectedConnection?.name}
                 </span>
