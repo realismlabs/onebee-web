@@ -137,12 +137,12 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
             setValue(v)
           }}
           label="Global Command Menu"
-          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] bg-[#101112] text-slate-12 text-[14px] h-fit rounded-xl overflow-clip data-[state=open]:animate-commandBar">
+          className="absolute inset-0  left-[50%] translate-x-[-50%] top-[25%] translate-y-[-25%]  min-w-[680px] max-w-[50vw] bg-[var(--slate-0)] text-slate-12 text-[14px] h-fit rounded-xl overflow-clip data-[state=open]:animate-commandBar">
           <div className={`command-dialog-content ${commandBarOpen ? 'open' : ''}`}>
-            <div className="flex flex-col border-b border-slate-4 px-[16px] pt-[12px] bg-[#101112]">
+            <div className="flex flex-col border-b border-slate-4 px-[16px] pt-[12px] bg-[var(--slate-0)]">
               <div cmdk-linear-badge="" className="text-[13px] text-slate-11 px-[6px] py-[3px] rounded-md bg-slate-2 w-fit">Jump to:</div>
               <Command.Input autoFocus placeholder="Type a command or search..."
-                className="bg-[#101112] placeholder:text-slate-10 w-full border-none text-[14px] focus:outline-none focus:ring-0 px-[0px]"
+                className="bg-[var(--slate-0)] placeholder:text-slate-10 w-full border-none text-[14px] focus:outline-none focus:ring-0 px-[0px]"
               />
             </div>
             <div className="mx-[6px] overflow-y-auto h-[50vh]">

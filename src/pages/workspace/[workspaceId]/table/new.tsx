@@ -184,7 +184,7 @@ const ConnectionSelector = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute z-10 mt-1 max-h-60 max-w-[480px] overflow-auto rounded-md bg-[#101112] py-1 text-base shadow-lg focus:outline-none sm:text-sm">
+            <Listbox.Options className="absolute z-10 mt-1 max-h-60 max-w-[480px] overflow-auto rounded-md bg-[var(--slate-0)] py-1 text-base shadow-lg focus:outline-none sm:text-sm">
               {connectionsData?.map((connection, id) => (
                 <Listbox.Option
                   key={id}

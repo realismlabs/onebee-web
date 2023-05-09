@@ -26,6 +26,23 @@ module.exports = {
         contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         commandBar: 'commandBar 150ms cubic-bezier(0.16, 1, 0.3, 1)',
       },
+      colors: {
+        slate: {
+          0: 'var(--slate-0)',
+          1: 'var(--slate-1)',
+          2: 'var(--slate-2)',
+          3: 'var(--slate-3)',
+          4: 'var(--slate-4)',
+          5: 'var(--slate-5)',
+          6: 'var(--slate-6)',
+          7: 'var(--slate-7)',
+          8: 'var(--slate-8)',
+          9: 'var(--slate-9)',
+          10: 'var(--slate-10)',
+          11: 'var(--slate-11)',
+          12: 'var(--slate-12)',
+        },
+      },
     },
   },
   plugins: [
