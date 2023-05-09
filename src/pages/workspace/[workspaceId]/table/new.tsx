@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useRef, FC, Fragment } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useEffect, Fragment } from "react";
 import router from "next/router";
-import Image from "next/image";
 import {
   CaretRight,
   Table,
@@ -9,28 +7,21 @@ import {
   CaretUpDown,
   Check,
 } from "@phosphor-icons/react";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { capitalizeString } from "@/utils/util";
-import {
-  createTable,
-  createConnection,
-  getWorkspaceConnections,
-} from "@/utils/api";
+import { createTable, getWorkspaceConnections } from "@/utils/api";
 import MemoizedMockTable from "@/components/MemoizedMockTable";
 import { IconList } from "@/components/IconList";
 import { Transition } from "@headlessui/react";
 import IconPickerPopoverCreateTable from "@/components/IconPickerPopoverCreateTable";
-import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 import { Listbox } from "@headlessui/react";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
-import parse, { domToReact } from "html-react-parser";
 
 function getIconSvgStringFromName(iconName: string): string {
   const iconItem = IconList.find((icon) => icon.name === iconName);
