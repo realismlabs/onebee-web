@@ -247,9 +247,10 @@ export function friendlyRelativeDateToNow(isoDateString: string) {
   return formattedDistance
     .replace("minute", "min")
     .replace("hour", "hr")
-    .replace("day", "d")
+    .replace("day", "day")
     .replace("week", "w")
     .replace("month", "mo")
     .replace("year", "y")
+    .replace("about", "")
     .trim();
 }

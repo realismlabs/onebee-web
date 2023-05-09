@@ -1,38 +1,23 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import router from "next/router";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import {
-  getWorkspaceConnections,
-  getTablesFromConnection,
-  deleteConnection,
-  updateConnectionDisplayName,
-  getTables,
-} from "@/utils/api";
+import { getWorkspaceConnections, getTables } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 import {
   Chat,
-  Check,
   Files,
   CaretDown,
   CaretUp,
   Gavel,
   GridFour,
   List,
-  MonitorPlay,
-  Table,
-  Taxi,
   UserPlus,
   Warning,
 } from "@phosphor-icons/react";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { abbreviateNumber, friendlyRelativeDateToNow } from "@/utils/util";
-import LogoSnowflake from "@/components/LogoSnowflake";
-import LogoBigQuery from "@/components/LogoBigQuery";
-import LogoPostgres from "@/components/LogoPostgres";
 import { useLocalStorageState, capitalizeString } from "@/utils/util";
 
 const TableCard = ({
@@ -502,7 +487,7 @@ export default function WorkspaceHome() {
                             <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate mr-auto">
                               {table.connectionPath}
                             </pre>
-                            <div className="min-w-[60px] text-slate-11">
+                            <div className="min-w-[100px] max-w-[100px] text-left text-slate-11">
                               {friendlyRelativeDateToNow(table.updatedAt)}
                             </div>
                             <div className="w-[120px] text-right lining-nums text-slate-11">

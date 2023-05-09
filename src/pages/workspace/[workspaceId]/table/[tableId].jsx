@@ -122,13 +122,15 @@ const TablePopover = ({
       <Popover className="relative">
         {({ open }) => (
           <>
-            <Popover.Button
-              className={`text-slate-11 hover:bg-slate-3 focus:shadow-slate-7 flex flex-row gap-[4px] px-[8px] py-[4px] items-center justify-center rounded-[4px] focus:outline-none
-              ${open ? "bg-slate-3" : "hover:bg-slate-3 active:bg-slate-4"}`}
-            >
-              <p className="text-slate-12 text-[13px] truncate">{tableName}</p>
-              <CaretDown size={12} weight="bold" className="mt-[2px]" />
-            </Popover.Button>
+            <div className='w-[240px]'>
+              <Popover.Button
+                className={`max-w-[240px] text-slate-11 hover:bg-slate-3 focus:shadow-slate-7 flex flex-row gap-[4px] px-[8px] py-[4px] items-center justify-start rounded-[4px] focus:outline-none
+                ${open ? "bg-slate-3" : "hover:bg-slate-3 active:bg-slate-4"}`}
+              >
+                <p className="text-slate-12 text-[13px] truncate">{tableName}</p>
+                <CaretDown size={12} weight="bold" className="mt-[2px] min-h-[12px] min-w-[12px]" />
+              </Popover.Button>
+            </div>
             <Transition
               as={Fragment}
               enter="transition ease-out duration-100"
@@ -280,6 +282,7 @@ export default function TablePage() {
 
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const handleSearchbarFocus = () => {
     setIsSearchFocused(true);
@@ -365,24 +368,26 @@ export default function TablePage() {
               workspaceId={currentWorkspace?.id}
             />
           </div>
+          <div
+            className={`flex flex-grow bg-slate-3 hover:bg-slate-4 text-[13px] px-[8px] py-[6px] border border-slate-4 ${isSearchFocused ? "ring-2 ring-blue-600" : ""
+              } cursor-pointer rounded-[6px] flex flex-row gap-2 items-center w-[600px]`}
+          >
+            <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
+            <input
+              title="Search"
+              className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10 flex-grow"
+              placeholder="Search.."
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onFocus={handleSearchbarFocus}
+              onBlur={handleSearchbarBlur}
+              onKeyDown={handleSearchbarKeyDown}
+            />
+          </div>
           <div className="flex flex-row gap-2 flex-grow ml-auto justify-end">
             <div className="bg-slate-2 hover:bg-slate-3 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
               <p>Columns</p>
               <CaretDown size={12} className="text-slate-11" />
-            </div>
-            <div
-              className={`flex flex-grow bg-slate-2 hover:bg-slate-3 text-[13px] px-[6px] py-[6px] border border-slate-4 ${isSearchFocused ? "ring-2 ring-blue-600" : ""
-                } cursor-pointer rounded-[6px] flex flex-row gap-1 items-center  max-w-[480px]`}
-            >
-              <MagnifyingGlass size={16} className="text-slate-11" />
-              <input
-                title="Search"
-                className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10 flex-grow"
-                placeholder="Search.."
-                onFocus={handleSearchbarFocus}
-                onBlur={handleSearchbarBlur}
-                onKeyDown={handleSearchbarKeyDown}
-              />
             </div>
             <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
               <p>Share</p>
