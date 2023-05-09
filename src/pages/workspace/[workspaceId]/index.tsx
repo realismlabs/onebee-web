@@ -28,6 +28,9 @@ import {
 } from "@phosphor-icons/react";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { abbreviateNumber, friendlyRelativeDateToNow } from "@/utils/util";
+import LogoSnowflake from "@/components/LogoSnowflake";
+import LogoBigQuery from "@/components/LogoBigQuery";
+import LogoPostgres from "@/components/LogoPostgres";
 
 const TableCard = ({
   table,
@@ -333,7 +336,7 @@ export default function WorkspaceHome() {
                   <div className="flex flex-row p-1 bg-slate-2 rounded-md ml-auto">
                     <button
                       className={`bg-slate-2 hover:bg-slate-3 hover:border-slate-6 rounded-md p-1 ${
-                        tableLayout === "grid" && "bg-slate-4"
+                        tableLayout === "grid" && "bg-slate-5"
                       }`}
                       onClick={() => setTableLayout("grid")}
                     >
@@ -347,7 +350,9 @@ export default function WorkspaceHome() {
                       />
                     </button>
                     <button
-                      className={`bg-slate-2 hover:bg-slate-3 hover:border-slate-6 rounded-md p-1`}
+                      className={`bg-slate-2 hover:bg-slate-3 hover:border-slate-6 rounded-md p-1 ${
+                        tableLayout === "list" && "bg-slate-5"
+                      }`}
                       onClick={() => setTableLayout("list")}
                     >
                       <List
@@ -364,13 +369,54 @@ export default function WorkspaceHome() {
                 {/* set up grid */}
                 {tableLayout === "list" && (
                   <div className="w-full flex flex-col gap-4">
-                    {tablesData.map((table: any) => (
-                      <TableCard
-                        table={table}
-                        currentWorkspace={currentWorkspace}
-                        key={table.id}
-                      />
-                    ))}
+                    <div className="flex flex-col border-slate-4 rounded-lg border overflow-clip">
+                      {tablesData.map((table: any, index: number) => (
+                        <Link
+                          key={table.id}
+                          href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
+                        >
+                          <div
+                            className={`flex flex-row gap-4 items-center ${
+                              index < tablesData.length - 1
+                                ? "border-b border-slate-4"
+                                : ""
+                            } text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-slate-12`}
+                          >
+                            <div className="text-[13px] text-slate-12">
+                              <IconLoaderFromSvgString
+                                iconSvgString={table.iconSvgString}
+                                tableName={table.displayName}
+                              />
+                            </div>
+                            <div className="w-[180px] truncate">
+                              {table.displayName}
+                            </div>
+                            <div className="min-h-4 max-h-4 min-w-4 max-w-4">
+                              {table.connectionType === "bigquery" && (
+                                <LogoBigQuery className="w-full h-full" />
+                              )}
+                              {table.connectionType === "postgres" && (
+                                <LogoPostgres className="w-full h-full" />
+                              )}
+                              {table.connectionType === "snowflake" && (
+                                <LogoSnowflake className="w-full h-full" />
+                              )}
+                            </div>
+
+                            <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate mr-auto">
+                              {table.connectionPath}
+                            </pre>
+                            <div className="min-w-[120px]">
+                              {"Updated " +
+                                friendlyRelativeDateToNow(table.updatedAt)}
+                            </div>
+                            <div className="w-[200px] text-right">
+                              {abbreviateNumber(table.rowCount) + " rows"}
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {tableLayout === "grid" && (
