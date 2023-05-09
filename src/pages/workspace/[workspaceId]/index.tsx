@@ -502,10 +502,10 @@ export default function WorkspaceHome() {
                             <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate mr-auto">
                               {table.connectionPath}
                             </pre>
-                            <div className="min-w-[60px]">
+                            <div className="min-w-[60px] text-slate-11">
                               {friendlyRelativeDateToNow(table.updatedAt)}
                             </div>
-                            <div className="w-[120px] text-right lining-nums">
+                            <div className="w-[120px] text-right lining-nums text-slate-11">
                               {abbreviateNumber(table.rowCount)}
                             </div>
                           </div>
