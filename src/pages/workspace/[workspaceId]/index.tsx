@@ -18,6 +18,8 @@ import {
   Check,
   Files,
   Gavel,
+  GridFour,
+  List,
   MonitorPlay,
   Table,
   Taxi,
@@ -136,7 +138,6 @@ const TableCard = ({
     `}
         style={{
           backgroundColor: isHovered ? backgroundColor2 : backgroundColor1,
-
           borderColor: isHovered
             ? table.iconColor + "40"
             : table.iconColor + "30",
@@ -144,17 +145,12 @@ const TableCard = ({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div
-          className="absolute top-0 left-0 w-full h-[1px]"
-          style={{
-            backgroundColor: table.iconColor,
-          }}
-        ></div>
         <div className="flex flex-row gap-3 items-center w-full truncate">
           <div
-            className="h-[32px] min-w-[32px] flex items-center justify-center rounded-md"
+            className="h-[32px] min-w-[32px] flex items-center justify-center rounded-md border"
             style={{
               backgroundColor: table.iconColor + "30",
+              borderColor: table.iconColor + "30",
             }}
           >
             <IconLoaderFromSvgString iconSvgString={table.iconSvgString} />
@@ -332,37 +328,53 @@ export default function WorkspaceHome() {
 
             {tablesData?.length > 0 && (
               <>
-                <div className="w-full text-slate-12 text-[14px] mt-[16px] flex flex-row gap-4 items-end">
+                <div className="w-full text-[14px] flex flex-row gap-4 items-center">
                   <div className="w-[84px]">Tables</div>
-                  <div className="text-slate-10 text-[13px]"></div>
+                  <div className="flex flex-row p-1 bg-slate-2 rounded-md ml-auto">
+                    <button
+                      className={`bg-slate-2 hover:bg-slate-3 hover:border-slate-6 rounded-md p-1 ${
+                        tableLayout === "grid" && "bg-slate-4"
+                      }`}
+                      onClick={() => setTableLayout("grid")}
+                    >
+                      <GridFour
+                        className={`w-5 h-5 ${
+                          tableLayout === "grid"
+                            ? "text-slate-12"
+                            : "text-slate-10"
+                        }`}
+                        weight="fill"
+                      />
+                    </button>
+                    <button
+                      className={`bg-slate-2 hover:bg-slate-3 hover:border-slate-6 rounded-md p-1`}
+                      onClick={() => setTableLayout("list")}
+                    >
+                      <List
+                        className={`w-5 h-5 ${
+                          tableLayout === "list"
+                            ? "text-slate-12"
+                            : "text-slate-10"
+                        }`}
+                        weight="fill"
+                      />
+                    </button>
+                  </div>
                 </div>
                 {/* set up grid */}
-                <div className="w-full grid grid-cols-3 gap-4">
-                  {/* If there are no tables, get them to add a table */}
-                  {tablesData.map((table: any) => (
-                    <TableCard
-                      table={table}
-                      currentWorkspace={currentWorkspace}
-                      key={table.id}
-                    />
-                  ))}
-                </div>
-                <div className="flex flex-row gap-4 mt-4">
-                  <button
-                    className="bg-slate-2 border border-slate-3 hover:bg-slate-3 hover:border-slate-6 rounded-md px-3 py-2"
-                    onClick={() => setTableLayout("grid")}
-                  >
-                    Grid view
-                  </button>
-                  <button
-                    className="bg-slate-2 border border-slate-3 hover:bg-slate-3 hover:border-slate-6 rounded-md px-3 py-2"
-                    onClick={() => setTableLayout("list")}
-                  >
-                    List view
-                  </button>
-                </div>
                 {tableLayout === "list" && (
                   <div className="w-full flex flex-col gap-4">
+                    {tablesData.map((table: any) => (
+                      <TableCard
+                        table={table}
+                        currentWorkspace={currentWorkspace}
+                        key={table.id}
+                      />
+                    ))}
+                  </div>
+                )}
+                {tableLayout === "grid" && (
+                  <div className="w-full grid grid-cols-3 gap-4">
                     {tablesData.map((table: any) => (
                       <TableCard
                         table={table}
