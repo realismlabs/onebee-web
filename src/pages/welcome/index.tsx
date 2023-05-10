@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import anime, { AnimeInstance, path } from "animejs";
 import Link from "next/link";
 import router from "next/router";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
@@ -36,9 +35,21 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   );
 };
 
-function generateCircles(count: number, path: string, delay_offset?: number) {
+function generateCircles(
+  count: number,
+  path: string,
+  delay_offset?: number,
+  duration?: number,
+  repeatCount?: string
+) {
   if (!delay_offset) {
     delay_offset = 0;
+  }
+  if (!duration) {
+    duration = 2;
+  }
+  if (!repeatCount) {
+    repeatCount = "none";
   }
 
   let circles = [];
@@ -50,9 +61,9 @@ function generateCircles(count: number, path: string, delay_offset?: number) {
       circles.push(
         <circle r="0.2" fill="#DBFFFF" className="" opacity={opacity}>
           <animateMotion
-            dur="2s"
+            dur={`${duration}s`}
             begin={`${delay_offset + delay}s`}
-            repeatCount="indefinite"
+            repeatCount={repeatCount}
             path={path}
           />
         </circle>
@@ -61,9 +72,9 @@ function generateCircles(count: number, path: string, delay_offset?: number) {
       circles.push(
         <circle r="0.15" fill="#DBFFFF" className="" opacity={opacity}>
           <animateMotion
-            dur="2s"
+            dur={`${duration}s`}
             begin={`${delay_offset + delay}s`}
-            repeatCount="indefinite"
+            repeatCount={repeatCount}
             path={path}
           />
         </circle>
@@ -76,10 +87,20 @@ function generateCircles(count: number, path: string, delay_offset?: number) {
 function generateCircleShadows(
   count: number,
   path: string,
-  delay_offset?: number
+  delay_offset?: number,
+  duration?: number,
+  repeatCount?: string
 ) {
   if (!delay_offset) {
     delay_offset = 0;
+  }
+
+  if (!duration) {
+    duration = 2;
+  }
+
+  if (!repeatCount) {
+    repeatCount = "none";
   }
 
   let circles = [];
@@ -99,9 +120,9 @@ function generateCircleShadows(
         }}
       >
         <animateMotion
-          dur="2s"
+          dur={`${duration}s`}
           begin={`${delay_offset + delay}s`}
-          repeatCount="indefinite"
+          repeatCount={repeatCount}
           path={path}
           keyTimes="0;1"
           // keySplines="0.25 0.1 0.25 1" // ease-in-out
@@ -122,7 +143,7 @@ const CometAnimation: React.FC = () => {
   const pathr2 = "M178,100 L178,92 L108,92 L108,80";
   const pathr3 = "M176,100 L176,94 L106,94 L106,80";
 
-  const screenborder = "M130,80 L180,80 L180,10 L20,10 L20,80 z";
+  const screenborder = "M100,80 L180,80 L180,10 L20,10 L20,80 z";
 
   return (
     <div
@@ -144,8 +165,8 @@ const CometAnimation: React.FC = () => {
             strokeWidth={0.2}
             d={screenborder}
           />
-          {generateCircles(20, screenborder, 2)}
-          {generateCircleShadows(3, screenborder, 2)}
+          {generateCircles(20, screenborder, 2, 10, "indefinite")}
+          {generateCircleShadows(3, screenborder, 2, 10, "indefinite")}
           <path
             fill="none"
             stroke="var(--slate4)"
@@ -194,6 +215,45 @@ const CometAnimation: React.FC = () => {
           />
           {generateCircles(20, pathr3)}
           {generateCircleShadows(3, pathr3)}
+          <ellipse
+            cx="100"
+            cy="80"
+            rx="50"
+            ry="0.2"
+            opacity="0"
+            fill="#DBFFFF"
+            style={{
+              mixBlendMode: "overlay",
+            }}
+          >
+            <animate
+              attributeName="opacity"
+              values="0;1;0"
+              dur="1.0s"
+              begin="2s"
+              // repeatCount="indefinite"
+            />
+          </ellipse>
+          <ellipse
+            cx="100"
+            cy="80"
+            rx="50"
+            ry="1"
+            opacity="0"
+            fill="#0085FF"
+            style={{
+              mixBlendMode: "overlay",
+              filter: "blur(4px)",
+            }}
+          >
+            <animate
+              attributeName="opacity"
+              values="0;1;0"
+              dur="1.0s"
+              begin="2s"
+              // repeatCount="indefinite"
+            />
+          </ellipse>
         </svg>
       </div>
     </div>
