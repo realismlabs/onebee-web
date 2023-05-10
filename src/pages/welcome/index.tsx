@@ -270,7 +270,7 @@ const CometAnimation: React.FC = () => {
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
         >
-          <path d={screenborder} fill="url(#image)" opacity="0">
+          <path d={screenborder} fill="var(--slate2)" opacity="0">
             <animate
               attributeName="opacity"
               values="0;1"
@@ -279,6 +279,32 @@ const CometAnimation: React.FC = () => {
               fill="freeze"
             />
           </path>
+
+          {/* <path d={screenborder} fill="url(#image)" opacity="0">
+            <animate
+              attributeName="opacity"
+              values="0;1"
+              dur="0.5s"
+              begin="2.3s"
+              fill="freeze"
+            />
+          </path>
+          <defs>
+            <pattern
+              id="image"
+              patternUnits="userSpaceOnUse"
+              width="200"
+              height="100"
+            >
+              <image
+                href="/images/table-dark.png"
+                x="0"
+                y="0"
+                width="200"
+                height="100"
+              />
+            </pattern>
+          </defs> */}
 
           <path
             fill="none"
@@ -384,22 +410,6 @@ const CometAnimation: React.FC = () => {
               begin="2s"
             />
           </path>
-          <defs>
-            <pattern
-              id="image"
-              patternUnits="userSpaceOnUse"
-              width="200"
-              height="100"
-            >
-              <image
-                href="/images/table-dark.png"
-                x="0"
-                y="0"
-                width="200"
-                height="100"
-              />
-            </pattern>
-          </defs>
         </svg>
       </div>
     </div>
