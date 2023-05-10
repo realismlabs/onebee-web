@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import router from "next/router";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
@@ -158,8 +158,102 @@ const CometAnimation: React.FC = () => {
   const pathr2 = "M178,100 L178,92 L108,92 L108,80";
   const pathr3 = "M176,100 L176,94 L106,94 L106,80";
 
-  const screenborder = "M100,80 L180,80 L180,15 L20,15 L20,80 z";
-  const screenborderOpposite = "M100,80 L20,80 L20,15 L180,15 L180,80 z";
+  // const screenborder = "M100,80 L180,80 L180,15 L20,15 L20,80 z";
+  // const screenborderOpposite = "M100,80 L20,80 L20,15 L180,15 L180,80 z";
+  const roundness = 2; // Adjust this value to change the roundness of corners
+  const screenborder = `M${100 + roundness},80 L${
+    180 - roundness
+  },80 Q180,80 180,${80 - roundness} L180,${20 + roundness} Q180,15 ${
+    180 - roundness
+  },15 L${20 + roundness},15 Q20,15 20,${20 + roundness} L20,${
+    80 - roundness
+  } Q20,80 ${20 + roundness},80 z`;
+  const screenborderOpposite = `M${100 - roundness},80 L${
+    20 + roundness
+  },80 Q20,80 20,${80 - roundness} L20,${20 + roundness} Q20,15 ${
+    20 + roundness
+  },15 L${180 - roundness},15 Q180,15 180,${20 + roundness} L180,${
+    80 - roundness
+  } Q180,80 ${180 - roundness},80 z`;
+
+  // useMemo to memoize the SVG elements and avoid unnecessary re-renders.
+  const generatedCircles = React.useMemo(
+    () => generateCircles(10, screenborder, 2, 10, "indefinite"),
+    []
+  );
+  const generatedCircleShadows = React.useMemo(
+    () => generateCircleShadows(3, screenborder, 2, 10, "indefinite"),
+    []
+  );
+  const generatedCirclesOpposite = React.useMemo(
+    () => generateCircles(10, screenborderOpposite, 2, 10, "indefinite"),
+    []
+  );
+  const generatedCircleShadowsOpposite = React.useMemo(
+    () => generateCircleShadows(3, screenborderOpposite, 2, 10, "indefinite"),
+    []
+  );
+
+  // Similarly memoize for other paths
+  const circuitPathl1 = React.useMemo(() => circuitPath(pathl1), []);
+  const generatedCirclesl1 = React.useMemo(
+    () => generateCircles(6, pathl1),
+    []
+  );
+  const generatedCircleShadowsl1 = React.useMemo(
+    () => generateCircleShadows(3, pathl1),
+    []
+  );
+
+  const circuitPathl2 = React.useMemo(() => circuitPath(pathl2), []);
+  const generatedCirclesl2 = React.useMemo(
+    () => generateCircles(6, pathl2),
+    []
+  );
+  const generatedCircleShadowsl2 = React.useMemo(
+    () => generateCircleShadows(3, pathl2),
+    []
+  );
+
+  const circuitPathl3 = React.useMemo(() => circuitPath(pathl3), []);
+  const generatedCirclesl3 = React.useMemo(
+    () => generateCircles(6, pathl3),
+    []
+  );
+  const generatedCircleShadowsl3 = React.useMemo(
+    () => generateCircleShadows(3, pathl3),
+    []
+  );
+
+  const circuitPathr1 = React.useMemo(() => circuitPath(pathr1), []);
+  const generatedCirclesr1 = React.useMemo(
+    () => generateCircles(6, pathr1),
+    []
+  );
+  const generatedCircleShadowsr1 = React.useMemo(
+    () => generateCircleShadows(3, pathr1),
+    []
+  );
+
+  const circuitPathr2 = React.useMemo(() => circuitPath(pathr2), []);
+  const generatedCirclesr2 = React.useMemo(
+    () => generateCircles(6, pathr2),
+    []
+  );
+  const generatedCircleShadowsr2 = React.useMemo(
+    () => generateCircleShadows(3, pathr2),
+    []
+  );
+
+  const circuitPathr3 = React.useMemo(() => circuitPath(pathr3), []);
+  const generatedCirclesr3 = React.useMemo(
+    () => generateCircles(6, pathr3),
+    []
+  );
+  const generatedCircleShadowsr3 = React.useMemo(
+    () => generateCircleShadows(3, pathr3),
+    []
+  );
 
   return (
     <div
@@ -176,34 +270,50 @@ const CometAnimation: React.FC = () => {
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
         >
+          <path d={screenborder} fill="url(#image)" opacity="0">
+            <animate
+              attributeName="opacity"
+              values="0;1"
+              dur="0.5s"
+              begin="2.3s"
+              fill="freeze"
+            />
+          </path>
+
           <path
             fill="none"
             stroke="var(--slate3)"
             strokeWidth={0.2}
             d={screenborder}
           />
-          {generateCircles(12, screenborder, 2, 10, "indefinite")}
-          {generateCircleShadows(3, screenborder, 2, 10, "indefinite")}
-          {generateCircles(12, screenborderOpposite, 2, 10, "indefinite")}
-          {generateCircleShadows(3, screenborderOpposite, 2, 10, "indefinite")}
-          {circuitPath(pathl1)}
-          {generateCircles(6, pathl1)}
-          {generateCircleShadows(3, pathl1)}
-          {circuitPath(pathl2)}
-          {generateCircles(6, pathl2)}
-          {generateCircleShadows(3, pathl2)}
-          {circuitPath(pathl3)}
-          {generateCircles(6, pathl3)}
-          {generateCircleShadows(3, pathl3)}
-          {circuitPath(pathr1)}
-          {generateCircles(6, pathr1)}
-          {generateCircleShadows(3, pathr1)}
-          {circuitPath(pathr2)}
-          {generateCircles(6, pathr2)}
-          {generateCircleShadows(3, pathr2)}
-          {circuitPath(pathr3)}
-          {generateCircles(6, pathr3)}
-          {generateCircleShadows(3, pathr3)}
+          {generatedCircles}
+          {generatedCircleShadows}
+          {generatedCirclesOpposite}
+          {generatedCircleShadowsOpposite}
+          {circuitPathl1}
+          {generatedCirclesl1}
+          {generatedCircleShadowsl1}
+
+          {circuitPathl2}
+          {generatedCirclesl2}
+          {generatedCircleShadowsl2}
+
+          {circuitPathl3}
+          {generatedCirclesl3}
+          {generatedCircleShadowsl3}
+
+          {circuitPathr1}
+          {generatedCirclesr1}
+          {generatedCircleShadowsr1}
+
+          {circuitPathr2}
+          {generatedCirclesr2}
+          {generatedCircleShadowsr2}
+
+          {circuitPathr3}
+          {generatedCirclesr3}
+          {generatedCircleShadowsr3}
+
           <ellipse
             cx="100"
             cy="80"
@@ -274,6 +384,22 @@ const CometAnimation: React.FC = () => {
               begin="2s"
             />
           </path>
+          <defs>
+            <pattern
+              id="image"
+              patternUnits="userSpaceOnUse"
+              width="200"
+              height="100"
+            >
+              <image
+                href="/images/table-dark.png"
+                x="0"
+                y="0"
+                width="200"
+                height="100"
+              />
+            </pattern>
+          </defs>
         </svg>
       </div>
     </div>
