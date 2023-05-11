@@ -287,25 +287,13 @@ export default function Home() {
             <Image
               className="absolute pointer-events-none select-none translate-y-6 lg:translate-y-[-200px]"
               src="/images/gradient_highlight.svg"
-              alt="Gradient highlight"
-              draggable="false"
-              width="1555"
-              height="600"
-              style={{
-                mixBlendMode: "overlay",
-              }}
-            />
-
-            <Image
-              className="absolute pointer-events-none select-none translate-y-6 lg:translate-y-[-200px]"
-              src="/images/gradient_highlight.svg"
               alt="Product Screenshot - Rich Cell Types"
               draggable="false"
               width="1555"
               height="600"
               style={{
                 mixBlendMode: "normal",
-                opacity: 0.2,
+                opacity: 0.5,
               }}
             />
           </div>
@@ -359,7 +347,7 @@ export default function Home() {
               width="1555"
               height="600"
               style={{
-                mixBlendMode: "overlay",
+                mixBlendMode: "normal",
                 opacity: 1.0,
                 transform: "translateY(-200px)",
               }}

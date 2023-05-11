@@ -10,6 +10,7 @@ import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
+import { motion } from "framer-motion";
 
 interface AccountHeaderProps {
   email: string;
@@ -419,14 +420,39 @@ export default function AddDataSource() {
   const email = currentUser.email;
   const workspace_name = currentWorkspace.name;
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4">
+      <motion.div
+        className="flex flex-col justify-center items-center w-full pt-32"
+        variants={container}
+        initial="hidden"
+        animate="show"
+        transition={{ duration: 1 }}
+      >
+        <motion.div
+          className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"
+          variants={item}
+        >
           Connect a data source
-        </div>
-        <form className="flex flex-col gap-4 mt-4">
+        </motion.div>
+        <motion.form className="flex flex-col gap-4 mt-4" variants={item}>
           <div className="flex gap-4">
             <div
               className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer"
@@ -460,8 +486,8 @@ export default function AddDataSource() {
               Do this later
             </div>
           </Link>
-        </form>
-      </div>
+        </motion.form>
+      </motion.div>
     </div>
   );
 }
