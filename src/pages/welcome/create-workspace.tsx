@@ -3,6 +3,7 @@ import Link from "next/link";
 import router from "next/router";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { createWorkspace } from "@/utils/api";
+import { motion } from "framer-motion";
 
 interface AccountHeaderProps {
   email: string;
@@ -107,14 +108,41 @@ export default function CreateWorkspace() {
 
   const email = currentUser.email;
 
+  //  for animations
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4">
+      <motion.div
+        className="flex flex-col justify-center items-center w-full pt-32"
+        variants={container}
+        initial="hidden"
+        animate="show"
+        transition={{ duration: 1 }}
+      >
+        <motion.div
+          className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"
+          variants={item}
+        >
           Name your workspace
-        </div>
-        <form
+        </motion.div>
+        <motion.form
+          variants={item}
           onSubmit={handleSubmit}
           className="flex flex-col gap-3 w-[300px] mt-4"
         >
@@ -161,8 +189,8 @@ export default function CreateWorkspace() {
           >
             Continue
           </button>
-        </form>
-      </div>
+        </motion.form>
+      </motion.div>
     </div>
   );
 }

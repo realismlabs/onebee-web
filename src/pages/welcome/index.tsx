@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import router from "next/router";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { motion } from "framer-motion";
+import { HandWaving } from "@phosphor-icons/react";
+import { capitalizeString } from "@/utils/util";
 
 interface AccountHeaderProps {
   email: string;
@@ -135,6 +138,28 @@ function generateCircleShadows(
   return circles;
 }
 
+function generateRowLines(
+  start: any,
+  end: number,
+  interval: number,
+  startX: any,
+  endX: any,
+  stroke: string | undefined,
+  strokeWidth: string | number | undefined
+) {
+  const paths = [];
+  for (let i = start; i >= end; i -= interval) {
+    paths.push(
+      <path
+        d={`M${startX},${i} ${endX},${i}`}
+        stroke={stroke}
+        strokeWidth={strokeWidth}
+      />
+    );
+  }
+  return paths;
+}
+
 function circuitPath(path: string) {
   return (
     <path fill="none" stroke="var(--slate3)" strokeWidth={0.2} d={path}>
@@ -161,20 +186,28 @@ const CometAnimation: React.FC = () => {
   // const screenborder = "M100,80 L180,80 L180,15 L20,15 L20,80 z";
   // const screenborderOpposite = "M100,80 L20,80 L20,15 L180,15 L180,80 z";
   const roundness = 2; // Adjust this value to change the roundness of corners
-  const screenborder = `M${100 + roundness},80 L${
-    180 - roundness
-  },80 Q180,80 180,${80 - roundness} L180,${20 + roundness} Q180,15 ${
-    180 - roundness
-  },15 L${20 + roundness},15 Q20,15 20,${20 + roundness} L20,${
-    80 - roundness
-  } Q20,80 ${20 + roundness},80 z`;
-  const screenborderOpposite = `M${100 - roundness},80 L${
-    20 + roundness
-  },80 Q20,80 20,${80 - roundness} L20,${20 + roundness} Q20,15 ${
-    20 + roundness
-  },15 L${180 - roundness},15 Q180,15 180,${20 + roundness} L180,${
-    80 - roundness
-  } Q180,80 ${180 - roundness},80 z`;
+
+  const screenborder = `
+  M${20 + roundness},80 
+  A${roundness},${roundness} 0 0 1 ${20}, ${80 - roundness}
+  L${20},${20 + roundness}
+  A${roundness},${roundness} 0 0 1 ${20 + roundness}, 20
+  L${180 - roundness},20
+  A${roundness},${roundness} 0 0 1 180, ${20 + roundness}
+  L180,${80 - roundness}
+  A${roundness},${roundness} 0 0 1 ${180 - roundness}, 80
+  Z`;
+
+  const screenborderOpposite = `
+  M${200 - (20 + roundness)},80 
+  A${roundness},${roundness} 0 0 0 ${200 - 20}, ${80 - roundness}
+  L${200 - 20},${20 + roundness}
+  A${roundness},${roundness} 0 0 0 ${200 - (20 + roundness)}, 20
+  L${200 - (180 - roundness)},20
+  A${roundness},${roundness} 0 0 0 ${200 - 180}, ${20 + roundness}
+  L${200 - 180},${80 - roundness}
+  A${roundness},${roundness} 0 0 0 ${200 - (180 - roundness)}, 80
+  Z`;
 
   // useMemo to memoize the SVG elements and avoid unnecessary re-renders.
   const generatedCircles = React.useMemo(
@@ -270,16 +303,85 @@ const CometAnimation: React.FC = () => {
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
         >
-          <path d={screenborder} fill="var(--slate2)" opacity="0">
-            <animate
-              attributeName="opacity"
-              values="0;1"
-              dur="0.5s"
-              begin="2.3s"
-              fill="freeze"
-            />
-          </path>
+          <g>
+            <path
+              d={screenborder}
+              opacity="0"
+              stroke="#DBFFFF"
+              strokeWidth="0.2"
+              style={{
+                filter: "blur(0.2px)",
+                mixBlendMode: "overlay",
+              }}
+            >
+              <animate
+                attributeName="opacity"
+                values="0;1"
+                dur="0.5s"
+                begin="2.3s"
+                fill="freeze"
+              />
+            </path>
+            {/* Screen glow */}
+            <path
+              d={screenborder}
+              stroke="#0085FF"
+              opacity="0"
+              strokeWidth="1.0"
+              style={{
+                filter: "blur(1px)",
+                mixBlendMode: "overlay",
+              }}
+            >
+              <animate
+                attributeName="opacity"
+                values="0;1"
+                dur="0.5s"
+                begin="2.3s"
+                fill="freeze"
+              />
+            </path>
+            {/* Screen */}
+            <path
+              d={screenborder}
+              fill="var(--slate1)"
+              // fill="#0A0B0C"
+              opacity="0"
+            >
+              <animate
+                attributeName="opacity"
+                values="0;1"
+                dur="0.5s"
+                begin="2.3s"
+                fill="freeze"
+              />
+            </path>
+          </g>
 
+          <g
+            style={{
+              // fade in after 2.3 seconds
+              opacity: 0,
+              animation: "fadeIn 0.5s 2.3s forwards",
+            }}
+          >
+            <path d="M20,76 180,76" stroke="var(--slate4)" strokeWidth="0.1" />
+            <path d="M160,76 160,20" stroke="var(--slate4)" strokeWidth="0.1" />
+            <circle cx="178" cy="78" r="0.6" fill="var(--slate4)" />
+            <circle cx="176" cy="78" r="0.6" fill="var(--slate4)" />
+            <circle cx="174" cy="78" r="0.6" fill="var(--slate4)" />
+            {/* table row lines */}
+            {generateRowLines(73, 22, 2.5, 20, 160, "var(--slate4)", "0.1")}
+
+            {/* table column lines */}
+            <path d="M140,76 140,20" stroke="var(--slate4)" strokeWidth="0.1" />
+            <path d="M120,76 120,20" stroke="var(--slate4)" strokeWidth="0.1" />
+            <path d="M100,76 100,20" stroke="var(--slate4)" strokeWidth="0.1" />
+            <path d="M80,76 80,20" stroke="var(--slate4)" strokeWidth="0.1" />
+            <path d="M60,76 60,20" stroke="var(--slate4)" strokeWidth="0.1" />
+            <path d="M40,76 40,20" stroke="var(--slate4)" strokeWidth="0.1" />
+            <path d="M20,76 20,20" stroke="var(--slate4)" strokeWidth="0.1" />
+          </g>
           {/* <path d={screenborder} fill="url(#image)" opacity="0">
             <animate
               attributeName="opacity"
@@ -312,104 +414,128 @@ const CometAnimation: React.FC = () => {
             strokeWidth={0.2}
             d={screenborder}
           />
-          {generatedCircles}
-          {generatedCircleShadows}
-          {generatedCirclesOpposite}
-          {generatedCircleShadowsOpposite}
-          {circuitPathl1}
-          {generatedCirclesl1}
-          {generatedCircleShadowsl1}
 
-          {circuitPathl2}
-          {generatedCirclesl2}
-          {generatedCircleShadowsl2}
+          {/* Rotating circles around the screen
+          <g>
+            {generatedCircles}
+            {generatedCircleShadows}
+            {generatedCirclesOpposite}
+            {generatedCircleShadowsOpposite}
+          </g> */}
 
-          {circuitPathl3}
-          {generatedCirclesl3}
-          {generatedCircleShadowsl3}
+          {/* Initial circuits */}
+          <g>
+            {circuitPathl1}
+            {generatedCirclesl1}
+            {generatedCircleShadowsl1}
+            {circuitPathl2}
+            {generatedCirclesl2}
+            {generatedCircleShadowsl2}
+            {circuitPathl3}
+            {generatedCirclesl3}
+            {generatedCircleShadowsl3}
+            {circuitPathr1}
+            {generatedCirclesr1}
+            {generatedCircleShadowsr1}
+            {circuitPathr2}
+            {generatedCirclesr2}
+            {generatedCircleShadowsr2}
+            {circuitPathr3}
+            {generatedCirclesr3}
+            {generatedCircleShadowsr3}
+          </g>
 
-          {circuitPathr1}
-          {generatedCirclesr1}
-          {generatedCircleShadowsr1}
-
-          {circuitPathr2}
-          {generatedCirclesr2}
-          {generatedCircleShadowsr2}
-
-          {circuitPathr3}
-          {generatedCirclesr3}
-          {generatedCircleShadowsr3}
-
-          <ellipse
-            cx="100"
-            cy="80"
-            rx="75"
-            ry="1"
-            opacity="0"
-            fill="#0085FF"
-            style={{
-              mixBlendMode: "overlay",
-              filter: "blur(4px)",
-            }}
-          >
-            <animate
-              attributeName="opacity"
-              values="0;1;0"
-              dur="1.0s"
-              begin="2s"
-            />
-          </ellipse>
-          <ellipse
-            cx="100"
-            cy="80"
-            rx="75"
-            ry="0.05"
-            opacity="0"
-            fill="#DBFFFF"
-            style={{
-              mixBlendMode: "normal",
-            }}
-          >
-            <animate
-              attributeName="opacity"
-              values="0;1;0"
-              dur="1.0s"
-              begin="2s"
-            />
-          </ellipse>
-          {/* const screenborder = "M100,80 L180,80 L180,15 L20,15 L20,80 z"; */}
-          <path
-            d="M20,80 Q100,70, 180,80 L180,80 L70,80 Z"
-            fill="#0085FF"
-            opacity="0"
-            style={{
-              mixBlendMode: "overlay",
-              filter: "blur(10px)",
-            }}
-          >
-            <animate
-              attributeName="opacity"
-              values="0;0.5;0"
-              dur="1.0s"
-              begin="2s"
-            />
-          </path>
-          <path
-            d="M60,80 Q100,70, 140,80 L140,80 L70,80 Z"
-            fill="#DBFFFF"
-            opacity="0"
-            style={{
-              mixBlendMode: "overlay",
-              filter: "blur(10px)",
-            }}
-          >
-            <animate
-              attributeName="opacity"
-              values="0;0.5;0"
-              dur="1.0s"
-              begin="2s"
-            />
-          </path>
+          {/* Glow when circuits hit screen */}
+          <g>
+            <ellipse
+              cx="100"
+              cy="80"
+              rx="75"
+              ry="1"
+              opacity="0"
+              fill="#0085FF"
+              style={{
+                mixBlendMode: "overlay",
+                filter: "blur(4px)",
+              }}
+            >
+              <animate
+                attributeName="opacity"
+                values="0;1;0"
+                dur="1.0s"
+                begin="2s"
+              />
+            </ellipse>
+            <ellipse
+              cx="100"
+              cy="80"
+              rx="75"
+              ry="0.05"
+              opacity="0"
+              fill="#DBFFFF"
+              style={{
+                mixBlendMode: "overlay",
+              }}
+            >
+              <animate
+                attributeName="opacity"
+                values="0;1;0"
+                dur="1.0s"
+                begin="2s"
+              />
+            </ellipse>
+            <ellipse
+              cx="100"
+              cy="80"
+              rx="75"
+              ry="0.05"
+              opacity="0"
+              fill="#DBFFFF"
+              style={{
+                mixBlendMode: "overlay",
+              }}
+            >
+              <animate
+                attributeName="opacity"
+                values="0;1;0"
+                dur="1.0s"
+                begin="2s"
+              />
+            </ellipse>
+            {/* const screenborder = "M100,80 L180,80 L180,15 L20,15 L20,80 z"; */}
+            <path
+              d="M20,80 Q100,70, 180,80 L180,80 L70,80 Z"
+              fill="#0085FF"
+              opacity="0"
+              style={{
+                mixBlendMode: "overlay",
+                filter: "blur(10px)",
+              }}
+            >
+              <animate
+                attributeName="opacity"
+                values="0;0.5;0"
+                dur="1.0s"
+                begin="2s"
+              />
+            </path>
+            <path
+              d="M60,80 Q100,70, 140,80 L140,80 L70,80 Z"
+              fill="#DBFFFF"
+              opacity="0"
+              style={{
+                mixBlendMode: "overlay",
+                filter: "blur(10px)",
+              }}
+            >
+              <animate
+                attributeName="opacity"
+                values="0;0.5;0"
+                dur="1.0s"
+                begin="2s"
+              />
+            </path>
+          </g>
         </svg>
       </div>
     </div>
@@ -433,6 +559,23 @@ export default function Welcome() {
 
   const email = currentUser.email;
 
+  //  for animations
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 2.2,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 40 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
     <div className="h-screen bg-slate-1 z-10 relative">
       <motion.div
@@ -450,26 +593,45 @@ export default function Welcome() {
         <AccountHeader email={email ?? "placeholder@example.com"} />
       </motion.div>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        variants={container}
+        initial="hidden"
+        animate="show"
         transition={{ duration: 1, delay: 2.2 }}
       >
-        <div className="absolute inset-0 flex flex-col justify-center items-center h-screen">
-          <div className="flex flex-col justify-center items-center">
-            <div className="text-slate-12 text-center text-[22px] pb-4">
-              Welcome to Dataland, Arthur.
-            </div>
-            <div className="text-slate-11 max-w-md text-center text-lg pb-8">
+        <div className="absolute inset-0 flex flex-col justify-start items-center h-screen">
+          <div className="flex flex-col justify-center items-center mt-[300px]">
+            <motion.div
+              className="bg-slate-2 border border-slate-4 p-4 rounded-lg"
+              variants={item}
+            >
+              <HandWaving
+                size={48}
+                className="text-slate-12"
+                weight="duotone"
+              />
+            </motion.div>
+            <motion.div
+              className="text-slate-12 text-center text-[22px] mt-12 pb-4"
+              variants={item}
+            >
+              Welcome to Dataland,{" "}
+              {capitalizeString(email?.split("@")[0]) ?? "friend"}!
+            </motion.div>
+            <motion.div
+              className="text-slate-11 max-w-md text-center text-lg pb-8"
+              variants={item}
+            >
               Dataland makes it easy for your whole team to browse data from
               your data warehouse.
-            </div>
-            <button
+            </motion.div>
+            <motion.button
               type="button"
               className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md"
               onClick={handleSubmit}
+              variants={item}
             >
               Get started
-            </button>
+            </motion.button>
           </div>
         </div>
       </motion.div>
