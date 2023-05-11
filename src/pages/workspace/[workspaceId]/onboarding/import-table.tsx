@@ -48,12 +48,12 @@ function getIconSvgStringFromName(iconName: string): string {
 
   const colors = [
     "#0091FF", // blue
-    "#3E63DD", // indigo
-    "#7C66DC", // violet
-    "#9D5BD2", // purple
+    // "#3E63DD", // indigo
+    // "#7C66DC", // violet
+    // "#9D5BD2", // purple
     "#AB4ABA", // plum
     "#E93D82", // pink
-    "#E5484D", // red
+    // "#E5484D", // red
     "#F76808", // orange
     "#FFB224", // amber
     "#F5D90A", // yellow

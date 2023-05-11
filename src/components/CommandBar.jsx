@@ -152,7 +152,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                 <Command.Group heading="Navigation" className="py-[8px]">
                   {navigationItems.map((item) => {
                     const id = item.id;
-                    const searchable_id_name = `${item.id}${item.name}`;
+                    const searchable_id_name = `${item.id} ${item.name} ${item.description}`;
                     return (
                       <Command.Item
                         key={searchable_id_name}
@@ -175,7 +175,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                         <div className="flex flex-row gap-2 w-full">
                           <div className="min-w-[24px] text-slate-10">{item.icon}</div>
                           <div className="min-w-[240px]">{item.name}</div>
-                          <div className="text-slate-11">{item.description}</div>
+                          <div className="ml-2 text-slate-11">{item.description}</div>
                         </div>
                       </Command.Item>
                     )
@@ -186,7 +186,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                   <Command.Group heading="Tables" className="mt-2">
                     {tables.map((item) => {
                       const id = item.id;
-                      const searchable_id_name = `${item.id}${item.name}`;
+                      const searchable_id_name = `${item.id} ${item.name} ${item.description}`;
                       return (
                         <Command.Item
                           key={searchable_id_name}
@@ -209,7 +209,9 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                           <div className="flex flex-row gap-2 w-full">
                             <div className="min-w-[24px] text-slate-10"><IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.name} /></div>
                             <div className="w-[240px] truncate">{item.name}</div>
-                            <div className="text-slate-11">{item.description}</div>
+                            <div className="ml-2 font-mono block truncate px-1.5 py-0.5 bg-slate-3 rounded-md text-[12px] text-slate-11">
+                              {item.description.replaceAll(".", "/")}
+                            </div>
                           </div>
                         </Command.Item>
                       )
