@@ -303,7 +303,7 @@ const CometAnimation: React.FC = () => {
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
         >
-          <g>
+          <g className="animate-pulse">
             <path
               d={screenborder}
               opacity="0"
@@ -341,6 +341,8 @@ const CometAnimation: React.FC = () => {
                 fill="freeze"
               />
             </path>
+          </g>
+          <g>
             {/* Screen */}
             <path
               d={screenborder}
@@ -572,7 +574,7 @@ export default function Welcome() {
   };
 
   const item = {
-    hidden: { opacity: 0, y: 40 },
+    hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0 },
   };
 
