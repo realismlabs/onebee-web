@@ -394,3 +394,21 @@ a {
 .perspective-high {
   perspective: 1000px;
 }
+
+/* test gradient circuit */
+@keyframes colorchange {
+  0% {
+    stop-color: #dbffff;
+  }
+  40% {
+    stop-color: var(--slate2);
+  }
+}
+
+.stop1 {
+  animation: colorchange 2s infinite;
+}
+
+.stop2 {
+  animation: colorchange 2s infinite reverse;
+}

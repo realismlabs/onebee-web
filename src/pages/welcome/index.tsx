@@ -654,7 +654,7 @@ export default function Welcome() {
             </motion.div>
             <motion.button
               type="button"
-              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md"
+              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[16px] font-medium py-2 px-4 rounded-md"
               onClick={handleSubmit}
               variants={item}
             >
