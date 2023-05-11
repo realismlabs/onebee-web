@@ -157,7 +157,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                       <Command.Item
                         key={searchable_id_name}
                         value={searchable_id_name}
-                        className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-2" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
+                        className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
                         onMouseEnter={() => {
                           console.log("hovering", searchable_id_name);
                           setValue(searchable_id_name);
@@ -191,7 +191,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                         <Command.Item
                           key={searchable_id_name}
                           value={searchable_id_name}
-                          className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-2" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
+                          className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
                           onMouseEnter={() => {
                             console.log("hovering", searchable_id_name);
                             setValue(searchable_id_name);

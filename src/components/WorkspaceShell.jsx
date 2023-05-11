@@ -478,32 +478,30 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
             </Tooltip.Root>
           </Tooltip.Provider>
         </Link>
-        <Link href={`/workspace/${currentWorkspace.id}/connection`}>
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <div className="flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
-                  <PaperPlaneTilt
-                    size={20}
-                    weight="fill"
-                    className="text-slate-10 group-hover:text-slate-11 transition-all duration-100 min-h-[20px] min-w-[20px]"
-                  />
-                  <div className="truncate w-full">Invite people</div>
-                </div>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  className="text-slate-12 text-[13px] rounded-[4px] bg-black px-[12px] py-[8px] z-20 shadow-2xl"
-                  sideOffset={12}
-                  side="left"
-                >
-                  Invite people
-                  <Tooltip.Arrow className="fill-black" />
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
-        </Link>
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <div className="flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
+                <PaperPlaneTilt
+                  size={20}
+                  weight="fill"
+                  className="text-slate-10 group-hover:text-slate-11 transition-all duration-100 min-h-[20px] min-w-[20px]"
+                />
+                <div className="truncate w-full">Invite people</div>
+              </div>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                className="text-slate-12 text-[13px] rounded-[4px] bg-black px-[12px] py-[8px] z-20 shadow-2xl"
+                sideOffset={12}
+                side="left"
+              >
+                Invite people
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
         <AccountPopover />
       </div>
     </motion.div>
