@@ -22,7 +22,7 @@ function Footer() {
                     <a
                       key={index}
                       href="#"
-                      className="text-md font-sm rounded-md px-3 py-2 text-slate-10 transition-colors duration-300 ease-in-out hover:text-white"
+                      className="text-md font-sm rounded-md px-3 py-2 text-slate-10 transition-colors duration-300 ease-in-out hover:text-slate-12"
                     >
                       {text}
                     </a>

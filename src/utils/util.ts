@@ -1,5 +1,7 @@
 import React from "react";
 import Image from "next/image";
+import { format, formatDistanceToNow, parseISO } from "date-fns";
+import { utcToZonedTime, format as tzFormat } from "date-fns-tz";
 
 export function abbreviateNumber(number: number | null) {
   const SI_SYMBOL = ["", "K", "M", "B"];
@@ -224,4 +226,31 @@ export function assignColor(name: string): string {
 
   // Assign the color from the table
   return Object.values(colorTable)[index];
+}
+
+export function formatFriendlyDate(isoDateString: string) {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const dateObject = utcToZonedTime(isoDateString, timeZone);
+  const formattedDate = format(dateObject, "PPPpp");
+  const timeZoneAbbr = tzFormat(dateObject, "zzz", { timeZone });
+
+  // Transforms  2023-04-28T14:16:27.000Z into April 28th, 2023 at 10:16:27 AM EDT
+  return `${formattedDate} ${timeZoneAbbr}`;
+}
+
+export function friendlyRelativeDateToNow(isoDateString: string) {
+  if (!isoDateString) return null;
+
+  const formattedDistance = formatDistanceToNow(parseISO(isoDateString), {
+    addSuffix: true,
+  });
+  return formattedDistance
+    .replace("minute", "min")
+    .replace("hour", "hr")
+    .replace("day", "day")
+    .replace("week", "w")
+    .replace("month", "mo")
+    .replace("year", "y")
+    .replace("about", "")
+    .trim();
 }

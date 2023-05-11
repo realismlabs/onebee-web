@@ -22,7 +22,7 @@ type StatsProps = {
 function Stats({ value, subtitle }: StatsProps): JSX.Element {
   return (
     <div className="flex flex-col gap-2 max-w-[240px] self-start">
-      <h1 className="text-white text-3xl font-medium">{value}</h1>
+      <h1 className="text-slate-12 text-3xl font-medium">{value}</h1>
       <p className="text-slate-11">{subtitle}</p>
     </div>
   );
@@ -44,7 +44,7 @@ export default function Home() {
       >
         <Header />
         <h1
-          className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-white pt-2 md:pt-8 "
+          className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-slate-12 pt-2 md:pt-8 "
           style={{
             backgroundImage: 'url("images/hero_text_gradient_mask_v6.svg")',
             backgroundPosition: "bottom",
@@ -79,7 +79,7 @@ export default function Home() {
                 className={`
                   absolute 
                   z-20 
-                  text-white 
+                  text-slate-12 
                   ${
                     screen === "lg"
                       ? styles.rayOfLightTopLg
@@ -93,14 +93,14 @@ export default function Home() {
                 className={`
                 absolute 
                 z-20 
-                text-white 
+                text-slate-12 
                 ${screen === "lg" ? styles.rayOfLightBottomLg : "hidden"}
                 `}
               ></div>
             </div>
           </div>
           <div
-            className={`inline-block pt-8 sm:absolute md:pt-[460px] lg:pt-[600px] md:inset-0 z-30 m-auto w-full text-center text-white text-[14px] md:text-[16px] ${styles.heroTextContainer}`}
+            className={`inline-block pt-8 sm:absolute md:pt-[460px] lg:pt-[600px] md:inset-0 z-30 m-auto w-full text-center text-slate-12 text-[14px] md:text-[16px] ${styles.heroTextContainer}`}
           >
             <div className="flex justify-center">
               <h2 className="max-w-md md:max-w-md">
@@ -154,7 +154,7 @@ export default function Home() {
           </div>
         </div>
         <div
-          className="max-w-lg text-white z-20 flex flex-col gap-4 py-12"
+          className="max-w-lg text-slate-12 z-20 flex flex-col gap-4 py-12"
           style={{
             animation: "fadeInFromBottom 0.4s ease-in-out",
             animationDelay: "2.4s",
@@ -189,11 +189,11 @@ export default function Home() {
                 highlightValue={"0.4"}
               />
             </div>
-            <p className="text-white"> $5 per GB-month • Unlimited users</p>
+            <p className="text-slate-12"> $5 per GB-month • Unlimited users</p>
           </div>
         </div>
         <div className="w-full px-2 lg:px-0 lg:w-[1100px] space-y-36">
-          <div className="text-white flex flex-row gap-12">
+          <div className="text-slate-12 flex flex-row gap-12">
             <Image
               className="relative z-20 m-auto pointer-events-none select-none"
               src="/images/logos/logo_wyndly.svg"
@@ -227,7 +227,7 @@ export default function Home() {
               height="120"
             />
           </div>
-          <div className=" text-white z-20 flex flex-col md:flex-row gap-16 items-center">
+          <div className=" text-slate-12 z-20 flex flex-col md:flex-row gap-16 items-center">
             <Image
               className="relative z-20 m-auto pointer-events-none select-none w-2/3"
               src="/images/performance_diagram.svg"
@@ -272,7 +272,7 @@ export default function Home() {
             />
           </div>
           <div className="flex flex-col gap-12 py-16 border-t border-b border-[#FFFFFF10] items-center">
-            <div className="flex flex-row text-white items-center gap-24">
+            <div className="flex flex-row text-slate-12 items-center gap-24">
               <h1 className="text-3xl w-[240px]">
                 Full-text search that just works
               </h1>
@@ -295,7 +295,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col gap-12 items-center">
             <div className="flex flex-col items-center gap-4 text-center">
-              <h1 className="text-3xl text-white">Rich cell types</h1>
+              <h1 className="text-3xl text-slate-12">Rich cell types</h1>
               <div className="space-y-0 text-slate-11">
                 <p className="text-[16px] max-w-xl">
                   Rich cell types help users understand data, faster.
@@ -380,7 +380,7 @@ export default function Home() {
                 height="310"
               />
               <div className="flex flex-col gap-4 max-w-md">
-                <h1 className="text-2xl text-white">
+                <h1 className="text-2xl text-slate-12">
                   Syncs from your data warehouse
                 </h1>
                 <p className="space-y-1 text-slate-11">
@@ -399,7 +399,7 @@ export default function Home() {
                 height="310"
               />
               <div className="flex flex-col gap-4 max-w-md">
-                <h1 className="text-2xl text-white">
+                <h1 className="text-2xl text-slate-12">
                   Enterprise-grade security
                 </h1>
                 <p className="space-y-1 text-slate-11">
@@ -415,7 +415,7 @@ export default function Home() {
                 icon={<Lightning color="#E5C3F0" />}
                 text="Productivity"
               />
-              <h1 className="text-3xl text-white">Row navigation</h1>
+              <h1 className="text-3xl text-slate-12">Row navigation</h1>
               <div className="space-y-4 text-slate-11">
                 <p className="text-[16px] max-w-xl">
                   Dataland makes it easy to introspect rows in wide tables. Just
@@ -436,7 +436,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center">
             <div className="z-10 flex flex-col pb-96 items-center space-y-6">
-              <h1 className="text-[48px] leading-tight text-white">
+              <h1 className="text-[48px] leading-tight text-slate-12">
                 The ultimate <br></br>data browser
               </h1>
               <div className="flex flex-row gap-4 items-center">

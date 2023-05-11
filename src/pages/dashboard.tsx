@@ -19,13 +19,13 @@ export default function Sandbox() {
           <div className="text-blue-400 text-[14px]">
             This playground loads 1.6 billion rows of Hacker News data.
           </div>
-          <Link href="/signup" className="text-white text-[14px]">
+          <Link href="/signup" className="text-slate-12 text-[14px]">
             Try with your data →
           </Link>
         </div>
         {/* This is the full screen */}
         <div className="w-full flex flex-row flex-grow">
-          <div className="w-12 text-white flex flex-col items-center left-0 border-r border-slate-6 py-3 gap-2">
+          <div className="w-12 text-slate-12 flex flex-col items-center left-0 border-r border-slate-6 py-3 gap-2">
             <div className="h-7 w-7 bg-slate-4 rounded-sm text-slate-11 flex items-center justify-center">
               A
             </div>

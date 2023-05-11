@@ -16,10 +16,15 @@ module.exports = {
           from: { opacity: 0, transform: 'translate(-50%, -50%) scale(0.96)' },
           to: { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
         },
+        commandBar: {
+          from: { opacity: 0, transform: 'translate(-50%, -25%) scale(0.9)' },
+          to: { opacity: 1, transform: 'translate(-50%, -25%) scale(1)' },
+        }
       },
       animation: {
         overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        commandBar: 'commandBar 150ms cubic-bezier(0.16, 1, 0.3, 1)',
       },
     },
   },
@@ -28,13 +33,20 @@ module.exports = {
       colors: {
         slate: radixColors.slateDark,
         purple: radixColors.purpleDark,
+        crimson: radixColors.crimsonDark,
         red: radixColors.redDark,
+        orange: radixColors.orangeDark,
         amber: radixColors.amberDark,
         green: radixColors.greenDark,
+        cyan: radixColors.cyanDark,
+        teal: radixColors.tealDark,
+        blue: radixColors.blueDark,
+        indigo: radixColors.indigoDark,
         purple: radixColors.purpleDark,
+        violet: radixColors.violetDark,
         plum: radixColors.plumDark,
         pink: radixColors.pinkDark,
-        cyan: radixColors.cyanDark,
       },
     }), require('@tailwindcss/forms'),],
 }
+

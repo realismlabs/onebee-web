@@ -18,11 +18,11 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
         <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -116,7 +116,7 @@ export default function CreateWorkspace() {
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full pt-12">
-        <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
+        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4">
           Name your workspace
         </div>
         <form
@@ -133,7 +133,7 @@ export default function CreateWorkspace() {
                 setErrorMessage("");
               }}
               placeholder="i.e. Acme organization"
-              className={`w-full bg-slate-3 border text-white text-[14px] rounded-md px-3 py-2 placeholder-slate-9
+              className={`w-full bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9
               ${errorMessage !== "" ? "border-red-9" : "border-slate-6"} 
               focus:outline-none focus:ring-blue-600
               `}
@@ -156,13 +156,13 @@ export default function CreateWorkspace() {
               className="ml-2 block text-slate-11 text-[14px]"
             >
               Allow anyone with an{" "}
-              <span className="text-white font-medium">{"@" + domain}</span>{" "}
+              <span className="text-slate-12 font-medium">{"@" + domain}</span>{" "}
               email to join this workspace
             </label>
           </div>
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-[14px] font-medium py-2 px-4 rounded-md mt-4"
+            className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md mt-4"
           >
             Create workspace
           </button>

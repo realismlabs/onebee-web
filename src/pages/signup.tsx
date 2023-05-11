@@ -143,7 +143,7 @@ export default function Signup() {
       >
         <div className="w-full flex flex-row flex-grow h-screen">
           <div className="w-full lg:w-1/2 flex justify-center border-r border-slate-3">
-            <div className="w-[600px] text-white flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
+            <div className="w-[600px] text-slate-12 flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
               <header className="fixed top-8">
                 <Link href="/">
                   <Image
@@ -160,7 +160,7 @@ export default function Signup() {
               </h3>
               <div className="flex flex-col gap-4 mt-8 w-full">
                 <div className="w-full flex flex-col gap-2">
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                     <Image
                       src="/images/logo_google.svg"
                       width={24}
@@ -169,7 +169,7 @@ export default function Signup() {
                     ></Image>
                     Sign up with Google
                   </button>
-                  <button className="w-full bg-slate-3 border border-slate-6 text-white text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                  <button className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                     <Image
                       src="/images/logo_github.svg"
                       width={24}
@@ -190,13 +190,13 @@ export default function Signup() {
                     <div className="flex flex-col gap-2">
                       <label
                         htmlFor="email"
-                        className="text-white text-[14px] font-medium"
+                        className="text-slate-12 text-[14px] font-medium"
                       >
                         Email
                       </label>
                       <input
                         id="email"
-                        className={`bg-slate-3 hover:border-slate-7 border text-white text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
+                        className={`bg-slate-3 hover:border-slate-7 border text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
                           emailErrorMessage !== ""
                             ? "border-red-9"
                             : "border-slate-6"
@@ -215,7 +215,7 @@ export default function Signup() {
                       {/* Add a password field */}
                       <label
                         htmlFor="password"
-                        className="text-white text-[14px] font-medium mt-2"
+                        className="text-slate-12 text-[14px] font-medium mt-2"
                       >
                         Password
                       </label>
@@ -227,7 +227,7 @@ export default function Signup() {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="•••••••••••••"
                           required
-                          className={`w-full bg-slate-3 hover:border-slate-7 border text-white text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9
+                          className={`w-full bg-slate-3 hover:border-slate-7 border text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9
                           ${
                             passwordErrorMessage !== ""
                               ? "border-red-9"
@@ -250,7 +250,7 @@ export default function Signup() {
                         </div>
                       )}
                       <button
-                        className="bg-blue-600 text-white text-[14px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
+                        className="bg-blue-600 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
                         type="submit"
                       >
                         Sign up
@@ -306,7 +306,7 @@ export default function Signup() {
                       alt="Google logo"
                     ></Image>
                   </div>
-                  <p className="text-white">The fastest data browsing UX</p>
+                  <p className="text-slate-12">The fastest data browsing UX</p>
                 </div>
                 <div className="flex flex-row gap-4 items-center w-[300px]">
                   <div className="p-3 bg-slate-2 border border-slate-6 rounded-md">
@@ -317,7 +317,7 @@ export default function Signup() {
                       alt="Google logo"
                     ></Image>
                   </div>
-                  <p className="text-white">Secure & SOC 2 compliant</p>
+                  <p className="text-slate-12">Secure & SOC 2 compliant</p>
                 </div>
                 <div className="flex flex-row gap-4 items-center w-[300px]">
                   <div className="p-3 bg-slate-2 border border-slate-6 rounded-md">
@@ -328,7 +328,7 @@ export default function Signup() {
                       alt="Google logo"
                     ></Image>
                   </div>
-                  <p className="text-white">Set up in 45 seconds</p>
+                  <p className="text-slate-12">Set up in 45 seconds</p>
                 </div>
               </div>
             </div>

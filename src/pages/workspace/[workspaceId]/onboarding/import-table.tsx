@@ -1,16 +1,70 @@
 import React, { useState, useEffect, useRef, FC } from "react";
+import ReactDOM from "react-dom";
 import router from "next/router";
 import Image from "next/image";
 import { CaretRight, Table } from "@phosphor-icons/react";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { useCurrentWorkspace } from "../../hooks/useCurrentWorkspace";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { capitalizeString } from "@/utils/util";
 import { createTable, createConnection } from "@/utils/api";
-import MockTable from "@/components/MockTable";
-import { create } from "domain";
+import MemoizedMockTable from "@/components/MemoizedMockTable";
+import { IconList } from "@/components/IconList";
+import { Transition } from "@headlessui/react";
+import IconPickerPopoverCreateTable from "@/components/IconPickerPopoverCreateTable";
+import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
+
+function getIconSvgStringFromName(iconName: string): string {
+  const iconItem = IconList.find((icon) => icon.name === iconName);
+  let iconSvgString =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#9D5BD2" viewBox="0 0 256 256" class="min-w-[24px] transition-colors duration-300"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path></svg>';
+
+  if (iconItem) {
+    const iconDiv = document.getElementById(iconName);
+    if (iconDiv) {
+      iconSvgString = Array.from(iconDiv.children)
+        .map((child) => child.outerHTML)
+        .join("\n");
+    } else {
+      console.error(
+        `awu Div with id "${iconName}" not found, using Table instead`
+      );
+    }
+  }
+
+  function updateSvgColor(htmlString: string, newColor: string) {
+    const originalStyleAttribute = /style="color:\s*[^"]*"/;
+    const newStyleAttribute = `style="color: ${newColor};"`;
+
+    const updatedHtmlString = htmlString.replace(
+      originalStyleAttribute,
+      newStyleAttribute
+    );
+
+    return updatedHtmlString;
+  }
+
+  const colors = [
+    "#0091FF", // blue
+    "#3E63DD", // indigo
+    "#7C66DC", // violet
+    "#9D5BD2", // purple
+    "#AB4ABA", // plum
+    "#E93D82", // pink
+    "#E5484D", // red
+    "#F76808", // orange
+    "#FFB224", // amber
+    "#F5D90A", // yellow
+    "#99D52A", // lime
+    "#46A758", // green
+  ];
+
+  const random_color = colors[Math.floor(Math.random() * colors.length)];
+  const updatedSvgString = updateSvgColor(iconSvgString, random_color);
+  return updatedSvgString;
+}
 
 interface AccountHeaderProps {
   email: string;
@@ -35,6 +89,18 @@ interface FileTreeProps {
   setSelectedTable: React.Dispatch<React.SetStateAction<string | null>>;
   selectedTableRowCount: number | null;
   setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
+  selectedIconName: string;
+  setSelectedIconName: React.Dispatch<React.SetStateAction<string>>;
+  isIconSuggestionLoading: boolean;
+  setIsIconSuggestionLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  iconSvgString: string;
+  setIconSvgString: React.Dispatch<React.SetStateAction<string>>;
+  selectedColor: string;
+  setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
+  tableDisplayName: string;
+  setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
+  tableDisplayNameErrorMessage: string;
+  setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // helper functions
@@ -79,11 +145,11 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
     <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
       <div className="flex flex-col grow items-start">
         <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-white font-medium">{email}</p>
+        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
       </div>
       <div className="flex flex-col grow items-end">
         <p
-          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
+          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
           onClick={handleLogout}
         >
           Logout
@@ -100,6 +166,18 @@ const PreviewTableUI = ({
   setSelectedTable,
   selectedTableRowCount,
   setSelectedTableRowCount,
+  selectedIconName,
+  setSelectedIconName,
+  isIconSuggestionLoading,
+  setIsIconSuggestionLoading,
+  iconSvgString,
+  setIconSvgString,
+  selectedColor,
+  setSelectedColor,
+  tableDisplayName,
+  setTableDisplayName,
+  tableDisplayNameErrorMessage,
+  setTableDisplayNameErrorMessage,
 }: {
   tablesQueryData: any;
   handleSubmit: any;
@@ -107,59 +185,147 @@ const PreviewTableUI = ({
   setSelectedTable: React.Dispatch<React.SetStateAction<string | null>>;
   selectedTableRowCount: number | null;
   setSelectedTableRowCount: React.Dispatch<React.SetStateAction<number | null>>;
+  selectedIconName: string;
+  setSelectedIconName: React.Dispatch<React.SetStateAction<string>>;
+  isIconSuggestionLoading: boolean;
+  setIsIconSuggestionLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  iconSvgString: string;
+  setIconSvgString: React.Dispatch<React.SetStateAction<string>>;
+  selectedColor: string;
+  setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
+  tableDisplayName: string;
+  setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
+  tableDisplayNameErrorMessage: string;
+  setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  console.log("awu1 tablesQueryData", tablesQueryData);
-
   const data = tablesQueryData.listed_tables;
-  console.log("awu data", data);
 
   // based on the selected table, get the tablename and path differently
   const tableName = selectedTable?.split(".")[2];
-  const path =
-    selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
+  const fullPathWithSlashes = selectedTable?.replaceAll(".", "/");
 
   return (
     <>
       <div className="flex flex-row gap-6 w-full px-12">
         <div>
-          <p className="text-white text-[14px]">Choose a table</p>
+          <p className="text-slate-12 text-[14px]">Choose a table</p>
           <FileTree
             data={data}
             selectedTable={selectedTable}
             setSelectedTable={setSelectedTable}
             selectedTableRowCount={selectedTableRowCount}
             setSelectedTableRowCount={setSelectedTableRowCount}
+            selectedIconName={selectedIconName}
+            setSelectedIconName={setSelectedIconName}
+            isIconSuggestionLoading={isIconSuggestionLoading}
+            setIsIconSuggestionLoading={setIsIconSuggestionLoading}
+            iconSvgString={iconSvgString}
+            setIconSvgString={setIconSvgString}
+            selectedColor={selectedColor}
+            setSelectedColor={setSelectedColor}
+            tableDisplayName={tableDisplayName}
+            setTableDisplayName={setTableDisplayName}
+            tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
+            setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
           />
         </div>
+        {/* render all icons but hide them, so that SVG contents can be found*/}
+        <div className="hidden">
+          {IconList.map((iconItem) => (
+            <div id={iconItem.name} key={iconItem.name}>
+              <iconItem.icon
+                weight="fill"
+                size={20}
+                style={{
+                  color: "#FFFFFF",
+                }}
+              />
+            </div>
+          ))}
+        </div>
         <div className="flex-grow flex-shrink-0 w-0">
-          <p className="text-white text-[14px]">Preview</p>
+          <p className="text-slate-12 text-[14px]">Preview</p>
           <div className="relative bg-slate-2 rounded-md mt-4 h-[80vh] border border-slate-4 flex flex-col">
             {selectedTable ? (
               <>
-                <div className="flex flex-row gap-2 items-center px-4 py-2 border-b border-slate-4">
-                  <p className="text-white text-[14px]">{tableName}</p>
-                  <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
-                    {path}
-                  </pre>
-                  <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
-                    {abbreviateNumber(selectedTableRowCount) + " rows"}
-                  </pre>
+                <div className="flex flex-row gap-2 items-center px-[12px] py-2 border-b border-slate-4">
+                  <div className="min-w-[31px] min-h-[31px] flex items-center justify-center ">
+                    <Transition
+                      show={!isIconSuggestionLoading}
+                      enter="transition-all transform origin-center"
+                      enterFrom="scale-0"
+                      enterTo="scale-100"
+                      leave="transition-all transform origin-center"
+                      leaveFrom="scale-100"
+                      leaveTo="scale-0"
+                      className="flex-row flex"
+                    >
+                      <IconPickerPopoverCreateTable
+                        iconSvgString={iconSvgString}
+                        setIconSvgString={setIconSvgString}
+                        selectedColor={selectedColor}
+                        setSelectedColor={setSelectedColor}
+                      />
+                    </Transition>
+                    {isIconSuggestionLoading && (
+                      <div
+                        id="loading-icon-suggestion"
+                        className="absolute w-[31px] h-[31px] flex items-center justify-center"
+                      >
+                        <div
+                          className="w-[15px] h-[15px] rounded-full animate-spin flex items-center justify-center"
+                          style={{
+                            background:
+                              "conic-gradient(from 0deg, #0091FF, #3E63DD, #7C66DC, #9D5BD2, #AB4ABA, #E93D82, #E5484D, #F76808, #FFB224, #F5D90A, #99D52A, #46A758, #0091FF)",
+                            // filter: "brightness(2)",
+                            // background:
+                            //   "conic-gradient(from 0deg, #BF7AF0, #52A9FF, #BF7AF0)",
+                            transformOrigin: "center",
+                          }}
+                        >
+                          <div className="absolute h-[12px] w-[12px] bg-slate-2 rounded-full"></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <input
+                    title="Display name"
+                    value={tableDisplayName}
+                    className="bg-slate-5 text-white text-[14px] px-[8px] py-[4px] border border-slate-6 rounded-sm w-[360px] focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    onChange={(e) => {
+                      setTableDisplayNameErrorMessage("");
+                      setTableDisplayName(e.target.value);
+                    }}
+                  />
+                  {tableDisplayNameErrorMessage && (
+                    <div className="text-red-500 text-[13px]">
+                      {tableDisplayNameErrorMessage}
+                    </div>
+                  )}
+                  <div className="ml-auto flex flex-row gap-2">
+                    <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
+                      {fullPathWithSlashes}
+                    </pre>
+                    <pre className="px-2 py-1 bg-slate-4 rounded-sm text-slate-11 text-[12px]">
+                      {abbreviateNumber(selectedTableRowCount) + " rows"}
+                    </pre>
+                  </div>
                 </div>
                 <div className="flex-grow-0 overflow-x-auto overflow-y-scroll">
-                  <MockTable />
+                  <MemoizedMockTable />
                 </div>
-                <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-white flex items-center justify-center">
+                <div className="rounded-md bg-gradient-to-t from-slate-1 via-slate-1 to-transparent absolute z-10 h-48 bottom-0 w-full text-slate-12 flex items-center justify-center">
                   <button
-                    className={`text-[16px] px-4 py-2 bg-blue-600 rounded-md`}
+                    className={`text-[16px] px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md`}
                     type="button"
                     onClick={handleSubmit}
                   >
-                    Create table
+                    Import table
                   </button>
                 </div>
               </>
             ) : (
-              <div className="pl-24 flex items-center justify-center text-white h-full flex-col gap-2">
+              <div className="pl-24 flex items-center justify-center text-slate-12 h-full flex-col gap-2">
                 <p className="text-[14px]"> No table selected </p>
                 <p className="text-[13px] text-slate-11">
                   {" "}
@@ -180,10 +346,14 @@ const FileTree: React.FC<FileTreeProps> = ({
   setSelectedTable,
   selectedTableRowCount,
   setSelectedTableRowCount,
+  selectedIconName,
+  setSelectedIconName,
+  isIconSuggestionLoading,
+  setIsIconSuggestionLoading,
+  iconSvgString,
+  setIconSvgString,
 }) => {
   const nestedData = createNestedStructure(data);
-  console.log("nestedData", nestedData);
-
   const allDbNames = Object.keys(nestedData);
   const allSchemaNames = Object.values(nestedData).flatMap((schemas) =>
     Object.keys(schemas)
@@ -193,9 +363,6 @@ const FileTree: React.FC<FileTreeProps> = ({
   const [expandedDbs, setExpandedDbs] = useState<string[]>(allDbNames);
   const [expandedSchemas, setExpandedSchemas] =
     useState<string[]>(allSchemaNames);
-
-  console.log("expandedDbs", expandedDbs);
-
   // update when data itself updates
   useEffect(() => {
     setExpandedDbs(allDbNames);
@@ -226,7 +393,7 @@ const FileTree: React.FC<FileTreeProps> = ({
     );
   };
 
-  const toggleTable = (
+  const toggleTable = async (
     dbName: string,
     schemaName: string,
     tableName: string
@@ -241,6 +408,38 @@ const FileTree: React.FC<FileTreeProps> = ({
         item.table_name === tableName
     );
     setSelectedTableRowCount(table?.row_count ?? null);
+    setIsIconSuggestionLoading(true);
+
+    let timeoutId = setTimeout(() => {
+      setSelectedIconName("Table");
+      setIsIconSuggestionLoading(false);
+    }, 5000);
+
+    try {
+      const icon_suggestion = await fetch("/api/guess-icon/", {
+        method: "POST",
+        body: JSON.stringify({ tableName }),
+        headers: { "Content-Type": "application/json" },
+      });
+      clearTimeout(timeoutId);
+      const icon_suggestion_json = await icon_suggestion.json();
+      const icon_suggestion_name = icon_suggestion_json.bestMatch;
+      if (typeof icon_suggestion_name === "string") {
+        const icon_suggestion_name_cleaned = icon_suggestion_name.replace(
+          /[^a-zA-Z0-9]/g,
+          ""
+        );
+        setSelectedIconName(icon_suggestion_name_cleaned);
+        const iconSvgString = getIconSvgStringFromName(
+          icon_suggestion_name_cleaned
+        );
+        setIconSvgString(iconSvgString);
+      }
+      setIsIconSuggestionLoading(false);
+    } catch (error) {
+      setIsIconSuggestionLoading(false);
+      clearTimeout(timeoutId);
+    }
   };
 
   return (
@@ -312,7 +511,7 @@ const FileTree: React.FC<FileTreeProps> = ({
                                 className={`flex flex-row ml-2 rounded-md px-2 py-1.5 flex-grow cursor-pointer ${
                                   selectedTable ===
                                   createUniqueId(dbName, schemaName, tableName)
-                                    ? "bg-blue-900 text-white"
+                                    ? "bg-blue-900 text-slate-12"
                                     : "hover:bg-slate-4 active:bg-slate-5"
                                 }`}
                               >
@@ -391,13 +590,34 @@ export default function CreateTable() {
   };
 
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
+  const [selectedIconName, setSelectedIconName] = useState<string>("");
   const [selectedTableRowCount, setSelectedTableRowCount] = useState<
     number | null
   >(null);
+  const [isIconSuggestionLoading, setIsIconSuggestionLoading] =
+    useState<boolean>(false);
+  const [iconSvgString, setIconSvgString] = useState<string>(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#9D5BD2" viewBox="0 0 256 256" class="min-w-[24px] transition-colors duration-300"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path></svg>'
+  );
+  const [selectedColor, setSelectedColor] = useState<string>("#0091FF");
+  const [tableDisplayName, setTableDisplayName] = useState<string>("");
+  const [tableDisplayNameErrorMessage, setTableDisplayNameErrorMessage] =
+    useState<string>("");
+
+  // whenever selectedTable changes, fetch the new tableDisplayName
+  useEffect(() => {
+    if (selectedTable) {
+      const displayName = selectedTable?.split(".")[2];
+      setTableDisplayName(displayName);
+    }
+  }, [selectedTable]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log("test");
+    if (tableDisplayName === "") {
+      setTableDisplayNameErrorMessage("Table display name cannot be empty");
+      return;
+    }
 
     const createConnectionRequestBody = {
       ...connectionRequestBody,
@@ -422,9 +642,14 @@ export default function CreateTable() {
     const createTableRequestBody = {
       workspaceId: currentWorkspace?.id,
       fullName: selectedTable,
-      displayName,
+      displayName: tableDisplayName,
       connectionPath,
       rowCount: selectedTableRowCount,
+      connectionId: create_connection_response.id,
+      iconSvgString: iconSvgString,
+      iconColor: selectedColor,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     const create_table_response = await createTable(createTableRequestBody);
@@ -432,7 +657,9 @@ export default function CreateTable() {
     console.log("createTableRequestBody", createTableRequestBody);
 
     //  route to the table page
-    router.push(`/table/${create_table_response.id}`);
+    router.push(
+      `/workspace/${currentWorkspace.id}/table/${create_table_response.id}`
+    );
   };
 
   const {
@@ -469,7 +696,7 @@ export default function CreateTable() {
   if (isUserLoading || isTablesQueryLoading) {
     return (
       <div className="h-screen bg-slate-1">
-        <div className="h-screen flex flex-col items-center justify-center text-white text-[13px]">
+        <div className="h-screen flex flex-col items-center justify-center text-slate-12 text-[13px]">
           Loading...
         </div>
       </div>
@@ -488,7 +715,7 @@ export default function CreateTable() {
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
       <div className="flex flex-col justify-center items-center w-full">
-        <div className="bg-slate-1 text-white text-center text-[22px] pb-4"></div>
+        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"></div>
         <PreviewTableUI
           tablesQueryData={tablesQueryData}
           handleSubmit={handleSubmit}
@@ -496,6 +723,18 @@ export default function CreateTable() {
           setSelectedTable={setSelectedTable}
           selectedTableRowCount={selectedTableRowCount}
           setSelectedTableRowCount={setSelectedTableRowCount}
+          selectedIconName={selectedIconName}
+          setSelectedIconName={setSelectedIconName}
+          isIconSuggestionLoading={isIconSuggestionLoading}
+          setIsIconSuggestionLoading={setIsIconSuggestionLoading}
+          iconSvgString={iconSvgString}
+          setIconSvgString={setIconSvgString}
+          selectedColor={selectedColor}
+          setSelectedColor={setSelectedColor}
+          tableDisplayName={tableDisplayName}
+          setTableDisplayName={setTableDisplayName}
+          tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
+          setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
         />
       </div>
     </div>

@@ -20,7 +20,9 @@ type StatsProps = {
 function Stats({ value, subtitle }: StatsProps): JSX.Element {
   return (
     <div className="flex flex-col gap-2 max-w-[240px] self-start">
-      <h1 className="text-white text-2xl lg:text-3xl font-medium">{value}</h1>
+      <h1 className="text-slate-12 text-2xl lg:text-3xl font-medium">
+        {value}
+      </h1>
       <p className="text-slate-11 md:text-md text-sm">{subtitle}</p>
     </div>
   );
@@ -52,7 +54,7 @@ export default function Home() {
             <select
               title="Hero Type"
               id="Hero Type"
-              className="w-16 text-white text-xs bg-transparent"
+              className="w-16 text-slate-12 text-xs bg-transparent"
               onChange={(event) => {
                 setHeroType(event.target.value);
               }}
@@ -138,7 +140,7 @@ export default function Home() {
                 className={`
                   absolute 
                   z-20 
-                  text-white 
+                  text-slate-12 
                   ${styles.rayOfLightTop}
                   `}
               ></div>
@@ -146,7 +148,7 @@ export default function Home() {
                 className={`
                 absolute 
                 z-20 
-                text-white 
+                text-slate-12 
                 ${styles.rayOfLightBottomLg}
                 `}
               ></div>
@@ -158,7 +160,7 @@ export default function Home() {
                   text-center
                   lg:mt-[260px]
                   mt-[100px]
-                  text-white ${styles.heroTextContainer}`}
+                  text-slate-12 ${styles.heroTextContainer}`}
               >
                 <div
                   className="inline-block bg-[#4315F3] rounded-full z-50"
@@ -208,7 +210,7 @@ export default function Home() {
         >
           <div
             id="Logos"
-            className="text-white flex sm:flex-row sm:gap-12 gap-4 opacity-40"
+            className="text-slate-12 flex sm:flex-row sm:gap-12 gap-4 opacity-40"
           >
             <Image
               className="relative z-20 m-auto pointer-events-none select-none"
@@ -247,7 +249,7 @@ export default function Home() {
             id="Question Carousel"
             className="flex sm:flex-row flex-col w-full gap-12 lg:px-24 items-center"
           >
-            <div className="text-white sm:text-2xl text-xl flex flex-col gap-4 max-w-xs sm:max-w-full">
+            <div className="text-slate-12 sm:text-2xl text-xl flex flex-col gap-4 max-w-xs sm:max-w-full">
               <h1>Your team performs database lookups all the time.</h1>
               <h1 className="text-[#a474ff]">
                 Why waste time building <br></br>slow, one-off tools for them?
@@ -260,7 +262,7 @@ export default function Home() {
             className="flex flex-col gap-12 items-center"
           >
             <div className="flex flex-col items-center gap-4 text-center">
-              <h1 className="text-2xl lg:text-3xl text-white">
+              <h1 className="text-2xl lg:text-3xl text-slate-12">
                 Rich cell types
               </h1>
               <div className="space-y-0 text-slate-11">
@@ -285,25 +287,13 @@ export default function Home() {
             <Image
               className="absolute pointer-events-none select-none translate-y-6 lg:translate-y-[-200px]"
               src="/images/gradient_highlight.svg"
-              alt="Gradient highlight"
-              draggable="false"
-              width="1555"
-              height="600"
-              style={{
-                mixBlendMode: "overlay",
-              }}
-            />
-
-            <Image
-              className="absolute pointer-events-none select-none translate-y-6 lg:translate-y-[-200px]"
-              src="/images/gradient_highlight.svg"
               alt="Product Screenshot - Rich Cell Types"
               draggable="false"
               width="1555"
               height="600"
               style={{
                 mixBlendMode: "normal",
-                opacity: 0.2,
+                opacity: 0.5,
               }}
             />
           </div>
@@ -311,7 +301,7 @@ export default function Home() {
             id="Search"
             className="flex flex-col gap-12 py-16 border-t border-b border-[#FFFFFF10] items-center"
           >
-            <div className="flex flex-col text-center lg:text-start lg:flex-row text-white items-center gap-6 lg:gap-24">
+            <div className="flex flex-col text-center lg:text-start lg:flex-row text-slate-12 items-center gap-6 lg:gap-24">
               <h1 className="text-2xl lg:text-3xl lg:w-[240px]">
                 Full-text search <br className="hidden lg:block "></br>
                 that just works
@@ -357,7 +347,7 @@ export default function Home() {
               width="1555"
               height="600"
               style={{
-                mixBlendMode: "overlay",
+                mixBlendMode: "normal",
                 opacity: 1.0,
                 transform: "translateY(-200px)",
               }}
@@ -385,7 +375,7 @@ export default function Home() {
                 height="310"
               />
               <div className="flex flex-col gap-4 max-w-md order-1 md:order-2">
-                <h1 className="text-xl lg:text-2xl text-white">
+                <h1 className="text-xl lg:text-2xl text-slate-12">
                   Syncs from your data warehouse
                 </h1>
                 <p className="space-y-1 text-slate-11">
@@ -404,7 +394,7 @@ export default function Home() {
                 height="310"
               />
               <div className="flex flex-col gap-4 max-w-md order-1 md:order-2">
-                <h1 className="text-xl lg:text-2xl text-white">
+                <h1 className="text-xl lg:text-2xl text-slate-12">
                   Enterprise-grade security
                 </h1>
                 <p className="space-y-1 text-slate-11">
@@ -423,7 +413,7 @@ export default function Home() {
                 icon={<Lightning color="#E5C3F0" />}
                 text="Productivity"
               />
-              <h1 className="text-2xl lg:text-3xl text-white">
+              <h1 className="text-2xl lg:text-3xl text-slate-12">
                 Row navigation
               </h1>
               <div className="space-y-4 text-slate-11">
@@ -446,7 +436,7 @@ export default function Home() {
           </div>
           <div
             id="Architecture Diagram"
-            className=" text-white z-20 flex flex-col md:flex-row gap-16 items-center"
+            className=" text-slate-12 z-20 flex flex-col md:flex-row gap-16 items-center"
           >
             <Image
               className="relative z-20 m-auto pointer-events-none select-none md:w-2/3 order-2 md:order-1"
@@ -481,7 +471,7 @@ export default function Home() {
           </div>
           <div id="End of page CTA" className="flex flex-col items-center">
             <div className="z-10 flex flex-col pt-24 pb-48 md:pt-0 md:pb-96 items-center space-y-6">
-              <h1 className="text-3xl md:text-[48px] leading-tight text-white">
+              <h1 className="text-3xl md:text-[48px] leading-tight text-slate-12">
                 The ultimate <br></br>data browser
               </h1>
               <div className="flex flex-row gap-4 items-center">

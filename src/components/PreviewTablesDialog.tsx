@@ -71,7 +71,7 @@ const PreviewTablesDialog = ({ tables }: { tables: any[] }) => {
       </Dialog.Trigger>
       <Dialog.Portal className="z-100">
         <Dialog.Overlay className="z-20 bg-slate-1 opacity-75 fixed inset-0" />
-        <Dialog.Content className="z-30 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] max-w-[90vw] w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
+        <Dialog.Content className="z-30 data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] max-w-[90vw] w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-slate-2 border border-slate-3 text-slate-12 p-5 focus:outline-none overflow-hidden">
           <Dialog.Title className="m-0 text-[14px] font-medium">
             Full table list
           </Dialog.Title>

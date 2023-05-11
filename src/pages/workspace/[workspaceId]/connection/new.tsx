@@ -3,40 +3,20 @@ import Link from "next/link";
 import router from "next/router";
 import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, CaretRight, CircleNotch, CheckCircle } from "@phosphor-icons/react";
+import {
+  X,
+  CaretRight,
+  CircleNotch,
+  CheckCircle,
+  Plus,
+} from "@phosphor-icons/react";
 import { Disclosure, Transition } from "@headlessui/react";
-import LogoSnowflake from "../../components/LogoSnowflake";
-import LogoBigQuery from "../../components/LogoBigQuery";
-import LogoPostgres from "../../components/LogoPostgres";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { useCurrentWorkspace } from "../../hooks/useCurrentWorkspace";
-
-interface AccountHeaderProps {
-  email: string;
-}
-
-const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const handleLogout = () => {
-    router.push("/login?lo=true");
-  };
-
-  return (
-    <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
-      <div className="flex flex-col grow items-start">
-        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-white font-medium">{email}</p>
-      </div>
-      <div className="flex flex-col grow items-end">
-        <p
-          className="text-[13px] text-white hover:text-slate-12 font-medium cursor-pointer"
-          onClick={handleLogout}
-        >
-          Logout
-        </p>
-      </div>
-    </div>
-  );
-};
+import LogoSnowflake from "@/components/LogoSnowflake";
+import LogoBigQuery from "@/components/LogoBigQuery";
+import LogoPostgres from "@/components/LogoPostgres";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
+import WorkspaceLayout from "@/components/WorkspaceLayout";
 
 const InviteTeammateDialog = ({
   email,
@@ -191,7 +171,7 @@ const InviteTeammateDialog = ({
         <div className="pl-4 py-2 border-l border-slate-12 italic">
           <p>{message}</p>
         </div>
-        <button className="bg-blue-600 px-3 py-1.5 rounded-md text-white font-medium pointer-events-none">
+        <button className="bg-blue-600 px-3 py-1.5 rounded-md text-slate-12 font-medium pointer-events-none">
           Accept invite
         </button>
         <p>You can also copy + paste this link into your browser:</p>
@@ -221,13 +201,13 @@ const InviteTeammateDialog = ({
             tabIndex={-1}
           >
             <p className="text-slate-10">Don&apos;t have credentials?</p>
-            <p className="text-white">Invite a teammate to help →</p>
+            <p className="text-slate-12">Invite a teammate to help →</p>
           </div>
         </Dialog.Trigger>
         <Dialog.Portal className="z-100">
           <Dialog.Overlay className="z-20 bg-slate-1 opacity-[90%] fixed inset-0" />
           <div className="fixed inset-0 flex items-start justify-center z-30">
-            <Dialog.Content className="fixed mx-auto max-h-[85vh] top-[60px] max-w-[90vw] w-[480px] rounded-[6px] bg-slate-2 border border-slate-3 text-white p-5 focus:outline-none overflow-hidden">
+            <Dialog.Content className="fixed mx-auto max-h-[85vh] top-[60px] max-w-[90vw] w-[480px] rounded-[6px] bg-slate-2 border border-slate-3 text-slate-12 p-5 focus:outline-none overflow-hidden">
               <Dialog.Title className="m-0 text-[14px] font-medium">
                 Invite a teammate to help
               </Dialog.Title>
@@ -239,7 +219,7 @@ const InviteTeammateDialog = ({
                         Email address(es)
                       </label>
                       <input
-                        className={`rounded-md block w-full bg-slate-3 text-white text-[13px] py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
+                        className={`rounded-md block w-full bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
                     ${
                       isValid === false
                         ? "border-red-500"
@@ -261,7 +241,7 @@ const InviteTeammateDialog = ({
                     <div className="flex flex-col gap-2">
                       <label className="text-[14px] w-[120px]">Message</label>
                       <textarea
-                        className="flex-grow rounded-md block bg-slate-3 text-white text-[13px] py-2 px-3 h-48 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10 leading-normal"
+                        className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 h-48 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10 leading-normal"
                         required
                         title="Custom message"
                         value={customMessage}
@@ -275,7 +255,7 @@ const InviteTeammateDialog = ({
                       {({ open }) => (
                         <>
                           <Disclosure.Button
-                            className="flex w-full rounded-sm text-left text-[12px] text-white gap-1 items-center"
+                            className="flex w-full rounded-sm text-left text-[12px] text-slate-12 gap-1 items-center"
                             tabIndex={-1}
                           >
                             <CaretRight
@@ -344,7 +324,7 @@ const InviteTeammateDialog = ({
         enterTo="opacity-100 translate-y-0"
         className="fixed top-0 left-1/2 -translate-x-1/2"
       >
-        <div className=" text-white rounded-md shadow-lg transform -translate-y-25 transition-transform">
+        <div className=" text-slate-12 rounded-md shadow-lg transform -translate-y-25 transition-transform">
           <Toast
             message={toastMessage}
             duration={3000} // Duration of the Toast in milliseconds
@@ -374,7 +354,7 @@ const Toast: React.FC<ToastProps> = ({ message, duration }) => {
   if (!visible) return null;
 
   return (
-    <div className="mt-12 pl-2 pr-4 py-2 text-[12px] bg-slate-4 text-white rounded-md shadow-lg z-50 flex flex-row gap-2 items-center">
+    <div className="mt-12 pl-2 pr-4 py-2 text-[12px] bg-slate-4 text-slate-12 rounded-md shadow-lg z-50 flex flex-row gap-2 items-center">
       <CheckCircle size={20} weight="fill" className="text-green-500" />
       {message}
     </div>
@@ -406,51 +386,69 @@ export default function AddDataSource() {
     );
   }
 
+  const handleSourceClick = (source: string) => {
+    if (source === "snowflake") {
+      router.push(`/workspace/${currentWorkspace.id}/connection/snowflake`);
+    } else if (source === "bigquery") {
+      router.push(`/workspace/${currentWorkspace.id}/connection/bigquery`);
+    } else if (source === "postgres") {
+      router.push(`/workspace/${currentWorkspace.id}/connection/postgres`);
+    }
+  };
+
   const email = currentUser.email;
   const workspace_name = currentWorkspace.name;
 
   return (
-    <div className="h-screen bg-slate-1">
-      <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full pt-32">
-        <div className="bg-slate-1 text-white text-center text-[22px] pb-4">
-          Connect a data source
+    <WorkspaceLayout>
+      <div className="h-screen bg-slate-1">
+        <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[12px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
+          <div className="h-[24px] w-[24px] flex items-center justify-center">
+            <Plus size={20} weight="bold" className="text-slate-10" />
+          </div>
+          <p className="text-slate-12 text-[13px]">Add data connection</p>
         </div>
-        <form className="flex flex-col gap-4 mt-4">
-          <div className="flex gap-4">
-            <Link href="/welcome/add-snowflake">
-              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+        <div className="flex flex-col justify-center items-center w-full pt-32">
+          <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4 flex flex-row">
+            <p>Connect a data source</p>
+          </div>
+          <form className="flex flex-col gap-4 mt-4">
+            <div className="flex gap-4">
+              <div
+                className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer"
+                onClick={(e) => handleSourceClick("snowflake")}
+              >
                 <div className="h-[32px] w-[32px]">
                   <LogoSnowflake />
                 </div>
                 <p>Snowflake</p>
               </div>
-            </Link>
-            <Link href="/welcome/add-bigquery">
-              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
-                <div className="h-[32px] w-[32px]">
-                  <LogoBigQuery />
+              <Link href="/welcome/add-bigquery">
+                <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+                  <div className="h-[32px] w-[32px]">
+                    <LogoBigQuery />
+                  </div>
+                  <p>BigQuery</p>
                 </div>
-                <p>BigQuery</p>
-              </div>
-            </Link>
-            <Link href="/welcome/add-postgres">
-              <div className="bg-slate-3 text-white text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
-                <div className="h-[32px] w-[32px]">
-                  <LogoPostgres />
+              </Link>
+              <Link href="/welcome/add-postgres">
+                <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+                  <div className="h-[32px] w-[32px]">
+                    <LogoPostgres />
+                  </div>
+                  <p>Postgres</p>
                 </div>
-                <p>Postgres</p>
-              </div>
-            </Link>
-          </div>
-          <InviteTeammateDialog email={email} workspace={workspace_name} />
-          <Link href={`/workspace/${currentWorkspace.id}`}>
-            <div className="text-white text-[14px] text-center w-full cursor-pointer">
-              Do this later
+              </Link>
             </div>
-          </Link>
-        </form>
+            <InviteTeammateDialog email={email} workspace={workspace_name} />
+            <Link href={`/workspace/${currentWorkspace.id}`}>
+              <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">
+                Do this later
+              </div>
+            </Link>
+          </form>
+        </div>
       </div>
-    </div>
+    </WorkspaceLayout>
   );
 }
