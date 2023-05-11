@@ -104,6 +104,7 @@ interface FileTreeProps {
   setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
   tableDisplayNameErrorMessage: string;
   setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  isLoading: boolean;
 }
 
 interface Connection {
@@ -283,6 +284,7 @@ const PreviewTableUI = ({
   selectedConnection,
   setSelectedConnection,
   connectionsData,
+  isLoading,
 }: {
   tablesQueryData: any;
   handleSubmit: any;
@@ -307,8 +309,20 @@ const PreviewTableUI = ({
     React.SetStateAction<Connection | null>
   >;
   connectionsData: Connection[] | null;
+  isLoading: boolean;
 }) => {
-  const data = tablesQueryData.listed_tables;
+  let data = null;
+  if (tablesQueryData == null) {
+    data = [
+      {
+        database_name: "Loading..",
+        database_schema: "",
+        table_name: "",
+      },
+    ];
+  } else {
+    data = tablesQueryData.listed_tables;
+  }
 
   // based on the selected table, get the tablename and path differently
   const tableName = selectedTable?.split(".")[2];
@@ -325,25 +339,34 @@ const PreviewTableUI = ({
             selectedConnection={selectedConnection}
           />
           <p className="text-slate-12 text-[13px] mt-6">Choose a table</p>
-          <FileTree
-            data={data}
-            selectedTable={selectedTable}
-            setSelectedTable={setSelectedTable}
-            selectedTableRowCount={selectedTableRowCount}
-            setSelectedTableRowCount={setSelectedTableRowCount}
-            selectedIconName={selectedIconName}
-            setSelectedIconName={setSelectedIconName}
-            isIconSuggestionLoading={isIconSuggestionLoading}
-            setIsIconSuggestionLoading={setIsIconSuggestionLoading}
-            iconSvgString={iconSvgString}
-            setIconSvgString={setIconSvgString}
-            selectedColor={selectedColor}
-            setSelectedColor={setSelectedColor}
-            tableDisplayName={tableDisplayName}
-            setTableDisplayName={setTableDisplayName}
-            tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
-            setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
-          />
+          {isLoading === true ? (
+            <div className="flex flex-col h-0 flex-shrink-0 flex-grow p-2 text-slate-11 overflow-y-auto bg-slate-2 border border-slate-4 rounded-lg w-[384px] mt-4">
+              <div className="flex flex-row items-center justify-center w-full h-full text-slate-11 text-[12px]">
+                Loading..
+              </div>
+            </div>
+          ) : (
+            <FileTree
+              data={data}
+              selectedTable={selectedTable}
+              setSelectedTable={setSelectedTable}
+              selectedTableRowCount={selectedTableRowCount}
+              setSelectedTableRowCount={setSelectedTableRowCount}
+              selectedIconName={selectedIconName}
+              setSelectedIconName={setSelectedIconName}
+              isIconSuggestionLoading={isIconSuggestionLoading}
+              setIsIconSuggestionLoading={setIsIconSuggestionLoading}
+              iconSvgString={iconSvgString}
+              setIconSvgString={setIconSvgString}
+              selectedColor={selectedColor}
+              setSelectedColor={setSelectedColor}
+              tableDisplayName={tableDisplayName}
+              setTableDisplayName={setTableDisplayName}
+              tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
+              setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
+              isLoading={isLoading}
+            />
+          )}
         </div>
         {/* render all icons but hide them, so that SVG contents can be found*/}
         <div className="hidden">
@@ -362,7 +385,21 @@ const PreviewTableUI = ({
         <div className="flex-1 flex-shrink-0 w-0">
           <p className="text-slate-12 text-[13px]">Preview</p>
           <div className="relative bg-slate-2 rounded-md mt-4 h-[85vh] border border-slate-4 flex flex-col">
-            {selectedTable ? (
+            {isLoading === true && (
+              <div className="pl-24 flex items-center justify-center text-slate-12 h-full flex-col gap-2">
+                <p className="text-[13px] text-slate-11"> Loading..</p>
+              </div>
+            )}
+            {isLoading === false && selectedTable == null && (
+              <div className="pl-24 flex items-center justify-center text-slate-12 h-full flex-col gap-2">
+                <p className="text-[14px]"> No table selected </p>
+                <p className="text-[13px] text-slate-11">
+                  {" "}
+                  Please select a table to continue.
+                </p>
+              </div>
+            )}
+            {isLoading === false && selectedTable !== null && (
               <>
                 <div className="flex flex-row gap-2 items-center px-[12px] py-2 border-b border-slate-4">
                   <div className="min-w-[31px] min-h-[31px] flex items-center justify-center ">
@@ -440,14 +477,6 @@ const PreviewTableUI = ({
                   </button>
                 </div>
               </>
-            ) : (
-              <div className="pl-24 flex items-center justify-center text-slate-12 h-full flex-col gap-2">
-                <p className="text-[14px]"> No table selected </p>
-                <p className="text-[13px] text-slate-11">
-                  {" "}
-                  Please select a table to continue.
-                </p>
-              </div>
             )}
           </div>
         </div>
@@ -468,6 +497,7 @@ const FileTree: React.FC<FileTreeProps> = ({
   setIsIconSuggestionLoading,
   iconSvgString,
   setIconSvgString,
+  isLoading,
 }) => {
   const nestedData = createNestedStructure(data);
   const allDbNames = Object.keys(nestedData);
@@ -830,11 +860,44 @@ export default function CreateTable() {
 
   if (isUserLoading || isTablesQueryLoading || isConnectionsLoading) {
     return (
-      <div className="h-screen flex bg-slate-1">
-        <div className="h-screen flex flex-col w-full items-center justify-center text-slate-12 text-[13px]">
-          Loading...
+      <WorkspaceLayout>
+        <div className="h-screen bg-slate-1 flex flex-col">
+          <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[12px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
+            <div className="h-[24px] w-[24px] flex items-center justify-center">
+              <Plus size={20} weight="bold" className="text-slate-10" />
+            </div>
+            <p className="text-slate-12 text-[13px]">New table</p>
+          </div>
+          <div className="flex flex-1 flex-col justify-start items-start w-full mt-4">
+            <PreviewTableUI
+              tablesQueryData={tablesQueryData}
+              handleSubmit={handleSubmit}
+              selectedTable={selectedTable}
+              setSelectedTable={setSelectedTable}
+              selectedTableRowCount={selectedTableRowCount}
+              setSelectedTableRowCount={setSelectedTableRowCount}
+              selectedIconName={selectedIconName}
+              setSelectedIconName={setSelectedIconName}
+              isIconSuggestionLoading={isIconSuggestionLoading}
+              setIsIconSuggestionLoading={setIsIconSuggestionLoading}
+              iconSvgString={iconSvgString}
+              setIconSvgString={setIconSvgString}
+              selectedColor={selectedColor}
+              setSelectedColor={setSelectedColor}
+              tableDisplayName={tableDisplayName}
+              setTableDisplayName={setTableDisplayName}
+              tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
+              setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
+              setSelectedConnection={setSelectedConnection}
+              selectedConnection={selectedConnection}
+              connectionsData={connectionsData}
+              isLoading={
+                isUserLoading || isTablesQueryLoading || isConnectionsLoading
+              }
+            />
+          </div>
         </div>
-      </div>
+      </WorkspaceLayout>
     );
   }
 
@@ -874,6 +937,9 @@ export default function CreateTable() {
             setSelectedConnection={setSelectedConnection}
             selectedConnection={selectedConnection}
             connectionsData={connectionsData}
+            isLoading={
+              isUserLoading || isTablesQueryLoading || isConnectionsLoading
+            }
           />
         </div>
       </div>

@@ -284,15 +284,9 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
     enabled: currentWorkspace?.id !== null,
   });
 
-
-
   if (areTablesLoading || isWorkspaceLoading || isUserLoading || isConnectionsLoading) {
     return (
-      <div className="bg-slate-1 py-[16px] w-[240px] text-[13px] text-slate-12 flex flex-col gap-2 border-r border-slate-6 items-center justify-center">
-        <span className="animate-spin">
-          <CircleNotch width={20} height={20} />
-        </span>
-      </div>
+      <></>
     )
   }
 

@@ -365,6 +365,19 @@
       "createdAt": "2023-05-09T17:40:09.123Z",
       "updatedAt": "2023-05-09T17:40:09.123Z",
       "id": 22
+    },
+    {
+      "workspaceId": 17,
+      "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
+      "displayName": "DIM_CUSTOMERS",
+      "connectionPath": "ARTHUR_TEST/DBT_AWU/",
+      "rowCount": 100,
+      "connectionId": 26,
+      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#9D5BD2\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z\"></path></svg>",
+      "iconColor": "#0091FF",
+      "createdAt": "2023-05-11T16:27:28.170Z",
+      "updatedAt": "2023-05-11T16:27:28.170Z",
+      "id": 23
     }
   ],
   "verifyEmail": [
@@ -591,6 +604,51 @@
       "createdAt": "2023-05-09T17:40:09.109Z",
       "workspaceId": 29,
       "id": 24
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "arthurwu1",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "ACCOUNTADMIN",
+      "connectionType": "snowflake",
+      "name": "Snowflake pwkesfj-uo88877 arthurwu1",
+      "createdAt": "2023-05-11T16:21:07.406Z",
+      "workspaceId": 6,
+      "id": 25
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "arthurwu1",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "ACCOUNTADMIN",
+      "connectionType": "snowflake",
+      "name": "Snowflakepwkesfj-uo88877",
+      "createdAt": "2023-05-11T16:27:28.158Z",
+      "workspaceId": 17,
+      "id": 26
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "arthurwu1",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "ACCOUNTADMIN",
+      "connectionType": "snowflake",
+      "name": "Snowflake pwkesfj-uo88877 arthurwu1",
+      "createdAt": "2023-05-11T16:41:16.783Z",
+      "workspaceId": 16,
+      "id": 27
     }
   ]
 }
