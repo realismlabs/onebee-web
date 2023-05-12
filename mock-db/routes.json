@@ -20,6 +20,8 @@
   "/api/workspaces/:workspaceId/tables/create": "/tables?workspaceId=:workspaceId",
   "/api/workspaces/:workspaceId/tables/:tableId": "/tables/:tableId",
   "/api/workspaces/:workspaceId/tables/:tableId/update": "/tables/:tableId",
+  "/api/workspaces/:workspaceId/update": "/workspaces/:workspaceId",
+  "/api/workspaces/:workspaceId/delete": "/workspaces/:workspaceId",  
   "/api/workspaces/:workspaceId/tables/:tableId/delete": "/tables/:tableId",
   "/api/workspaces/:workspaceId/connections/create": "/connections",
   "/api/workspaces/:workspaceId/connections/:connectionId": "/connections/:connectionId",

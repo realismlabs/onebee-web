@@ -3,13 +3,54 @@ import Link from "next/link";
 import router from "next/router";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { createWorkspace } from "@/utils/api";
+import { updateWorkspace } from "@/utils/api";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 
 export default function Settings() {
 
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    console.log("clicked");
+    if (workspaceName === "" || workspaceName === null) {
+      setErrorMessage("Workspace name is required.");
+    } else {
+      // TODO: Create workspace and mock API call to create workspace + allow others to join from same domain (if enabled)
+      console.log(
+        "TODO: Rename workspace and mock API call"
+      );
+
+      const workspaceData = {
+        name: workspaceName
+      }
+      try {
+        console.log("awu attempting call", {workspaceId: currentWorkspace.id, workspaceData: workspaceData })
+
+        const response = await updateWorkspace({workspaceId: currentWorkspace.id, workspaceData: workspaceData})
+        console.log("awu response", response)
+        // await updateWorkspaceMutation.mutateAsync({workspaceId: currentWorkspace.id, workspaceData: workspaceData });
+      } catch (error) {
+        console.error('Error updating table:', error);
+      }
+    }
+  }
+
+  const queryClient = useQueryClient();
+
+  const updateWorkspaceMutation = useMutation(updateWorkspace, {
+    onSuccess: (updatedTable) => {
+      console.log("awu Here is the updated table", updatedTable)
+      queryClient.refetchQueries(["currentWorkspace", currentWorkspace?.id])
+    },
+    onError: (error) => {
+      console.error('awu error updating workspace', error)
+    }
+  });
+
   const [selectedTab, setSelectedTab] = useState<string>("workspace_general")
-  const [workspaceDisplayName, setWorkspaceDisplayName] = useState<string>("")
+  const [errorMessage, setErrorMessage] = React.useState("");
+  const [workspaceName, setWorkspaceName] = useState<string>()
   const {
     data: currentUser,
     isLoading: isUserLoading,
@@ -21,6 +62,13 @@ export default function Settings() {
     isLoading: isWorkspaceLoading,
     error: workspaceError,
   } = useCurrentWorkspace();
+
+  useEffect(() => {
+    if (currentWorkspace?.name) {
+      setWorkspaceName(currentWorkspace?.name);
+    }
+  }, [currentWorkspace]);
+
 
   if (isUserLoading) {
     return <div className="h-screen bg-slate-1"></div>;
@@ -81,15 +129,37 @@ export default function Settings() {
                       General
                     </div>
                     <div className="flex flex-col text-[14px] mt-[16px]">
-                      <div className="flex flex-col gap-4 mt-6">
-                        <label className="text-[13px] w-[120px]">Workspace name</label>
-                        <input
-                          className="rounded-md block w-full bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10"
-                          required
-                          value={workspaceDisplayName}
-                          onChange={(e) => setWorkspaceDisplayName(e.target.value)}
-                          placeholder="Workspace name"
-                        />
+                      <div className="flex flex-col gap-4">
+                        <form
+                          onSubmit={handleSubmit}
+                          className="flex flex-col"
+                        >
+                          <label className="text-[13px] w-[120px]">Workspace name</label>
+                          <input
+                            type={"text"}
+                            id="workspaceNameInput"
+                            value={workspaceName}
+                            onChange={(e) => {
+                              setWorkspaceName(e.target.value);
+                              setErrorMessage("");
+                            }}
+                            placeholder="i.e. Acme organization"
+                            className={`mt-4 bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-[240px]
+                              ${errorMessage !== "" ? "border-red-9" : "border-slate-6"} 
+                              focus:outline-none focus:ring-blue-600
+                              `}
+                          />
+
+                          {errorMessage && (
+                            <p className="text-red-9 text-[13px] mt-3">{errorMessage}</p>
+                          )}
+                          <button
+                            type="submit"
+                            className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md mt-4 self-start"
+                          >
+                            Save
+                          </button>
+                        </form>
                       </div>
                     </div>
                   </>
