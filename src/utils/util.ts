@@ -254,3 +254,19 @@ export function friendlyRelativeDateToNow(isoDateString: string) {
     .replace("about", "")
     .trim();
 }
+
+export function getInitials(name: string) {
+  const words = name.split(" ");
+
+  if (words.length === 1) {
+    return words[0][0].toUpperCase();
+  } else {
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+}
+
+export function isCommonEmailProvider(str: string) {
+  const pattern =
+    /@(gmail\.com|yahoo\.com|hotmail\.com|aol\.com|outlook\.com|live\.com|msn\.com|icloud\.com|zoho\.com|protonmail\.com|mail\.com|yandex\.com)$/;
+  return pattern.test(str);
+}

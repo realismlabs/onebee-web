@@ -4,6 +4,7 @@ import router from "next/router";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { createWorkspace } from "@/utils/api";
+import { isCommonEmailProvider } from "@/utils/util";
 
 interface AccountHeaderProps {
   email: string;
@@ -52,12 +53,20 @@ export default function CreateWorkspace() {
         allowOthersFromDomainChecked,
       });
       // TODO: Push to home of the new workspace
+
+      let createWorkspaceRequestBody = {
+        name: workspaceName,
+        createdAt: new Date().toISOString(),
+        creatorUserId: currentUser?.id,
+        allowedDomains:
+          isCommonEmailProvider(domain) ||
+          allowOthersFromDomainChecked === false
+            ? []
+            : [{ domain: domain, createdBy: currentUser?.id }],
+      };
+
       try {
-        const result = await createWorkspace({
-          name: workspaceName,
-          createdAt: new Date().toISOString(),
-          creatorUserId: currentUser.id,
-        });
+        const result = await createWorkspace(createWorkspaceRequestBody);
         console.log("Created workspace", result);
         router.push(`/workspace/${result.id}`);
       } catch (e) {
@@ -143,23 +152,28 @@ export default function CreateWorkspace() {
               <p className="text-red-9 text-[13px] mt-2">{errorMessage}</p>
             )}
           </div>
-          <div className="flex items-start">
-            <input
-              id="allowOthersFromDomain"
-              type="checkbox"
-              className="mt-0.5 w-[18px] h-[18px] text-blue-600 bg-slate-3 border-slate-6 rounded focus:ring-blue-500 focus:ring-1"
-              checked={allowOthersFromDomainChecked}
-              onChange={handleAllowOthersFromDomainCheckboxChange}
-            />
-            <label
-              htmlFor="allowOthersFromDomain"
-              className="ml-2 block text-slate-11 text-[14px]"
-            >
-              Allow anyone with an{" "}
-              <span className="text-slate-12 font-medium">{"@" + domain}</span>{" "}
-              email to join this workspace
-            </label>
-          </div>
+          {/* Check if common email provider. If not, provide option */}
+          {!isCommonEmailProvider(email) && (
+            <div className="flex items-start">
+              <input
+                id="allowOthersFromDomain"
+                type="checkbox"
+                className="mt-0.5 w-[18px] h-[18px] text-blue-600 bg-slate-3 border-slate-6 rounded focus:ring-blue-500 focus:ring-1"
+                checked={allowOthersFromDomainChecked}
+                onChange={handleAllowOthersFromDomainCheckboxChange}
+              />
+              <label
+                htmlFor="allowOthersFromDomain"
+                className="ml-2 block text-slate-11 text-[14px]"
+              >
+                Allow anyone with an{" "}
+                <span className="text-slate-12 font-medium">
+                  {"@" + domain}
+                </span>{" "}
+                email to join this workspace
+              </label>
+            </div>
+          )}
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md mt-4"
