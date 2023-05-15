@@ -4,11 +4,22 @@ import router from "next/router";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { deleteWorkspace, updateWorkspace } from "@/utils/api";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  deleteWorkspace,
+  updateWorkspace,
+  getWorkspaceMemberships,
+  getUser,
+} from "@/utils/api";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useQueries,
+} from "@tanstack/react-query";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 import { X } from "@phosphor-icons/react";
 import { Dialog } from "@headlessui/react";
+import { friendlyRelativeDateToNow } from "@/utils/util";
 
 export default function Settings() {
   const handleRenameWorkspace = async (e: any) => {
@@ -113,17 +124,44 @@ export default function Settings() {
     error: workspaceError,
   } = useCurrentWorkspace();
 
+  const {
+    data: membershipsData,
+    isLoading: isMembershipsLoading,
+    error: membershipsError,
+  } = useQuery({
+    queryKey: ["getWorkspaceMemberships", currentWorkspace?.id],
+    queryFn: async () => {
+      const response = await getWorkspaceMemberships(currentWorkspace?.id);
+      return response;
+    },
+    enabled: currentWorkspace?.id !== null,
+  });
+
+  //  fetch user data for each membership
+  const usersData = useQueries({
+    queries: (membershipsData ?? []).map((membership: any) => {
+      return {
+        queryKey: ["getUser", membership.userId],
+        queryFn: async () => {
+          const response = await getUser(membership.userId);
+          return response;
+        },
+        enabled: membership.userId !== null,
+      };
+    }),
+  });
+
   useEffect(() => {
     if (currentWorkspace?.name) {
       setWorkspaceName(currentWorkspace?.name);
     }
   }, [currentWorkspace]);
 
-  if (isUserLoading) {
+  if (isUserLoading || isWorkspaceLoading || isMembershipsLoading) {
     return <div className="h-screen bg-slate-1"></div>;
   }
 
-  if (userError) {
+  if (userError || workspaceError || membershipsError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
@@ -307,49 +345,39 @@ export default function Settings() {
                     <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
                       Members
                     </div>
-                    <div className="flex flex-col text-[14px] mt-[16px]">
-                      <div className="flex flex-col">
-                        <form
-                          onSubmit={handleRenameWorkspace}
-                          className="flex flex-col gap-4"
-                        >
-                          <div className="flex flex-col gap-4">
-                            <label className="text-[14px] w-[120px]">
-                              Workspace name
-                            </label>
-                            <input
-                              type={"text"}
-                              id="workspaceNameInput"
-                              value={workspaceName}
-                              onChange={(e) => {
-                                setWorkspaceName(e.target.value);
-                                setErrorMessage("");
-                              }}
-                              placeholder="i.e. Acme organization"
-                              className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-[240px]
-                                ${
-                                  errorMessage !== ""
-                                    ? "border-red-9"
-                                    : "border-slate-6"
-                                }
-                                focus:outline-none focus:ring-blue-600
-                                `}
-                            />
-                          </div>
-
-                          {errorMessage && (
-                            <p className="text-red-9 text-[13px] mt-3">
-                              {errorMessage}
-                            </p>
-                          )}
-                          <button
-                            type="submit"
-                            className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md self-start"
-                          >
-                            Save
-                          </button>
-                        </form>
-                      </div>
+                    <div className="flex flex-col border-slate-4 rounded-lg border overflow-clip">
+                      {membershipsData.length > 0 &&
+                        membershipsData.map(
+                          (membership: any, index: number) => (
+                            <div
+                              key={membership.id}
+                              className={`flex flex-row gap-4 items-center ${
+                                index < membershipsData.length - 1
+                                  ? "border-b border-slate-4"
+                                  : ""
+                              } text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-slate-12`}
+                            >
+                              <div className="w-[320px] truncate">
+                                {/* find the user name given the membership userID */}
+                                {usersData
+                                  .filter(
+                                    (user: any) => user.id === membership.userId
+                                  )
+                                  .map((user: any) => (
+                                    <div key={user.id}>{user.name}</div>
+                                  ))}
+                              </div>
+                              <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate mr-auto">
+                                {membership.connectionPath}
+                              </pre>
+                              <div className="min-w-[100px] max-w-[100px] text-left text-slate-11">
+                                {friendlyRelativeDateToNow(
+                                  membership.createdAt
+                                )}
+                              </div>
+                            </div>
+                          )
+                        )}
                     </div>
                   </>
                 )}

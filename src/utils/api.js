@@ -52,6 +52,12 @@ export const getUsers = async () => {
   return await response.json();
 };
 
+export const getUser = async (userId) => {
+  const response = await fetch(`${API_BASE_URL}/api/users/${userId}`);
+  const user = await response.json();
+  return user;
+};
+
 // Example usage + request body
 // const workspaceData = {
 //   name: 'My New Workspace',
@@ -288,10 +294,61 @@ export const getWorkspaces = async () => {
 
 
 // "/api/memberships": "/memberships",
-
+export const getMemberships = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/memberships`);
+  const memberships = await response.json();
+  return memberships;
+};
 
 // "/api/memberships/:membershipId": "/memberships/:membershipId",
+export const getMembership = async (membershipId) => {
+  const response = await fetch(`${API_BASE_URL}/api/memberships/${membershipId}`);
+  const membership = await response.json();
+  return membership;
+};
+
 // "/api/memberships/:membershipId/update": "/memberships/:membershipId",
+export const updateMembership = async ({ membershipId, membershipData }) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/memberships/${membershipId}/update`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(membershipData),
+    }
+  );
+  const updatedMembership = await response.json();
+  return updatedMembership;
+};
+
 // "/api/memberships/:membershipId/delete": "/memberships/:membershipId",
+export const deleteMembership = async ({ membershipId }) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/memberships/${membershipId}/delete`,
+    {
+      method: "DELETE",
+    }
+  );
+  const deletedMembership = await response.json();
+  return deletedMembership;
+};
+
 // "/api/workspaces/:workspaceId/memberships": "/memberships?workspaceId=:workspaceId",
+export const getWorkspaceMemberships = async (workspaceId) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/memberships`
+  );
+  const memberships = await response.json();
+  return memberships;
+};
+
 // "/api/users/:userId/memberships": "/memberships?userId=:userId"
+export const getUserMemberships = async (userId) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/users/${userId}/memberships`
+  );
+  const memberships = await response.json();
+  return memberships;
+}
