@@ -38,9 +38,15 @@ const MemberPopover = ({
   const workspaceId = membership.workspaceId;
 
   const handleRemoveMember = async () => {
-    const deletedMember = await deleteMembershipMutation.mutateAsync({
-      membershipId,
-    });
+    // check if user is the last member of the workspace
+    const workspaceMemberships = await getWorkspaceMemberships(workspaceId);
+    if (workspaceMemberships.length === 1) {
+      alert("You cannot remove the last member of a workspace.");
+    } else {
+      const deletedMember = await deleteMembershipMutation.mutateAsync({
+        membershipId,
+      });
+    }
   };
 
   const queryClient = useQueryClient();
@@ -95,7 +101,8 @@ const MemberPopover = ({
                   <>
                     <Popover.Button className="w-full">
                       <button
-                        className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 w-full rounded-md items-center"
+                        className={`hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 w-full rounded-md items-center
+                        `}
                         onClick={() => {
                           handleRemoveMember();
                         }}
@@ -308,7 +315,7 @@ export default function Settings() {
                               index < membershipsData.length - 1
                                 ? "border-b border-slate-4"
                                 : ""
-                            } text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
+                            } text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12 rounded-lg`}
                           >
                             <div className="bg-purple-8 h-[24px] w-[24px] text-[10px] font-semibold rounded-full flex items-center justify-center">
                               {user.name ? (

@@ -104,16 +104,19 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   return (
     <>
       <div className="px-[16px] pt-[13px] pb-[4px] text-slate-11 text-[13px]">{currentUser.email}</div>
-      <div className="max-h-[60vh] overflow-y-scroll">
+      <div className="max-h-[60vh] overflow-y-scroll flex flex-col w-full">
         {workspacesForUserData.map((workspace) => (
           <Popover.Button key={workspace.id}>
-            <div onClick={(e) => {
-              router.push(`/workspace/${workspace.id}`);
-            }}>
-              <div className="w-[240px] px-[8px] text-[13px] cursor-pointer">
-                <div className="hover:bg-slate-4 px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center">
+            <div
+              onClick={(e) => {
+                router.push(`/workspace/${workspace.id}`);
+              }}
+              className="flex w-full"
+            >
+              <div className="px-[8px] text-[13px] cursor-pointer flex w-full">
+                <div className="hover:bg-slate-4 px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center w-full">
                   <div
-                    className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
+                    className={`flex-none h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
                     style={{
                       backgroundImage: `url(${workspace.iconUrl})`,
                       backgroundSize: 'cover',
@@ -121,7 +124,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
                   >
                     <div className="text-[10px] text-slate-12">{workspace.name.slice(0, 1)}</div>
                   </div>
-                  <div className="max-w-[140px] truncate">{workspace.name}</div>
+                  <div className="grow truncate">{workspace.name}</div>
                   {workspace.id === currentWorkspace.id && (
                     <div className="ml-auto text-slate-12">
                       <Check
@@ -135,9 +138,9 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
               </div>
             </div>
           </Popover.Button>
-        ))
-        }
+        ))}
       </div>
+
       <div className="flex flex-col px-[8px] py-[13px] mt-[13px] border-t border-slate-4 w-full text-[13px] text-slate-11">
         <Popover.Button>
           <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
