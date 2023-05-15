@@ -87,6 +87,36 @@ export const createWorkspace = async (workspaceData) => {
   return createdWorkspace;
 };
 
+// Update a specific workspace
+export const updateWorkspace = async ({ workspaceId, workspaceData }) => {
+  console.log("awu here")
+  const response = await fetch(
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/update`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(workspaceData),
+    }
+  );
+  const updatedWorkspace = await response.json();
+  return updatedWorkspace;
+};
+
+// Delete workspace
+export const deleteWorkspace = async ({ workspaceId }) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/delete`,
+    {
+      method: "DELETE",
+    }
+  );
+  const deletedWorkspace = await response.json();
+  return deletedWorkspace;
+};
+
+
 // Get all tables associated with a workspace
 export const getTables = async (workspaceId) => {
   const response = await fetch(

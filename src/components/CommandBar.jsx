@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
-import { CircleNotch, TreeStructure, House, Table, Plus } from '@phosphor-icons/react';
+import { CircleNotch, TreeStructure, House, Table, Plus, Gear } from '@phosphor-icons/react';
 import { getTables } from '@/utils/api';
 import { useRouter } from 'next/router';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
@@ -105,6 +105,14 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
       id: 'newtable',
       link: `/workspace/${currentWorkspace?.id}/table/new`,
     },
+    {
+      name: 'Settings',
+      description: 'Manage your workspace, billing, members, and more',
+      icon: <Gear width={20} height={20} weight="fill" />,
+      type: 'navigation',
+      id: 'settings',
+      link: `/workspace/${currentWorkspace?.id}/settings`,
+    },    
   ];
 
   const tables = [];
