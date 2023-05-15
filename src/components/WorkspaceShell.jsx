@@ -216,9 +216,6 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
 const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   // Replace the items array with your dynamic data
   const router = useRouter();
-  console.log("pathname", router.asPath);
-
-  // console.log("In Workspce Shell id", id)
   const [shellExpanded, setShellExpanded] = useLocalStorageState("shellExpanded", true);
   const controls = useAnimation();
 
@@ -293,8 +290,6 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   if (tablesError || workspaceError || userError || connectionsError) {
     return <div className="text-slate-12">There was an error loading your tables</div>;
   }
-
-  console.log(tablesData);
 
   return (
     <motion.div className="bg-slate-1 py-[10px] text-[13px] text-slate-12 flex flex-col border-r border-slate-4"
@@ -411,14 +406,14 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
                 </>)}
               </div>
               <div>
-                {tablesData.length === 0 && (
+                {tablesData.length === 0 && shellExpanded === true && (
                   <div className="w-full flex flex-col gap-2 mt-4 items-center justify-center py-6 rounded-lg">
                     <Image src="/images/table-splash-zero-state.svg"
                       width={48}
                       height={48}
                       alt="Splash icon for tables zero state" />
-                    <p className="text-slate-11 px-[16px] text-center text-[13px] mt-2">No tables created yet</p>
-                    <p className="text-slate-10 px-[16px] text-center text-[12px]">Create a table by clicking the <br />+ New button in the top-right</p>
+                    <p className="text-slate-11 px-[16px] text-center text-[13px] mt-2 truncate block">No tables created yet</p>
+                    <p className="text-slate-10 px-[16px] text-center text-[12px] truncate block">Create a table by clicking the <br />+ New button in the top-right</p>
                   </div>
                 )}
                 {tablesData.length > 0 && tablesData.map((item) => (

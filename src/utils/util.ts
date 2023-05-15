@@ -128,7 +128,7 @@ function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function generateIcon(name: string): string | null {
+export function generateWorkspaceIcon(name: string): string | null {
   const canvas = document.createElement("canvas");
   canvas.width = 128;
   canvas.height = 128;

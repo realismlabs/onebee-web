@@ -16,51 +16,6 @@ export default function Login() {
   if (typeof window !== "undefined") {
     lo = router.query;
   }
-
-  const isEmailAndPasswordVerifiedIncompleteWelcome = async (
-    email: string,
-    password: string,
-    users: any
-  ) => {
-    // Replace this with your actual API call
-    return users.some(
-      (user: any) =>
-        user.email === email &&
-        user.password === password &&
-        user.emailVerified === true &&
-        user.welcomeCompleted === false
-    );
-  };
-
-  const isEmailAndPasswordVerifiedCompleteWelcome = async (
-    email: string,
-    password: string,
-    users: any
-  ) => {
-    // Replace this with your actual API call
-    return users.some(
-      (user: any) =>
-        user.email === email &&
-        user.password === password &&
-        user.emailVerified === true &&
-        user.welcomeCompleted === true
-    );
-  };
-
-  const isEmailAndPasswordUnverified = async (
-    email: string,
-    password: string,
-    users: any
-  ) => {
-    // Replace this with your actual API call
-    return users.some(
-      (user: any) =>
-        user.email === email &&
-        user.password === password &&
-        user.emailVerified === false
-    );
-  };
-
   // Handle login - this is cursed code, will def need to handle properly
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -91,19 +46,17 @@ export default function Login() {
       return;
     }
 
-    if (
-      await isEmailAndPasswordVerifiedCompleteWelcome(email, password, users)
-    ) {
-      const last_accessed_workspace_id = user.lastAccessedWorkspace;
-      if (last_accessed_workspace_id === null) {
-        router.push("/create-workspace");
-      }
-      router.push("/workspace/" + last_accessed_workspace_id);
-    } else if (
-      await isEmailAndPasswordVerifiedIncompleteWelcome(email, password, users)
-    ) {
-      router.push("/welcome");
-    } else if (await isEmailAndPasswordUnverified(email, password, users)) {
+    // check if user is verified
+    if (user.emailVerified) {
+      console.log(
+        `TODO: go to /wheck if a user already belongs to a workspace, 
+        if so, route them to that workspace. 
+        If not, then check if user has invites and 
+        route to /join-workspace. If not, then go to /welcome`
+      );
+    } else {
+      // if not, route them to /verify
+      console.log("TODO: route to /verify");
       router.push("/verify-email");
     }
   };

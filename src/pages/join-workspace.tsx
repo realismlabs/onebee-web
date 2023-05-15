@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useQuery, useQueries } from "@tanstack/react-query";
 import { getInvitesForUserEmail, getWorkspaceDetails } from "../utils/api";
-import { stringToVibrantColor, generateIcon } from "../utils/util";
+import { stringToVibrantColor, generateWorkspaceIcon } from "../utils/util";
 import { CaretRight, UsersThree } from "@phosphor-icons/react";
 
 interface AccountHeaderProps {
