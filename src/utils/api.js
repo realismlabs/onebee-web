@@ -1,4 +1,4 @@
-import { generateIcon } from "./util";
+import { generateWorkspaceIcon } from "./util";
 //  this file holds several  the api calls for the app mocked to a local json server
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -13,14 +13,11 @@ export const fetchCurrentUser = async () => {
 
 export const fetchCurrentWorkspace = async (workspaceId) => {
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
-  console.log("fetchCurrentWorkspace", response);
-
   if (!response.ok) {
     throw new Error("Error fetching current workspace");
   }
 
   const result = await response.json();
-  console.log("fetchCurrentWorkspace", result);
   return result;
 };
 
@@ -71,7 +68,7 @@ export const getUsers = async () => {
 //   });
 
 export const createWorkspace = async (workspaceData) => {
-  const icon = generateIcon(workspaceData.name);
+  const icon = generateWorkspaceIcon(workspaceData.name);
 
   const response = await fetch(`${API_BASE_URL}/api/workspaces/create`, {
     method: "POST",
@@ -123,7 +120,6 @@ export const getTables = async (workspaceId) => {
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables`
   );
   const tables = await response.json();
-  console.log("getTables", tables, workspaceId)
   return tables;
 };
 
@@ -289,3 +285,13 @@ export const getWorkspaces = async () => {
   const connections = await response.json();
   return connections;
 };
+
+
+// "/api/memberships": "/memberships",
+
+
+// "/api/memberships/:membershipId": "/memberships/:membershipId",
+// "/api/memberships/:membershipId/update": "/memberships/:membershipId",
+// "/api/memberships/:membershipId/delete": "/memberships/:membershipId",
+// "/api/workspaces/:workspaceId/memberships": "/memberships?workspaceId=:workspaceId",
+// "/api/users/:userId/memberships": "/memberships?userId=:userId"
