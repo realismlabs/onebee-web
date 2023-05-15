@@ -3,7 +3,7 @@
     {
       "id": 1,
       "email": "arthur@dataland.io",
-      "name": "",
+      "name": "Arthur Wu",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
       "updatedAt": "2023-04-26T02:52:46.736Z",
@@ -39,7 +39,7 @@
     {
       "id": 16,
       "email": "user2@dataland.io",
-      "name": "",
+      "name": "Pariatur Excepteur",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
       "updatedAt": "2023-04-26T02:52:46.736Z",
@@ -48,7 +48,7 @@
     {
       "id": 17,
       "email": "user3@dataland.io",
-      "name": "",
+      "name": "Eu Sint",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
       "updatedAt": "2023-04-26T02:52:46.736Z",
@@ -57,7 +57,7 @@
     {
       "id": 18,
       "email": "user4@dataland.io",
-      "name": "",
+      "name": "Cupidatat excepteur",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
       "updatedAt": "2023-04-26T02:52:46.736Z",

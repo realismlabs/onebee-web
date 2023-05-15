@@ -111,8 +111,8 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
       icon: <Gear width={20} height={20} weight="fill" />,
       type: 'navigation',
       id: 'settings',
-      link: `/workspace/${currentWorkspace?.id}/settings`,
-    },    
+      link: `/workspace/${currentWorkspace?.id}/settings/general`,
+    },
   ];
 
   const tables = [];

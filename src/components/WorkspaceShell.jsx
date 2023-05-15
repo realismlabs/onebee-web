@@ -142,7 +142,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
         <Popover.Button>
           <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
             onClick={(e) => {
-              router.push(`/workspace/${currentWorkspace.id}/settings`);
+              router.push(`/workspace/${currentWorkspace.id}/settings/general`);
             }}>
             Workspace settings
           </div>
