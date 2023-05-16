@@ -162,7 +162,7 @@ export default function AddDataSource() {
             customMessage={customMessage}
             setCustomMessage={setCustomMessage}
             emailTemplateLanguage={`Help ${currentUser.name} set up a read-only data source connection.`}
-            customSubject={`Help ${currentUser.name} set up a data connection on Dataland.io`}
+            customInvitePeopleSubject={`Help ${currentUser.name} set up a data connection on Dataland.io`}
           />
           <Link href={`/workspace/${currentWorkspace.id}`}>
             <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">

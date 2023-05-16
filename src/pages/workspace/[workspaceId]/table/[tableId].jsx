@@ -418,8 +418,8 @@ export default function TablePage() {
               customMessage={customInviteMessage}
               setCustomMessage={setCustomInviteMessage}
               emailTemplateLanguage={""}
-              customHeader={`Share ${tableData.displayName} with your team`}
-              customSubject={`${currentUser.name} shared ${tableData.displayName} with you on Dataland.io`}
+              customInvitePeopleDialogHeader={`Share ${tableData.displayName} with your team`}
+              customInvitePeopleSubject={`${currentUser.name} shared ${tableData.displayName} with you on Dataland.io`}
             />
           </div>
         </div>

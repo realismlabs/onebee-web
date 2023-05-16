@@ -59,8 +59,8 @@ const InvitePeopleDialog = ({
   customMessage,
   setCustomMessage,
   emailTemplateLanguage,
-  customHeader,
-  customSubject,
+  customInvitePeopleDialogHeader,
+  customInvitePeopleSubject,
 }: {
   isInvitePeopleDialogOpen: boolean;
   setIsInvitePeopleDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -69,8 +69,8 @@ const InvitePeopleDialog = ({
   customMessage: string;
   setCustomMessage: React.Dispatch<React.SetStateAction<string>>;
   emailTemplateLanguage: string;
-  customHeader?: string;
-  customSubject?: string;
+  customInvitePeopleDialogHeader?: string;
+  customInvitePeopleSubject?: string;
 }) => {
   let inviterEmail = currentUser.email;
 
@@ -219,8 +219,8 @@ const InvitePeopleDialog = ({
       <div className="mt-4 h-[280px] overflow-y-scroll p-4 bg-white text-black rounded-md text-[13px] space-y-2">
         <div className="text-slate-10 pb-1">
           <p>From: Dataland Support &lt;no-reply@dataland.io&gt;</p>
-          {customSubject ? (
-            <p>Subject: {customSubject}</p>
+          {customInvitePeopleSubject ? (
+            <p>Subject: {customInvitePeopleSubject}</p>
           ) : (
             <p>
               Subject: {sender_email_name} invited you to{" "}
@@ -283,8 +283,8 @@ const InvitePeopleDialog = ({
         <div className="fixed inset-0 flex items-start justify-center z-30">
           <Dialog.Panel className="fixed mx-auto max-h-[85vh] top-[60px] max-w-[90vw] w-[480px] rounded-[6px] bg-slate-2 border border-slate-3 text-slate-12 p-5 focus:outline-none overflow-hidden">
             <Dialog.Title className="m-0 text-[14px] font-medium">
-              {customHeader
-                ? customHeader
+              {customInvitePeopleDialogHeader
+                ? customInvitePeopleDialogHeader
                 : `Invite people to ${currentWorkspace.name}`}
             </Dialog.Title>
             <form onSubmit={handleSubmit}>
