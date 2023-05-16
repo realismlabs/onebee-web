@@ -325,6 +325,20 @@
       "accepted": false,
       "workspaceId": 6,
       "id": 36
+    },
+    {
+      "inviterEmail": "arthur@dataland.io",
+      "recipientEmail": "a@a.com",
+      "accepted": false,
+      "workspaceId": 12,
+      "id": 37
+    },
+    {
+      "inviterEmail": "arthur@dataland.io",
+      "recipientEmail": " b@b.com",
+      "accepted": false,
+      "workspaceId": 12,
+      "id": 38
     }
   ],
   "connections": [
