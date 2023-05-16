@@ -35,5 +35,6 @@
   "/api/memberships/:membershipId/update": "/memberships/:membershipId",
   "/api/memberships/:membershipId/delete": "/memberships/:membershipId",
   "/api/workspaces/:workspaceId/memberships": "/memberships?workspaceId=:workspaceId",
-  "/api/users/:userId/memberships": "/memberships?userId=:userId"
+  "/api/users/:userId/memberships": "/memberships?userId=:userId",
+  "/api/users/:userId/update": "/users/:userId"
 }

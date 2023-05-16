@@ -140,6 +140,23 @@ export const getUser = async (userId) => {
   return user;
 };
 
+
+// Update a specific user
+export const updateUser = async ({ userId, userData }) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/users/${userId}/update`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    }
+  );
+  const updatedUser = await response.json();
+  return updatedUser;
+};
+
 // Example usage + request body
 // const workspaceData = {
 //   name: 'My New Workspace',

@@ -85,7 +85,9 @@ const MemberPopover = ({
     onSuccess: async (deletedMembership) => {
       console.log("Membership deleted:", deletedMembership);
       if (userId === currentUser?.id) {
-        console.log("TODO: User is deleting their own membership");
+        console.log(
+          "TODO: User is deleting their own membership - this should log the user out"
+        );
         router.push("/login");
       } else {
         console.log("Refetching memberships:", userId);
@@ -433,7 +435,7 @@ const InvitePopover = ({
   );
 };
 
-export default function Settings() {
+export default function Members() {
   const queryClient = useQueryClient();
 
   // get router path - foramt is /workspace/6/settings/members, need to grab everything after /settings/
@@ -612,7 +614,7 @@ export default function Settings() {
                     <div className="px-[12px] items-start text-left text-[16px] pb-[16px] w-full">
                       Settings
                     </div>
-                    <div className="text-slate-11 text-[12px] py-[4px] px-[12px]">
+                    <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
                       Workspace
                     </div>
                     <Link
@@ -637,15 +639,19 @@ export default function Settings() {
                     </Link>
                   </div>
                   <div className="flex flex-col gap-0">
-                    <div className="text-slate-11 text-[12px] py-[4px] px-[12px]">
+                    <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
                       Account
                     </div>
-                    <div
-                      className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
-                    ${routerPath.includes("profile") ? "bg-slate-3" : ""}`}
+                    <Link
+                      href={`/workspace/${currentWorkspace?.id}/settings/profile`}
                     >
-                      Profile
-                    </div>
+                      <div
+                        className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
+                    ${routerPath.includes("profile") ? "bg-slate-3" : ""}`}
+                      >
+                        Profile
+                      </div>
+                    </Link>
                   </div>
                 </div>
               </div>
