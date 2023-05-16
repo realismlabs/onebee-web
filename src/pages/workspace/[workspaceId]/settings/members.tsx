@@ -925,7 +925,8 @@ export default function Members() {
                           </div>
                         );
                       })}
-                    {workspaceInvitesData.length > 0 &&
+                    {workspaceInvitesData &&
+                      workspaceInvitesData.length > 0 &&
                       workspaceInvitesData.map(
                         (workspaceInvite: any, index: number) => {
                           return (

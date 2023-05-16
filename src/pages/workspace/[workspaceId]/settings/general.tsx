@@ -233,7 +233,7 @@ export default function Settings() {
                 <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
                   Manage workspace
                 </div>
-                {currentUserMembership.role == "admin" && (
+                {currentUserMembership?.role == "admin" && (
                   <div className="flex flex-col text-[14px] mt-[16px]">
                     <div className="flex flex-col">
                       <form
@@ -356,7 +356,7 @@ export default function Settings() {
                     </div>
                   </div>
                 )}
-                {currentUserMembership.role !== "admin" && (
+                {currentUserMembership?.role !== "admin" && (
                   <div className="flex flex-col text-[14px] mt-[16px]">
                     <div className="flex flex-col gap-2">
                       <p className="text-[13px] text-slate-11">

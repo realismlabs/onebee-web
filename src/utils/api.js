@@ -175,7 +175,7 @@ export const updateUser = async ({ userId, userData }) => {
 export const createWorkspace = async (workspaceData) => {
   const icon = generateWorkspaceIcon(workspaceData.name);
 
-  const response = await fetch(`${API_BASE_URL}/api/workspaces/create`, {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -242,7 +242,7 @@ export const getTablesFromConnection = async (workspaceId, connectionId) => {
 // Create a table in a workspace
 export const createTable = async (tableData) => {
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${tableData.workspaceId}/tables/create`,
+    `${API_BASE_URL}/api/workspaces/${tableData.workspaceId}/tables`,
     {
       method: "POST",
       headers: {
@@ -295,7 +295,7 @@ export const deleteTable = async ({ workspaceId, tableId }) => {
 // Create a new connection
 export const createConnection = async (workspaceId, connectionData) => {
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/create`,
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`,
     {
       method: "POST",
       headers: {
@@ -407,9 +407,8 @@ export const getMembership = async (membershipId) => {
 };
 
 // create membership
-// "/api/memberships/create": "/memberships/create",
 export const createMembership = async (membershipData) => {
-  const response = await fetch(`${API_BASE_URL}/api/memberships/create`, {
+  const response = await fetch(`${API_BASE_URL}/api/memberships`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -156,7 +156,7 @@ export default function JoinWorkspace() {
           </div>
         )}
         <div className="text-blue-500 text-center text-[14px] mt-12">
-          <Link href="/create-workspace">Create a new workspace →</Link>
+          <Link href="/welcome/create-workspace">Create a new workspace →</Link>
         </div>
       </div>
     </div>
