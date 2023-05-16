@@ -13,6 +13,7 @@ import { getWorkspaces } from '@/utils/api';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useLocalStorageState } from '@/utils/util';
+import InvitePeopleDialog from './InvitePeopleDialog';
 
 function AccountPopover() {
   const router = useRouter();
@@ -220,6 +221,10 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   // Replace the items array with your dynamic data
   const router = useRouter();
   const [shellExpanded, setShellExpanded] = useLocalStorageState("shellExpanded", true);
+  const [isInvitePeopleDialogOpen, setIsInvitePeopleDialogOpen] = useState(false);
+  const [customInviteMessage, setCustomInviteMessage] = useState(
+    "Hi there, \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse. \n\nJoin the workspace in order to browse and search our key datasets."
+  );
   const controls = useAnimation();
 
   const toggleShell = useCallback(async () => {
@@ -479,13 +484,23 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
         <Tooltip.Provider>
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
-              <div className="flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
+              <div className="flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md"
+                onClick={() => setIsInvitePeopleDialogOpen(true)}>
                 <PaperPlaneTilt
                   size={20}
                   weight="fill"
                   className="text-slate-10 group-hover:text-slate-11 transition-all duration-100 min-h-[20px] min-w-[20px]"
                 />
                 <div className="truncate w-full">Invite people</div>
+                <InvitePeopleDialog
+                  isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
+                  setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
+                  currentUser={currentUser}
+                  currentWorkspace={currentWorkspace}
+                  customMessage={customInviteMessage}
+                  setCustomMessage={setCustomInviteMessage}
+                  emailTemplateLanguage={""}
+                />
               </div>
             </Tooltip.Trigger>
             <Tooltip.Portal>

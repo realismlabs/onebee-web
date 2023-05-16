@@ -59,6 +59,8 @@ const InvitePeopleDialog = ({
   customMessage,
   setCustomMessage,
   emailTemplateLanguage,
+  customHeader,
+  customSubject,
 }: {
   isInvitePeopleDialogOpen: boolean;
   setIsInvitePeopleDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -67,6 +69,8 @@ const InvitePeopleDialog = ({
   customMessage: string;
   setCustomMessage: React.Dispatch<React.SetStateAction<string>>;
   emailTemplateLanguage: string;
+  customHeader?: string;
+  customSubject?: string;
 }) => {
   let inviterEmail = currentUser.email;
 
@@ -215,10 +219,14 @@ const InvitePeopleDialog = ({
       <div className="mt-4 h-[280px] overflow-y-scroll p-4 bg-white text-black rounded-md text-[13px] space-y-2">
         <div className="text-slate-10 pb-1">
           <p>From: Dataland Support &lt;no-reply@dataland.io&gt;</p>
-          <p>
-            Subject: {sender_email_name} invited you the {currentWorkspace.name}
-            workspace on Dataland
-          </p>
+          {customSubject ? (
+            <p>Subject: {customSubject}</p>
+          ) : (
+            <p>
+              Subject: {sender_email_name} invited you to{" "}
+              {currentWorkspace.name} on Dataland.io
+            </p>
+          )}
           {/* dashed border */}
           <div className="border border-dashed border-slate-11 my-2"></div>
         </div>
@@ -275,7 +283,9 @@ const InvitePeopleDialog = ({
         <div className="fixed inset-0 flex items-start justify-center z-30">
           <Dialog.Panel className="fixed mx-auto max-h-[85vh] top-[60px] max-w-[90vw] w-[480px] rounded-[6px] bg-slate-2 border border-slate-3 text-slate-12 p-5 focus:outline-none overflow-hidden">
             <Dialog.Title className="m-0 text-[14px] font-medium">
-              Invite people to {currentWorkspace.name}
+              {customHeader
+                ? customHeader
+                : `Invite people to ${currentWorkspace.name}`}
             </Dialog.Title>
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-4 mt-6">
