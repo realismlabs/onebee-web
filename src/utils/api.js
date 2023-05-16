@@ -21,15 +21,64 @@ export const fetchCurrentWorkspace = async (workspaceId) => {
   return result;
 };
 
+export const createInvite = async ({
+  workspaceId,
+  inviterEmail,
+  recipientEmail
+}
+) => {
+  const api_url = process.env.NEXT_PUBLIC_API_URL;
+  try {
+    const response = await fetch(
+      `${api_url}/api/workspaces/${workspaceId}/invite`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          inviterEmail,
+          recipientEmail,
+          accepted: false,
+          workspaceId: workspaceId,
+        }),
+      }
+    );
+
+    if (response.ok) {
+      const invite = await response.json();
+      console.log("Invite created:", invite);
+    } else {
+      const error = await response.json();
+      console.error("Error creating invite:", error.message);
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+  }
+};
+
+
 export const getInvitesForUserEmail = async (recipientEmail) => {
   console.log("getInvitesForUserEmail", recipientEmail);
   const response = await fetch(
     `${API_BASE_URL}/api/invites/recipient/${recipientEmail}`
   );
-  // const response = await fetch(`${API_BASE_URL}/invites?recipient_email=${recipientEmail}`);
+  // const response = await fetch(`${API_BASE_URL}/invites?recipientEmail=${recipientEmail}`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch invites");
+  }
+  return await response.json();
+};
+
+// "/api/workspaces/:workspaceId/invites": "/invites?workspaceId=:workspaceId",
+export const getWorkspaceInvites = async (workspaceId) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/invites`
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch invites for workspace: ${workspaceId}`);
   }
   return await response.json();
 };

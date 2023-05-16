@@ -133,7 +133,7 @@ export default function JoinWorkspace() {
                             : invite.workspaceId}
                         </p>
                         <p className="truncate w-[240px] text-slate-11">
-                          Invited by {invite.inviter_email}
+                          Invited by {invite.inviterEmail}
                         </p>
                       </div>
                       <div>

@@ -10,6 +10,7 @@ import {
   getWorkspaceMemberships,
   getUser,
   deleteMembership,
+  getWorkspaceInvites,
 } from "@/utils/api";
 import {
   useQuery,
@@ -171,6 +172,20 @@ export default function Settings() {
         enabled: membership.userId !== null,
       };
     }),
+  });
+
+  // get invites for workspace
+  const {
+    data: workspaceInvitesData,
+    isLoading: isWorkspaceInvitesLoading,
+    error: workspaceInvitesError,
+  } = useQuery({
+    queryKey: ["getWorkspaceInvites", currentWorkspace?.id],
+    queryFn: async () => {
+      const response = await getWorkspaceInvites(currentWorkspace?.id);
+      return response;
+    },
+    enabled: currentWorkspace?.id !== null,
   });
 
   const updateWorkspaceMutation = useMutation(updateWorkspace, {
@@ -572,6 +587,26 @@ export default function Settings() {
                           </div>
                         );
                       })}
+                    {workspaceInvitesData.length > 0 &&
+                      workspaceInvitesData.map(
+                        (workspaceInvite: any, index: number) => {
+                          return (
+                            <div
+                              className="flex flex-row gap-4 items-center text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12 border-t border-slate-4"
+                              key={index}
+                            >
+                              <div className="w-[312px] truncate">
+                                <div className="truncate">
+                                  {workspaceInvite.recipientEmail}
+                                </div>
+                              </div>
+                              <div className="truncate text-purple-11 bg-purple-3 rounded-md px-[8px] py-[4px] ">
+                                Pending invite
+                              </div>
+                            </div>
+                          );
+                        }
+                      )}
                   </div>
                 </div>
               </div>

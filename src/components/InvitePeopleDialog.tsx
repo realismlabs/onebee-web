@@ -1,36 +1,38 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect, FC, Fragment } from "react";
 import Link from "next/link";
 import router from "next/router";
 import Image from "next/image";
 import { X, CaretRight, CircleNotch, CheckCircle } from "@phosphor-icons/react";
 import { Disclosure, Transition, Dialog } from "@headlessui/react";
-import LogoSnowflake from "@/components/LogoSnowflake";
-import LogoBigQuery from "@/components/LogoBigQuery";
-import LogoPostgres from "@/components/LogoPostgres";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { motion } from "framer-motion";
+import { createInvite } from "@/utils/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ToastProps {
   message: string;
   duration: number;
+  setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
+  showToast: boolean;
 }
 
-const Toast: React.FC<ToastProps> = ({ message, duration }) => {
-  const [visible, setVisible] = useState(true);
-
+const Toast: React.FC<ToastProps> = ({
+  message,
+  duration,
+  setShowToast,
+  showToast,
+}) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      setVisible(false);
+      setShowToast(false);
     }, duration);
 
     return () => clearTimeout(timer);
   }, [duration]);
 
-  if (!visible) return null;
+  if (!showToast) return null;
 
   return (
-    <div className="mt-12 pl-2 pr-4 py-2 text-[12px] bg-slate-4 text-slate-12 rounded-md shadow-lg z-50 flex flex-row gap-2 items-center">
+    <div className="mt-12 pl-[12px] pr-[20px] py-[8px] text-[14px] bg-slate-4 text-slate-12 rounded-md shadow-lg z-50 flex flex-row gap-2 items-center">
       <CheckCircle size={20} weight="fill" className="text-green-500" />
       {message}
     </div>
@@ -48,7 +50,7 @@ const InvitePeopleDialog = ({
   currentUser: any;
   currentWorkspace: any;
 }) => {
-  let sender_email = currentUser.email;
+  let inviterEmail = currentUser.email;
 
   const [emailAddresses, setEmailAddresses] = useState<string>("");
   const [isValid, setIsValid] = useState(true);
@@ -65,40 +67,20 @@ const InvitePeopleDialog = ({
     setIsValid(true);
   };
 
-  const createInvite = async (
-    workspaceId: number,
-    inviter_email: string,
-    recipient_email: string
-  ) => {
-    const api_url = process.env.NEXT_PUBLIC_API_URL;
-    try {
-      const response = await fetch(
-        `${api_url}/api/workspaces/${workspaceId}/invite`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            inviter_email,
-            recipient_email,
-            accepted: false,
-            workspaceId: workspaceId,
-          }),
-        }
-      );
+  const queryClient = useQueryClient();
 
-      if (response.ok) {
-        const invite = await response.json();
-        console.log("Invite created:", invite);
-      } else {
-        const error = await response.json();
-        console.error("Error creating invite:", error.message);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-    }
-  };
+  const inviteWorkspaceMemberMutation = useMutation(createInvite, {
+    onSuccess: async (createdInvite) => {
+      console.log("updatedWorkspace:", createdInvite);
+      await queryClient.refetchQueries([
+        "getWorkspaceInvites",
+        currentWorkspace?.id,
+      ]);
+    },
+    onError: (error) => {
+      console.error("Error inviting workspace member:", error);
+    },
+  });
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -129,14 +111,15 @@ const InvitePeopleDialog = ({
           emailAddressesCount === 1 ? "teammate" : "teammates"
         }!`;
 
-        console.log("hello");
-
         const inviteAllTeammates = async () => {
           console.log("emailAddressesArray: ", emailAddressesArray);
-          const workspaceId = 1;
-          for (const recipient_email of emailAddressesArray) {
-            console.log("starting to invite: ", recipient_email);
-            await createInvite(workspaceId, sender_email, recipient_email);
+          for (const recipientEmail of emailAddressesArray) {
+            console.log("starting to invite: ", recipientEmail);
+            await inviteWorkspaceMemberMutation.mutateAsync({
+              workspaceId: currentWorkspace.id,
+              inviterEmail,
+              recipientEmail,
+            });
           }
         };
 
@@ -171,7 +154,10 @@ const InvitePeopleDialog = ({
       <div className="mt-4 h-[280px] overflow-y-scroll p-4 bg-white text-black rounded-md text-[13px] space-y-2">
         <div className="text-slate-10 pb-1">
           <p>From: Dataland Support &lt;no-reply@dataland.io&gt;</p>
-          <p>Subject: Help {sender_email_name} add a data source to Dataland</p>
+          <p>
+            Subject: {sender_email_name} invited you the {currentWorkspace.name}
+            workspace on Dataland
+          </p>
           {/* dashed border */}
           <div className="border border-dashed border-slate-11 my-2"></div>
         </div>
@@ -238,11 +224,11 @@ const InvitePeopleDialog = ({
                     </label>
                     <input
                       className={`rounded-md block w-full bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
-                    ${
-                      isValid === false
-                        ? "border-red-500"
-                        : "border-slate-6 hover:border-slate-7"
-                    }`}
+                      ${
+                        isValid === false
+                          ? "border-red-500"
+                          : "border-slate-6 hover:border-slate-7"
+                      }`}
                       required
                       value={emailAddresses}
                       onChange={(e) => handleEmailAddressChange(e)}
@@ -257,7 +243,7 @@ const InvitePeopleDialog = ({
                   <div className="flex flex-col gap-2">
                     <label className="text-[14px] w-[120px]">Message</label>
                     <textarea
-                      className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 h-48 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10 leading-normal"
+                      className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 h-36 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10 leading-normal"
                       required
                       title="Custom message"
                       value={customMessage}
@@ -287,7 +273,7 @@ const InvitePeopleDialog = ({
                         </Disclosure.Button>
                         <Disclosure.Panel className="">
                           <EmailPreview
-                            sender_email={sender_email}
+                            sender_email={inviterEmail}
                             workspace={currentWorkspace.name}
                             message={customMessage}
                           />
@@ -306,7 +292,7 @@ const InvitePeopleDialog = ({
                 </button>
                 <button
                   className={`px-4 h-[36px] bg-blue-600 rounded-md text-[13px] font-medium leading-none focus:outline-none w-[105px]
-                  ${loading ? "opacity-50" : "hover:bg-blue-700"}`}
+                    ${loading ? "opacity-50" : "hover:bg-blue-700"}`}
                   type="submit"
                   disabled={loading}
                 >
@@ -343,6 +329,8 @@ const InvitePeopleDialog = ({
           <Toast
             message={toastMessage}
             duration={3000} // Duration of the Toast in milliseconds
+            setShowToast={setShowToast}
+            showToast={showToast}
           />
         </div>
       </Transition>
