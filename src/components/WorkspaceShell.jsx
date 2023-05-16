@@ -4,8 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
-import { useQuery } from '@tanstack/react-query';
-import { getTables, getWorkspaceConnections } from '../utils/api';
+import { useQuery, useQueries } from '@tanstack/react-query';
+import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspace } from '../utils/api';
 import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
@@ -83,30 +83,53 @@ const KeyCombination = ({ keys }) => {
 function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   const router = useRouter();
 
+  // get user's current memberships
   const {
-    data: workspacesForUserData,
-    isLoading: isWorkspacesForUserLoading,
-    error: workspacesForUserError,
+    data: userMembershipsData,
+    isLoading: isUserMembershipsLoading,
+    error: userMembershipsError,
   } = useQuery({
-    queryKey: ["workspaces"],
+    queryKey: ["currentUserMemberships", currentUser.id],
     queryFn: async () => {
-      return await getWorkspaces();
+      return await getUserMemberships(currentUser.id);
     },
   });
 
-  if (isWorkspacesForUserLoading) {
+  console.log("awu userMembershipsData", userMembershipsData)
+
+  //  fetch user data for each membership
+  const availableWorkspacesQueries = useQueries({
+    queries: (userMembershipsData ?? []).map((membership) => {
+      return {
+        queryKey: ["getWorkspace", membership.workspaceId],
+        queryFn: async () => {
+          const response = await getWorkspace(membership.workspaceId);
+          return response;
+        },
+        enabled: membership.workspaceId !== null,
+      };
+    }),
+  });
+
+  const availableWorkspacesData = availableWorkspacesQueries.map((workspace) => workspace.data);
+  const availableWorkspacesError = availableWorkspacesQueries.map((workspace) => workspace.error);
+  const availableWorkspacesIsLoading = availableWorkspacesQueries.map((workspace) => workspace.isLoading);
+
+  if (availableWorkspacesIsLoading.some((isLoading) => isLoading)) {
     return <div className="h-screen bg-slate-1 text-slate-12">Loading...</div>;
   }
 
-  if (workspacesForUserError) {
-    return <div>There was an error loading your table</div>;
+  if (availableWorkspacesError.some((error) => error)) {
+    return <div>There was an error loading your workspaces</div>;
   }
+
+  console.log("awu availableWorkspaces", availableWorkspacesData)
 
   return (
     <>
       <div className="px-[16px] pt-[13px] pb-[4px] text-slate-11 text-[13px]">{currentUser.email}</div>
       <div className="max-h-[60vh] overflow-y-scroll flex flex-col w-full">
-        {workspacesForUserData.map((workspace) => (
+        {(availableWorkspacesData ?? []).map((workspace) => (
           <Popover.Button key={workspace.id}>
             <div
               onClick={(e) => {
@@ -123,7 +146,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
                       backgroundSize: 'cover',
                     }}
                   >
-                    <div className="text-[10px] text-slate-12">{workspace.name.slice(0, 1)}</div>
+                    <div className="text-[10px] text-slate-12">{workspace?.name?.slice(0, 1)}</div>
                   </div>
                   <div className="grow truncate">{workspace.name}</div>
                   {workspace.id === currentWorkspace.id && (

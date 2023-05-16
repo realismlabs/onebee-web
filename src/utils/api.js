@@ -401,6 +401,11 @@ export const getWorkspaces = async () => {
   return connections;
 };
 
+export const getWorkspace = async (workspaceId) => {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
+  const workspace = await response.json();
+  return workspace;
+};
 
 // "/api/memberships": "/memberships",
 export const getMemberships = async () => {

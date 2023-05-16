@@ -103,8 +103,8 @@ const MemberPopover = ({
   });
 
   if (
-    currentUserMembership.role == "admin" || // Admins can modify all memberships
-    currentUserMembership.id == targetMembership.id // User is allowed to leave workspace aka modify their own membership
+    currentUserMembership?.role == "admin" || // Admins can modify all memberships
+    currentUserMembership?.id == targetMembership.id // User is allowed to leave workspace aka modify their own membership
   ) {
     return (
       <>
@@ -180,14 +180,14 @@ const MemberRolePopover = ({
   targetUserMembership: any;
   memberships: any;
 }) => {
-  const currentUserMembershipId = currentUserMembership.id;
+  const currentUserMembershipId = currentUserMembership?.id;
   const targetUserMembershipId = targetUserMembership.id;
   const currentUserId = currentUser.id;
-  const workspaceId = currentUserMembership.workspaceId;
+  const workspaceId = currentUserMembership?.workspaceId;
 
   const handleChangeMemberRole = async (targetUserRole: string) => {
     // check if user's own membership role is admin
-    if (currentUserMembership.role !== "admin") {
+    if (currentUserMembership?.role !== "admin") {
       alert("You must be an admin to change a member's role.");
       return;
     }
@@ -250,16 +250,16 @@ const MemberRolePopover = ({
                 className={`text-slate-11 focus:shadow-slate-7 flex flex-row gap-[4px] px-[8px] py-[4px] items-center rounded-[4px] focus:outline-none
                 ${open ? "bg-slate-3" : ""}
                 ${
-                  currentUserMembership.role == "admin"
+                  currentUserMembership?.role == "admin"
                     ? "cursor-pointer hover:bg-slate-3 active:bg-slate-4"
                     : "cursor-default"
                 }`}
-                disabled={currentUserMembership.role !== "admin"}
+                disabled={currentUserMembership?.role !== "admin"}
               >
                 <p className="text-slate-12">
                   {targetUserMembership.role == "admin" ? "Admin" : "Member"}
                 </p>
-                {currentUserMembership.role === "admin" && (
+                {currentUserMembership?.role === "admin" && (
                   <CaretDown
                     size={12}
                     weight="fill"
@@ -485,6 +485,10 @@ export default function Members() {
     }),
   });
 
+  const usersData = usersQueries.map((user: any) => user.data);
+
+  console.log("usersData:", usersData);
+
   // get invites for workspace
   const {
     data: workspaceInvitesData,
@@ -531,7 +535,6 @@ export default function Members() {
   };
 
   // get data from useQueries
-  const usersData = usersQueries.map((user: any) => user.data);
 
   const getUserFromMembership = (membership: any) => {
     return usersData.find((user) => user.id === membership.userId);
@@ -672,7 +675,7 @@ export default function Members() {
                         without an invite
                       </p>
                     </div>
-                    {currentUserMembership.role == "admin" && (
+                    {currentUserMembership?.role == "admin" && (
                       <div
                         className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto"
                         onClick={openAddAllowedDomainDialog}
@@ -795,7 +798,7 @@ export default function Members() {
                                   </div>
                                 )}
                               </div>
-                              {currentUserMembership.role == "admin" && (
+                              {currentUserMembership?.role == "admin" && (
                                 <div
                                   className="h-[24px] w-[24px] flex items-center justify-center mr-[8px] hover:bg-slate-3 cursor-pointer rounded-md"
                                   onClick={() =>
