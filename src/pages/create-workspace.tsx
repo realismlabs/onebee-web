@@ -3,7 +3,7 @@ import Link from "next/link";
 import router from "next/router";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { createWorkspace } from "@/utils/api";
+import { createWorkspace, createMembership } from "@/utils/api";
 import { isCommonEmailProvider } from "@/utils/util";
 
 interface AccountHeaderProps {
@@ -66,9 +66,26 @@ export default function CreateWorkspace() {
       };
 
       try {
-        const result = await createWorkspace(createWorkspaceRequestBody);
-        console.log("Created workspace", result);
-        router.push(`/workspace/${result.id}`);
+        const created_workspace_result = await createWorkspace(
+          createWorkspaceRequestBody
+        );
+        console.log("Created workspace", created_workspace_result);
+
+        try {
+          const createMembershipRequestBody = {
+            userId: currentUser?.id,
+            workspaceId: created_workspace_result.id,
+            createdAt: new Date().toISOString(),
+          };
+
+          const created_membership_result = await createMembership(
+            createMembershipRequestBody
+          );
+
+          router.push(`/workspace/${created_workspace_result.id}`);
+        } catch (e) {
+          console.log("Couldn't create membership", e);
+        }
       } catch (e) {
         console.log("Couldn't create workspace", e);
       }

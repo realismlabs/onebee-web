@@ -30,6 +30,7 @@
   "/api/connections": "/connections",
   "/api/memberships": "/memberships",
   "/api/memberships/:membershipId": "/memberships/:membershipId",
+  "/api/memberships/:membershipId/create": "/memberships/:membershipId",
   "/api/memberships/:membershipId/update": "/memberships/:membershipId",
   "/api/memberships/:membershipId/delete": "/memberships/:membershipId",
   "/api/workspaces/:workspaceId/memberships": "/memberships?workspaceId=:workspaceId",

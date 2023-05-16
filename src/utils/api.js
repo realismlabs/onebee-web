@@ -307,6 +307,20 @@ export const getMembership = async (membershipId) => {
   return membership;
 };
 
+// create membership
+// "/api/memberships/create": "/memberships/create",
+export const createMembership = async (membershipData) => {
+  const response = await fetch(`${API_BASE_URL}/api/memberships/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(membershipData),
+  });
+  const createdMembership = await response.json();
+  return createdMembership;
+};
+
 // "/api/memberships/:membershipId/update": "/memberships/:membershipId",
 export const updateMembership = async ({ membershipId, membershipData }) => {
   const response = await fetch(

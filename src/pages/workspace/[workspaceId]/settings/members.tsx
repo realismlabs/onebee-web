@@ -22,9 +22,11 @@ import { Globe, X, DotsThree, Trash } from "@phosphor-icons/react";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import {
   capitalizeString,
-  friendlyRelativeDateToNow,
   getInitials,
+  isCommonEmailProvider,
 } from "@/utils/util";
+import { v4 as uuidv4 } from "uuid";
+import InvitePeopleDialog from "@/components/InvitePeopleDialog";
 
 const MemberPopover = ({
   currentUser,
@@ -39,14 +41,9 @@ const MemberPopover = ({
 
   const handleRemoveMember = async () => {
     // check if user is the last member of the workspace
-    const workspaceMemberships = await getWorkspaceMemberships(workspaceId);
-    if (workspaceMemberships.length === 1) {
-      alert("You cannot remove the last member of a workspace.");
-    } else {
-      const deletedMember = await deleteMembershipMutation.mutateAsync({
-        membershipId,
-      });
-    }
+    const deletedMember = await deleteMembershipMutation.mutateAsync({
+      membershipId,
+    });
   };
 
   const queryClient = useQueryClient();
@@ -176,11 +173,99 @@ export default function Settings() {
     }),
   });
 
+  const updateWorkspaceMutation = useMutation(updateWorkspace, {
+    onSuccess: async (updatedWorkspace) => {
+      await queryClient.refetchQueries([
+        "currentWorkspace",
+        currentWorkspace?.id,
+      ]);
+    },
+    onError: (error) => {
+      console.error("Error updating workspace", error);
+    },
+  });
+
+  const handleRemoveAllowedDomain = async (allowedDomainId: string) => {
+    console.log("clicked");
+    // take existing currentWorkspace.allowedDomains and remove the one with the matching id
+    const updatedAllowedDomains = currentWorkspace.allowedDomains.filter(
+      (allowedDomain: any) => allowedDomain.id !== allowedDomainId
+    );
+
+    try {
+      const response = await updateWorkspaceMutation.mutateAsync({
+        workspaceId: currentWorkspace.id,
+        workspaceData: {
+          allowedDomains: updatedAllowedDomains,
+        },
+      });
+    } catch (error) {
+      console.error("Error updating workspace:", error);
+    }
+  };
+
   // get data from useQueries
   const usersData = usersQueries.map((user: any) => user.data);
 
   const getUserFromMembership = (membership: any) => {
     return usersData.find((user) => user.id === membership.userId);
+  };
+
+  const handleAddAllowedDomain = async (domain: string) => {
+    if (!domain) {
+      setAddAllowedDomainErrorMessage("Please enter a domain.");
+      return;
+    }
+    if (isCommonEmailProvider(domain)) {
+      setAddAllowedDomainErrorMessage(
+        "Common email providers are not allowed."
+      );
+      return;
+    }
+    // check if domain is already in allowedDomains
+    const isDomainAlreadyAllowed = currentWorkspace.allowedDomains.find(
+      (allowedDomain: any) => allowedDomain.domain === domain
+    );
+    if (isDomainAlreadyAllowed) {
+      setAddAllowedDomainErrorMessage("Domain is already allowed.");
+      return;
+    }
+    try {
+      const response = await updateWorkspaceMutation.mutateAsync({
+        workspaceId: currentWorkspace.id,
+        workspaceData: {
+          allowedDomains: [
+            ...currentWorkspace.allowedDomains,
+            {
+              id: uuidv4(),
+              domain: domain,
+            },
+          ],
+        },
+      });
+      if (response) {
+        closeAddAllowedDomainDialog();
+      }
+    } catch (error) {
+      console.error("Error deleting workspace:", error);
+    }
+  };
+
+  const [isInvitePeopleDialogOpen, setIsInvitePeopleDialogOpen] =
+    useState(false);
+  const [isAddAllowedDomainDialogOpen, setIsAddAllowedDomainDialogOpen] =
+    useState(false);
+  const [addAllowedDomainErrorMessage, setAddAllowedDomainErrorMessage] =
+    useState("");
+
+  const [allowedDomainInput, setAllowedDomainInput] = useState("");
+
+  const openAddAllowedDomainDialog = () => {
+    setIsAddAllowedDomainDialogOpen(true);
+  };
+
+  const closeAddAllowedDomainDialog = () => {
+    setIsAddAllowedDomainDialogOpen(false);
   };
 
   if (isUserLoading || isWorkspaceLoading || isMembershipsLoading) {
@@ -253,40 +338,141 @@ export default function Settings() {
                         workspace
                       </p>
                     </div>
-                    <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto">
+                    <div
+                      className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto"
+                      onClick={openAddAllowedDomainDialog}
+                    >
                       <p>Add allowed domain</p>
                     </div>
+                    <Dialog
+                      as="div"
+                      open={isAddAllowedDomainDialogOpen}
+                      onClose={() => setIsAddAllowedDomainDialogOpen(false)}
+                      className="absolute inset-0 flex min-w-full h-screen"
+                    >
+                      <Dialog.Overlay>
+                        <div className="fixed inset-0 bg-slate-1 opacity-50" />
+                      </Dialog.Overlay>
+                      <Dialog.Panel className="absolute z-30 top-[25%] left-[50%] translate-x-[-50%] translate-y-[-25%] w-[400px]">
+                        <div className="flex flex-col bg-slate-2 border border-slate-4 rounded-[8px] w-full p-[24px] text-slate-12">
+                          {/* Close */}
+                          <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
+                            <button
+                              onClick={() => {
+                                closeAddAllowedDomainDialog();
+                              }}
+                              className="text-slate-11 hover:bg-slate-4 rounded-md h-[24px] w-[24px] ml-[12px] flex items-center justify-center"
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                          <Dialog.Title className="text-[14px]">
+                            Add allowed domain
+                          </Dialog.Title>
+                          <Dialog.Description className="text-[13px] mt-[16px] gap-0 flex flex-col">
+                            <input
+                              type={"text"}
+                              id="workspaceNameInput"
+                              value={allowedDomainInput}
+                              onChange={(e) =>
+                                setAllowedDomainInput(e.target.value)
+                              }
+                              placeholder="i.e. Acme organization"
+                              className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
+                                ${
+                                  addAllowedDomainErrorMessage !== ""
+                                    ? "border-red-9"
+                                    : "border-slate-6"
+                                }
+                                focus:outline-none focus:ring-blue-600
+                                `}
+                            />
+                            {addAllowedDomainErrorMessage && (
+                              <div className="text-red-9 text-[13px] mt-[12px]">
+                                {addAllowedDomainErrorMessage}
+                              </div>
+                            )}
+                          </Dialog.Description>
+                          <div className="flex w-full justify-end mt-[24px] gap-2">
+                            <button
+                              className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                              onClick={() => {
+                                closeAddAllowedDomainDialog();
+                              }}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px]"
+                              onClick={() => {
+                                handleAddAllowedDomain(allowedDomainInput);
+                              }}
+                            >
+                              Add domain
+                            </button>
+                          </div>
+                        </div>
+                      </Dialog.Panel>
+                    </Dialog>
                   </div>
                   <div className="flex flex-col border-slate-4 rounded-lg border mt-2">
                     {currentWorkspace.allowedDomains.length > 0 &&
                       currentWorkspace.allowedDomains?.map(
                         (allowedDomain: any, index: number) => {
+                          let borderClasses = "";
+
+                          if (currentWorkspace.allowedDomains.length > 1) {
+                            borderClasses = `${
+                              index === 0
+                                ? "rounded-tl-lg rounded-tr-lg border-b border-slate-4"
+                                : ""
+                            }                                 
+                              ${
+                                index <
+                                  currentWorkspace.allowedDomains.length - 1 &&
+                                index > 0
+                                  ? "border-b border-slate-4"
+                                  : ""
+                              } 
+                              ${
+                                index ===
+                                currentWorkspace.allowedDomains.length - 1
+                                  ? "rounded-bl-lg rounded-br-lg"
+                                  : ""
+                              }`;
+                          } else {
+                            borderClasses = "rounded-lg";
+                          }
+
                           return (
                             <div
                               key={allowedDomain.id}
-                              className={`flex flex-row gap-4 items-center ${
-                                index <
-                                currentWorkspace.allowedDomains.length - 1
-                                  ? "border-b border-slate-4"
-                                  : ""
-                              } text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
+                              className={`flex flex-row gap-4 items-center ${borderClasses} text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
                             >
                               <div className="h-[24px] w-[24px] text-[10px] font-semibold rounded-full flex items-center justify-center text-slate-10">
                                 <Globe size={20} />
                               </div>
-                              <div className="w-[240px] truncate">
+                              <div className="grow truncate">
                                 {allowedDomain.domain && (
                                   <div key={allowedDomain.id}>
                                     {allowedDomain.domain}
                                   </div>
                                 )}
                               </div>
+                              <div
+                                className="h-[24px] w-[24px] flex items-center justify-center mr-[8px] hover:bg-slate-3 cursor-pointer rounded-md"
+                                onClick={() =>
+                                  handleRemoveAllowedDomain(allowedDomain.id)
+                                }
+                              >
+                                <Trash size={16} className="text-slate-11" />
+                              </div>
                             </div>
                           );
                         }
                       )}
                     {currentWorkspace.allowedDomains.length === 0 && (
-                      <div className="flex flex-row gap-4 items-center text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-2 justify-center text-slate-11 h-[64px]">
+                      <div className="flex flex-row gap-4 items-center text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-2 justify-center text-slate-11 h-[96px]">
                         No allowed domains yet
                       </div>
                     )}
@@ -300,22 +486,53 @@ export default function Settings() {
                         Manage who can access this workspace
                       </p>
                     </div>
-                    <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto">
+                    <div
+                      className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto"
+                      onClick={() => {
+                        setIsInvitePeopleDialogOpen(true);
+                      }}
+                    >
                       <p>Invite people</p>
                     </div>
+                    <InvitePeopleDialog
+                      isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
+                      setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
+                      currentUser={currentUser}
+                      currentWorkspace={currentWorkspace}
+                    />
                   </div>
                   <div className="flex flex-col border-slate-4 rounded-lg border">
                     {membershipsData.length > 0 &&
                       membershipsData.map((membership: any, index: number) => {
                         const user = getUserFromMembership(membership);
+
+                        let borderClasses = "";
+
+                        if (membershipsData.length > 1) {
+                          borderClasses = `${
+                            index === 0
+                              ? "rounded-tl-lg rounded-tr-lg border-b border-slate-4"
+                              : ""
+                          }                                 
+                            ${
+                              index < membershipsData.length - 1 && index > 0
+                                ? "border-b border-slate-4"
+                                : ""
+                            } 
+                            ${
+                              index === membershipsData.length - 1
+                                ? "rounded-bl-lg rounded-br-lg"
+                                : ""
+                            }`;
+                        } else {
+                          borderClasses = "rounded-lg";
+                        }
+
                         return (
                           <div
                             key={membership.id}
-                            className={`flex flex-row gap-4 items-center ${
-                              index < membershipsData.length - 1
-                                ? "border-b border-slate-4"
-                                : ""
-                            } text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12 rounded-lg`}
+                            className={`
+                              flex flex-row gap-4 items-center ${borderClasses} text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
                           >
                             <div className="bg-purple-8 h-[24px] w-[24px] text-[10px] font-semibold rounded-full flex items-center justify-center">
                               {user.name ? (
@@ -339,7 +556,7 @@ export default function Settings() {
                                 </div>
                               )}
                             </div>
-                            <div className="w-[240px] truncate text-slate-11">
+                            <div className="pl-8 w-[320px] truncate text-slate-11">
                               {user && (
                                 <div key={user.id} className="truncate">
                                   {user.email}
