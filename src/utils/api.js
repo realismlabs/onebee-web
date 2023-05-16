@@ -30,15 +30,23 @@ export const createInvite = async ({
   const api_url = process.env.NEXT_PUBLIC_API_URL;
 
   // first see if the recipient has already been invited or is already a member
-  const existingInvites = await getInvitesForUserEmail(recipientEmail);
-  const existingMembers = await getWorkspaceMemberships(workspaceId);
+  const existingInvites = await getInvitesForUserEmail(recipientEmail.trim());
+  const existingMemberships = await getWorkspaceMemberships(workspaceId);
 
-  const existingInvite = existingInvites.find(
-    (invite) => invite.recipientEmail === recipientEmail
+  // for each existing membership, get the user details
+  const existingUsers = await Promise.all(
+    existingMemberships.map(async (membership) => {
+      const user = await getUser(membership.userId);
+      return user;
+    })
   );
 
-  const existingMember = existingMembers.find(
-    (member) => member.email === recipientEmail
+  const existingInvite = existingInvites.find(
+    (invite) => invite.recipientEmail === recipientEmail.trim()
+  );
+
+  const existingUser = existingUsers.find(
+    (user) => user.email === recipientEmail.trim()
   );
 
   if (existingInvite) {
@@ -46,8 +54,8 @@ export const createInvite = async ({
     throw new Error("user_already_invited");
   }
 
-  if (existingMember) {
-    console.log("User is already a member:", existingMember);
+  if (existingUser) {
+    console.log("User is already a member:", existingUser);
     throw new Error("user_already_member");
   }
 
@@ -89,7 +97,9 @@ export const getInvitesForUserEmail = async (recipientEmail) => {
   if (!response.ok) {
     throw new Error("Failed to fetch invites");
   }
-  return await response.json();
+  const result = await response.json();
+  console.log("getInvitesForUserEmail result", result);
+  return result;
 };
 
 // "/api/workspaces/:workspaceId/invites": "/invites?workspaceId=:workspaceId",

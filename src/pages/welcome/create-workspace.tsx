@@ -88,7 +88,7 @@ export default function CreateWorkspace() {
           console.log("Created membership", created_membership_result);
 
           router.push(
-            `/onboarding/${created_workspace_result.id}/add-data-source`
+            `/workspace/${created_workspace_result.id}/onboarding/add-data-source`
           );
         } catch (e) {
           console.log("Couldn't create membership", e);
