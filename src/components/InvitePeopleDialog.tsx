@@ -2,7 +2,13 @@ import React, { useState, useEffect, FC, Fragment } from "react";
 import Link from "next/link";
 import router from "next/router";
 import Image from "next/image";
-import { X, CaretRight, CircleNotch, CheckCircle } from "@phosphor-icons/react";
+import {
+  X,
+  CaretRight,
+  CircleNotch,
+  CheckCircle,
+  XCircle,
+} from "@phosphor-icons/react";
 import { Disclosure, Transition, Dialog } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { createInvite } from "@/utils/api";
@@ -13,6 +19,7 @@ interface ToastProps {
   duration: number;
   setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
   showToast: boolean;
+  toastType: "success" | "error";
 }
 
 const Toast: React.FC<ToastProps> = ({
@@ -20,6 +27,7 @@ const Toast: React.FC<ToastProps> = ({
   duration,
   setShowToast,
   showToast,
+  toastType,
 }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -33,7 +41,11 @@ const Toast: React.FC<ToastProps> = ({
 
   return (
     <div className="mt-12 pl-[12px] pr-[20px] py-[8px] text-[14px] bg-slate-4 text-slate-12 rounded-md shadow-lg z-50 flex flex-row gap-2 items-center">
-      <CheckCircle size={20} weight="fill" className="text-green-500" />
+      {toastType === "success" ? (
+        <CheckCircle size={20} weight="fill" className="text-green-500" />
+      ) : (
+        <XCircle size={20} weight="fill" className="text-red-500" />
+      )}
       {message}
     </div>
   );
@@ -59,6 +71,8 @@ const InvitePeopleDialog = ({
     "Hi there, \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse. \n\nJoin the workspace in order to browse and search our key datasets."
   );
   const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+  const [toastDuration, setToastDuration] = useState(3000); // in milliseconds
   const [toastMessage, setToastMessage] = useState("");
 
   const handleEmailAddressChange = (e: any) => {
@@ -113,22 +127,64 @@ const InvitePeopleDialog = ({
 
         const inviteAllTeammates = async () => {
           console.log("emailAddressesArray: ", emailAddressesArray);
+          let allSuccess = true; // flag to keep track if all invitations were successful
           for (const recipientEmail of emailAddressesArray) {
             console.log("starting to invite: ", recipientEmail);
-            await inviteWorkspaceMemberMutation.mutateAsync({
-              workspaceId: currentWorkspace.id,
-              inviterEmail,
-              recipientEmail,
-            });
+            try {
+              await inviteWorkspaceMemberMutation.mutateAsync({
+                workspaceId: currentWorkspace.id,
+                inviterEmail,
+                recipientEmail,
+              });
+            } catch (err: any) {
+              allSuccess = false; // update the flag to false when an error occurs
+              console.log("awu err:", JSON.stringify(err));
+              if (err.message === "user_already_member") {
+                setToastMessage(
+                  `Error: User with email ${recipientEmail} is already a member`
+                );
+                setToastType("error");
+                setToastDuration(8000);
+                setShowToast(true);
+                // No need to throw the error as we want to continue with the loop
+              } else if (err.message === "user_already_invited") {
+                setToastMessage(
+                  `Error: User with email ${recipientEmail} has already been invited`
+                );
+                setToastType("error");
+                setToastDuration(8000);
+                setShowToast(true);
+              } else {
+                setToastMessage(
+                  `An unexpected error occurred while inviting ${recipientEmail}.`
+                );
+                setToastType("error");
+                setToastDuration(8000);
+                setShowToast(true);
+                // No need to throw the error as we want to continue with the loop
+              }
+            }
           }
+          return allSuccess; // return the flag indicating the success status of all invitations
         };
 
-        Promise.all([inviteAllTeammates(), delay]).then(() => {
-          setLoading(false);
-          setIsInvitePeopleDialogOpen(false);
-          setToastMessage(inviteResultMessage);
-          setShowToast(true);
-        });
+        Promise.all([inviteAllTeammates(), delay])
+          .then(([allSuccess]) => {
+            setLoading(false);
+            setIsInvitePeopleDialogOpen(false);
+            if (allSuccess) {
+              // only show the success message if all invitations were successful
+              setToastMessage(inviteResultMessage);
+              setShowToast(true);
+            }
+          })
+          .catch((err) => {
+            // This catch block is for any errors that occur outside of the inviteAllTeammates function
+            console.error(err);
+            setLoading(false);
+            setToastMessage("An unexpected error occurred.");
+            setShowToast(true);
+          });
       }
     }
   };
@@ -328,9 +384,10 @@ const InvitePeopleDialog = ({
         <div className=" text-slate-12 rounded-md shadow-lg transform -translate-y-25 transition-transform">
           <Toast
             message={toastMessage}
-            duration={3000} // Duration of the Toast in milliseconds
+            duration={toastDuration} // Duration of the Toast in milliseconds
             setShowToast={setShowToast}
             showToast={showToast}
+            toastType={toastType}
           />
         </div>
       </Transition>

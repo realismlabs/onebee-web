@@ -76,6 +76,7 @@ export default function CreateWorkspace() {
             userId: currentUser?.id,
             workspaceId: created_workspace_result.id,
             createdAt: new Date().toISOString(),
+            role: "admin", // since they're the creator
           };
 
           const created_membership_result = await createMembership(

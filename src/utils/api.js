@@ -28,6 +28,29 @@ export const createInvite = async ({
 }
 ) => {
   const api_url = process.env.NEXT_PUBLIC_API_URL;
+
+  // first see if the recipient has already been invited or is already a member
+  const existingInvites = await getInvitesForUserEmail(recipientEmail);
+  const existingMembers = await getWorkspaceMemberships(workspaceId);
+
+  const existingInvite = existingInvites.find(
+    (invite) => invite.recipientEmail === recipientEmail
+  );
+
+  const existingMember = existingMembers.find(
+    (member) => member.email === recipientEmail
+  );
+
+  if (existingInvite) {
+    console.log("Invite already exists:", existingInvite);
+    throw new Error("user_already_invited");
+  }
+
+  if (existingMember) {
+    console.log("User is already a member:", existingMember);
+    throw new Error("user_already_member");
+  }
+
   try {
     const response = await fetch(
       `${api_url}/api/workspaces/${workspaceId}/invite`,
@@ -48,9 +71,7 @@ export const createInvite = async ({
     if (response.ok) {
       const invite = await response.json();
       console.log("Invite created:", invite);
-    } else {
-      const error = await response.json();
-      console.error("Error creating invite:", error.message);
+      return invite;
     }
   } catch (error) {
     console.error("Network error:", error);

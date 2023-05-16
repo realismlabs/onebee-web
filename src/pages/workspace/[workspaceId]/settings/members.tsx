@@ -12,6 +12,7 @@ import {
   deleteMembership,
   getWorkspaceInvites,
   deleteWorkspaceInvite,
+  updateMembership,
 } from "@/utils/api";
 import {
   useQuery,
@@ -20,7 +21,14 @@ import {
   useQueries,
 } from "@tanstack/react-query";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
-import { Globe, X, DotsThree, Trash } from "@phosphor-icons/react";
+import {
+  Globe,
+  X,
+  DotsThree,
+  Trash,
+  CaretDown,
+  Check,
+} from "@phosphor-icons/react";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import {
   capitalizeString,
@@ -32,27 +40,50 @@ import InvitePeopleDialog from "@/components/InvitePeopleDialog";
 
 const MemberPopover = ({
   currentUser,
-  membership,
+  currentUserMembership,
+  targetMembership,
 }: {
   currentUser: any;
-  membership: any;
+  currentUserMembership: any;
+  targetMembership: any;
 }) => {
-  const membershipId = membership.id;
-  const userId = membership.userId;
-  const workspaceId = membership.workspaceId;
+  const targetMembershipId = targetMembership.id;
+  const userId = targetMembership.userId;
+  const workspaceId = targetMembership.workspaceId;
 
   const handleRemoveMember = async () => {
-    // check if user is the last member of the workspace
-    const deletedMember = await deleteMembershipMutation.mutateAsync({
-      membershipId,
+    // check if user is the last member of the workspace. If so, delete the workspace
+    const workspaceMemberships = await getWorkspaceMemberships({
+      workspaceId,
     });
+
+    // check if there is at least one other admin left besides user
+    const otherAdmins = workspaceMemberships.filter(
+      (targetMembership: any) =>
+        targetMembership.role === "admin" && targetMembership.userId !== userId
+    );
+
+    if (otherAdmins >= 1) {
+      try {
+        const deletedMembership = await deleteMembershipMutation.mutateAsync({
+          membershipId: targetMembershipId,
+        });
+      } catch (error) {
+        console.error("Error deleting membership:", error);
+      }
+    } else {
+      // alert that user is the last admin and cannot be removed
+      alert(
+        `You are the last admin. If you want to delete the workspace, please do so from the settings page. Otherwise, please make another member an admin before removing yourself.`
+      );
+    }
   };
 
   const queryClient = useQueryClient();
 
   const deleteMembershipMutation = useMutation(deleteMembership, {
-    onSuccess: async (updatedMemberships) => {
-      console.log("Memberships updated:", updatedMemberships);
+    onSuccess: async (deletedMembership) => {
+      console.log("Membership deleted:", deletedMembership);
       if (userId === currentUser?.id) {
         console.log("TODO: User is deleting their own membership");
         router.push("/login");
@@ -63,6 +94,144 @@ const MemberPopover = ({
           workspaceId,
         ]);
       }
+    },
+    onError: (error) => {
+      console.error("Error deleting membership:", error);
+    },
+  });
+
+  if (
+    currentUserMembership.role == "admin" || // Admins can modify all memberships
+    currentUserMembership.id == targetMembership.id // User is allowed to leave workspace aka modify their own membership
+  ) {
+    return (
+      <>
+        <Popover className="relative">
+          {({ open }) => (
+            <>
+              <div className="">
+                <Popover.Button
+                  className={`text-slate-11 hover:bg-slate-3 focus:shadow-slate-7 flex flex-row gap-[4px] px-[8px] py-[4px] items-center rounded-[4px] focus:outline-none
+                ${open ? "bg-slate-3" : "hover:bg-slate-3 active:bg-slate-4"}`}
+                >
+                  <DotsThree
+                    size={20}
+                    weight="bold"
+                    className="mt-[2px] min-h-[12px] min-w-[12px]"
+                  />
+                </Popover.Button>
+              </div>
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="opacity-0 translate-y-1"
+                enterTo="opacity-100 translate-y-0"
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100 translate-y-0"
+                leaveTo="opacity-0 translate-y-1"
+              >
+                <Popover.Panel className="absolute z-10 w-[200px] max-w-[90vw] bg-slate-2 rounded-md shadow-slate-7 border border-slate-4 text-slate-12 focus:outline-none text-[13px]">
+                  <div className="flex flex-col px-[8px] py-[8px] w-full text-[13px] text-slate-12">
+                    <>
+                      <Popover.Button className="w-full">
+                        <button
+                          className={`hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 w-full rounded-md items-center
+                        `}
+                          onClick={() => {
+                            handleRemoveMember();
+                          }}
+                        >
+                          <div className="flex flex-row w-full gap-2 items-center">
+                            <Trash
+                              size={16}
+                              weight="bold"
+                              className="text-slate-10"
+                            />
+                            {userId === currentUser?.id
+                              ? "Leave workspace"
+                              : "Remove member"}
+                          </div>
+                        </button>
+                      </Popover.Button>
+                    </>
+                  </div>
+                </Popover.Panel>
+              </Transition>
+            </>
+          )}
+        </Popover>
+      </>
+    );
+  } else {
+    return <></>;
+  }
+};
+
+const MemberRolePopover = ({
+  currentUser,
+  currentUserMembership,
+  targetUserMembership,
+  memberships,
+}: {
+  currentUser: any;
+  currentUserMembership: any;
+  targetUserMembership: any;
+  memberships: any;
+}) => {
+  const currentUserMembershipId = currentUserMembership.id;
+  const targetUserMembershipId = targetUserMembership.id;
+  const currentUserId = currentUser.id;
+  const workspaceId = currentUserMembership.workspaceId;
+
+  const handleChangeMemberRole = async (targetUserRole: string) => {
+    // check if user's own membership role is admin
+    if (currentUserMembership.role !== "admin") {
+      alert("You must be an admin to change a member's role.");
+      return;
+    }
+
+    //  if user is trying to change their own role from admin → member, check if there are other admins
+    if (
+      currentUserId === targetUserMembership.userId &&
+      targetUserRole === "member"
+    ) {
+      // check if there is at least one other admin left besides user
+      const otherAdmins = memberships.filter(
+        (membership: any) =>
+          membership.role === "admin" && membership.userId !== currentUserId
+      );
+
+      if (otherAdmins == 0) {
+        // alert that user is the last admin and cannot be removed
+        alert(
+          `You are the last admin. If you want to demote yourself, then make another member an admin first.`
+        );
+        return;
+      }
+    }
+
+    try {
+      const changedMember = await updateMembershipMutation.mutateAsync({
+        membershipId: targetUserMembershipId,
+        membershipData: {
+          role: targetUserRole,
+        },
+      });
+
+      console.log("awu Membership updated:", changedMember);
+    } catch (error) {
+      alert(`Error updating membership: + ${error}`);
+    }
+  };
+
+  const queryClient = useQueryClient();
+
+  const updateMembershipMutation = useMutation(updateMembership, {
+    onSuccess: async () => {
+      await queryClient.refetchQueries([
+        "getWorkspaceMemberships",
+        workspaceId,
+      ]);
     },
     onError: (error) => {
       console.error("Error updating memberships:", error);
@@ -76,14 +245,25 @@ const MemberPopover = ({
           <>
             <div className="">
               <Popover.Button
-                className={`text-slate-11 hover:bg-slate-3 focus:shadow-slate-7 flex flex-row gap-[4px] px-[8px] py-[4px] items-center rounded-[4px] focus:outline-none
-                ${open ? "bg-slate-3" : "hover:bg-slate-3 active:bg-slate-4"}`}
+                className={`text-slate-11 focus:shadow-slate-7 flex flex-row gap-[4px] px-[8px] py-[4px] items-center rounded-[4px] focus:outline-none
+                ${open ? "bg-slate-3" : ""}
+                ${
+                  currentUserMembership.role == "admin"
+                    ? "cursor-pointer hover:bg-slate-3 active:bg-slate-4"
+                    : "cursor-default"
+                }`}
+                disabled={currentUserMembership.role !== "admin"}
               >
-                <DotsThree
-                  size={20}
-                  weight="bold"
-                  className="mt-[2px] min-h-[12px] min-w-[12px]"
-                />
+                <p className="text-slate-12">
+                  {targetUserMembership.role == "admin" ? "Admin" : "Member"}
+                </p>
+                {currentUserMembership.role === "admin" && (
+                  <CaretDown
+                    size={12}
+                    weight="fill"
+                    className="mt-[2px] min-h-[12px] min-w-[12px]"
+                  />
+                )}
               </Popover.Button>
             </div>
             <Transition
@@ -95,7 +275,7 @@ const MemberPopover = ({
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className="absolute z-10 w-[200px] max-w-[90vw] bg-slate-2 rounded-md shadow-slate-7 border border-slate-4 text-slate-12 focus:outline-none text-[13px]">
+              <Popover.Panel className="absolute z-10 w-[280px] max-w-[90vw] bg-slate-2 rounded-md shadow-slate-7 border border-slate-4 text-slate-12 focus:outline-none text-[13px]">
                 <div className="flex flex-col px-[8px] py-[8px] w-full text-[13px] text-slate-12">
                   <>
                     <Popover.Button className="w-full">
@@ -103,18 +283,53 @@ const MemberPopover = ({
                         className={`hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 w-full rounded-md items-center
                         `}
                         onClick={() => {
-                          handleRemoveMember();
+                          handleChangeMemberRole("admin");
                         }}
                       >
-                        <div className="flex flex-row w-full gap-2 items-center">
-                          <Trash
-                            size={16}
-                            weight="bold"
-                            className="text-slate-10"
-                          />
-                          {userId === currentUser?.id
-                            ? "Leave workspace"
-                            : "Remove member"}
+                        <div className="flex flex-row w-full gap-4 items-center">
+                          <div className="flex flex-col flex-grow">
+                            <p>Admin</p>
+                            <p className="text-slate-11 text-[13px]">
+                              Admins manage workspace membership, roles, and
+                              settings
+                            </p>
+                          </div>
+                          <div className="min-w-[24px]">
+                            {targetUserMembership.role === "admin" && (
+                              <Check
+                                size={16}
+                                weight="bold"
+                                className="text-slate-12 mr-2 flex-none"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    </Popover.Button>
+                    <Popover.Button className="w-full">
+                      <button
+                        className={`hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 w-full rounded-md items-center
+                        `}
+                        onClick={() => {
+                          handleChangeMemberRole("member");
+                        }}
+                      >
+                        <div className="flex flex-row w-full gap-4 items-center">
+                          <div className="flex flex-col flex-grow">
+                            <p>Member</p>
+                            <p className="text-slate-11 text-[13px]">
+                              Members can invite others to join the workspace
+                            </p>
+                          </div>
+                          <div className="min-w-[24px]">
+                            {targetUserMembership.role === "member" && (
+                              <Check
+                                size={16}
+                                weight="bold"
+                                className="text-slate-12 mr-2 flex-none"
+                              />
+                            )}
+                          </div>
                         </div>
                       </button>
                     </Popover.Button>
@@ -316,6 +531,10 @@ export default function Settings() {
     return usersData.find((user) => user.id === membership.userId);
   };
 
+  const currentUserMembership = membershipsData?.find(
+    (membership: any) => membership.userId === currentUser?.id
+  );
+
   const handleAddAllowedDomain = async (domain: string) => {
     if (!domain) {
       setAddAllowedDomainErrorMessage("Please enter a domain.");
@@ -439,16 +658,18 @@ export default function Settings() {
                     <div className="flex flex-col gap-2">
                       <p>Allowed domains</p>
                       <p className="text-slate-11 text-[13px]">
-                        Anyone from these domains is allowed to join this
-                        workspace
+                        Anyone from these domains can join this workspace
+                        without an invite
                       </p>
                     </div>
-                    <div
-                      className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto"
-                      onClick={openAddAllowedDomainDialog}
-                    >
-                      <p>Add allowed domain</p>
-                    </div>
+                    {currentUserMembership.role == "admin" && (
+                      <div
+                        className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto"
+                        onClick={openAddAllowedDomainDialog}
+                      >
+                        <p>Add allowed domain</p>
+                      </div>
+                    )}
                     <Dialog
                       as="div"
                       open={isAddAllowedDomainDialogOpen}
@@ -564,14 +785,16 @@ export default function Settings() {
                                   </div>
                                 )}
                               </div>
-                              <div
-                                className="h-[24px] w-[24px] flex items-center justify-center mr-[8px] hover:bg-slate-3 cursor-pointer rounded-md"
-                                onClick={() =>
-                                  handleRemoveAllowedDomain(allowedDomain.id)
-                                }
-                              >
-                                <Trash size={16} className="text-slate-11" />
-                              </div>
+                              {currentUserMembership.role == "admin" && (
+                                <div
+                                  className="h-[24px] w-[24px] flex items-center justify-center mr-[8px] hover:bg-slate-3 cursor-pointer rounded-md"
+                                  onClick={() =>
+                                    handleRemoveAllowedDomain(allowedDomain.id)
+                                  }
+                                >
+                                  <Trash size={16} className="text-slate-11" />
+                                </div>
+                              )}
                             </div>
                           );
                         }
@@ -671,11 +894,19 @@ export default function Settings() {
                                 {user.email}
                               </div>
                             </div>
-                            <div className="ml-4 text-slate-12">Member</div>
+                            <div className="ml-4 text-slate-12">
+                              <MemberRolePopover
+                                currentUser={currentUser}
+                                currentUserMembership={currentUserMembership}
+                                targetUserMembership={membership}
+                                memberships={membershipsData}
+                              />
+                            </div>
                             <div className="ml-auto text-left text-slate-11">
                               <MemberPopover
                                 currentUser={currentUser}
-                                membership={membership}
+                                currentUserMembership={currentUserMembership}
+                                targetMembership={membership}
                               />
                             </div>
                           </div>
@@ -703,9 +934,9 @@ export default function Settings() {
                                   {workspaceInvite.recipientEmail}
                                 </div>
                               </div>
-                              <div className="ml-4 flex flex-row items-center gap-2">
+                              <div className="ml-[24px] flex flex-row items-center gap-3">
                                 <p>Member</p>
-                                <div className="truncate text-slate-11 bg-slate-4 rounded-md text-[12px] tracking-wide px-[8px] py-[4px] ">
+                                <div className="truncate text-slate-11 bg-slate-4 rounded-md text-[12px] tracking-wide px-[6px] py-[3px] ">
                                   Pending
                                 </div>
                               </div>
