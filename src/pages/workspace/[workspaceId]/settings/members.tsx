@@ -442,6 +442,10 @@ export default function Members() {
   const router = useRouter();
   const routerPath = router.asPath;
 
+  const [customMessage, setCustomMessage] = useState<string>(
+    "Hi there, \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse. \n\nJoin the workspace in order to browse and search our key datasets."
+  );
+
   const {
     data: currentUser,
     isLoading: isUserLoading,
@@ -833,6 +837,9 @@ export default function Members() {
                       setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
                       currentUser={currentUser}
                       currentWorkspace={currentWorkspace}
+                      customMessage={customMessage}
+                      setCustomMessage={setCustomMessage}
+                      emailTemplateLanguage={""}
                     />
                   </div>
                   <div className="flex flex-col border-slate-4 rounded-lg border">

@@ -56,20 +56,23 @@ const InvitePeopleDialog = ({
   setIsInvitePeopleDialogOpen,
   currentUser,
   currentWorkspace,
+  customMessage,
+  setCustomMessage,
+  emailTemplateLanguage,
 }: {
   isInvitePeopleDialogOpen: boolean;
   setIsInvitePeopleDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentUser: any;
   currentWorkspace: any;
+  customMessage: string;
+  setCustomMessage: React.Dispatch<React.SetStateAction<string>>;
+  emailTemplateLanguage: string;
 }) => {
   let inviterEmail = currentUser.email;
 
   const [emailAddresses, setEmailAddresses] = useState<string>("");
   const [isValid, setIsValid] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [customMessage, setCustomMessage] = useState<string>(
-    "Hi there, \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse. \n\nJoin the workspace in order to browse and search our key datasets."
-  );
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState<"success" | "error">("success");
   const [toastDuration, setToastDuration] = useState(3000); // in milliseconds
@@ -196,10 +199,12 @@ const InvitePeopleDialog = ({
     sender_email,
     workspace,
     message,
+    emailTemplateLanguage,
   }: {
     sender_email: any;
     workspace: any;
     message: any;
+    emailTemplateLanguage: string;
   }) => {
     let sender_email_name = sender_email.split("@")[0];
     sender_email_name =
@@ -233,6 +238,7 @@ const InvitePeopleDialog = ({
           on Dataland. Dataland makes it easy for your whole team to browse data
           from your data warehouse.
         </p>
+        {emailTemplateLanguage !== "" && <p>{emailTemplateLanguage}</p>}
         <p>They wrote you a note:</p>
         <div className="pl-4 py-2 border-l border-slate-12 italic">
           <p>{message}</p>
@@ -332,6 +338,7 @@ const InvitePeopleDialog = ({
                             sender_email={inviterEmail}
                             workspace={currentWorkspace.name}
                             message={customMessage}
+                            emailTemplateLanguage={emailTemplateLanguage}
                           />
                         </Disclosure.Panel>
                       </>
