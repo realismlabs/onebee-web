@@ -256,7 +256,7 @@ export function friendlyRelativeDateToNow(isoDateString: string) {
 }
 
 export function getInitials(name: string) {
-  const words = name.split(" ");
+  const words = name.trim().split(" ");
 
   if (words.length === 1) {
     return words[0][0].toUpperCase();

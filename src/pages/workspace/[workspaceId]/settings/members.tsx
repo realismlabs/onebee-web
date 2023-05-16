@@ -11,6 +11,7 @@ import {
   getUser,
   deleteMembership,
   getWorkspaceInvites,
+  deleteWorkspaceInvite,
 } from "@/utils/api";
 import {
   useQuery,
@@ -114,6 +115,95 @@ const MemberPopover = ({
                           {userId === currentUser?.id
                             ? "Leave workspace"
                             : "Remove member"}
+                        </div>
+                      </button>
+                    </Popover.Button>
+                  </>
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
+      </Popover>
+    </>
+  );
+};
+
+const InvitePopover = ({
+  currentWorkspace,
+  workspaceInvite,
+}: {
+  currentWorkspace: any;
+  workspaceInvite: any;
+}) => {
+  const handleDeleteInvite = async () => {
+    // check if user is the last member of the workspace
+    const deletedWorkspaceInvite =
+      await deleteWorkspaceInviteMutation.mutateAsync({
+        workspaceId: currentWorkspace.id,
+        inviteId: workspaceInvite.id,
+      });
+  };
+
+  const queryClient = useQueryClient();
+
+  const deleteWorkspaceInviteMutation = useMutation(deleteWorkspaceInvite, {
+    onSuccess: async (deletedInvite) => {
+      console.log("deletedInvite:", deletedInvite);
+      await queryClient.refetchQueries([
+        "getWorkspaceInvites",
+        currentWorkspace.id,
+      ]);
+    },
+    onError: (error) => {
+      console.error("Error deleting invite:", error);
+    },
+  });
+
+  return (
+    <>
+      <Popover className="relative">
+        {({ open }) => (
+          <>
+            <div className="">
+              <Popover.Button
+                className={`text-slate-11 hover:bg-slate-3 focus:shadow-slate-7 flex flex-row gap-[4px] px-[8px] py-[4px] items-center rounded-[4px] focus:outline-none
+                ${open ? "bg-slate-3" : "hover:bg-slate-3 active:bg-slate-4"}`}
+              >
+                <DotsThree
+                  size={20}
+                  weight="bold"
+                  className="mt-[2px] min-h-[12px] min-w-[12px]"
+                />
+              </Popover.Button>
+            </div>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="opacity-0 translate-y-1"
+              enterTo="opacity-100 translate-y-0"
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100 translate-y-0"
+              leaveTo="opacity-0 translate-y-1"
+            >
+              <Popover.Panel className="absolute z-10 w-[200px] max-w-[90vw] bg-slate-2 rounded-md shadow-slate-7 border border-slate-4 text-slate-12 focus:outline-none text-[13px]">
+                <div className="flex flex-col px-[8px] py-[8px] w-full text-[13px] text-slate-12">
+                  <>
+                    <Popover.Button className="w-full">
+                      <button
+                        className={`hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 w-full rounded-md items-center
+                        `}
+                        onClick={() => {
+                          handleDeleteInvite();
+                        }}
+                      >
+                        <div className="flex flex-row w-full gap-2 items-center">
+                          <Trash
+                            size={16}
+                            weight="bold"
+                            className="text-slate-10"
+                          />
+                          Revoke invite
                         </div>
                       </button>
                     </Popover.Button>
@@ -464,7 +554,7 @@ export default function Settings() {
                               key={allowedDomain.id}
                               className={`flex flex-row gap-4 items-center ${borderClasses} text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
                             >
-                              <div className="h-[24px] w-[24px] text-[10px] font-semibold rounded-full flex items-center justify-center text-slate-10">
+                              <div className="h-[24px] w-[24px] text-[12px] font-semibold rounded-full flex items-center justify-center text-slate-10">
                                 <Globe size={20} />
                               </div>
                               <div className="grow truncate">
@@ -549,7 +639,7 @@ export default function Settings() {
                             className={`
                               flex flex-row gap-4 items-center ${borderClasses} text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
                           >
-                            <div className="bg-purple-8 h-[24px] w-[24px] text-[10px] font-semibold rounded-full flex items-center justify-center">
+                            <div className="bg-purple-8 h-[32px] w-[32px] text-[12px] font-semibold rounded-full flex items-center justify-center">
                               {user.name ? (
                                 <div key={user.id}>
                                   {getInitials(user.name)}
@@ -560,24 +650,28 @@ export default function Settings() {
                                 </div>
                               )}
                             </div>
-                            <div className="w-[240px] truncate">
-                              {user.name ? (
-                                <div key={user.id} className="truncate">
-                                  {user.name}
-                                </div>
-                              ) : (
-                                <div key={user.id} className="truncate">
-                                  {capitalizeString(user.email?.split("@")[0])}
-                                </div>
-                              )}
+                            <div className="flex flex-col gap-0 w-[320px] truncate">
+                              <div className="truncate">
+                                {user.name ? (
+                                  <div key={user.id} className="truncate">
+                                    {user.name}
+                                  </div>
+                                ) : (
+                                  <div key={user.id} className="truncate">
+                                    {capitalizeString(
+                                      user.email?.split("@")[0]
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                              <div
+                                key={user.id}
+                                className="text-slate-11 truncate"
+                              >
+                                {user.email}
+                              </div>
                             </div>
-                            <div className="pl-8 w-[320px] truncate text-slate-11">
-                              {user && (
-                                <div key={user.id} className="truncate">
-                                  {user.email}
-                                </div>
-                              )}
-                            </div>
+                            <div className="ml-4 text-slate-12">Member</div>
                             <div className="ml-auto text-left text-slate-11">
                               <MemberPopover
                                 currentUser={currentUser}
@@ -595,13 +689,31 @@ export default function Settings() {
                               className="flex flex-row gap-4 items-center text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12 border-t border-slate-4"
                               key={index}
                             >
-                              <div className="w-[312px] truncate">
-                                <div className="truncate">
+                              <div className="bg-purple-5 border border-purple-11 border-dashed opacity-50 h-[32px] w-[32px] text-[12px] font-semibold rounded-full flex items-center justify-center">
+                                <div key={workspaceInvite.recipientEmail}>
+                                  {getInitials(
+                                    workspaceInvite.recipientEmail?.split(
+                                      "@"
+                                    )[0]
+                                  )}
+                                </div>
+                              </div>
+                              <div className="w-[320px] truncate">
+                                <div className="truncate text-slate-12">
                                   {workspaceInvite.recipientEmail}
                                 </div>
                               </div>
-                              <div className="truncate text-purple-11 bg-purple-3 rounded-md px-[8px] py-[4px] ">
-                                Pending invite
+                              <div className="ml-4 flex flex-row items-center gap-2">
+                                <p>Member</p>
+                                <div className="truncate text-slate-11 bg-slate-4 rounded-md text-[12px] tracking-wide px-[8px] py-[4px] ">
+                                  Pending
+                                </div>
+                              </div>
+                              <div className="ml-auto text-left text-slate-11">
+                                <InvitePopover
+                                  currentWorkspace={currentWorkspace}
+                                  workspaceInvite={workspaceInvite}
+                                />
                               </div>
                             </div>
                           );

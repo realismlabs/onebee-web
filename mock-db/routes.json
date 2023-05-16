@@ -13,6 +13,7 @@
   "/api/workspaces/:workspaceId/invite": "/invites",
   "/api/workspaces/:workspaceId/invites": "/invites?workspaceId=:workspaceId",
   "/api/workspaces/:workspaceId/accept-invite/:inviteId": "/invites/:inviteId",
+  "/api/workspaces/:workspaceId/invites/:inviteId/delete": "/invites/:inviteId",
   "/api/workspaces/:workspaceId/leave": "/workspaceMembers/:id",
   "/api/workspaces/:workspaceId": "/workspaces/:workspaceId",
   "/api/workspaces/:workspaceId/tables": "/tables?workspaceId=:workspaceId",

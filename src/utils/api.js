@@ -83,6 +83,18 @@ export const getWorkspaceInvites = async (workspaceId) => {
   return await response.json();
 };
 
+// "/api/workspaces/:workspaceId/invites/:inviteId/delete": "/invites/:inviteId",
+export const deleteWorkspaceInvite = async ({ workspaceId, inviteId }) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/invites/${inviteId}/delete`,
+    {
+      method: "DELETE",
+    }
+  );
+  const deletedInvite = await response.json();
+  return deletedInvite;
+};
+
 export const getWorkspaceDetails = async (workspaceId) => {
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
 
