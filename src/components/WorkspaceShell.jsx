@@ -96,7 +96,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   });
 
   //  fetch user data for each membership
-  const availableWorkspacesQueries = useQueries({
+  const currentWorkspacesForUserQueries = useQueries({
     queries: (userMembershipsData ?? []).map((membership) => {
       return {
         queryKey: ["getWorkspace", membership.workspaceId],
@@ -109,15 +109,16 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
     }),
   });
 
-  const availableWorkspacesData = availableWorkspacesQueries.map((workspace) => workspace.data);
-  const availableWorkspacesError = availableWorkspacesQueries.map((workspace) => workspace.error);
-  const availableWorkspacesIsLoading = availableWorkspacesQueries.map((workspace) => workspace.isLoading);
+  const currentWorkspacesForUserData = currentWorkspacesForUserQueries.map((workspace) => workspace.data);
+  const currentWorkspacesForUserError = currentWorkspacesForUserQueries.map((workspace) => workspace.error);
+  const currentWorkspacesForUserIsLoading = currentWorkspacesForUserQueries.map((workspace) => workspace.isLoading);
 
-  if (availableWorkspacesIsLoading.some((isLoading) => isLoading)) {
+
+  if (currentWorkspacesForUserIsLoading.some((isLoading) => isLoading)) {
     return <div className="h-screen bg-slate-1 text-slate-12">Loading...</div>;
   }
 
-  if (availableWorkspacesError.some((error) => error)) {
+  if (currentWorkspacesForUserError.some((error) => error)) {
     return <div>There was an error loading your workspaces</div>;
   }
 
@@ -125,7 +126,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
     <>
       <div className="px-[16px] pt-[13px] pb-[4px] text-slate-11 text-[13px]">{currentUser.email}</div>
       <div className="max-h-[60vh] overflow-y-scroll flex flex-col w-full">
-        {(availableWorkspacesData ?? []).map((workspace) => (
+        {(currentWorkspacesForUserData ?? []).map((workspace) => (
           <Popover.Button key={workspace.id}>
             <div
               onClick={(e) => {
