@@ -4,6 +4,9 @@ import { generateWorkspaceIcon } from "./util";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const fetchCurrentUser = async () => {
+  // 1 is arthur@dataland.io - has one invite and no allowed domains
+  // 19 is howard@sidekick.video - no invites
+  // 20 is other@dataland.io - has one invite and one other allowed domain
   const response = await fetch(`${API_BASE_URL}/api/users/1`);
   if (!response.ok) {
     throw new Error("Error fetching current user");
@@ -478,4 +481,40 @@ export const getUserMemberships = async (userId) => {
   );
   const memberships = await response.json();
   return memberships;
+}
+
+export const getAllowedWorkspacesForUser = async (userId) => {
+  // fetch all workspaces
+  const workspaces = await getWorkspaces();
+
+  // fetch user email domain
+  const user = await getUser(userId);
+
+  const user_domain = user.email.split("@")[1].toLowerCase();
+
+  // get the user's existing memberships
+  const memberships = await getUserMemberships(userId);
+
+  const invites = await getInvitesForUserEmail(user.email);
+
+  // filter workspaces' allowedDomains array by email domain. 
+  // Also filter out workspaces that the user is already a member of.
+  // Also filter out workspaces that the user has been invited to.
+  const allowedWorkspaces = workspaces.filter((workspace) => {
+    const isMember = memberships.some((membership) => {
+      return membership.workspaceId === workspace.id;
+    });
+
+    const isAllowedDomain = workspace.allowedDomains.some((domainObj) => {
+      return domainObj.domain === user_domain;
+    });
+
+    const isInvited = invites.some((invite) => {
+      return invite.workspaceId === workspace.id;
+    });
+
+    return isAllowedDomain && !isMember && !isInvited;
+  });
+
+  return allowedWorkspaces;
 }
