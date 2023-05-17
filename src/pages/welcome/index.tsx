@@ -6,37 +6,11 @@ import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { motion } from "framer-motion";
 import { HandWaving } from "@phosphor-icons/react";
 import { capitalizeString } from "@/utils/util";
-
-interface AccountHeaderProps {
-  email: string;
-}
+import { AccountHeader } from "@/components/AccountHeader";
 
 const handleSubmit = async () => {
   console.log("clicked");
   router.push("/welcome/create-workspace");
-};
-
-const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const handleLogout = () => {
-    router.push("/login?lo=true");
-  };
-
-  return (
-    <div className="w-full flex flex-row h-16 items-center p-12 z-10">
-      <div className="flex flex-col grow items-start">
-        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
-      </div>
-      <div className="flex flex-col grow items-end">
-        <p
-          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
-          onClick={handleLogout}
-        >
-          Logout
-        </p>
-      </div>
-    </div>
-  );
 };
 
 function generateCircles(
@@ -316,14 +290,14 @@ const CometAnimation: React.FC = () => {
 
   return (
     <div
-      className="absolute inset-0 h-screen flex items-center justify-center overflow-hidden"
+      className="absolute inset-0 h-screen flex items-center justify-center overflow-hidden pointer-events-none"
       style={{
         background: "var(--slate-1)",
         zIndex: -1,
         transform: "rotate(180deg)",
       }}
     >
-      <div className="min-w-[1400px] h-screen flex justify-end">
+      <div className="min-w-[1400px] h-screen flex justify-end pointer-events-none">
         <svg
           viewBox="0 0 200 100"
           xmlns="http://www.w3.org/2000/svg"
@@ -609,16 +583,18 @@ export default function Welcome() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 1, delay: 2.2 }}
+        className="z-50"
       >
-        <CometAnimation />
+        <AccountHeader email={email ?? "placeholder@example.com"} />
       </motion.div>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 2.2 }}
+        transition={{ duration: 0.3 }}
+        className="z-0 pointer-events-none"
       >
-        <AccountHeader email={email ?? "placeholder@example.com"} />
+        <CometAnimation />
       </motion.div>
       <motion.div
         variants={container}
@@ -626,7 +602,7 @@ export default function Welcome() {
         animate="show"
         transition={{ duration: 1, delay: 2.2 }}
       >
-        <div className="absolute inset-0 flex flex-col justify-start items-center h-screen">
+        <div className="absolute inset-0 flex flex-col justify-start items-center h-screen pointer-events-none">
           <div className="flex flex-col justify-center items-center mt-[30vh]">
             <motion.div
               className="bg-slate-2 border border-slate-4 p-4 rounded-lg"
@@ -654,7 +630,7 @@ export default function Welcome() {
             </motion.div>
             <motion.button
               type="button"
-              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[16px] font-medium py-2 px-4 rounded-md"
+              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[16px] font-medium py-2 px-4 rounded-md pointer-events-auto"
               onClick={handleSubmit}
               variants={item}
             >

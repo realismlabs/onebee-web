@@ -11,6 +11,7 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
+    "@clerk/clerk-js": "^4.41.0",
     "@clerk/nextjs": "^4.18.1",
     "@headlessui/react": "^1.7.14",
     "@phosphor-icons/react": "^2.0.8",

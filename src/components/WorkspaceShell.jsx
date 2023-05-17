@@ -14,12 +14,12 @@ import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useLocalStorageState } from '@/utils/util';
 import InvitePeopleDialog from './InvitePeopleDialog';
+import { useClerk } from "@clerk/clerk-react";
 
 function AccountPopover() {
-  const router = useRouter();
-  const handleLogout = () => {
-    console.log('logout')
-    router.push('/login?lo=true')
+  const { signOut } = useClerk();
+  const handleLogout = async () => {
+    await signOut();
   }
 
   return (

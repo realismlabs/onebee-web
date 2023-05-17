@@ -17,37 +17,11 @@ import WordTooltipDemo from "@/components/WordTooltipDemo";
 import { useLocalStorageState } from "@/utils/util";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
+import { AccountHeader } from "@/components/AccountHeader";
 
 const PreviewTablesDialog = lazy(
   () => import("@/components/PreviewTablesDialog")
 );
-
-interface AccountHeaderProps {
-  email: string;
-}
-
-const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const handleLogout = () => {
-    router.push("/login?lo=true");
-  };
-
-  return (
-    <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
-      <div className="flex flex-col grow items-start">
-        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
-      </div>
-      <div className="flex flex-col grow items-end">
-        <p
-          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
-          onClick={handleLogout}
-        >
-          Logout
-        </p>
-      </div>
-    </div>
-  );
-};
 
 type IPProps = {
   ip: string;
