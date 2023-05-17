@@ -44,7 +44,6 @@ export default function Connections() {
   const [deleteErrorMessage, setDeleteErrorMessage] = useState("");
 
   const openDeleteDialog = () => {
-    console.log("awu: open delete dialog");
     setIsDeleteDialogOpen(true);
   };
 

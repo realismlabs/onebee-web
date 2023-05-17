@@ -93,6 +93,21 @@ export default function JoinWorkspace() {
     workspace: any;
   }) => {
     // create a membership between the user and the workspace
+    const createMembershipRequestBody = {
+      userId: user?.id,
+      workspaceId: workspace.id,
+      createdAt: new Date().toISOString(),
+      role: "member", // since they're the creator
+    };
+
+    try {
+      const created_membership_result = await createMembership(
+        createMembershipRequestBody
+      );
+      router.push(`/workspace/${workspace.id}`);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const {
@@ -170,7 +185,6 @@ export default function JoinWorkspace() {
   }
 
   const email = currentUser.email;
-  console.log("awu: allowedWorkspaceForUser", allowedWorkspacesForUser);
 
   return (
     <div className="h-screen bg-slate-1">
@@ -242,7 +256,15 @@ export default function JoinWorkspace() {
             <div className="text-slate-12 flex flex-col gap-4 rounded-md mt-6">
               {allowedWorkspacesForUser.map((workspace: any) => {
                 return (
-                  <div key={workspace.id}>
+                  <div
+                    key={workspace.id}
+                    onClick={() =>
+                      handleJoinWorkspaceFromAllowedDomain({
+                        user: currentUser,
+                        workspace,
+                      })
+                    }
+                  >
                     <div className="text-slate-12 text-center text-[14px] flex flex-row gap-4 p-4 items-center bg-slate-2 hover:bg-slate-3 rounded-md cursor-pointer">
                       <div
                         className={`h-[48px] w-[48px] flex items-center justify-center text-[18px] rounded-md`}

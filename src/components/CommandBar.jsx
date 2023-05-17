@@ -128,7 +128,6 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
         link: `/workspace/${currentWorkspace?.id}/table/${table.id}`,
       });
     });
-    console.log('navigationItems', tables)
   }
 
   return (

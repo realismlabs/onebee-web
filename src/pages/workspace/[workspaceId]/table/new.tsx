@@ -35,9 +35,7 @@ function getIconSvgStringFromName(iconName: string): string {
         .map((child) => child.outerHTML)
         .join("\n");
     } else {
-      console.error(
-        `awu Div with id "${iconName}" not found, using Table instead`
-      );
+      console.error(`Div with id "${iconName}" not found, using Table instead`);
     }
   }
 

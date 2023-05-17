@@ -37,8 +37,6 @@ export default function Profile() {
           userId: currentUser.id,
           userData: userData,
         });
-
-        console.log("awu response", response);
       } catch (error) {
         console.error("Error updating workspace:", error);
       }

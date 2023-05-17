@@ -7,7 +7,7 @@ export const fetchCurrentUser = async () => {
   // 1 is arthur@dataland.io - has one invite and no allowed domains
   // 19 is howard@sidekick.video - no invites
   // 20 is other@dataland.io - has one invite and one other allowed domain
-  const response = await fetch(`${API_BASE_URL}/api/users/1`);
+  const response = await fetch(`${API_BASE_URL}/api/users/20`);
   if (!response.ok) {
     throw new Error("Error fetching current user");
   }
@@ -204,7 +204,6 @@ export const createWorkspace = async (workspaceData) => {
 
 // Update a specific workspace
 export const updateWorkspace = async ({ workspaceId, workspaceData }) => {
-  console.log("awu here")
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/update`,
     {

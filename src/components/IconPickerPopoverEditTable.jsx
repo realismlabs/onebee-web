@@ -26,7 +26,6 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   ];
 
   const handleColorClick = (color) => {
-    console.log("awu selected color", color)
     setSelectedColor(color);
   };
 
@@ -85,7 +84,7 @@ const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspa
         console.error('Error updating table:', error);
       }
     } else {
-      console.error(`awu Div with id "${iconName}" not found.`);
+      console.error(`Div with id "${iconName}" not found.`);
     }
   };
 

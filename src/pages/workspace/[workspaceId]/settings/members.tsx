@@ -54,15 +54,12 @@ const MemberPopover = ({
   const handleRemoveMember = async () => {
     // check if user is the last member of the workspace. If so, delete the workspace
     const workspaceMemberships = await getWorkspaceMemberships(workspaceId);
-
-    console.log("awu workspaceMemberships", workspaceMemberships);
     // check if there is at least one other admin left besides user
     const otherAdmins = workspaceMemberships.filter(
       (membership: any) =>
         membership.role === "admin" && membership.userId !== currentUser.id
     );
 
-    console.log("awu otherAdmins", otherAdmins);
     if (otherAdmins.length >= 1) {
       try {
         const deletedMembership = await deleteMembershipMutation.mutateAsync({
@@ -219,8 +216,6 @@ const MemberRolePopover = ({
           role: targetUserRole,
         },
       });
-
-      console.log("awu Membership updated:", changedMember);
     } catch (error) {
       alert(`Error updating membership: + ${error}`);
     }

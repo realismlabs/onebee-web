@@ -35,21 +35,10 @@ export default function Settings() {
         name: workspaceName,
       };
       try {
-        console.log("awu attempting call", {
-          workspaceId: currentWorkspace.id,
-          workspaceData: workspaceData,
-        });
-
-        // const response = await updateWorkspace({
-        //   workspaceId: currentWorkspace.id,
-        //   workspaceData: workspaceData,
-        // });
         const response = await updateWorkspaceMutation.mutateAsync({
           workspaceId: currentWorkspace.id,
           workspaceData: workspaceData,
         });
-
-        console.log("awu response", response);
       } catch (error) {
         console.error("Error updating workspace:", error);
       }
@@ -72,7 +61,6 @@ export default function Settings() {
     useState("");
 
   const openDeleteWorkspaceDialog = () => {
-    console.log("awu: open delete dialog");
     setIsDeleteWorkspaceDialogOpen(true);
   };
 

@@ -145,7 +145,6 @@ const InvitePeopleDialog = ({
               });
             } catch (err: any) {
               allSuccess = false; // update the flag to false when an error occurs
-              console.log("awu err:", JSON.stringify(err));
               if (err.message === "user_already_member") {
                 setToastMessage(
                   `Error: User with email ${recipientEmail} is already a member`

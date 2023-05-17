@@ -95,8 +95,6 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
     },
   });
 
-  console.log("awu userMembershipsData", userMembershipsData)
-
   //  fetch user data for each membership
   const availableWorkspacesQueries = useQueries({
     queries: (userMembershipsData ?? []).map((membership) => {
@@ -122,8 +120,6 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   if (availableWorkspacesError.some((error) => error)) {
     return <div>There was an error loading your workspaces</div>;
   }
-
-  console.log("awu availableWorkspaces", availableWorkspacesData)
 
   return (
     <>
@@ -398,7 +394,6 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
               <div
                 className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/home` ? "bg-slate-3" : ""}`}
                 onClick={() => {
-                  console.log("awu: current", commandBarOpen, "set to:", !commandBarOpen)
                   setCommandBarOpen(!commandBarOpen)
                 }}>
                 <Compass
