@@ -349,7 +349,7 @@ const InvitePopover = ({
   workspaceInvite: any;
 }) => {
   const handleDeleteInvite = async () => {
-    // check if user is the last member of the workspace
+    // User is revoking an invite
     const deletedWorkspaceInvite =
       await deleteWorkspaceInviteMutation.mutateAsync({
         workspaceId: currentWorkspace.id,

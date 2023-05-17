@@ -427,7 +427,7 @@
     {
       "inviterEmail": "arthur@dataland.io",
       "recipientEmail": "other@dataland.io",
-      "accepted": false,
+      "accepted": true,
       "workspaceId": 10,
       "id": 40
     },
@@ -437,6 +437,13 @@
       "accepted": false,
       "workspaceId": 14,
       "id": 41
+    },
+    {
+      "inviterEmail": "arthur@dataland.io",
+      "recipientEmail": "other@dataland.io",
+      "accepted": false,
+      "workspaceId": 10,
+      "id": 42
     }
   ],
   "connections": [
