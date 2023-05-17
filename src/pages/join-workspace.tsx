@@ -40,8 +40,27 @@ const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
 };
 
 export default function JoinWorkspace() {
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
+  const handleAcceptInvite = async ({
+    user,
+    workspace,
+    invite,
+  }: {
+    user: any;
+    workspace: any;
+    invite: any;
+  }) => {
+    // create a membership between the user and the workspace
+    // delete the invitation
+  };
+
+  const handleJoinWorkspaceFromAllowedDomain = async ({
+    user,
+    workspace,
+  }: {
+    user: any;
+    workspace: any;
+  }) => {
+    // create a membership between the user and the workspace
   };
 
   const {
