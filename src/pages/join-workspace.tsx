@@ -14,7 +14,7 @@ import {
   getWorkspaceDetails,
   getAllowedWorkspacesForUser,
   createMembership,
-  deleteWorkspaceInvite,
+  acceptWorkspaceInvite,
 } from "../utils/api";
 import { stringToVibrantColor, generateWorkspaceIcon } from "../utils/util";
 import { CaretRight, UsersThree } from "@phosphor-icons/react";
@@ -70,8 +70,8 @@ export default function JoinWorkspace() {
       );
 
       try {
-        // delete the invitation
-        const delete_invite_result = await deleteWorkspaceInvite({
+        // accept the invite
+        const delete_invite_result = await acceptWorkspaceInvite({
           workspaceId: workspace.id,
           inviteId: invite.id,
         });

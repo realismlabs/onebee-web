@@ -101,8 +101,10 @@ export const getInvitesForUserEmail = async (recipientEmail) => {
     throw new Error("Failed to fetch invites");
   }
   const result = await response.json();
-  console.log("getInvitesForUserEmail result", result);
-  return result;
+  // only return invites that have not been accepted
+  const filteredResult = result.filter((invite) => !invite.accepted);
+  console.log("getInvitesForUserEmail result", filteredResult);
+  return filteredResult;
 };
 
 // "/api/workspaces/:workspaceId/invites": "/invites?workspaceId=:workspaceId",
@@ -114,7 +116,11 @@ export const getWorkspaceInvites = async (workspaceId) => {
   if (!response.ok) {
     throw new Error(`Failed to fetch invites for workspace: ${workspaceId}`);
   }
-  return await response.json();
+
+  const result = await response.json();
+  // filter out accepted invites
+  const filteredResult = result.filter((invite) => !invite.accepted);
+  return filteredResult;
 };
 
 // "/api/workspaces/:workspaceId/invites/:inviteId/delete": "/invites/:inviteId",
@@ -127,6 +133,24 @@ export const deleteWorkspaceInvite = async ({ workspaceId, inviteId }) => {
   );
   const deletedInvite = await response.json();
   return deletedInvite;
+};
+
+// "/api/workspaces/:workspaceId/accept-invite/:inviteId": "/invites/:inviteId",
+export const acceptWorkspaceInvite = async ({ workspaceId, inviteId }) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/accept-invite/${inviteId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        accepted: true,
+      }),
+    }
+  );
+  const acceptedInvite = await response.json();
+  return acceptedInvite;
 };
 
 export const getWorkspaceDetails = async (workspaceId) => {
