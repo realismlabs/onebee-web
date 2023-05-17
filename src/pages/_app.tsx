@@ -10,6 +10,8 @@ import {
 } from "@tanstack/react-query-persist-client";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 
+import { ClerkProvider } from "@clerk/nextjs";
+
 function getPersister(): Persister {
   if (typeof window !== "undefined") {
     return createSyncStoragePersister({
@@ -32,12 +34,14 @@ const customPersister: Persister = {
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={{ persister: customPersister }}
-    >
-      <Component {...pageProps} />
-      <ReactQueryDevtools initialIsOpen={false} position={"bottom-right"} />
-    </PersistQueryClientProvider>
+    <ClerkProvider {...pageProps}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister: customPersister }}
+      >
+        <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen={false} position={"bottom-right"} />
+      </PersistQueryClientProvider>
+    </ClerkProvider>
   );
 }
