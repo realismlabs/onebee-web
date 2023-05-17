@@ -53,17 +53,17 @@ const MemberPopover = ({
 
   const handleRemoveMember = async () => {
     // check if user is the last member of the workspace. If so, delete the workspace
-    const workspaceMemberships = await getWorkspaceMemberships({
-      workspaceId,
-    });
+    const workspaceMemberships = await getWorkspaceMemberships(workspaceId);
 
+    console.log("awu workspaceMemberships", workspaceMemberships);
     // check if there is at least one other admin left besides user
     const otherAdmins = workspaceMemberships.filter(
-      (targetMembership: any) =>
-        targetMembership.role === "admin" && targetMembership.userId !== userId
+      (membership: any) =>
+        membership.role === "admin" && membership.userId !== currentUser.id
     );
 
-    if (otherAdmins >= 1) {
+    console.log("awu otherAdmins", otherAdmins);
+    if (otherAdmins.length >= 1) {
       try {
         const deletedMembership = await deleteMembershipMutation.mutateAsync({
           membershipId: targetMembershipId,
@@ -486,8 +486,6 @@ export default function Members() {
   });
 
   const usersData = usersQueries.map((user: any) => user.data);
-
-  console.log("usersData:", usersData);
 
   // get invites for workspace
   const {

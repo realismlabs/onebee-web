@@ -3,11 +3,18 @@ import Link from "next/link";
 import router from "next/router";
 import Image from "next/image";
 import { useCurrentUser } from "../hooks/useCurrentUser";
-import { useQuery, useQueries } from "@tanstack/react-query";
+import {
+  useQueryClient,
+  useQuery,
+  useQueries,
+  useMutation,
+} from "@tanstack/react-query";
 import {
   getInvitesForUserEmail,
   getWorkspaceDetails,
   getAllowedWorkspacesForUser,
+  createMembership,
+  deleteWorkspaceInvite,
 } from "../utils/api";
 import { stringToVibrantColor, generateWorkspaceIcon } from "../utils/util";
 import { CaretRight, UsersThree } from "@phosphor-icons/react";
@@ -50,7 +57,32 @@ export default function JoinWorkspace() {
     invite: any;
   }) => {
     // create a membership between the user and the workspace
-    // delete the invitation
+    const createMembershipRequestBody = {
+      userId: user?.id,
+      workspaceId: workspace.id,
+      createdAt: new Date().toISOString(),
+      role: "member", // since they're the creator
+    };
+
+    try {
+      const created_membership_result = await createMembership(
+        createMembershipRequestBody
+      );
+
+      try {
+        // delete the invitation
+        const delete_invite_result = await deleteWorkspaceInvite({
+          workspaceId: workspace.id,
+          inviteId: invite.id,
+        });
+
+        router.push(`/workspace/${workspace.id}`);
+      } catch (e) {
+        console.error(e);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleJoinWorkspaceFromAllowedDomain = async ({
@@ -105,6 +137,8 @@ export default function JoinWorkspace() {
     },
     enabled: currentUser?.id != null,
   });
+
+  const queryClient = useQueryClient();
 
   // if any of workspacesQuery[0].isLoading, workspacesQuery[1].isLoading, etc. is true, then isLoading is true
   const isWorkspacesQueriesLoading = workspacesQuery.some(
@@ -161,7 +195,16 @@ export default function JoinWorkspace() {
 
               return (
                 <>
-                  <div key={invite.id}>
+                  <div
+                    key={invite.id}
+                    onClick={() =>
+                      handleAcceptInvite({
+                        user: currentUser,
+                        workspace: workspaceDetail,
+                        invite,
+                      })
+                    }
+                  >
                     <div className="text-slate-12 text-center text-[14px] flex flex-row gap-4 p-4 items-center bg-slate-2 hover:bg-slate-3 rounded-md cursor-pointer">
                       <div
                         className={`h-[48px] w-[48px] flex items-center justify-center text-[18px] rounded-md`}
