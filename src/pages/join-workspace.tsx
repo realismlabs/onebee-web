@@ -167,7 +167,7 @@ export default function JoinWorkspace() {
     isWorkspacesQueriesLoading ||
     isAllowedWorkspacesForUserLoading
   ) {
-    return <div className="h-screen bg-slate-1 text-slate-12">Loading..</div>;
+    return <div className="h-screen bg-slate-1 text-slate-12"></div>;
   }
 
   if (
