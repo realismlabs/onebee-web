@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import router from "next/router";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { createWorkspace } from "@/utils/api";
-import { motion } from "framer-motion";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
+import { createWorkspace, createMembership } from "@/utils/api";
+import { isCommonEmailProvider } from "@/utils/util";
 
 interface AccountHeaderProps {
   email: string;
@@ -51,17 +52,47 @@ export default function CreateWorkspace() {
         workspaceName,
         allowOthersFromDomainChecked,
       });
+      // TODO: Push to home of the new workspace
 
+      let createWorkspaceRequestBody = {
+        name: workspaceName,
+        createdAt: new Date().toISOString(),
+        creatorUserId: currentUser?.id,
+        allowedDomains:
+          isCommonEmailProvider(domain) ||
+          allowOthersFromDomainChecked === false
+            ? []
+            : [{ domain: domain, createdBy: currentUser?.id }],
+      };
       try {
-        const response = await createWorkspace({
-          name: workspaceName,
-          createdAt: new Date().toISOString(),
-          creatorUserId: currentUser.id,
-        });
+        console.log("Before creating workspace");
+        const created_workspace_result = await createWorkspace(
+          createWorkspaceRequestBody
+        );
+        console.log("After creating workspace");
 
-        console.log("Created workspace", response);
-        const workspaceId = response.id;
-        router.push(`/workspace/${workspaceId}/onboarding/add-data-source`);
+        console.log("Created workspace", created_workspace_result);
+        try {
+          const createMembershipRequestBody = {
+            userId: currentUser?.id,
+            workspaceId: created_workspace_result?.id,
+            createdAt: new Date().toISOString(),
+            role: "admin", // since they're the creator
+          };
+
+          console.log("Creating membership", createMembershipRequestBody);
+          const created_membership_result = await createMembership(
+            createMembershipRequestBody
+          );
+
+          console.log("Created membership", created_membership_result);
+
+          router.push(
+            `/workspace/${created_workspace_result.id}/onboarding/add-data-source`
+          );
+        } catch (e) {
+          console.log("Couldn't create membership", e);
+        }
       } catch (e) {
         console.log("Couldn't create workspace", e);
       }
@@ -108,41 +139,14 @@ export default function CreateWorkspace() {
 
   const email = currentUser.email;
 
-  //  for animations
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0 },
-  };
-
   return (
     <div className="h-screen bg-slate-1">
       <AccountHeader email={email ?? "placeholder@example.com"} />
-      <motion.div
-        className="flex flex-col justify-center items-center w-full pt-32"
-        variants={container}
-        initial="hidden"
-        animate="show"
-        transition={{ duration: 1 }}
-      >
-        <motion.div
-          className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"
-          variants={item}
-        >
+      <div className="flex flex-col justify-center items-center w-full pt-12">
+        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4">
           Name your workspace
-        </motion.div>
-        <motion.form
-          variants={item}
+        </div>
+        <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-3 w-[300px] mt-4"
         >
@@ -166,31 +170,39 @@ export default function CreateWorkspace() {
               <p className="text-red-9 text-[13px] mt-2">{errorMessage}</p>
             )}
           </div>
-          <div className="flex items-start">
-            <input
-              id="allowOthersFromDomain"
-              type="checkbox"
-              className="mt-0.5 w-[18px] h-[18px] text-blue-600 bg-slate-3 border-slate-6 rounded focus:ring-blue-500 focus:ring-1"
-              checked={allowOthersFromDomainChecked}
-              onChange={handleAllowOthersFromDomainCheckboxChange}
-            />
-            <label
-              htmlFor="allowOthersFromDomain"
-              className="ml-2 block text-slate-11 text-[14px]"
-            >
-              Allow anyone with an{" "}
-              <span className="text-slate-12 font-medium">{"@" + domain}</span>{" "}
-              email to join this workspace
-            </label>
-          </div>
+          {/* Check if common email provider. If not, provide option */}
+          {!isCommonEmailProvider(email) && (
+            <div className="flex items-start">
+              <input
+                id="allowOthersFromDomain"
+                type="checkbox"
+                className="mt-0.5 w-[18px] h-[18px] text-blue-600 bg-slate-3 border-slate-6 rounded focus:ring-blue-500 focus:ring-1"
+                checked={allowOthersFromDomainChecked}
+                onChange={handleAllowOthersFromDomainCheckboxChange}
+              />
+              <label
+                htmlFor="allowOthersFromDomain"
+                className="ml-2 block text-slate-11 text-[14px]"
+              >
+                Allow anyone with an{" "}
+                <span className="text-slate-12 font-medium">
+                  {"@" + domain}
+                </span>{" "}
+                email to join this workspace
+              </label>
+            </div>
+          )}
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md mt-4"
           >
-            Continue
+            Create workspace
           </button>
-        </motion.form>
-      </motion.div>
+          <div className="text-blue-500 text-center text-[14px] mt-12">
+            <Link href="/join-workspace">Join an existing workspace →</Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

@@ -4,8 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
-import { useQuery } from '@tanstack/react-query';
-import { getTables, getWorkspaceConnections } from '../utils/api';
+import { useQuery, useQueries } from '@tanstack/react-query';
+import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspace } from '../utils/api';
 import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
@@ -13,6 +13,7 @@ import { getWorkspaces } from '@/utils/api';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useLocalStorageState } from '@/utils/util';
+import InvitePeopleDialog from './InvitePeopleDialog';
 
 function AccountPopover() {
   const router = useRouter();
@@ -82,46 +83,68 @@ const KeyCombination = ({ keys }) => {
 function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   const router = useRouter();
 
+  // get user's current memberships
   const {
-    data: workspacesForUserData,
-    isLoading: isWorkspacesForUserLoading,
-    error: workspacesForUserError,
+    data: userMembershipsData,
+    isLoading: isUserMembershipsLoading,
+    error: userMembershipsError,
   } = useQuery({
-    queryKey: ["workspaces"],
+    queryKey: ["currentUserMemberships", currentUser.id],
     queryFn: async () => {
-      return await getWorkspaces();
+      return await getUserMemberships(currentUser.id);
     },
   });
 
-  if (isWorkspacesForUserLoading) {
+  //  fetch user data for each membership
+  const availableWorkspacesQueries = useQueries({
+    queries: (userMembershipsData ?? []).map((membership) => {
+      return {
+        queryKey: ["getWorkspace", membership.workspaceId],
+        queryFn: async () => {
+          const response = await getWorkspace(membership.workspaceId);
+          return response;
+        },
+        enabled: membership.workspaceId !== null,
+      };
+    }),
+  });
+
+  const availableWorkspacesData = availableWorkspacesQueries.map((workspace) => workspace.data);
+  const availableWorkspacesError = availableWorkspacesQueries.map((workspace) => workspace.error);
+  const availableWorkspacesIsLoading = availableWorkspacesQueries.map((workspace) => workspace.isLoading);
+
+  if (availableWorkspacesIsLoading.some((isLoading) => isLoading)) {
     return <div className="h-screen bg-slate-1 text-slate-12">Loading...</div>;
   }
 
-  if (workspacesForUserError) {
-    return <div>There was an error loading your table</div>;
+  if (availableWorkspacesError.some((error) => error)) {
+    return <div>There was an error loading your workspaces</div>;
   }
 
   return (
     <>
       <div className="px-[16px] pt-[13px] pb-[4px] text-slate-11 text-[13px]">{currentUser.email}</div>
-      <div className="max-h-[60vh] overflow-y-scroll">
-        {workspacesForUserData.map((workspace) => (
+      <div className="max-h-[60vh] overflow-y-scroll flex flex-col w-full">
+        {(availableWorkspacesData ?? []).map((workspace) => (
           <Popover.Button key={workspace.id}>
-            <div onClick={(e) => {
-              router.push(`/workspace/${workspace.id}`);
-            }}>
-              <div className="w-[240px] px-[8px] text-[13px] cursor-pointer">
-                <div className="hover:bg-slate-4 px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center">
+            <div
+              onClick={(e) => {
+                router.push(`/workspace/${workspace.id}`);
+              }}
+              className="flex w-full"
+            >
+              <div className="px-[8px] text-[13px] cursor-pointer flex w-full">
+                <div className="hover:bg-slate-4 px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center w-full">
                   <div
-                    className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
+                    className={`flex-none h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
                     style={{
                       backgroundImage: `url(${workspace.iconUrl})`,
                       backgroundSize: 'cover',
                     }}
                   >
-                    <div className="text-[10px] text-slate-12">{workspace.name.slice(0, 1)}</div>
+                    <div className="text-[10px] text-slate-12">{workspace?.name?.slice(0, 1)}</div>
                   </div>
-                  <div className="max-w-[140px] truncate">{workspace.name}</div>
+                  <div className="grow truncate">{workspace.name}</div>
                   {workspace.id === currentWorkspace.id && (
                     <div className="ml-auto text-slate-12">
                       <Check
@@ -135,14 +158,14 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
               </div>
             </div>
           </Popover.Button>
-        ))
-        }
+        ))}
       </div>
+
       <div className="flex flex-col px-[8px] py-[13px] mt-[13px] border-t border-slate-4 w-full text-[13px] text-slate-11">
         <Popover.Button>
           <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
             onClick={(e) => {
-              router.push(`/workspace/${currentWorkspace.id}/settings`);
+              router.push(`/workspace/${currentWorkspace.id}/settings/general`);
             }}>
             Workspace settings
           </div>
@@ -150,7 +173,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
         <Popover.Button>
           <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
             onClick={(e) => {
-              router.push(`/create-workspace`);
+              router.push(`/welcome/create-workspace`);
             }}>
             Create a new workspace
           </div>
@@ -216,10 +239,11 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
 const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   // Replace the items array with your dynamic data
   const router = useRouter();
-  console.log("pathname", router.asPath);
-
-  // console.log("In Workspce Shell id", id)
   const [shellExpanded, setShellExpanded] = useLocalStorageState("shellExpanded", true);
+  const [isInvitePeopleDialogOpen, setIsInvitePeopleDialogOpen] = useState(false);
+  const [customInviteMessage, setCustomInviteMessage] = useState(
+    "Hi there, \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse. \n\nJoin the workspace in order to browse and search our key datasets."
+  );
   const controls = useAnimation();
 
   const toggleShell = useCallback(async () => {
@@ -284,23 +308,15 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
     enabled: currentWorkspace?.id !== null,
   });
 
-
-
   if (areTablesLoading || isWorkspaceLoading || isUserLoading || isConnectionsLoading) {
     return (
-      <div className="bg-slate-1 py-[16px] w-[240px] text-[13px] text-slate-12 flex flex-col gap-2 border-r border-slate-6 items-center justify-center">
-        <span className="animate-spin">
-          <CircleNotch width={20} height={20} />
-        </span>
-      </div>
+      <></>
     )
   }
 
   if (tablesError || workspaceError || userError || connectionsError) {
     return <div className="text-slate-12">There was an error loading your tables</div>;
   }
-
-  console.log(tablesData);
 
   return (
     <motion.div className="bg-slate-1 py-[10px] text-[13px] text-slate-12 flex flex-col border-r border-slate-4"
@@ -378,7 +394,6 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
               <div
                 className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/home` ? "bg-slate-3" : ""}`}
                 onClick={() => {
-                  console.log("awu: current", commandBarOpen, "set to:", !commandBarOpen)
                   setCommandBarOpen(!commandBarOpen)
                 }}>
                 <Compass
@@ -417,14 +432,14 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
                 </>)}
               </div>
               <div>
-                {tablesData.length === 0 && (
+                {tablesData.length === 0 && shellExpanded === true && (
                   <div className="w-full flex flex-col gap-2 mt-4 items-center justify-center py-6 rounded-lg">
                     <Image src="/images/table-splash-zero-state.svg"
                       width={48}
                       height={48}
                       alt="Splash icon for tables zero state" />
-                    <p className="text-slate-11 px-[16px] text-center text-[13px] mt-2">No tables created yet</p>
-                    <p className="text-slate-10 px-[16px] text-center text-[12px]">Create a table by clicking the <br />+ New button in the top-right</p>
+                    <p className="text-slate-11 px-[16px] text-center text-[13px] mt-2 truncate block">No tables created yet</p>
+                    <p className="text-slate-10 px-[16px] text-center text-[12px] truncate block">Create a table by clicking the <br />+ New button in the top-right</p>
                   </div>
                 )}
                 {tablesData.length > 0 && tablesData.map((item) => (
@@ -484,32 +499,40 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
             </Tooltip.Root>
           </Tooltip.Provider>
         </Link>
-        <Link href={`/workspace/${currentWorkspace.id}/connection`}>
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <div className="flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md">
-                  <PaperPlaneTilt
-                    size={20}
-                    weight="fill"
-                    className="text-slate-10 group-hover:text-slate-11 transition-all duration-100 min-h-[20px] min-w-[20px]"
-                  />
-                  <div className="truncate w-full">Invite people</div>
-                </div>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  className="text-slate-12 text-[13px] rounded-[4px] bg-black px-[12px] py-[8px] z-20 shadow-2xl"
-                  sideOffset={12}
-                  side="left"
-                >
-                  Invite people
-                  <Tooltip.Arrow className="fill-black" />
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
-        </Link>
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <div className="flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md"
+                onClick={() => setIsInvitePeopleDialogOpen(true)}>
+                <PaperPlaneTilt
+                  size={20}
+                  weight="fill"
+                  className="text-slate-10 group-hover:text-slate-11 transition-all duration-100 min-h-[20px] min-w-[20px]"
+                />
+                <div className="truncate w-full">Invite people</div>
+                <InvitePeopleDialog
+                  isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
+                  setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
+                  currentUser={currentUser}
+                  currentWorkspace={currentWorkspace}
+                  customMessage={customInviteMessage}
+                  setCustomMessage={setCustomInviteMessage}
+                  emailTemplateLanguage={""}
+                />
+              </div>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                className="text-slate-12 text-[13px] rounded-[4px] bg-black px-[12px] py-[8px] z-20 shadow-2xl"
+                sideOffset={12}
+                side="left"
+              >
+                Invite people
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
         <AccountPopover />
       </div>
     </motion.div>

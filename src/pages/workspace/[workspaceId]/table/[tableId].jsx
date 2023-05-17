@@ -9,9 +9,10 @@ import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
 import { CaretDown, MagnifyingGlass, Gear, X, Pencil, Trash } from "@phosphor-icons/react";
-import { useState, Fragment, useRef } from "react";
+import { useState, Fragment, useRef, useEffect } from "react";
 import IconPickerPopoverEditTable from "@/components/IconPickerPopoverEditTable";
 import { Popover, Transition, Dialog } from "@headlessui/react";
+import InvitePeopleDialog from "@/components/InvitePeopleDialog";
 
 const TablePopover = ({
   tableName,
@@ -278,6 +279,11 @@ export default function TablePage() {
   const router = useRouter();
   const { tableId } = router.query;
 
+  const [isInvitePeopleDialogOpen, setIsInvitePeopleDialogOpen] = useState(false);
+  const [customInviteMessage, setCustomInviteMessage] = useState(
+    "Hi there, \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse. \n\nJoin the workspace in order to browse and search our key datasets."
+  );
+
   console.log("id", tableId);
 
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -339,6 +345,17 @@ export default function TablePage() {
     enabled: currentWorkspace?.id !== null && tableData?.connectionId !== null,
   });
 
+
+  // use useEffect to update the customMessage with the table name
+
+  useEffect(() => {
+    if (tableData) {
+      setCustomInviteMessage(
+        `Hi! Check out the ${tableData.displayName} table on our workspace in Dataland.io. \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse.`
+      );
+    }
+  }, [tableData]);
+
   if (isTableLoading || isConnectionLoading) {
     return (
       <div className="h-screen bg-slate-1 text-slate-12 text-[11px] flex items-center justify-center">
@@ -389,9 +406,21 @@ export default function TablePage() {
               <p>Columns</p>
               <CaretDown size={12} className="text-slate-11" />
             </div>
-            <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
+            <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
+              onClick={() => setIsInvitePeopleDialogOpen(true)}>
               <p>Share</p>
             </div>
+            <InvitePeopleDialog
+              isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
+              setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
+              currentUser={currentUser}
+              currentWorkspace={currentWorkspace}
+              customMessage={customInviteMessage}
+              setCustomMessage={setCustomInviteMessage}
+              emailTemplateLanguage={""}
+              customInvitePeopleDialogHeader={`Share ${tableData.displayName} with your team`}
+              customInvitePeopleSubject={`${currentUser.name} shared ${tableData.displayName} with you on Dataland.io`}
+            />
           </div>
         </div>
         <div className="grow-1 overflow-x-auto overflow-y-scroll max-w-screen">

@@ -175,13 +175,39 @@ function circuitPath(path: string) {
   );
 }
 const CometAnimation: React.FC = () => {
-  const pathl1 = "M20,100 L20,90 L90,90 L90,80";
-  const pathl2 = "M22,100 L22,92 L92,92 L92,80";
-  const pathl3 = "M24,100 L24,94 L94,94 L94,80";
-  //  construct opposite paths
-  const pathr1 = "M180,100 L180,90 L110,90 L110,80";
-  const pathr2 = "M178,100 L178,92 L108,92 L108,80";
-  const pathr3 = "M176,100 L176,94 L106,94 L106,80";
+  const circuitRoundness1 = 1; // Adjust this value to change the roundness of corners
+  const circuitRoundness2 = 1.2; // Adjust this value to change the roundness of corners
+  const circuitRoundness3 = 1.4; // Adjust this value to change the roundness of corners
+
+  const pathl1 = `M20,${100 - circuitRoundness1}
+    Q20,90 ${20 + circuitRoundness1},90
+    L${90 - circuitRoundness1},90
+    Q90,90 90,${90 - circuitRoundness1} L90,80`;
+
+  const pathl2 = `M22,${100 - circuitRoundness2}
+    Q22,92 ${22 + circuitRoundness2},92
+    L${92 - circuitRoundness2},92
+    Q92,92 92,${92 - circuitRoundness2} L92,80`;
+
+  const pathl3 = `M24,${100 - circuitRoundness3}
+    Q24,94 ${24 + circuitRoundness3},94
+    L${94 - circuitRoundness3},94
+    Q94,94 94,${94 - circuitRoundness3} L94,80`;
+
+  const pathr1 = `M${180 - circuitRoundness1},100
+    Q180,90 ${180 - circuitRoundness1},90
+    L${110 + circuitRoundness1},90
+    Q110,90 110,${90 - circuitRoundness1} L110,80`;
+
+  const pathr2 = `M${178 - circuitRoundness2},100
+    Q178,92 ${178 - circuitRoundness2},92
+    L${108 + circuitRoundness2},92
+    Q108,92 108,${92 - circuitRoundness2} L108,80`;
+
+  const pathr3 = `M${176 - circuitRoundness3},100
+    Q176,94 ${176 - circuitRoundness3},94
+    L${106 + circuitRoundness3},94
+    Q106,94 106,${94 - circuitRoundness3} L106,80`;
 
   // const screenborder = "M100,80 L180,80 L180,15 L20,15 L20,80 z";
   // const screenborderOpposite = "M100,80 L20,80 L20,15 L180,15 L180,80 z";
@@ -601,7 +627,7 @@ export default function Welcome() {
         transition={{ duration: 1, delay: 2.2 }}
       >
         <div className="absolute inset-0 flex flex-col justify-start items-center h-screen">
-          <div className="flex flex-col justify-center items-center mt-[300px]">
+          <div className="flex flex-col justify-center items-center mt-[30vh]">
             <motion.div
               className="bg-slate-2 border border-slate-4 p-4 rounded-lg"
               variants={item}
@@ -628,7 +654,7 @@ export default function Welcome() {
             </motion.div>
             <motion.button
               type="button"
-              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md"
+              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[16px] font-medium py-2 px-4 rounded-md"
               onClick={handleSubmit}
               variants={item}
             >

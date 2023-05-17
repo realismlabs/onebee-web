@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
-import { CircleNotch, TreeStructure, House, Table, Plus } from '@phosphor-icons/react';
+import { CircleNotch, TreeStructure, House, Table, Plus, Gear } from '@phosphor-icons/react';
 import { getTables } from '@/utils/api';
 import { useRouter } from 'next/router';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
@@ -105,6 +105,14 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
       id: 'newtable',
       link: `/workspace/${currentWorkspace?.id}/table/new`,
     },
+    {
+      name: 'Settings',
+      description: 'Manage your workspace, billing, members, and more',
+      icon: <Gear width={20} height={20} weight="fill" />,
+      type: 'navigation',
+      id: 'settings',
+      link: `/workspace/${currentWorkspace?.id}/settings/general`,
+    },
   ];
 
   const tables = [];
@@ -120,7 +128,6 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
         link: `/workspace/${currentWorkspace?.id}/table/${table.id}`,
       });
     });
-    console.log('navigationItems', tables)
   }
 
   return (
@@ -152,12 +159,12 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                 <Command.Group heading="Navigation" className="py-[8px]">
                   {navigationItems.map((item) => {
                     const id = item.id;
-                    const searchable_id_name = `${item.id}${item.name}`;
+                    const searchable_id_name = `${item.id} ${item.name} ${item.description}`;
                     return (
                       <Command.Item
                         key={searchable_id_name}
                         value={searchable_id_name}
-                        className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-2" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
+                        className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
                         onMouseEnter={() => {
                           console.log("hovering", searchable_id_name);
                           setValue(searchable_id_name);
@@ -175,7 +182,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                         <div className="flex flex-row gap-2 w-full">
                           <div className="min-w-[24px] text-slate-10">{item.icon}</div>
                           <div className="min-w-[240px]">{item.name}</div>
-                          <div className="text-slate-11">{item.description}</div>
+                          <div className="ml-2 text-slate-11">{item.description}</div>
                         </div>
                       </Command.Item>
                     )
@@ -186,12 +193,12 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                   <Command.Group heading="Tables" className="mt-2">
                     {tables.map((item) => {
                       const id = item.id;
-                      const searchable_id_name = `${item.id}${item.name}`;
+                      const searchable_id_name = `${item.id} ${item.name} ${item.description}`;
                       return (
                         <Command.Item
                           key={searchable_id_name}
                           value={searchable_id_name}
-                          className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-2" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
+                          className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
                           onMouseEnter={() => {
                             console.log("hovering", searchable_id_name);
                             setValue(searchable_id_name);
@@ -209,7 +216,9 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                           <div className="flex flex-row gap-2 w-full">
                             <div className="min-w-[24px] text-slate-10"><IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.name} /></div>
                             <div className="w-[240px] truncate">{item.name}</div>
-                            <div className="text-slate-11">{item.description}</div>
+                            <div className="ml-2 font-mono block truncate px-1.5 py-0.5 bg-slate-3 rounded-md text-[12px] text-slate-11">
+                              {item.description.replaceAll(".", "/")}
+                            </div>
                           </div>
                         </Command.Item>
                       )

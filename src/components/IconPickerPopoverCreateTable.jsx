@@ -35,7 +35,6 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   ];
 
   const handleColorClick = (color) => {
-    console.log("awu selected color", color)
     setSelectedColor(color);
   };
 
@@ -70,12 +69,10 @@ const IconPickerPopoverCreateTable = ({ iconSvgString, setIconSvgString, selecte
     const iconDiv = document.getElementById(iconName);
     if (iconDiv) {
       const iconSvgString = Array.from(iconDiv.children).map((child) => child.outerHTML).join('\n');
-      console.log("awu iconSvgString2", iconSvgString)
-      console.log("awu selectedColor2", selectedColor)
       const iconSvgString_updated = updateSvgColor(iconSvgString, selectedColor);
       setIconSvgString(iconSvgString_updated);
     } else {
-      console.error(`awu Div with id "${iconName}" not found.`);
+      console.error(`Div with id "${iconName}" not found.`);
     }
   };
 

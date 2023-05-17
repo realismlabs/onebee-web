@@ -17,7 +17,8 @@ import { formatFriendlyDate, abbreviateNumber } from "@/utils/util";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { PencilSimpleLine, X, TreeStructure } from "@phosphor-icons/react";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
-import { Popover, Transition, Dialog } from "@headlessui/react";
+import { Dialog } from "@headlessui/react";
+import Image from "next/image";
 
 function findSelectedConnection(
   connectionsData: any,
@@ -43,7 +44,6 @@ export default function Connections() {
   const [deleteErrorMessage, setDeleteErrorMessage] = useState("");
 
   const openDeleteDialog = () => {
-    console.log("awu: open delete dialog");
     setIsDeleteDialogOpen(true);
   };
 
@@ -212,6 +212,24 @@ export default function Connections() {
                 </div>
               </div>
             ))}
+            {connectionsData.length === 0 && (
+              <div className="w-full flex flex-col gap-2 mt-4 items-connection justify-center items-center py-6">
+                <Image
+                  src="/images/connection-splash-zero-state.svg"
+                  width={48}
+                  height={48}
+                  alt="Splash icon for tables zero state"
+                  className=""
+                />
+                <p className="text-slate-11 px-[16px] text-center text-[13px] mt-2 truncate block">
+                  No connections created yet
+                </p>
+                <p className="text-slate-10 px-[16px] text-center text-[12px] truncate block">
+                  Create a connection by clicking the <br />+ New button in the
+                  top-right
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <div className="w-full overflow-y-scroll grow ">
