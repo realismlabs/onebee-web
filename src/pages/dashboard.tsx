@@ -1,16 +1,12 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import router from "next/router";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { motion } from "framer-motion";
-import { Check, CircleNotch } from "@phosphor-icons/react";
-import { capitalizeString } from "@/utils/util";
-import { AccountHeader } from "@/components/AccountHeader";
 import { getUserMemberships, getWorkspace } from "../utils/api";
-import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { useRouter } from "next/router";
 import { useQuery, useQueries } from "@tanstack/react-query";
+
+// This is the default page a user lands on after logging in via Clerk.
+// To change the destination in Clerk, you need to edit the paths .env.local in local dev mode.
+// In production, you need to edit the paths in the Clerk dashboard.
 
 export default function Welcome() {
   const router = useRouter();
@@ -100,11 +96,7 @@ export default function Welcome() {
 
   return (
     <div className="h-screen bg-slate-1 z-10 relative text-white flex items-center justify-center">
-      {/* {next_route} */}
-      {/* JSX that automatically routes user to next_route */}
-      {/* <div className="animate-spin">
-        <CircleNotch width={16} height={16} />
-      </div> */}
+      {/* Intentionally blank for good UX */}
     </div>
   );
 }
