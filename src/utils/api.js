@@ -1,4 +1,5 @@
 import { generateWorkspaceIcon } from "./util";
+import { useAuth } from "@clerk/nextjs";
 //  this file holds several  the api calls for the app mocked to a local json server
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -7,6 +8,8 @@ export const fetchCurrentUser = async () => {
   // 1 is arthur@dataland.io - has one invite and no allowed domains
   // 19 is howard@sidekick.video - no invites
   // 20 is other@dataland.io - has one invite and one other allowed domain
+
+  // New: fetch current user based on clerkUserId
   const response = await fetch(`${API_BASE_URL}/api/users/1`);
   if (!response.ok) {
     throw new Error("Error fetching current user");
@@ -23,6 +26,35 @@ export const fetchCurrentWorkspace = async (workspaceId) => {
   const result = await response.json();
   return result;
 };
+
+// "/api/users/": "/users",
+export const createUser = async ({ email, name, clerkUserId }) => {
+  console.log("createUser", email, name, clerkUserId)
+  const requestBody = {
+    email,
+    name,
+    clerkUserId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    emailVerified: false,
+  };
+
+  console.log("createUser requestBody", requestBody)
+
+  const response = await fetch(`${API_BASE_URL}/api/users/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error creating user");
+  }
+  const result = await response.json();
+  return result;
+}
 
 export const createInvite = async ({
   workspaceId,

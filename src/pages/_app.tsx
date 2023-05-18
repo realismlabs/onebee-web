@@ -9,8 +9,13 @@ import {
   PersistedClient,
 } from "@tanstack/react-query-persist-client";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
-
-import { ClerkProvider } from "@clerk/nextjs";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  RedirectToSignIn,
+} from "@clerk/nextjs";
+import { useRouter } from "next/router";
 
 function getPersister(): Persister {
   if (typeof window !== "undefined") {
@@ -33,15 +38,43 @@ const customPersister: Persister = {
 };
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { pathname } = useRouter();
+
+  const publicPages = [
+    "/forgot-password",
+    "/login",
+    "/sandbox",
+    "/signup",
+    "/reset-password",
+    "/",
+  ];
+
+  // Check if the current route matches a public page
+  const isPublicPage = publicPages.includes(pathname);
+
   return (
     <ClerkProvider {...pageProps}>
-      <PersistQueryClientProvider
-        client={queryClient}
-        persistOptions={{ persister: customPersister }}
-      >
+      {isPublicPage ? (
         <Component {...pageProps} />
-        <ReactQueryDevtools initialIsOpen={false} position={"bottom-right"} />
-      </PersistQueryClientProvider>
+      ) : (
+        <>
+          <SignedIn>
+            <PersistQueryClientProvider
+              client={queryClient}
+              persistOptions={{ persister: customPersister }}
+            >
+              <Component {...pageProps} />
+              <ReactQueryDevtools
+                initialIsOpen={false}
+                position={"bottom-right"}
+              />
+            </PersistQueryClientProvider>
+          </SignedIn>
+          <SignedOut>
+            <RedirectToSignIn />
+          </SignedOut>
+        </>
+      )}
     </ClerkProvider>
   );
 }

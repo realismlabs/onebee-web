@@ -5,11 +5,14 @@ import React, { useState } from "react";
 import Link from "next/link";
 import router from "next/router";
 import { callApi } from "../utils/util";
+import { createUser } from "@/utils/api";
+import { capitalizeString } from "../utils/util";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [verificationErrorMessage, setVerificationErrorMessage] = useState("");
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -172,19 +175,10 @@ export default function Signup() {
     }
 
     try {
-      await signUp.create({
+      const userId = await signUp.create({
         emailAddress: email,
         password,
       });
-
-      // TODO: Also create a user
-      //   const newUser = {
-      //     email,
-      //     password, // You should hash the password before storing it
-      //     emailVerified: false,
-      //     createdAt: new Date().toISOString(),
-      //     updatedAt: new Date().toISOString(),
-      //   };
 
       // send the email.
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -193,7 +187,12 @@ export default function Signup() {
       setPendingVerification(true);
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
-      setPasswordErrorMessage(err.message);
+      if (err.message !== null) {
+        setPasswordErrorMessage(err.message);
+      }
+      if (err.errors.length >= 1) {
+        setEmailErrorMessage(err.errors[0].message);
+      }
     }
   };
 
@@ -207,17 +206,33 @@ export default function Signup() {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code,
       });
+
       if (completeSignUp.status !== "complete") {
         /*  investigate the response, to see if there was an error
          or if the user needs to complete more steps.*/
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
       if (completeSignUp.status === "complete") {
-        await setActive({ session: completeSignUp.createdSessionId });
-        router.push("/");
+        console.log("completeSignUp", completeSignUp);
+        const clerkUserId = completeSignUp.createdUserId;
+        console.log("clerkUserId", clerkUserId);
+
+        try {
+          await createUser({
+            email,
+            name: capitalizeString(email.split("@")[0]),
+            clerkUserId,
+          });
+
+          await setActive({ session: completeSignUp.createdSessionId });
+          router.push("/welcome");
+        } catch (err: any) {
+          console.error(JSON.stringify(err, null, 2));
+        }
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
+      setVerificationErrorMessage(err?.errors[0]?.longMessage);
     }
   };
 
@@ -372,14 +387,43 @@ export default function Signup() {
             )}
 
             {pendingVerification && (
-              <div className="w-[600px] text-slate-12 flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
+              <div className="w-[600px] text-slate-12 flex flex-col left-0 py-3 gap-2 sm:px-24 px-12 h-screen justify-center">
+                <div className="gap-4 flex flex-col">
+                  <h1 className="text-lg flex flex-row gap-2 items-center">
+                    Check your inbox for a verification code
+                  </h1>
+
+                  <p className="text-[14px] text-slate-11">
+                    Just one more step! We sent you a verification code to your
+                    email. Just enter it here to verify your account.
+                  </p>
+                </div>
                 <form>
-                  <input
-                    value={code}
-                    placeholder="Code..."
-                    onChange={(e) => setCode(e.target.value)}
-                  />
-                  <button onClick={onPressVerify}>Verify Email</button>
+                  <div className="flex flex-col gap-4 mt-4 items-start">
+                    <input
+                      value={code}
+                      placeholder="Code..."
+                      onChange={(e) => setCode(e.target.value)}
+                      onBlur={() => setVerificationErrorMessage("")}
+                      className={`bg-slate-3 hover:border-slate-7 border text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
+                        verificationErrorMessage !== ""
+                          ? "border-red-9"
+                          : "border-slate-6"
+                      }`}
+                    />
+                    {verificationErrorMessage && (
+                      <div className="text-red-9 text-[13px]">
+                        {verificationErrorMessage}
+                      </div>
+                    )}
+                    <button
+                      className={`bg-slate-3 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 gap-3  justify-center h-10 items-center self-start flex flex-row`}
+                      type="submit"
+                      onClick={onPressVerify}
+                    >
+                      Verify Email
+                    </button>
+                  </div>
                 </form>
               </div>
             )}
