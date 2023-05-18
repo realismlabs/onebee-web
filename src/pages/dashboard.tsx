@@ -41,7 +41,11 @@ export default function Welcome() {
         queryKey: ["getWorkspace", membership?.workspaceId],
         queryFn: async () => {
           const response = await getWorkspace(membership?.workspaceId);
-          return response;
+          if (response) {
+            return response;
+          } else {
+            return null;
+          }
         },
         enabled: membership?.workspaceId !== null,
       };
@@ -49,7 +53,13 @@ export default function Welcome() {
   });
 
   const currentWorkspacesForUserData = currentWorkspacesForUserQueries.map(
-    (workspace: any) => workspace.data
+    (workspace: any) => {
+      if (workspace.data == null) {
+        return null;
+      } else {
+        return workspace.data;
+      }
+    }
   );
   const currentWorkspacesForUserError = currentWorkspacesForUserQueries.map(
     (workspace: any) => workspace.error
@@ -61,11 +71,25 @@ export default function Welcome() {
   // watch currentWorkspacesForUserData for changes
   // If it's not null and there's >=1 workspace, redirect to the first workspace
   useEffect(() => {
+    // route to first workspace if there are workspaces
     if (
       currentWorkspacesForUserData &&
-      currentWorkspacesForUserData.length >= 1
+      currentWorkspacesForUserData.length >= 1 &&
+      currentWorkspacesForUserData[0] !== null
     ) {
+      console.log(
+        "awu: currentWorkspacesForUserData",
+        currentWorkspacesForUserData
+      );
       router.push(`/workspace/${currentWorkspacesForUserData[0].id}`);
+    }
+
+    //  route to /welcome if there are no workspaces
+    if (
+      currentWorkspacesForUserData &&
+      currentWorkspacesForUserData.length == 0
+    ) {
+      router.push(`/welcome`);
     }
   }, [currentWorkspacesForUserData, router]);
 

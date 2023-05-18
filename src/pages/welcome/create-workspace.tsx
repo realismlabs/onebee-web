@@ -90,15 +90,19 @@ export default function CreateWorkspace() {
     if (currentUser?.email) {
       const email = currentUser.email;
       const domain = email.split("@")[1];
-      const domain_without_extension = email.split("@")[1].split(".")[0];
-      let workspace_name_suggestion = domain_without_extension;
-      if (typeof domain_without_extension === "string") {
-        workspace_name_suggestion =
-          domain_without_extension.charAt(0).toUpperCase() +
-          domain_without_extension.slice(1);
-      }
 
-      setWorkspaceName(workspace_name_suggestion);
+      if (isCommonEmailProvider(domain)) {
+        setWorkspaceName("");
+      } else {
+        const domain_without_extension = email.split("@")[1].split(".")[0];
+        let workspace_name_suggestion = domain_without_extension;
+        if (typeof domain_without_extension === "string") {
+          workspace_name_suggestion =
+            domain_without_extension.charAt(0).toUpperCase() +
+            domain_without_extension.slice(1);
+        }
+        setWorkspaceName(workspace_name_suggestion);
+      }
       setDomain(domain);
     }
   }, [currentUser]);

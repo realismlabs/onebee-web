@@ -5,13 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { getUsers } from "@/utils/api";
 import { useSignIn } from "@clerk/nextjs";
+import { set } from "date-fns";
+import { CircleNotch } from "@phosphor-icons/react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   // for clerk
+
   const { isLoaded, signIn, setActive } = useSignIn();
 
   const router = useRouter();
@@ -24,6 +28,7 @@ export default function Login() {
   // Handle login - this is cursed code, will def need to handle properly
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+    setIsLoggingIn(true);
     setErrorMessage("");
     if (!email || !password) {
       setErrorMessage("Email and password are required.");
@@ -35,10 +40,12 @@ export default function Login() {
 
     if (!emailRegex.test(email)) {
       setErrorMessage("Please enter a valid email address.");
+      setIsLoggingIn(false);
       return;
     }
 
     if (!isLoaded) {
+      setIsLoggingIn(false);
       return;
     }
 
@@ -53,12 +60,16 @@ export default function Login() {
         await setActive({ session: result.createdSessionId });
         // Clerk handles the redirect after sign-in to /dashboard - check .env.local or Clerk dashboard for prod
         router.push("/dashboard");
+        setIsLoggingIn(false);
       } else {
         /*Investigate why the login hasn't completed */
         console.log(result);
+        setIsLoggingIn(false);
       }
     } catch (err: any) {
+      setIsLoggingIn(false);
       console.error("error", err.errors[0].longMessage);
+      setErrorMessage(err.errors[0].longMessage);
     }
   };
 
@@ -194,10 +205,18 @@ export default function Login() {
                       )}
 
                       <button
-                        className="bg-blue-600 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
+                        className={`bg-blue-600 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center
+                        ${isLoggingIn ? "opacity-50 pointer-events-none" : ""}
+                        `}
                         type="submit"
                       >
-                        Log in
+                        {isLoggingIn ? (
+                          <div className="animate-spin">
+                            <CircleNotch className="h-5 w-5 text-white" />
+                          </div>
+                        ) : (
+                          "Log in"
+                        )}
                       </button>
                     </div>
                   </div>

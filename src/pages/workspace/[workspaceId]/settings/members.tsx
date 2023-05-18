@@ -466,6 +466,7 @@ export default function Members() {
     enabled: currentWorkspace?.id !== null,
   });
 
+  console.log("membershipsData:", membershipsData);
   //  fetch user data for each membership
   const usersQueries = useQueries({
     queries: (membershipsData ?? []).map((membership: any) => {
@@ -473,7 +474,11 @@ export default function Members() {
         queryKey: ["getUser", membership.userId],
         queryFn: async () => {
           const response = await getUser(membership.userId);
-          return response;
+          if (response) {
+            return response;
+          } else {
+            return null;
+          }
         },
         enabled: membership.userId !== null,
       };
@@ -530,7 +535,7 @@ export default function Members() {
   // get data from useQueries
 
   const getUserFromMembership = (membership: any) => {
-    return usersData.find((user) => user.id === membership.userId);
+    return usersData.find((user) => user?.id === membership.userId);
   };
 
   const currentUserMembership = membershipsData?.find(
@@ -843,6 +848,10 @@ export default function Members() {
                       membershipsData.map((membership: any, index: number) => {
                         const user = getUserFromMembership(membership);
 
+                        if (!user) {
+                          return null;
+                        }
+
                         let borderClasses = "";
 
                         if (membershipsData.length > 1) {
@@ -874,11 +883,11 @@ export default function Members() {
                             <div className="bg-purple-8 h-[32px] w-[32px] text-[12px] font-semibold rounded-full flex items-center justify-center">
                               {user.name ? (
                                 <div key={user.id}>
-                                  {getInitials(user.name)}
+                                  {getInitials(user?.name)}
                                 </div>
                               ) : (
                                 <div key={user.id}>
-                                  {getInitials(user.email?.split("@")[0])}
+                                  {getInitials(user?.email?.split("@")[0])}
                                 </div>
                               )}
                             </div>

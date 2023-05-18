@@ -5,6 +5,7 @@
   "/api/auth/login": "/login",
   "/api/auth/logout": "/logout",
   "/api/users/:userId": "/users/:userId",
+  "/api/users/clerkUserId/:clerkUserId": "/users?clerkUserId=:clerkUserId",
   "/api/invites/recipient/:recipientEmail": "/invites?recipientEmail=:recipientEmail",
   "/api/auth/reset-password": "/resetPassword",
   "/api/auth/change-password": "/changePassword",

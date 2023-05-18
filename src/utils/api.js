@@ -4,17 +4,28 @@ import { useAuth } from "@clerk/nextjs";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const fetchCurrentUser = async () => {
-  // 1 is arthur@dataland.io - has one invite and no allowed domains
-  // 19 is howard@sidekick.video - no invites
-  // 20 is other@dataland.io - has one invite and one other allowed domain
+export const fetchCurrentUser = async (clerkUserId) => {
 
-  // New: fetch current user based on clerkUserId
-  const response = await fetch(`${API_BASE_URL}/api/users/1`);
-  if (!response.ok) {
-    throw new Error("Error fetching current user");
+  if (!clerkUserId) {
+    // 1 is arthur@dataland.io - has one invite and no allowed domains
+    // 19 is howard@sidekick.video - no invites
+    // 20 is other@dataland.io - has one invite and one other allowed domain
+
+    // New: fetch current user based on clerkUserId
+    const response = await fetch(`${API_BASE_URL}/api/users/1`);
+    if (!response.ok) {
+      throw new Error("Error fetching current user");
+    }
+    return response.json();
+  } else {
+    const response = await fetch(`${API_BASE_URL}/api/users/clerkUserId/${clerkUserId}`);
+    if (!response.ok) {
+      throw new Error("Error fetching current user");
+    }
+    const result = await response.json();
+    // since we're fetching by clerkUserId, we should only get one result
+    return result[0];
   }
-  return response.json();
 };
 
 export const fetchCurrentWorkspace = async (workspaceId) => {

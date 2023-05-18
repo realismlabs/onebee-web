@@ -1,5 +1,6 @@
 import React from "react";
 import { useClerk } from "@clerk/clerk-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AccountHeaderProps {
   email: string;
@@ -7,7 +8,10 @@ interface AccountHeaderProps {
 export const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   const { signOut } = useClerk();
 
+  const queryClient = useQueryClient();
+
   const handleLogout = async () => {
+    queryClient.removeQueries();
     signOut();
   };
 

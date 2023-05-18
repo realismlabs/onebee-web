@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
-import { useQuery, useQueries } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useQueries } from '@tanstack/react-query';
 import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspace } from '../utils/api';
 import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
@@ -18,7 +18,9 @@ import { useClerk } from "@clerk/clerk-react";
 
 function AccountPopover() {
   const { signOut } = useClerk();
+  const queryClient = useQueryClient();
   const handleLogout = async () => {
+    queryClient.removeQueries();
     await signOut();
   }
 

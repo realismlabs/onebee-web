@@ -2,52 +2,17 @@
   "users": [
     {
       "id": 1,
-      "email": "arthur@dataland.io",
+      "email": "arthur+alpha@dataland.io",
       "name": "Arthur Wu",
-      "password": "password",
-      "createdAt": "2023-04-26T02:52:46.736Z",
-      "updatedAt": "2023-04-26T02:52:46.736Z",
-      "emailVerified": true
-    },
-    {
-      "id": 13,
-      "email": "arthur+unverified@dataland.io",
-      "name": "",
-      "password": "password",
-      "createdAt": "2023-04-26T02:52:46.736Z",
-      "updatedAt": "2023-04-26T02:52:46.736Z",
-      "emailVerified": false
-    },
-    {
-      "id": 14,
-      "email": "arthur+verified_incomplete@dataland.io",
-      "name": "",
-      "password": "password",
-      "createdAt": "2023-04-26T02:52:46.736Z",
-      "updatedAt": "2023-04-26T02:52:46.736Z",
-      "emailVerified": true
-    },
-    {
-      "id": 15,
-      "email": "user1@dataland.io",
-      "name": "Amazing person",
-      "password": "password",
-      "createdAt": "2023-04-26T02:52:46.736Z",
-      "updatedAt": "2023-04-26T02:52:46.736Z",
-      "emailVerified": true
-    },
-    {
-      "id": 16,
-      "email": "user2@dataland.io",
-      "name": "",
-      "password": "password",
+      "clerkUserId": "user_2PwdGxzs9QVxdiRL9hcBgL3geBA",
       "createdAt": "2023-04-26T02:52:46.736Z",
       "updatedAt": "2023-04-26T02:52:46.736Z",
       "emailVerified": true
     },
     {
       "id": 17,
-      "email": "user3@datalanddatalanddatalanddatalanddatalanddatalanddatalanddataland.io",
+      "email": "arthur+beta@dataland.io",
+      "clerkUserId": "user_2PwdHz24O6XSE6HnQPpT3NSHdk7",
       "name": "Eu Sint Adipisicing minim deserunt aute minim velit commodo adipisicing aliqua tempor ullamco",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
@@ -55,18 +20,10 @@
       "emailVerified": true
     },
     {
-      "id": 18,
-      "email": "user4@dataland.io",
-      "name": "Cupidatat excepteur",
-      "password": "password",
-      "createdAt": "2023-04-26T02:52:46.736Z",
-      "updatedAt": "2023-04-26T02:52:46.736Z",
-      "emailVerified": true
-    },
-    {
       "id": 19,
-      "email": "howard@sidekick.video",
-      "name": "Howard Zuo",
+      "email": "arthur@sidekick.video",
+      "clerkUserId": "user_2PwdZvwJmZRB1nF5Q8b0vhAKTY0",
+      "name": "Sidekick Arthur",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
       "updatedAt": "2023-04-26T02:52:46.736Z",
@@ -74,7 +31,8 @@
     },
     {
       "id": 20,
-      "email": "other@dataland.io",
+      "email": "arthur+echo@dataland.io",
+      "clerkUserId": "user_2PwdK8HJFprw0Oc4usSVABz2VUf",
       "name": "Othername",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
@@ -83,12 +41,21 @@
     },
     {
       "email": "arthurwu1+c@gmail.com",
-      "name": "Arthurwu1+c",
+      "name": "Arthurwu1c",
       "clerkUserId": "user_2PwVZ5FhKoEw9Y4obgBUgNVbMZC",
       "createdAt": "2023-05-18T00:03:02.309Z",
       "updatedAt": "2023-05-18T00:03:02.309Z",
       "emailVerified": false,
       "id": 21
+    },
+    {
+      "email": "arthur+gamma@dataland.io",
+      "name": "Gamma",
+      "clerkUserId": "user_2PwdL6rhV43V5GnY8v8sSqYbPNO",
+      "createdAt": "2023-05-18T00:03:02.309Z",
+      "updatedAt": "2023-05-18T00:03:02.309Z",
+      "emailVerified": false,
+      "id": 22
     }
   ],
   "workspaces": [
@@ -158,6 +125,14 @@
       ],
       "iconUrl": "data:image/png;base64,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",
       "id": 14
+    },
+    {
+      "name": "Try this out",
+      "createdAt": "2023-05-18T00:57:30.291Z",
+      "creatorUserId": 21,
+      "allowedDomains": [],
+      "iconUrl": "data:image/png;base64,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",
+      "id": 15
     }
   ],
   "memberships": [
@@ -167,13 +142,6 @@
       "id": 1,
       "createdAt": "2023-04-26T02:52:46.736Z",
       "role": "admin"
-    },
-    {
-      "userId": 16,
-      "workspaceId": 6,
-      "id": 3,
-      "createdAt": "2023-05-12T02:52:46.736Z",
-      "role": "member"
     },
     {
       "userId": 17,
@@ -216,6 +184,13 @@
       "createdAt": "2023-05-17T01:46:28.801Z",
       "role": "member",
       "id": 9
+    },
+    {
+      "userId": 21,
+      "workspaceId": 15,
+      "createdAt": "2023-05-18T00:57:30.403Z",
+      "role": "admin",
+      "id": 10
     }
   ],
   "tables": [
@@ -387,6 +362,19 @@
       "createdAt": "2023-05-08T22:27:07.470Z",
       "updatedAt": "2023-05-08T09:27:07.470Z",
       "id": 18
+    },
+    {
+      "workspaceId": 15,
+      "fullName": "ARTHUR_TEST.DBT_AWU.DIM_CUSTOMERS",
+      "displayName": "DIM_CUSTOMERS",
+      "connectionPath": "ARTHUR_TEST/DBT_AWU/",
+      "rowCount": 100,
+      "connectionId": 26,
+      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#9D5BD2\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z\"></path></svg>",
+      "iconColor": "#0091FF",
+      "createdAt": "2023-05-18T00:58:04.487Z",
+      "updatedAt": "2023-05-18T00:58:04.487Z",
+      "id": 19
     }
   ],
   "verifyEmail": [
@@ -537,6 +525,21 @@
       "createdAt": "2023-05-11T16:21:07.406Z",
       "workspaceId": 6,
       "id": 25
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "arthurwu1",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "ACCOUNTADMIN",
+      "connectionType": "snowflake",
+      "name": "Snowflakepwkesfj-uo88877",
+      "createdAt": "2023-05-18T00:58:04.473Z",
+      "workspaceId": 15,
+      "id": 26
     }
   ]
 }
