@@ -23,6 +23,7 @@ export default function Login() {
   const { isSignedIn, isLoaded: isLoadedUser } = useUser();
   if (!isSignedIn) {
   } else {
+    // If user is already signed in, redirect to dashboard
     router.push("/dashboard");
   }
 

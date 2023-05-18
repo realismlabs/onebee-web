@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { HandWaving } from "@phosphor-icons/react";
 import { capitalizeString } from "@/utils/util";
 import { AccountHeader } from "@/components/AccountHeader";
+import { v4 as uuidv4 } from "uuid";
 
 const handleSubmit = async () => {
   console.log("clicked");
@@ -39,7 +40,13 @@ function generateCircles(
 
     if (i === 0) {
       circles.push(
-        <circle r="0.2" fill="#DBFFFF" className="" opacity={opacity}>
+        <circle
+          r="0.2"
+          fill="#DBFFFF"
+          className=""
+          opacity={opacity}
+          key={uuidv4()}
+        >
           <animateMotion
             dur={`${duration}s`}
             begin={`${delay_offset + delay}s`}
@@ -56,6 +63,7 @@ function generateCircles(
             begin={`${delay_offset + delay}s`}
             repeatCount={repeatCount}
             path={path}
+            key={uuidv4()}
           />
         </circle>
       );
@@ -98,6 +106,7 @@ function generateCircleShadows(
           mixBlendMode: "overlay",
           filter: "blur(1px)",
         }}
+        key={uuidv4()}
       >
         <animateMotion
           dur={`${duration}s`}
@@ -127,6 +136,7 @@ function generateRowLines(
   for (let i = start; i >= end; i -= interval) {
     paths.push(
       <path
+        key={uuidv4()}
         d={`M${startX},${i} ${endX},${i}`}
         stroke={stroke}
         strokeWidth={strokeWidth}
@@ -138,7 +148,13 @@ function generateRowLines(
 
 function circuitPath(path: string) {
   return (
-    <path fill="none" stroke="var(--slate3)" strokeWidth={0.2} d={path}>
+    <path
+      fill="none"
+      stroke="var(--slate3)"
+      strokeWidth={0.2}
+      d={path}
+      key={uuidv4()}
+    >
       <animate
         attributeName="opacity"
         from="1"
@@ -214,80 +230,80 @@ const CometAnimation: React.FC = () => {
   // useMemo to memoize the SVG elements and avoid unnecessary re-renders.
   const generatedCircles = React.useMemo(
     () => generateCircles(10, screenborder, 2, 10, "indefinite"),
-    []
+    [screenborder]
   );
   const generatedCircleShadows = React.useMemo(
     () => generateCircleShadows(3, screenborder, 2, 10, "indefinite"),
-    []
+    [screenborder]
   );
   const generatedCirclesOpposite = React.useMemo(
     () => generateCircles(10, screenborderOpposite, 2, 10, "indefinite"),
-    []
+    [screenborderOpposite]
   );
   const generatedCircleShadowsOpposite = React.useMemo(
     () => generateCircleShadows(3, screenborderOpposite, 2, 10, "indefinite"),
-    []
+    [screenborderOpposite]
   );
 
   // Similarly memoize for other paths
-  const circuitPathl1 = React.useMemo(() => circuitPath(pathl1), []);
+  const circuitPathl1 = React.useMemo(() => circuitPath(pathl1), [pathl1]);
   const generatedCirclesl1 = React.useMemo(
     () => generateCircles(6, pathl1),
-    []
+    [pathl1]
   );
   const generatedCircleShadowsl1 = React.useMemo(
     () => generateCircleShadows(3, pathl1),
-    []
+    [pathl1]
   );
 
-  const circuitPathl2 = React.useMemo(() => circuitPath(pathl2), []);
+  const circuitPathl2 = React.useMemo(() => circuitPath(pathl2), [pathl2]);
   const generatedCirclesl2 = React.useMemo(
     () => generateCircles(6, pathl2),
-    []
+    [pathl2]
   );
   const generatedCircleShadowsl2 = React.useMemo(
     () => generateCircleShadows(3, pathl2),
-    []
+    [pathl2]
   );
 
-  const circuitPathl3 = React.useMemo(() => circuitPath(pathl3), []);
+  const circuitPathl3 = React.useMemo(() => circuitPath(pathl3), [pathl3]);
   const generatedCirclesl3 = React.useMemo(
     () => generateCircles(6, pathl3),
-    []
+    [pathl3]
   );
   const generatedCircleShadowsl3 = React.useMemo(
     () => generateCircleShadows(3, pathl3),
-    []
+    [pathl3]
   );
 
-  const circuitPathr1 = React.useMemo(() => circuitPath(pathr1), []);
+  const circuitPathr1 = React.useMemo(() => circuitPath(pathr1), [pathr1]);
   const generatedCirclesr1 = React.useMemo(
     () => generateCircles(6, pathr1),
-    []
+    [pathr1]
   );
   const generatedCircleShadowsr1 = React.useMemo(
     () => generateCircleShadows(3, pathr1),
-    []
+    [pathr1]
   );
 
-  const circuitPathr2 = React.useMemo(() => circuitPath(pathr2), []);
+  const circuitPathr2 = React.useMemo(() => circuitPath(pathr2), [pathr2]);
   const generatedCirclesr2 = React.useMemo(
     () => generateCircles(6, pathr2),
-    []
+    [pathr2]
   );
   const generatedCircleShadowsr2 = React.useMemo(
     () => generateCircleShadows(3, pathr2),
-    []
+    [pathr2]
   );
 
-  const circuitPathr3 = React.useMemo(() => circuitPath(pathr3), []);
+  const circuitPathr3 = React.useMemo(() => circuitPath(pathr3), [pathr3]);
   const generatedCirclesr3 = React.useMemo(
     () => generateCircles(6, pathr3),
-    []
+    [pathr3]
   );
   const generatedCircleShadowsr3 = React.useMemo(
     () => generateCircleShadows(3, pathr3),
-    []
+    [pathr3]
   );
 
   return (
