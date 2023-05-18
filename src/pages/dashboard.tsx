@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import router from "next/router";
@@ -34,7 +34,6 @@ export default function Welcome() {
     enabled: currentUser?.id !== null,
   });
 
-  //  fetch user data for each membership
   const currentWorkspacesForUserQueries = useQueries({
     queries: (userMembershipsData ?? []).map((membership: any) => {
       return {
@@ -52,15 +51,6 @@ export default function Welcome() {
     }),
   });
 
-  const currentWorkspacesForUserData = currentWorkspacesForUserQueries.map(
-    (workspace: any) => {
-      if (workspace.data == null) {
-        return null;
-      } else {
-        return workspace.data;
-      }
-    }
-  );
   const currentWorkspacesForUserError = currentWorkspacesForUserQueries.map(
     (workspace: any) => workspace.error
   );
@@ -68,84 +58,52 @@ export default function Welcome() {
     (workspace: any) => workspace.isLoading
   );
 
-  // watch currentWorkspacesForUserData for changes
-  // If it's not null and there's >=1 workspace, redirect to the first workspace
-  useEffect(() => {
-    // route to first workspace if there are workspaces
-    if (
-      currentWorkspacesForUserData &&
-      currentWorkspacesForUserData.length >= 1 &&
-      currentWorkspacesForUserData[0] !== null
-    ) {
-      console.log(
-        "awu: currentWorkspacesForUserData",
-        currentWorkspacesForUserData
-      );
-      router.push(`/workspace/${currentWorkspacesForUserData[0].id}`);
-    }
+  const currentWorkspacesForUserData = currentWorkspacesForUserQueries.map(
+    (workspace: any) => workspace.data
+  );
 
-    //  route to /welcome if there are no workspaces
-    if (
-      currentWorkspacesForUserData &&
-      currentWorkspacesForUserData.length == 0
-    ) {
-      router.push(`/welcome`);
-    }
-  }, [currentWorkspacesForUserData, router]);
+  const currentWorkspacesIdsForUser = currentWorkspacesForUserData.map(
+    (workspace: any) => workspace?.id
+  );
 
-  if (
+  // ------------------------------------------------------------------
+  // Check if there are any loading states or errors
+  const isLoading =
     isUserLoading ||
-    currentWorkspacesForUserIsLoading.some((isLoading) => isLoading)
-  ) {
+    currentWorkspacesForUserIsLoading.some((isLoading) => isLoading);
+  const isError =
+    userError || currentWorkspacesForUserError.some((error) => error);
+
+  useEffect(() => {
+    let next_route = null;
+
+    // Only set next_route if there are no errors and loading has completed
+    if (!isLoading && !isError) {
+      if (currentWorkspacesIdsForUser.length > 0) {
+        next_route = `/workspace/${currentWorkspacesIdsForUser[0]}`;
+      } else {
+        next_route = `/welcome`;
+      }
+
+      router.push(next_route);
+    }
+  }, [isLoading, isError, currentWorkspacesIdsForUser, router]);
+  // ------------------------------------------------------------------
+
+  if (isLoading) {
     return <div className="h-screen bg-slate-1">Hi</div>;
   }
 
-  if (userError || currentWorkspacesForUserError.some((error) => error)) {
+  if (isError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
-  const email = currentUser.email;
-
   return (
     <div className="h-screen bg-slate-1 z-10 relative text-white flex items-center justify-center">
-      <div className="animate-spin">
+      {/* {next_route} */}
+      {/* JSX that automatically routes user to next_route */}
+      {/* <div className="animate-spin">
         <CircleNotch width={16} height={16} />
-      </div>
-      {/* <AccountHeader email={email} />
-      <div className="w-full flex flex-col items-center justify-center">
-        <div>Workspaces</div>
-        <div className="px-[16px] pt-[13px] pb-[4px] text-slate-11 text-[13px]">
-          {currentUser.email}
-        </div>
-        <div className="max-h-[60vh] overflow-y-scroll flex flex-col">
-          {(currentWorkspacesForUserData ?? []).map((workspace: any) => (
-            <button key={workspace.id}>
-              <div
-                onClick={(e) => {
-                  router.push(`/workspace/${workspace.id}`);
-                }}
-                className="flex w-full"
-              >
-                <div className="px-[8px] text-[13px] cursor-pointer flex w-full">
-                  <div className="hover:bg-slate-4 px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center w-full">
-                    <div
-                      className={`flex-none h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
-                      style={{
-                        backgroundImage: `url(${workspace.iconUrl})`,
-                        backgroundSize: "cover",
-                      }}
-                    >
-                      <div className="text-[10px] text-slate-12">
-                        {workspace?.name?.slice(0, 1)}
-                      </div>
-                    </div>
-                    <div className="grow truncate">{workspace.name}</div>
-                  </div>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
       </div> */}
     </div>
   );
