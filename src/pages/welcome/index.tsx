@@ -10,6 +10,8 @@ import { AccountHeader } from "@/components/AccountHeader";
 
 const handleSubmit = async () => {
   console.log("clicked");
+  // if there are any available invites / workspaces, redirect to join-workspace
+
   router.push("/welcome/create-workspace");
 };
 
