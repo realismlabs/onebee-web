@@ -70,8 +70,8 @@ export default function App({ Component, pageProps }: AppProps) {
               />
             </SignedIn>
             <SignedOut>
-              {/* <RedirectToSignIn /> */}
-              <Component {...pageProps} />
+              <RedirectToSignIn />
+              {/* <Component {...pageProps} /> */}
             </SignedOut>
           </PersistQueryClientProvider>
         </>
