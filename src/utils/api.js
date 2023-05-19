@@ -135,8 +135,11 @@ export const createInvite = async ({
 
 export const getInvitesForUserEmail = async (recipientEmail) => {
   console.log("getInvitesForUserEmail", recipientEmail);
+
+  const encodedEmail = encodeURIComponent(recipientEmail);
+
   const response = await fetch(
-    `${API_BASE_URL}/api/invites/recipient/${recipientEmail}`
+    `${API_BASE_URL}/api/invites/recipient/${encodedEmail}`
   );
   // const response = await fetch(`${API_BASE_URL}/invites?recipientEmail=${recipientEmail}`);
 
@@ -146,7 +149,6 @@ export const getInvitesForUserEmail = async (recipientEmail) => {
   const result = await response.json();
   // only return invites that have not been accepted
   const filteredResult = result.filter((invite) => !invite.accepted);
-  console.log("getInvitesForUserEmail result", filteredResult);
   return filteredResult;
 };
 

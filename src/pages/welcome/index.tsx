@@ -8,12 +8,21 @@ import { HandWaving } from "@phosphor-icons/react";
 import { capitalizeString } from "@/utils/util";
 import { AccountHeader } from "@/components/AccountHeader";
 import { v4 as uuidv4 } from "uuid";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import {
+  getInvitesForUserEmail,
+  getWorkspaceDetails,
+  getAllowedWorkspacesForUser,
+} from "@/utils/api";
 
-const handleSubmit = async () => {
+const handleSubmit = async (total_available_workspaces: number) => {
   console.log("clicked");
   // if there are any available invites / workspaces, redirect to join-workspace
-
-  router.push("/welcome/create-workspace");
+  if (total_available_workspaces > 0) {
+    router.push("/join-workspace");
+  } else {
+    router.push("/welcome/create-workspace");
+  }
 };
 
 function generateCircles(
@@ -569,15 +578,59 @@ export default function Welcome() {
     error: userError,
   } = useCurrentUser();
 
-  if (isUserLoading) {
+  const {
+    data: invites,
+    isLoading: isInvitesLoading,
+    error: invitesError,
+  } = useQuery({
+    queryKey: ["invites", currentUser?.email],
+    enabled: currentUser?.email != null,
+    queryFn: async () => {
+      const result = await getInvitesForUserEmail(currentUser.email);
+      return result;
+    },
+    staleTime: 1000, // 1 second
+  });
+
+  const workspaceIds = invites
+    ? Array.from(new Set(invites.map((invite: any) => invite.workspaceId)))
+    : [];
+
+  // Fetch workspace details for each workspaceId
+  const workspacesQuery = useQueries({
+    queries: workspaceIds.map((id) => ({
+      queryKey: ["workspace", id],
+      queryFn: () => getWorkspaceDetails(id),
+    })),
+  });
+
+  const {
+    data: allowedWorkspacesForUser,
+    isLoading: isAllowedWorkspacesForUserLoading,
+    error: allowedWorkspacesForUserError,
+  } = useQuery({
+    queryKey: ["getAllowedWorkspacesForUser", currentUser?.id],
+    queryFn: async () => {
+      const result = await getAllowedWorkspacesForUser(currentUser?.id);
+      return result;
+    },
+    enabled: currentUser?.id != null,
+  });
+
+  if (isUserLoading || isInvitesLoading || isAllowedWorkspacesForUserLoading) {
     return <div className="h-screen bg-slate-1"></div>;
   }
 
-  if (userError) {
+  if (userError || invitesError || allowedWorkspacesForUserError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
-  const email = currentUser.email;
+  const email = currentUser?.email;
+
+  const total_available_workspaces =
+    (allowedWorkspacesForUser?.length ?? 0) + (invites?.length ?? 0);
+
+  console.log("total_available_workspaces", total_available_workspaces);
 
   //  for animations
   const container = {
@@ -649,7 +702,7 @@ export default function Welcome() {
             <motion.button
               type="button"
               className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[16px] font-medium py-2 px-4 rounded-md pointer-events-auto"
-              onClick={handleSubmit}
+              onClick={() => handleSubmit(total_available_workspaces)}
               variants={item}
             >
               Get started

@@ -95,6 +95,7 @@ export default function JoinWorkspace() {
     enabled: currentUser?.email != null,
     queryFn: async () => {
       const result = await getInvitesForUserEmail(currentUser.email);
+      console.log("invitesQuery result", result);
       return result;
     },
     staleTime: 1000, // 1 second
@@ -126,8 +127,6 @@ export default function JoinWorkspace() {
     },
     enabled: currentUser?.id != null,
   });
-
-  const queryClient = useQueryClient();
 
   // if any of workspacesQuery[0].isLoading, workspacesQuery[1].isLoading, etc. is true, then isLoading is true
   const isWorkspacesQueriesLoading = workspacesQuery.some(
@@ -168,7 +167,7 @@ export default function JoinWorkspace() {
           Join a workspace
         </div>
         {invitesQuery.data && invitesQuery.data.length > 0 && (
-          <div className="text-slate-12 flex flex-col gap-4 rounded-md mt-8">
+          <div className="text-slate-12 flex flex-col gap-4 rounded-md mt-4">
             {/* map through invitesQuery.data */}
             {invitesQuery.data.map((invite: any) => {
               console.log("invite", invite);
@@ -224,10 +223,7 @@ export default function JoinWorkspace() {
         )}
         {allowedWorkspacesForUser.length > 0 && (
           <>
-            <div className="text-center mt-12 text-slate-11 text-[14px]">
-              Other workspaces for {`@${currentUser.email.split("@")[1]}`}{" "}
-            </div>
-            <div className="text-slate-12 flex flex-col gap-4 rounded-md mt-6">
+            <div className="text-slate-12 flex flex-col gap-4 rounded-md mt-4">
               {allowedWorkspacesForUser.map((workspace: any) => {
                 return (
                   <div

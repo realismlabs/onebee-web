@@ -1,7 +1,7 @@
 import React from "react";
 import { useClerk } from "@clerk/clerk-react";
 import { useQueryClient } from "@tanstack/react-query";
-
+import { useRouter } from "next/router";
 interface AccountHeaderProps {
   email: string;
 }
@@ -9,10 +9,11 @@ export const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   const { signOut } = useClerk();
 
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const handleLogout = async () => {
     queryClient.removeQueries();
-    signOut();
+    await signOut();
   };
 
   return (

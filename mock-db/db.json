@@ -33,7 +33,7 @@
       "id": 20,
       "email": "arthur+echo@dataland.io",
       "clerkUserId": "user_2PwdK8HJFprw0Oc4usSVABz2VUf",
-      "name": "Othername",
+      "name": "Echo echo",
       "password": "password",
       "createdAt": "2023-04-26T02:52:46.736Z",
       "updatedAt": "2023-04-26T02:52:46.736Z",
@@ -56,6 +56,15 @@
       "updatedAt": "2023-05-18T00:03:02.309Z",
       "emailVerified": false,
       "id": 22
+    },
+    {
+      "email": "arthur+omega@dataland.io",
+      "name": "Arthur+omega",
+      "clerkUserId": "user_2PySSMmfKvzazaxWItsRmZqz4mN",
+      "createdAt": "2023-05-18T16:37:06.532Z",
+      "updatedAt": "2023-05-18T16:37:06.532Z",
+      "emailVerified": false,
+      "id": 23
     }
   ],
   "workspaces": [
@@ -179,18 +188,25 @@
       "id": 8
     },
     {
-      "userId": 20,
-      "workspaceId": 14,
-      "createdAt": "2023-05-17T01:46:28.801Z",
-      "role": "member",
-      "id": 9
-    },
-    {
       "userId": 21,
       "workspaceId": 15,
       "createdAt": "2023-05-18T00:57:30.403Z",
       "role": "admin",
       "id": 10
+    },
+    {
+      "userId": 23,
+      "workspaceId": 6,
+      "createdAt": "2023-05-18T16:38:02.971Z",
+      "role": "member",
+      "id": 11
+    },
+    {
+      "userId": 20,
+      "workspaceId": 6,
+      "createdAt": "2023-05-19T01:49:38.611Z",
+      "role": "member",
+      "id": 12
     }
   ],
   "tables": [
@@ -388,66 +404,31 @@
   "invites": [
     {
       "inviterEmail": "arthur@dataland.io",
-      "recipientEmail": "howard@dataland.io",
-      "accepted": false,
-      "workspaceId": 10,
-      "id": 11
-    },
-    {
-      "inviterEmail": "arthur@dataland.io",
-      "recipientEmail": "b@b.com",
-      "accepted": false,
-      "workspaceId": 6,
-      "id": 35
-    },
-    {
-      "inviterEmail": "arthur@dataland.io",
-      "recipientEmail": "ok@s.com",
-      "accepted": false,
-      "workspaceId": 6,
-      "id": 36
-    },
-    {
-      "inviterEmail": "arthur@dataland.io",
-      "recipientEmail": "a@a.com",
+      "recipientEmail": "arthur+echo@dataland.io",
       "accepted": false,
       "workspaceId": 12,
       "id": 37
     },
     {
       "inviterEmail": "arthur@dataland.io",
-      "recipientEmail": " b@b.com",
-      "accepted": false,
-      "workspaceId": 12,
-      "id": 38
-    },
-    {
-      "inviterEmail": "arthur@dataland.io",
-      "recipientEmail": "other@dataland.io",
+      "recipientEmail": "arthur+echo@dataland.io",
       "accepted": true,
       "workspaceId": 10,
       "id": 40
     },
     {
       "inviterEmail": "other@dataland.io",
-      "recipientEmail": "arthur@dataland.io",
+      "recipientEmail": "arthur+echo@dataland.io",
       "accepted": false,
       "workspaceId": 14,
       "id": 41
     },
     {
       "inviterEmail": "arthur@dataland.io",
-      "recipientEmail": "other@dataland.io",
+      "recipientEmail": "arthur+echo@dataland.io",
       "accepted": false,
       "workspaceId": 10,
       "id": 42
-    },
-    {
-      "inviterEmail": "test",
-      "recipientEmail": "test2",
-      "accepted": false,
-      "workspaceId": 1,
-      "id": 43
     }
   ],
   "connections": [

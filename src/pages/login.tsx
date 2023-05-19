@@ -100,8 +100,8 @@ export default function Login() {
                   <Link href="/" tabIndex={-1}>
                     <Image
                       src="/images/logo_darker.svg"
-                      width={80}
-                      height={32}
+                      width={100}
+                      height={40}
                       alt="Dataland logo"
                     ></Image>
                   </Link>

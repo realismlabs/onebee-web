@@ -58,21 +58,22 @@ export default function App({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       ) : (
         <>
-          <SignedIn>
-            <PersistQueryClientProvider
-              client={queryClient}
-              persistOptions={{ persister: customPersister }}
-            >
+          <PersistQueryClientProvider
+            client={queryClient}
+            persistOptions={{ persister: customPersister }}
+          >
+            <SignedIn>
               <Component {...pageProps} />
               <ReactQueryDevtools
                 initialIsOpen={false}
                 position={"bottom-right"}
               />
-            </PersistQueryClientProvider>
-          </SignedIn>
-          <SignedOut>
-            <RedirectToSignIn />
-          </SignedOut>
+            </SignedIn>
+            <SignedOut>
+              {/* <RedirectToSignIn /> */}
+              <Component {...pageProps} />
+            </SignedOut>
+          </PersistQueryClientProvider>
         </>
       )}
     </ClerkProvider>

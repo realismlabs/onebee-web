@@ -19,9 +19,13 @@ import { useClerk } from "@clerk/clerk-react";
 function AccountPopover() {
   const { signOut } = useClerk();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const handleLogout = async () => {
     queryClient.removeQueries();
+    console.log('signing out')
     await signOut();
+    console.log('signed out')
+    // router.push('/login');
   }
 
   return (

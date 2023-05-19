@@ -26,6 +26,7 @@ export default function Signup() {
 
   if (!isSignedIn) {
   } else {
+    // If user is already signed in, redirect to dashboard
     router.push("/dashboard");
   }
 
@@ -264,8 +265,8 @@ export default function Signup() {
                     <Link href="/">
                       <Image
                         src="/images/logo_darker.svg"
-                        width={80}
-                        height={32}
+                        width={100}
+                        height={40}
                         alt="Dataland logo"
                       ></Image>
                     </Link>

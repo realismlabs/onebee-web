@@ -4,6 +4,7 @@ import router, { useRouter } from "next/router";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
+import { useClerk } from "@clerk/clerk-react";
 import {
   deleteWorkspace,
   updateWorkspace,
@@ -51,6 +52,8 @@ const MemberPopover = ({
   const userId = targetMembership.userId;
   const workspaceId = targetMembership.workspaceId;
 
+  const { signOut } = useClerk();
+
   const handleRemoveMember = async () => {
     // check if user is the last member of the workspace. If so, delete the workspace
     const workspaceMemberships = await getWorkspaceMemberships(workspaceId);
@@ -65,6 +68,9 @@ const MemberPopover = ({
         const deletedMembership = await deleteMembershipMutation.mutateAsync({
           membershipId: targetMembershipId,
         });
+        if (deletedMembership.userId === currentUser.id) {
+          await signOut();
+        }
       } catch (error) {
         console.error("Error deleting membership:", error);
       }
