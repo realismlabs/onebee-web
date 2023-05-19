@@ -147,13 +147,13 @@ export default function Welcome() {
 
   if (
     !isLoadedClerkUser ||
-    isWorkspaceDetailsLoading
-    // isInvitesLoading ||
-    // isAllowedWorkspacesForUserLoading
+    isWorkspaceDetailsLoading ||
+    isInvitesLoading ||
+    isAllowedWorkspacesForUserLoading
   ) {
     return (
       <div className="h-screen bg-slate-1 z-10 relative text-white">
-        Something went wrong
+        Loading..
       </div>
     );
   }
@@ -165,15 +165,21 @@ export default function Welcome() {
     .join(", ");
 
   // find the matching workspace and invites
-  const matchingAllowedWorkspace = allowedWorkspacesForUser?.find(
-    (workspace: any) => workspace.id === workspaceId_as_number
-  );
+  const matchingAllowedWorkspace =
+    allowedWorkspacesForUser?.find(
+      (workspace: any) => workspace.id === workspaceId_as_number
+    ) ?? null;
 
-  const matchingInvite = invites?.find(
-    (invite: any) => invite.workspaceId === workspaceId_as_number
-  );
+  const matchingInvite =
+    invites?.find(
+      (invite: any) => invite.workspaceId === workspaceId_as_number
+    ) ?? null;
 
-  const allowedAccess = matchingAllowedWorkspace || matchingInvite;
+  const allowedAccess = !!matchingAllowedWorkspace || !!matchingInvite;
+
+  console.log("allowedAccess", allowedAccess);
+  console.log("matchingInvite", matchingInvite);
+  console.log("matchingAllowedWorkspace", matchingAllowedWorkspace);
 
   if (user == null) {
     return (

@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getUsers } from "@/utils/api";
@@ -8,9 +8,37 @@ import { useSignIn } from "@clerk/nextjs";
 import { set } from "date-fns";
 import { CircleNotch } from "@phosphor-icons/react";
 import { useUser } from "@clerk/clerk-react";
+import queryString from "query-string";
+import { useQuery } from "@tanstack/react-query";
+import { getWorkspaceDetails } from "@/utils/api";
 
 export default function Login() {
   const router = useRouter();
+
+  let afterSignInUrl: any = "";
+  let afterSignUpUrl: any = "";
+  let redirectUrl: any = "";
+
+  const hashParams = queryString.parse(router.asPath.split("#")[1]);
+  afterSignInUrl = hashParams?.after_sign_in_url;
+  afterSignUpUrl = hashParams.after_sign_up_url;
+  redirectUrl = hashParams.redirect_url;
+
+  const isWorkspaceRedirectUrl = redirectUrl?.includes("workspace");
+  const workspaceId = isWorkspaceRedirectUrl
+    ? redirectUrl?.split("/")[2]
+    : null;
+
+  const {
+    data: workspaceDetail,
+    isLoading: isWorkspaceDetailsLoading,
+    isError: isWorkspaceDetailsError,
+  } = useQuery({
+    queryKey: ["workspaceDetail", workspaceId],
+    queryFn: () => getWorkspaceDetails(workspaceId),
+    enabled: !!workspaceId,
+  });
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,16 +51,10 @@ export default function Login() {
   const { isSignedIn, isLoaded: isLoadedUser } = useUser();
   if (!isSignedIn) {
   } else {
-    // If user is already signed in, redirect to dashboard
+    // If user is already logged in, redirect to dashboard
     router.push("/dashboard");
   }
 
-  // Only use the router object on the client-side
-  let lo = null;
-
-  if (typeof window !== "undefined") {
-    lo = router.query;
-  }
   // Handle login - this is cursed code, will def need to handle properly
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -95,7 +117,7 @@ export default function Login() {
         >
           <div className="w-full flex flex-row flex-grow h-screen">
             <div className="w-full flex justify-center border-r border-slate-3">
-              <div className="w-[600px] text-slate-12 flex flex-col pt-40 left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
+              <div className="w-[600px] text-slate-12 flex flex-col left-0 py-3 gap-2 sm:px-24 px-12 h-screen">
                 <header className="fixed top-8">
                   <Link href="/" tabIndex={-1}>
                     <Image
@@ -106,12 +128,19 @@ export default function Login() {
                     ></Image>
                   </Link>
                 </header>
-                {lo !== null && lo.lo === "true" && (
-                  <div className="text-green-500 absolute top-24 px-4 py-2 rounded-md bg-green-900/20 text-[14px]">
-                    You have been successfully logged out.
+                {isWorkspaceRedirectUrl && !workspaceDetail && (
+                  <div className="text-amber-9 px-4 h-[36px] rounded-md bg-amber-3 text-[14px] inline-flex items-center truncate mt-24">
+                    You must be logged in to access this workspace.
                   </div>
                 )}
-                <h1 className="text-xl ">Welcome back</h1>
+                {isWorkspaceRedirectUrl && workspaceDetail && (
+                  <div className="text-amber-9 px-4 h-[36px] rounded-md bg-amber-3 text-[14px] inline-flex items-center mt-24">
+                    <span className="truncate block">
+                      You must be logged in to access {workspaceDetail.name}
+                    </span>
+                  </div>
+                )}
+                <h1 className={`text-xl mt-8`}>Welcome back</h1>
                 <h3 className="text-[14px] text-slate-11">Log into Dataland</h3>
                 <div className="flex flex-col gap-4 mt-8 w-full">
                   <div className="w-full flex flex-col gap-2">

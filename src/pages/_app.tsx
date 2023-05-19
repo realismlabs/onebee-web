@@ -55,7 +55,12 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ClerkProvider {...pageProps}>
       {isPublicPage ? (
-        <Component {...pageProps} />
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={{ persister: customPersister }}
+        >
+          <Component {...pageProps} />
+        </PersistQueryClientProvider>
       ) : (
         <>
           <PersistQueryClientProvider
