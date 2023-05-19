@@ -74,6 +74,15 @@
       "updatedAt": "2023-05-19T15:11:22.387Z",
       "emailVerified": false,
       "id": 24
+    },
+    {
+      "email": "arthur+apple@dataland.io",
+      "name": "Arthur+apple",
+      "clerkUserId": "user_2Q1mzoMvWfaDWtqAfeTyTFSpYyX",
+      "createdAt": "2023-05-19T20:55:26.288Z",
+      "updatedAt": "2023-05-19T20:55:26.288Z",
+      "emailVerified": false,
+      "id": 25
     }
   ],
   "workspaces": [
@@ -217,10 +226,31 @@
     },
     {
       "userId": 20,
-      "workspaceId": 6,
-      "createdAt": "2023-05-19T01:49:38.611Z",
+      "workspaceId": 14,
+      "createdAt": "2023-05-19T21:02:05.627Z",
       "role": "member",
       "id": 12
+    },
+    {
+      "userId": 20,
+      "workspaceId": 10,
+      "createdAt": "2023-05-19T21:03:06.086Z",
+      "role": "member",
+      "id": 13
+    },
+    {
+      "userId": 20,
+      "workspaceId": 12,
+      "createdAt": "2023-05-19T21:11:49.516Z",
+      "role": "member",
+      "id": 14
+    },
+    {
+      "userId": 20,
+      "workspaceId": 6,
+      "createdAt": "2023-05-19T21:11:57.564Z",
+      "role": "member",
+      "id": 16
     }
   ],
   "tables": [
@@ -419,7 +449,7 @@
     {
       "inviterEmail": "arthur@dataland.io",
       "recipientEmail": "arthur+echo@dataland.io",
-      "accepted": false,
+      "accepted": true,
       "workspaceId": 12,
       "id": 37
     },
@@ -433,14 +463,14 @@
     {
       "inviterEmail": "other@dataland.io",
       "recipientEmail": "arthur+echo@dataland.io",
-      "accepted": false,
+      "accepted": true,
       "workspaceId": 14,
       "id": 41
     },
     {
       "inviterEmail": "arthur@dataland.io",
       "recipientEmail": "arthur+echo@dataland.io",
-      "accepted": false,
+      "accepted": true,
       "workspaceId": 10,
       "id": 42
     }

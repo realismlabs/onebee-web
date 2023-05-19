@@ -494,6 +494,20 @@ export const getMembership = async (membershipId) => {
 
 // create membership
 export const createMembership = async (membershipData) => {
+  // check first if user already has membership of this workspace
+
+  const userId = membershipData.userId;
+  const workspaceId = membershipData.workspaceId;
+
+  const user_memberships = await getUserMemberships(userId);
+  const user_memberships_workspaceIds = user_memberships.map((membership) => {
+    return membership.workspaceId;
+  });
+
+  if (user_memberships_workspaceIds.includes(workspaceId)) {
+    throw new Error("User already has membership of this workspace");
+  }
+
   const response = await fetch(`${API_BASE_URL}/api/memberships`, {
     method: "POST",
     headers: {

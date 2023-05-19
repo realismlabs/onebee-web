@@ -136,7 +136,8 @@ export default function Login() {
                 {isWorkspaceRedirectUrl && workspaceDetail && (
                   <div className="text-amber-9 px-4 h-[36px] rounded-md bg-amber-3 text-[14px] inline-flex items-center mt-24">
                     <span className="truncate block">
-                      You must be logged in to access {workspaceDetail.name}
+                      You must be logged in to access the {workspaceDetail.name}{" "}
+                      workspace
                     </span>
                   </div>
                 )}
