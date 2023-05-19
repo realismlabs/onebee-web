@@ -196,10 +196,15 @@ export default function JoinWorkspace() {
                       <div
                         className={`h-[48px] w-[48px] flex items-center justify-center text-[18px] rounded-md`}
                         style={{
-                          backgroundImage: `url(${workspaceDetail.iconUrl})`,
+                          backgroundImage: `url(${
+                            workspaceDetail?.customWorkspaceBase64Icon
+                              ? workspaceDetail?.customWorkspaceBase64Icon
+                              : workspaceDetail?.iconUrl
+                          })`,
                         }}
                       >
-                        {workspaceDetail.name.slice(0, 1)}
+                        {!workspaceDetail?.customWorkspaceBase64Icon &&
+                          workspaceDetail.name.slice(0, 1)}
                       </div>
                       <div className="flex flex-col text-left gap-1">
                         <p className="truncate w-[240px]">
@@ -239,10 +244,15 @@ export default function JoinWorkspace() {
                       <div
                         className={`h-[48px] w-[48px] flex items-center justify-center text-[18px] rounded-md`}
                         style={{
-                          backgroundImage: `url(${workspace.iconUrl})`,
+                          backgroundImage: `url(${
+                            workspace?.customWorkspaceBase64Icon
+                              ? workspace?.customWorkspaceBase64Icon
+                              : workspace?.iconUrl
+                          })`,
                         }}
                       >
-                        {workspace.name.slice(0, 1)}
+                        {!workspace?.customWorkspaceBase64Icon &&
+                          workspace.name.slice(0, 1)}
                       </div>
                       <div className="flex flex-col text-left gap-1">
                         <p className="truncate w-[240px]">{workspace.name}</p>

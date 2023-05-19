@@ -141,11 +141,12 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
                   <div
                     className={`flex-none h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
                     style={{
-                      backgroundImage: `url(${workspace.iconUrl})`,
+                      backgroundImage: `url(${workspace?.customWorkspaceBase64Icon ? workspace?.customWorkspaceBase64Icon : workspace?.iconUrl})`,
                       backgroundSize: 'cover',
                     }}
                   >
-                    <div className="text-[10px] text-slate-12">{workspace?.name?.slice(0, 1)}</div>
+                    {workspace?.customWorkspaceBase64Icon == null && (
+                      <div className="text-[10px] text-slate-12">{workspace?.name?.slice(0, 1)}</div>)}
                   </div>
                   <div className="grow truncate">{workspace.name}</div>
                   {workspace.id === currentWorkspace.id && (
@@ -208,11 +209,12 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
             <div
               className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
               style={{
-                backgroundImage: `url(${currentWorkspace.iconUrl})`,
+                backgroundImage: `url(${currentWorkspace?.customWorkspaceBase64Icon ? currentWorkspace?.customWorkspaceBase64Icon : currentWorkspace?.iconUrl})`,
                 backgroundSize: 'cover',
               }}
             >
-              <div className="text-[10px] text-slate-12">{currentWorkspace.name.slice(0, 1)}</div>
+              {currentWorkspace?.customWorkspaceBase64Icon == null && (
+                <div className="text-[10px] text-slate-12">{currentWorkspace?.name?.slice(0, 1)}</div>)}
             </div>
             <p className="text-slate-12 text-left flex-grow truncate w-0">
               {currentWorkspace.name}

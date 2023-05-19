@@ -199,10 +199,16 @@ export default function Welcome() {
             <div
               className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
               style={{
-                backgroundImage: `url(${workspaceDetail.iconUrl})`,
+                backgroundImage: `url(${
+                  workspaceDetail?.customWorkspaceBase64Icon
+                    ? workspaceDetail?.customWorkspaceBase64Icon
+                    : workspaceDetail?.iconUrl
+                })`,
+                backgroundSize: "cover",
               }}
             >
-              {workspaceDetail.name.slice(0, 1)}
+              {!workspaceDetail?.customWorkspaceBase64Icon &&
+                workspaceDetail.name.slice(0, 1)}
             </div>
             <div className="bg-slate-1 text-slate-12 text-center text-[22px] mt-8 max-w-[420px]">
               You must be logged in to <br />
@@ -267,10 +273,16 @@ export default function Welcome() {
               <div
                 className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
                 style={{
-                  backgroundImage: `url(${workspaceDetail.iconUrl})`,
+                  backgroundImage: `url(${
+                    workspaceDetail?.customWorkspaceBase64Icon
+                      ? workspaceDetail?.customWorkspaceBase64Icon
+                      : workspaceDetail?.iconUrl
+                  })`,
+                  backgroundSize: "cover",
                 }}
               >
-                {workspaceDetail.name.slice(0, 1)}
+                {!workspaceDetail?.customWorkspaceBase64Icon &&
+                  workspaceDetail.name.slice(0, 1)}
               </div>
               <div className="bg-slate-1 text-slate-12 text-center text-[22px] mt-8 max-w-[420px]">
                 Welcome to{" "}
@@ -332,10 +344,16 @@ export default function Welcome() {
               <div
                 className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
                 style={{
-                  backgroundImage: `url(${workspaceDetail.iconUrl})`,
+                  backgroundImage: `url(${
+                    workspaceDetail?.customWorkspaceBase64Icon
+                      ? workspaceDetail?.customWorkspaceBase64Icon
+                      : workspaceDetail?.iconUrl
+                  })`,
+                  backgroundSize: "cover",
                 }}
               >
-                {workspaceDetail.name.slice(0, 1)}
+                {!workspaceDetail?.customWorkspaceBase64Icon &&
+                  workspaceDetail.name.slice(0, 1)}
               </div>
               <div className="bg-slate-1 text-slate-12 text-center text-[22px] mt-8 max-w-[420px]">
                 You don&apos;t have access to the{" "}

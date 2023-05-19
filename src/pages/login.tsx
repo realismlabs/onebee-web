@@ -129,16 +129,17 @@ export default function Login() {
                   </Link>
                 </header>
                 {isWorkspaceRedirectUrl && !workspaceDetail && (
-                  <div className="text-amber-9 px-4 h-[36px] rounded-md bg-amber-3 text-[14px] inline-flex items-center truncate mt-24">
+                  <div className="text-amber-9 px-4 py-2 rounded-md bg-amber-3 text-[14px] items-center truncate mt-24">
                     You must be logged in to access this workspace.
                   </div>
                 )}
                 {isWorkspaceRedirectUrl && workspaceDetail && (
-                  <div className="text-amber-9 px-4 h-[36px] rounded-md bg-amber-3 text-[14px] inline-flex items-center mt-24">
-                    <span className="truncate block">
-                      You must be logged in to access the {workspaceDetail.name}{" "}
-                      workspace
-                    </span>
+                  <div className="text-amber-9 px-4 py-2 rounded-md bg-amber-3 text-[14px] items-center mt-24">
+                    You must be logged in to access the{" "}
+                    <span className="font-semibold inline">
+                      {workspaceDetail.name}
+                    </span>{" "}
+                    workspace
                   </div>
                 )}
                 <h1 className={`text-xl mt-8`}>Welcome back</h1>

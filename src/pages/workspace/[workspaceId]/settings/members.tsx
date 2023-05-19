@@ -91,7 +91,7 @@ const MemberPopover = ({
         console.log(
           "TODO: User is deleting their own membership - this should log the user out"
         );
-        router.push("/login");
+        await signOut();
       } else {
         console.log("Refetching memberships:", userId);
         await queryClient.refetchQueries([
