@@ -3,14 +3,7 @@ import { NextResponse } from "next/server";
 import { fetchCurrentUser, getUserMemberships } from "./utils/api";
 
 export default authMiddleware({
-  publicRoutes: [
-    "/forgot-password",
-    "/login",
-    "/sandbox",
-    "/signup",
-    "/reset-password",
-    "/",
-  ],
+  publicRoutes: ["/forgot-password", "/login", "/sandbox", "/signup", "/"],
   async afterAuth(auth, req, evt) {
     if (
       auth.userId &&
