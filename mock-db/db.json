@@ -92,6 +92,24 @@
       "updatedAt": "2023-05-22T19:24:23.288Z",
       "emailVerified": false,
       "id": 26
+    },
+    {
+      "email": "software@realismlabs.com",
+      "name": "Software",
+      "clerkUserId": "user_2QA7NgT6wBE1PF0VP5OtrnOosOS",
+      "createdAt": "2023-05-22T20:01:55.968Z",
+      "updatedAt": "2023-05-22T20:01:55.968Z",
+      "emailVerified": false,
+      "id": 28
+    },
+    {
+      "email": "arthurwu1@gmail.com",
+      "name": "Arthurwu1",
+      "clerkUserId": "user_2PvvZN9pO7YkxJSW5l7kYkcmHXx",
+      "createdAt": "2023-05-22T20:07:11.491Z",
+      "updatedAt": "2023-05-22T20:07:11.491Z",
+      "emailVerified": false,
+      "id": 29
     }
   ],
   "workspaces": [
@@ -176,6 +194,19 @@
       "allowedDomains": [],
       "iconUrl": "data:image/png;base64,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",
       "id": 15
+    },
+    {
+      "name": "Realism Labs",
+      "createdAt": "2023-05-22T20:07:56.981Z",
+      "creatorUserId": 28,
+      "allowedDomains": [
+        {
+          "domain": "realismlabs.com",
+          "createdBy": 28
+        }
+      ],
+      "iconUrl": "data:image/png;base64,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",
+      "id": 16
     }
   ],
   "memberships": [
@@ -269,6 +300,13 @@
       "createdAt": "2023-05-19T23:14:45.349Z",
       "role": "member",
       "id": 18
+    },
+    {
+      "userId": 28,
+      "workspaceId": 16,
+      "createdAt": "2023-05-22T20:07:57.124Z",
+      "role": "admin",
+      "id": 19
     }
   ],
   "tables": [
@@ -453,6 +491,58 @@
       "createdAt": "2023-05-18T00:58:04.487Z",
       "updatedAt": "2023-05-18T00:58:04.487Z",
       "id": 19
+    },
+    {
+      "workspaceId": 16,
+      "fullName": "ARTHUR_TEST.PUBLIC.CUSTOMER_150M",
+      "displayName": "CUSTOMER_150M",
+      "connectionPath": "ARTHUR_TEST/PUBLIC/",
+      "rowCount": 150000000,
+      "connectionId": 27,
+      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#0091FF\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M160,112a24,24,0,1,1-24-24A24,24,0,0,1,160,112Zm64-72V216a16,16,0,0,1-16,16H64a16,16,0,0,1-16-16V192H32a8,8,0,0,1,0-16H48V136H32a8,8,0,0,1,0-16H48V80H32a8,8,0,0,1,0-16H48V40A16,16,0,0,1,64,24H208A16,16,0,0,1,224,40ZM190.4,163.2A67.88,67.88,0,0,0,163,141.51a40,40,0,1,0-53.94,0A67.88,67.88,0,0,0,81.6,163.2a8,8,0,1,0,12.8,9.6,52,52,0,0,1,83.2,0,8,8,0,1,0,12.8-9.6Z\"></path></svg>",
+      "iconColor": "#0091FF",
+      "createdAt": "2023-05-22T20:08:54.370Z",
+      "updatedAt": "2023-05-22T20:08:54.370Z",
+      "id": 20
+    },
+    {
+      "workspaceId": 16,
+      "fullName": "ARTHUR_TEST.PUBLIC.CUSTOMER_150M",
+      "displayName": "CUSTOMER_150M",
+      "connectionPath": "ARTHUR_TEST/PUBLIC/",
+      "rowCount": 150000000,
+      "connectionId": 27,
+      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#9D5BD2\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z\"></path></svg>",
+      "iconColor": "#0091FF",
+      "createdAt": "2023-05-22T20:23:28.290Z",
+      "updatedAt": "2023-05-22T20:23:28.290Z",
+      "id": 21
+    },
+    {
+      "workspaceId": 16,
+      "fullName": "ARTHUR_TEST.DBT_AWU.MY_FIRST_DBT_MODEL",
+      "displayName": "MY_FIRST_DBT_MODEL",
+      "connectionPath": "ARTHUR_TEST/DBT_AWU/",
+      "rowCount": 2,
+      "connectionId": 27,
+      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#9D5BD2\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z\"></path></svg>",
+      "iconColor": "#0091FF",
+      "createdAt": "2023-05-22T20:24:54.224Z",
+      "updatedAt": "2023-05-22T20:24:54.224Z",
+      "id": 22
+    },
+    {
+      "workspaceId": 16,
+      "fullName": "ARTHUR_TEST.DBT_AWU.MY_FIRST_DBT_MODEL",
+      "displayName": "MY_FIRST_DBT_MODEL",
+      "connectionPath": "ARTHUR_TEST/DBT_AWU/",
+      "rowCount": 2,
+      "connectionId": 27,
+      "iconSvgString": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"#0091FF\" viewBox=\"0 0 256 256\" class=\"min-w-[24px] transition-colors duration-300\"><path d=\"M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z\"></path></svg>",
+      "iconColor": "#0091FF",
+      "createdAt": "2023-05-22T20:26:34.111Z",
+      "updatedAt": "2023-05-22T20:26:34.111Z",
+      "id": 23
     }
   ],
   "verifyEmail": [
@@ -583,6 +673,21 @@
       "createdAt": "2023-05-18T00:58:04.473Z",
       "workspaceId": 15,
       "id": 26
+    },
+    {
+      "accountIdentifier": "pwkesfj-uo88877",
+      "warehouse": "ARTHUR_TEST",
+      "basicAuthUsername": "arthurwu1",
+      "basicAuthPassword": "TJM7uhr!cav!tjv@mcy",
+      "keyPairAuthUsername": "",
+      "keyPairAuthPrivateKey": "",
+      "keyPairAuthPrivateKeyPassphrase": "",
+      "role": "ACCOUNTADMIN",
+      "connectionType": "snowflake",
+      "name": "Snowflakepwkesfj-uo88877",
+      "createdAt": "2023-05-22T20:08:54.356Z",
+      "workspaceId": 16,
+      "id": 27
     }
   ]
 }

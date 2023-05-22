@@ -18,9 +18,11 @@ export const fetchCurrentUser = async (clerkUserId) => {
   //   }
   //   return response.json();
   // } else {
+  console.log("fetchCurrentUser clerkUserId", clerkUserId)
   const response = await fetch(`${API_BASE_URL}/api/users/clerkUserId/${clerkUserId}`);
   if (!response.ok) {
-    throw new Error("Error fetching current user");
+    console.error("Error fetching current user", response);
+    return null;
   }
   const result = await response.json();
   // since we're fetching by clerkUserId, we should only get one result
@@ -40,6 +42,14 @@ export const fetchCurrentWorkspace = async (workspaceId) => {
 
 // "/api/users/": "/users",
 export const createUser = async ({ email, name, clerkUserId }) => {
+  // see if user already exists by clerkUserId
+  const existingUser = await fetchCurrentUser(clerkUserId);
+
+  if (existingUser) {
+    throw new Error("User already exists:", existingUser);
+    return;
+  }
+
   console.log("createUser", email, name, clerkUserId)
   const requestBody = {
     email,

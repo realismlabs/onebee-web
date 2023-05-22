@@ -153,6 +153,10 @@ export default function AddSnowflake() {
     keyPairAuthPrivateKeyPassphrase,
     role,
     connectionType,
+    name:
+      capitalizeString(connectionType) +
+      " " +
+      connectionRequestBodyaccountIdentifier,
   };
 
   const connectionTestQuery = useQuery({

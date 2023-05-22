@@ -3,6 +3,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getUserMemberships, getWorkspace } from "../utils/api";
 import { useRouter } from "next/router";
 import { useQuery, useQueries } from "@tanstack/react-query";
+import { useUser } from "@clerk/nextjs";
 
 // This is the default page a user lands on after logging in via Clerk.
 // To change the destination in Clerk, you need to edit the paths .env.local in local dev mode.
