@@ -6,37 +6,23 @@ import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { motion } from "framer-motion";
 import { HandWaving } from "@phosphor-icons/react";
 import { capitalizeString } from "@/utils/util";
+import { AccountHeader } from "@/components/AccountHeader";
+import { v4 as uuidv4 } from "uuid";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import {
+  getInvitesForUserEmail,
+  getWorkspaceDetails,
+  getAllowedWorkspacesForUser,
+} from "@/utils/api";
 
-interface AccountHeaderProps {
-  email: string;
-}
-
-const handleSubmit = async () => {
+const handleSubmit = async (total_available_workspaces: number) => {
   console.log("clicked");
-  router.push("/welcome/create-workspace");
-};
-
-const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const handleLogout = () => {
-    router.push("/login?lo=true");
-  };
-
-  return (
-    <div className="w-full flex flex-row h-16 items-center p-12 z-10">
-      <div className="flex flex-col grow items-start">
-        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
-      </div>
-      <div className="flex flex-col grow items-end">
-        <p
-          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
-          onClick={handleLogout}
-        >
-          Logout
-        </p>
-      </div>
-    </div>
-  );
+  // if there are any available invites / workspaces, redirect to join-workspace
+  if (total_available_workspaces > 0) {
+    router.push("/join-workspace");
+  } else {
+    router.push("/welcome/create-workspace");
+  }
 };
 
 function generateCircles(
@@ -63,7 +49,13 @@ function generateCircles(
 
     if (i === 0) {
       circles.push(
-        <circle r="0.2" fill="#DBFFFF" className="" opacity={opacity}>
+        <circle
+          r="0.2"
+          fill="#DBFFFF"
+          className=""
+          opacity={opacity}
+          key={uuidv4()}
+        >
           <animateMotion
             dur={`${duration}s`}
             begin={`${delay_offset + delay}s`}
@@ -80,6 +72,7 @@ function generateCircles(
             begin={`${delay_offset + delay}s`}
             repeatCount={repeatCount}
             path={path}
+            key={uuidv4()}
           />
         </circle>
       );
@@ -122,6 +115,7 @@ function generateCircleShadows(
           mixBlendMode: "overlay",
           filter: "blur(1px)",
         }}
+        key={uuidv4()}
       >
         <animateMotion
           dur={`${duration}s`}
@@ -151,6 +145,7 @@ function generateRowLines(
   for (let i = start; i >= end; i -= interval) {
     paths.push(
       <path
+        key={uuidv4()}
         d={`M${startX},${i} ${endX},${i}`}
         stroke={stroke}
         strokeWidth={strokeWidth}
@@ -162,7 +157,13 @@ function generateRowLines(
 
 function circuitPath(path: string) {
   return (
-    <path fill="none" stroke="var(--slate3)" strokeWidth={0.2} d={path}>
+    <path
+      fill="none"
+      stroke="var(--slate3)"
+      strokeWidth={0.2}
+      d={path}
+      key={uuidv4()}
+    >
       <animate
         attributeName="opacity"
         from="1"
@@ -238,92 +239,92 @@ const CometAnimation: React.FC = () => {
   // useMemo to memoize the SVG elements and avoid unnecessary re-renders.
   const generatedCircles = React.useMemo(
     () => generateCircles(10, screenborder, 2, 10, "indefinite"),
-    []
+    [screenborder]
   );
   const generatedCircleShadows = React.useMemo(
     () => generateCircleShadows(3, screenborder, 2, 10, "indefinite"),
-    []
+    [screenborder]
   );
   const generatedCirclesOpposite = React.useMemo(
     () => generateCircles(10, screenborderOpposite, 2, 10, "indefinite"),
-    []
+    [screenborderOpposite]
   );
   const generatedCircleShadowsOpposite = React.useMemo(
     () => generateCircleShadows(3, screenborderOpposite, 2, 10, "indefinite"),
-    []
+    [screenborderOpposite]
   );
 
   // Similarly memoize for other paths
-  const circuitPathl1 = React.useMemo(() => circuitPath(pathl1), []);
+  const circuitPathl1 = React.useMemo(() => circuitPath(pathl1), [pathl1]);
   const generatedCirclesl1 = React.useMemo(
     () => generateCircles(6, pathl1),
-    []
+    [pathl1]
   );
   const generatedCircleShadowsl1 = React.useMemo(
     () => generateCircleShadows(3, pathl1),
-    []
+    [pathl1]
   );
 
-  const circuitPathl2 = React.useMemo(() => circuitPath(pathl2), []);
+  const circuitPathl2 = React.useMemo(() => circuitPath(pathl2), [pathl2]);
   const generatedCirclesl2 = React.useMemo(
     () => generateCircles(6, pathl2),
-    []
+    [pathl2]
   );
   const generatedCircleShadowsl2 = React.useMemo(
     () => generateCircleShadows(3, pathl2),
-    []
+    [pathl2]
   );
 
-  const circuitPathl3 = React.useMemo(() => circuitPath(pathl3), []);
+  const circuitPathl3 = React.useMemo(() => circuitPath(pathl3), [pathl3]);
   const generatedCirclesl3 = React.useMemo(
     () => generateCircles(6, pathl3),
-    []
+    [pathl3]
   );
   const generatedCircleShadowsl3 = React.useMemo(
     () => generateCircleShadows(3, pathl3),
-    []
+    [pathl3]
   );
 
-  const circuitPathr1 = React.useMemo(() => circuitPath(pathr1), []);
+  const circuitPathr1 = React.useMemo(() => circuitPath(pathr1), [pathr1]);
   const generatedCirclesr1 = React.useMemo(
     () => generateCircles(6, pathr1),
-    []
+    [pathr1]
   );
   const generatedCircleShadowsr1 = React.useMemo(
     () => generateCircleShadows(3, pathr1),
-    []
+    [pathr1]
   );
 
-  const circuitPathr2 = React.useMemo(() => circuitPath(pathr2), []);
+  const circuitPathr2 = React.useMemo(() => circuitPath(pathr2), [pathr2]);
   const generatedCirclesr2 = React.useMemo(
     () => generateCircles(6, pathr2),
-    []
+    [pathr2]
   );
   const generatedCircleShadowsr2 = React.useMemo(
     () => generateCircleShadows(3, pathr2),
-    []
+    [pathr2]
   );
 
-  const circuitPathr3 = React.useMemo(() => circuitPath(pathr3), []);
+  const circuitPathr3 = React.useMemo(() => circuitPath(pathr3), [pathr3]);
   const generatedCirclesr3 = React.useMemo(
     () => generateCircles(6, pathr3),
-    []
+    [pathr3]
   );
   const generatedCircleShadowsr3 = React.useMemo(
     () => generateCircleShadows(3, pathr3),
-    []
+    [pathr3]
   );
 
   return (
     <div
-      className="absolute inset-0 h-screen flex items-center justify-center overflow-hidden"
+      className="absolute inset-0 h-screen flex items-center justify-center overflow-hidden pointer-events-none"
       style={{
         background: "var(--slate-1)",
         zIndex: -1,
         transform: "rotate(180deg)",
       }}
     >
-      <div className="min-w-[1400px] h-screen flex justify-end">
+      <div className="min-w-[1400px] h-screen flex justify-end pointer-events-none">
         <svg
           viewBox="0 0 200 100"
           xmlns="http://www.w3.org/2000/svg"
@@ -577,15 +578,59 @@ export default function Welcome() {
     error: userError,
   } = useCurrentUser();
 
-  if (isUserLoading) {
+  const {
+    data: invites,
+    isLoading: isInvitesLoading,
+    error: invitesError,
+  } = useQuery({
+    queryKey: ["invites", currentUser?.email],
+    enabled: currentUser?.email != null,
+    queryFn: async () => {
+      const result = await getInvitesForUserEmail(currentUser.email);
+      return result;
+    },
+    staleTime: 1000, // 1 second
+  });
+
+  const workspaceIds = invites
+    ? Array.from(new Set(invites.map((invite: any) => invite.workspaceId)))
+    : [];
+
+  // Fetch workspace details for each workspaceId
+  const workspacesQuery = useQueries({
+    queries: workspaceIds.map((id) => ({
+      queryKey: ["workspace", id],
+      queryFn: () => getWorkspaceDetails(id),
+    })),
+  });
+
+  const {
+    data: allowedWorkspacesForUser,
+    isLoading: isAllowedWorkspacesForUserLoading,
+    error: allowedWorkspacesForUserError,
+  } = useQuery({
+    queryKey: ["getAllowedWorkspacesForUser", currentUser?.id],
+    queryFn: async () => {
+      const result = await getAllowedWorkspacesForUser(currentUser?.id);
+      return result;
+    },
+    enabled: currentUser?.id != null,
+  });
+
+  if (isUserLoading || isInvitesLoading || isAllowedWorkspacesForUserLoading) {
     return <div className="h-screen bg-slate-1"></div>;
   }
 
-  if (userError) {
+  if (userError || invitesError || allowedWorkspacesForUserError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
-  const email = currentUser.email;
+  const email = currentUser?.email;
+
+  const total_available_workspaces =
+    (allowedWorkspacesForUser?.length ?? 0) + (invites?.length ?? 0);
+
+  console.log("total_available_workspaces", total_available_workspaces);
 
   //  for animations
   const container = {
@@ -609,16 +654,18 @@ export default function Welcome() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 1, delay: 2.2 }}
+        className="z-50"
       >
-        <CometAnimation />
+        <AccountHeader email={email ?? "placeholder@example.com"} />
       </motion.div>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 2.2 }}
+        transition={{ duration: 0.3 }}
+        className="z-0 pointer-events-none"
       >
-        <AccountHeader email={email ?? "placeholder@example.com"} />
+        <CometAnimation />
       </motion.div>
       <motion.div
         variants={container}
@@ -626,7 +673,7 @@ export default function Welcome() {
         animate="show"
         transition={{ duration: 1, delay: 2.2 }}
       >
-        <div className="absolute inset-0 flex flex-col justify-start items-center h-screen">
+        <div className="absolute inset-0 flex flex-col justify-start items-center h-screen pointer-events-none">
           <div className="flex flex-col justify-center items-center mt-[30vh]">
             <motion.div
               className="bg-slate-2 border border-slate-4 p-4 rounded-lg"
@@ -654,8 +701,8 @@ export default function Welcome() {
             </motion.div>
             <motion.button
               type="button"
-              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[16px] font-medium py-2 px-4 rounded-md"
-              onClick={handleSubmit}
+              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[16px] font-medium py-2 px-4 rounded-md pointer-events-auto"
+              onClick={() => handleSubmit(total_available_workspaces)}
               variants={item}
             >
               Get started

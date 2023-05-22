@@ -11,6 +11,9 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
+    "@clerk/clerk-js": "^4.41.0",
+    "@clerk/nextjs": "^4.18.1",
+    "@clerk/themes": "^1.7.2",
     "@headlessui/react": "^1.7.14",
     "@phosphor-icons/react": "^2.0.8",
     "@radix-ui/react-dialog": "^1.0.3",
@@ -34,9 +37,11 @@
     "framer-motion": "^10.12.2",
     "html-react-parser": "^3.0.16",
     "next": "13.2.4",
+    "query-string": "^8.1.0",
     "react": "^18.2.0",
     "react-data-table-component": "^7.5.3",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-transition-group": "^4.4.5",
     "react-use-measure": "^2.1.1",
     "saas": "^1.0.0",

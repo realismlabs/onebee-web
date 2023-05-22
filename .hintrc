@@ -1,7 +1,5 @@
 {
-  "extends": [
-    "development"
-  ],
+  "extends": ["development"],
   "hints": {
     "axe/name-role-value": [
       "default",
@@ -14,7 +12,9 @@
       "default",
       {
         "ignore": [
-          "width: fit-content"
+          "width: fit-content",
+          "scroll-padding-block-start",
+          "scroll-padding-block-end"
         ]
       }
     ]

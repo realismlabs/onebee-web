@@ -5,33 +5,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { createWorkspace, createMembership } from "@/utils/api";
 import { isCommonEmailProvider } from "@/utils/util";
-
-interface AccountHeaderProps {
-  email: string;
-}
-
-const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const handleLogout = () => {
-    router.push("/login?lo=true");
-  };
-
-  return (
-    <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
-      <div className="flex flex-col grow items-start">
-        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
-      </div>
-      <div className="flex flex-col grow items-end">
-        <p
-          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
-          onClick={handleLogout}
-        >
-          Logout
-        </p>
-      </div>
-    </div>
-  );
-};
+import { AccountHeader } from "@/components/AccountHeader";
 
 export default function CreateWorkspace() {
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -116,15 +90,19 @@ export default function CreateWorkspace() {
     if (currentUser?.email) {
       const email = currentUser.email;
       const domain = email.split("@")[1];
-      const domain_without_extension = email.split("@")[1].split(".")[0];
-      let workspace_name_suggestion = domain_without_extension;
-      if (typeof domain_without_extension === "string") {
-        workspace_name_suggestion =
-          domain_without_extension.charAt(0).toUpperCase() +
-          domain_without_extension.slice(1);
-      }
 
-      setWorkspaceName(workspace_name_suggestion);
+      if (isCommonEmailProvider(domain)) {
+        setWorkspaceName("");
+      } else {
+        const domain_without_extension = email.split("@")[1].split(".")[0];
+        let workspace_name_suggestion = domain_without_extension;
+        if (typeof domain_without_extension === "string") {
+          workspace_name_suggestion =
+            domain_without_extension.charAt(0).toUpperCase() +
+            domain_without_extension.slice(1);
+        }
+        setWorkspaceName(workspace_name_suggestion);
+      }
       setDomain(domain);
     }
   }, [currentUser]);

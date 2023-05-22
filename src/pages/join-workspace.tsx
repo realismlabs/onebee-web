@@ -18,33 +18,7 @@ import {
 } from "../utils/api";
 import { stringToVibrantColor, generateWorkspaceIcon } from "../utils/util";
 import { CaretRight, UsersThree } from "@phosphor-icons/react";
-
-interface AccountHeaderProps {
-  email: string;
-}
-
-const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const handleLogout = () => {
-    router.push("/login?lo=true");
-  };
-
-  return (
-    <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
-      <div className="flex flex-col grow items-start">
-        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
-      </div>
-      <div className="flex flex-col grow items-end">
-        <p
-          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
-          onClick={handleLogout}
-        >
-          Logout
-        </p>
-      </div>
-    </div>
-  );
-};
+import { AccountHeader } from "@/components/AccountHeader";
 
 export default function JoinWorkspace() {
   const handleAcceptInvite = async ({
@@ -121,6 +95,7 @@ export default function JoinWorkspace() {
     enabled: currentUser?.email != null,
     queryFn: async () => {
       const result = await getInvitesForUserEmail(currentUser.email);
+      console.log("invitesQuery result", result);
       return result;
     },
     staleTime: 1000, // 1 second
@@ -152,8 +127,6 @@ export default function JoinWorkspace() {
     },
     enabled: currentUser?.id != null,
   });
-
-  const queryClient = useQueryClient();
 
   // if any of workspacesQuery[0].isLoading, workspacesQuery[1].isLoading, etc. is true, then isLoading is true
   const isWorkspacesQueriesLoading = workspacesQuery.some(
@@ -194,7 +167,7 @@ export default function JoinWorkspace() {
           Join a workspace
         </div>
         {invitesQuery.data && invitesQuery.data.length > 0 && (
-          <div className="text-slate-12 flex flex-col gap-4 rounded-md mt-8">
+          <div className="text-slate-12 flex flex-col gap-4 rounded-md mt-4">
             {/* map through invitesQuery.data */}
             {invitesQuery.data.map((invite: any) => {
               console.log("invite", invite);
@@ -223,10 +196,16 @@ export default function JoinWorkspace() {
                       <div
                         className={`h-[48px] w-[48px] flex items-center justify-center text-[18px] rounded-md`}
                         style={{
-                          backgroundImage: `url(${workspaceDetail.iconUrl})`,
+                          backgroundImage: `url(${
+                            workspaceDetail?.customWorkspaceBase64Icon
+                              ? workspaceDetail?.customWorkspaceBase64Icon
+                              : workspaceDetail?.iconUrl
+                          })`,
+                          backgroundSize: "cover",
                         }}
                       >
-                        {workspaceDetail.name.slice(0, 1)}
+                        {!workspaceDetail?.customWorkspaceBase64Icon &&
+                          workspaceDetail.name.slice(0, 1)}
                       </div>
                       <div className="flex flex-col text-left gap-1">
                         <p className="truncate w-[240px]">
@@ -250,10 +229,7 @@ export default function JoinWorkspace() {
         )}
         {allowedWorkspacesForUser.length > 0 && (
           <>
-            <div className="text-center mt-12 text-slate-11 text-[14px]">
-              Other workspaces for {`@${currentUser.email.split("@")[1]}`}{" "}
-            </div>
-            <div className="text-slate-12 flex flex-col gap-4 rounded-md mt-6">
+            <div className="text-slate-12 flex flex-col gap-4 rounded-md mt-4">
               {allowedWorkspacesForUser.map((workspace: any) => {
                 return (
                   <div
@@ -269,10 +245,16 @@ export default function JoinWorkspace() {
                       <div
                         className={`h-[48px] w-[48px] flex items-center justify-center text-[18px] rounded-md`}
                         style={{
-                          backgroundImage: `url(${workspace.iconUrl})`,
+                          backgroundImage: `url(${
+                            workspace?.customWorkspaceBase64Icon
+                              ? workspace?.customWorkspaceBase64Icon
+                              : workspace?.iconUrl
+                          })`,
+                          backgroundSize: "cover",
                         }}
                       >
-                        {workspace.name.slice(0, 1)}
+                        {!workspace?.customWorkspaceBase64Icon &&
+                          workspace.name.slice(0, 1)}
                       </div>
                       <div className="flex flex-col text-left gap-1">
                         <p className="truncate w-[240px]">{workspace.name}</p>

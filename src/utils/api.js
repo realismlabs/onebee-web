@@ -1,17 +1,33 @@
 import { generateWorkspaceIcon } from "./util";
+import { useAuth } from "@clerk/nextjs";
 //  this file holds several  the api calls for the app mocked to a local json server
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const fetchCurrentUser = async () => {
-  // 1 is arthur@dataland.io - has one invite and no allowed domains
-  // 19 is howard@sidekick.video - no invites
-  // 20 is other@dataland.io - has one invite and one other allowed domain
-  const response = await fetch(`${API_BASE_URL}/api/users/20`);
+export const fetchCurrentUser = async (clerkUserId) => {
+
+  // if (!clerkUserId) {
+  //   // 1 is arthur@dataland.io - has one invite and no allowed domains
+  //   // 19 is howard@sidekick.video - no invites
+  //   // 20 is other@dataland.io - has one invite and one other allowed domain
+
+  //   // New: fetch current user based on clerkUserId
+  //   const response = await fetch(`${API_BASE_URL}/api/users/1`);
+  //   if (!response.ok) {
+  //     throw new Error("Error fetching current user");
+  //   }
+  //   return response.json();
+  // } else {
+  console.log("fetchCurrentUser clerkUserId", clerkUserId)
+  const response = await fetch(`${API_BASE_URL}/api/users/clerkUserId/${clerkUserId}`);
   if (!response.ok) {
-    throw new Error("Error fetching current user");
+    console.error("Error fetching current user", response);
+    return null;
   }
-  return response.json();
+  const result = await response.json();
+  // since we're fetching by clerkUserId, we should only get one result
+  return result[0];
+  // }
 };
 
 export const fetchCurrentWorkspace = async (workspaceId) => {
@@ -23,6 +39,43 @@ export const fetchCurrentWorkspace = async (workspaceId) => {
   const result = await response.json();
   return result;
 };
+
+// "/api/users/": "/users",
+export const createUser = async ({ email, name, clerkUserId }) => {
+  // see if user already exists by clerkUserId
+  const existingUser = await fetchCurrentUser(clerkUserId);
+
+  if (existingUser) {
+    throw new Error("User already exists:", existingUser);
+    return;
+  }
+
+  console.log("createUser", email, name, clerkUserId)
+  const requestBody = {
+    email,
+    name,
+    clerkUserId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    emailVerified: false,
+  };
+
+  console.log("createUser requestBody", requestBody)
+
+  const response = await fetch(`${API_BASE_URL}/api/users/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error creating user");
+  }
+  const result = await response.json();
+  return result;
+}
 
 export const createInvite = async ({
   workspaceId,
@@ -92,8 +145,11 @@ export const createInvite = async ({
 
 export const getInvitesForUserEmail = async (recipientEmail) => {
   console.log("getInvitesForUserEmail", recipientEmail);
+
+  const encodedEmail = encodeURIComponent(recipientEmail);
+
   const response = await fetch(
-    `${API_BASE_URL}/api/invites/recipient/${recipientEmail}`
+    `${API_BASE_URL}/api/invites/recipient/${encodedEmail}`
   );
   // const response = await fetch(`${API_BASE_URL}/invites?recipientEmail=${recipientEmail}`);
 
@@ -103,7 +159,6 @@ export const getInvitesForUserEmail = async (recipientEmail) => {
   const result = await response.json();
   // only return invites that have not been accepted
   const filteredResult = result.filter((invite) => !invite.accepted);
-  console.log("getInvitesForUserEmail result", filteredResult);
   return filteredResult;
 };
 
@@ -449,6 +504,20 @@ export const getMembership = async (membershipId) => {
 
 // create membership
 export const createMembership = async (membershipData) => {
+  // check first if user already has membership of this workspace
+
+  const userId = membershipData.userId;
+  const workspaceId = membershipData.workspaceId;
+
+  const user_memberships = await getUserMemberships(userId);
+  const user_memberships_workspaceIds = user_memberships.map((membership) => {
+    return membership.workspaceId;
+  });
+
+  if (user_memberships_workspaceIds.includes(workspaceId)) {
+    throw new Error("User already has membership of this workspace");
+  }
+
   const response = await fetch(`${API_BASE_URL}/api/memberships`, {
     method: "POST",
     headers: {

@@ -4,9 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
-import { useQuery, useQueries } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useQueries } from '@tanstack/react-query';
 import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspace } from '../utils/api';
-import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, } from '@phosphor-icons/react';
+import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, Gear, } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
 import { getWorkspaces } from '@/utils/api';
@@ -14,12 +14,14 @@ import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useLocalStorageState } from '@/utils/util';
 import InvitePeopleDialog from './InvitePeopleDialog';
+import { useClerk } from "@clerk/clerk-react";
 
-function AccountPopover() {
-  const router = useRouter();
-  const handleLogout = () => {
-    console.log('logout')
-    router.push('/login?lo=true')
+function AccountPopover({ currentWorkspace }) {
+  const { signOut } = useClerk();
+  const queryClient = useQueryClient();
+  const handleLogout = async () => {
+    queryClient.removeQueries();
+    await signOut();
   }
 
   return (
@@ -49,7 +51,13 @@ function AccountPopover() {
           >
             <Popover.Panel className="absolute mb-[32px] bottom-0 ">
               <div className="overflow-visible rounded-md shadow-2xl ring-1 ring-black ring-opacity-5 bg-slate-2 w-[180px] p-[8px] text-[13px] cursor-pointer">
-                <div className="hover:bg-slate-4 px-[8px] py-[4px] flex flex-row items-center gap-2" onClick={handleLogout}>
+                <Link href={`/workspace/${currentWorkspace?.id}/settings/profile`}>
+                  <div className="hover:bg-slate-4 px-[8px] py-[6px] flex flex-row rounded-md items-center gap-3" >
+                    <Gear size={16} weight="fill" className="text-slate-10" />
+                    Account settings
+                  </div>
+                </Link>
+                <div className="hover:bg-slate-4 px-[8px] py-[6px] flex flex-row rounded-md items-center gap-3" onClick={handleLogout}>
                   <SignOut size={16} weight="bold" className="text-slate-10" />
                   Log out
                 </div>
@@ -139,11 +147,12 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
                   <div
                     className={`flex-none h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
                     style={{
-                      backgroundImage: `url(${workspace.iconUrl})`,
+                      backgroundImage: `url(${workspace?.customWorkspaceBase64Icon ? workspace?.customWorkspaceBase64Icon : workspace?.iconUrl})`,
                       backgroundSize: 'cover',
                     }}
                   >
-                    <div className="text-[10px] text-slate-12">{workspace?.name?.slice(0, 1)}</div>
+                    {workspace?.customWorkspaceBase64Icon == null && (
+                      <div className="text-[10px] text-slate-12">{workspace?.name?.slice(0, 1)}</div>)}
                   </div>
                   <div className="grow truncate">{workspace.name}</div>
                   {workspace.id === currentWorkspace.id && (
@@ -206,11 +215,12 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
             <div
               className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
               style={{
-                backgroundImage: `url(${currentWorkspace.iconUrl})`,
+                backgroundImage: `url(${currentWorkspace?.customWorkspaceBase64Icon ? currentWorkspace?.customWorkspaceBase64Icon : currentWorkspace?.iconUrl})`,
                 backgroundSize: 'cover',
               }}
             >
-              <div className="text-[10px] text-slate-12">{currentWorkspace.name.slice(0, 1)}</div>
+              {currentWorkspace?.customWorkspaceBase64Icon == null && (
+                <div className="text-[10px] text-slate-12">{currentWorkspace?.name?.slice(0, 1)}</div>)}
             </div>
             <p className="text-slate-12 text-left flex-grow truncate w-0">
               {currentWorkspace.name}
@@ -534,7 +544,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
             </Tooltip.Portal>
           </Tooltip.Root>
         </Tooltip.Provider>
-        <AccountPopover />
+        <AccountPopover currentWorkspace={currentWorkspace} />
       </div>
     </motion.div>
   );

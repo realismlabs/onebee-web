@@ -15,6 +15,7 @@ import { IconList } from "@/components/IconList";
 import { Transition } from "@headlessui/react";
 import IconPickerPopoverCreateTable from "@/components/IconPickerPopoverCreateTable";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
+import { AccountHeader } from "@/components/AccountHeader";
 
 function getIconSvgStringFromName(iconName: string): string {
   const iconItem = IconList.find((icon) => icon.name === iconName);
@@ -62,10 +63,6 @@ function getIconSvgStringFromName(iconName: string): string {
   const random_color = colors[Math.floor(Math.random() * colors.length)];
   const updatedSvgString = updateSvgColor(iconSvgString, random_color);
   return updatedSvgString;
-}
-
-interface AccountHeaderProps {
-  email: string;
 }
 
 interface databasePreviewTableItem {
@@ -134,29 +131,6 @@ function createNestedStructure(
 
   return nestedStructure;
 }
-
-const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
-  const handleLogout = () => {
-    router.push("/login?lo=true");
-  };
-
-  return (
-    <div className="w-full flex flex-row h-16 items-center p-12 bg-slate-1">
-      <div className="flex flex-col grow items-start">
-        <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
-        <p className="text-[13px] text-slate-12 font-medium">{email}</p>
-      </div>
-      <div className="flex flex-col grow items-end">
-        <p
-          className="text-[13px] text-slate-12 hover:text-slate-12 font-medium cursor-pointer"
-          onClick={handleLogout}
-        >
-          Logout
-        </p>
-      </div>
-    </div>
-  );
-};
 
 const PreviewTableUI = ({
   tablesQueryData,
@@ -625,7 +599,7 @@ export default function CreateTable() {
   const [isIconSuggestionLoading, setIsIconSuggestionLoading] =
     useState<boolean>(false);
   const [iconSvgString, setIconSvgString] = useState<string>(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#9D5BD2" viewBox="0 0 256 256" class="min-w-[24px] transition-colors duration-300"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path></svg>'
+    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#0091FF" viewBox="0 0 256 256" class="min-w-[24px] transition-colors duration-300"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path></svg>'
   );
   const [selectedColor, setSelectedColor] = useState<string>("#0091FF");
   const [tableDisplayName, setTableDisplayName] = useState<string>("");
@@ -651,6 +625,7 @@ export default function CreateTable() {
       ...connectionRequestBody,
       name:
         capitalizeString(connectionRequestBody.connectionType) +
+        " " +
         connectionRequestBody.accountIdentifier,
       createdAt: new Date().toISOString(),
       workspaceId: currentWorkspace?.id,

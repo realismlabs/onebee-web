@@ -1,16 +1,9 @@
-import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import {
-  deleteWorkspace,
-  updateWorkspace,
-  getWorkspaceMemberships,
-  getUser,
-  updateUser,
-} from "@/utils/api";
+import { getWorkspaceMemberships, getUser, updateUser } from "@/utils/api";
 import {
   useQuery,
   useMutation,
@@ -18,9 +11,13 @@ import {
   useQueries,
 } from "@tanstack/react-query";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
-import { X } from "@phosphor-icons/react";
 import { Dialog } from "@headlessui/react";
-import { friendlyRelativeDateToNow } from "@/utils/util";
+import React, { SyntheticEvent, useState, useEffect } from "react";
+import { useSignIn, useUser } from "@clerk/nextjs";
+import type { NextPage } from "next";
+import Head from "next/head";
+import { CircleNotch, CheckCircle, X } from "@phosphor-icons/react";
+import { UserProfile } from "@clerk/nextjs";
 
 export default function Profile() {
   const handleRenameUser = async (e: any) => {
@@ -42,6 +39,7 @@ export default function Profile() {
       }
     }
   };
+  const [isClerkDialogOpen, setIsClerkDialogOpen] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -72,48 +70,17 @@ export default function Profile() {
     error: workspaceError,
   } = useCurrentWorkspace();
 
-  const {
-    data: membershipsData,
-    isLoading: isMembershipsLoading,
-    error: membershipsError,
-  } = useQuery({
-    queryKey: ["getWorkspaceMemberships", currentWorkspace?.id],
-    queryFn: async () => {
-      const response = await getWorkspaceMemberships(currentWorkspace?.id);
-      return response;
-    },
-    enabled: currentWorkspace?.id !== null,
-  });
-
-  //  fetch user data for each membership
-  const usersData = useQueries({
-    queries: (membershipsData ?? []).map((membership: any) => {
-      return {
-        queryKey: ["getUser", membership.userId],
-        queryFn: async () => {
-          const response = await getUser(membership.userId);
-          return response;
-        },
-        enabled: membership.userId !== null,
-      };
-    }),
-  });
-
-  const currentUserMembership = membershipsData?.find(
-    (membership: any) => membership.userId === currentUser?.id
-  );
-
   useEffect(() => {
     if (currentUser?.name) {
       setUserName(currentUser?.name);
     }
   }, [currentUser]);
 
-  if (isUserLoading || isWorkspaceLoading || isMembershipsLoading) {
+  if (isUserLoading || isWorkspaceLoading) {
     return <div className="h-screen bg-slate-1"></div>;
   }
 
-  if (userError || workspaceError || membershipsError) {
+  if (userError || workspaceError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
@@ -180,9 +147,15 @@ export default function Profile() {
                 </div>
                 <div className="flex flex-col text-[14px] mt-[16px]">
                   <div className="flex flex-col">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[14px] w-[120px]">Email</label>
+                      <div className="text-slate-12 font-medium">
+                        {currentUser.email}
+                      </div>
+                    </div>
                     <form
                       onSubmit={handleRenameUser}
-                      className="flex flex-col gap-4"
+                      className="flex flex-col gap-4 mt-8"
                     >
                       <div className="flex flex-col gap-2">
                         <label className="text-[14px] w-[120px]">Name</label>
@@ -215,6 +188,79 @@ export default function Profile() {
                         Save
                       </button>
                     </form>
+                    <div className="flex flex-col gap-2 mt-12 w-[360px]">
+                      <label className="text-[14px] w-[120px]">
+                        Account security
+                      </label>
+                      <p className="text-slate-11 text-[13px]">
+                        Manage other settings like linked accounts, password
+                        reset, and active devices.
+                      </p>
+                      <button
+                        type="submit"
+                        className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md self-start mt-2"
+                        onClick={() => setIsClerkDialogOpen(true)}
+                      >
+                        Manage security
+                      </button>
+                    </div>
+                    <Dialog
+                      as="div"
+                      open={isClerkDialogOpen}
+                      onClose={() => setIsClerkDialogOpen(false)}
+                      className="absolute inset-0 flex min-w-full h-screen"
+                    >
+                      <Dialog.Overlay>
+                        <div className="fixed inset-0 bg-slate-1 opacity-50" />
+                      </Dialog.Overlay>
+                      <Dialog.Panel className="absolute z-30 top-[10vh] max-h-[80vh] left-[50%] translate-x-[-50%] overflow-y-scroll">
+                        <div className="flex flex-col bg-slate-2 border border-slate-4 rounded-[8px] w-full p-[24px] text-slate-12">
+                          {/* Close */}
+                          <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
+                            <button
+                              onClick={() => {
+                                setIsClerkDialogOpen(false);
+                              }}
+                              className="text-slate-11 hover:bg-slate-4 rounded-md h-[24px] w-[24px] ml-[12px] flex items-center justify-center"
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                          <Dialog.Title className="text-[14px] font-semibold w-full border-b border-slate-6 pb-4">
+                            Account security
+                          </Dialog.Title>
+                          <UserProfile
+                            appearance={{
+                              elements: {
+                                card: "bg-slate-2 ml-[-32px] shadow-none", // the margin hides the clerk tag
+                                navbar: "hidden",
+                                profileSection__profile: "hidden",
+                                profileSection__emailAddresses: "hidden",
+                                formFieldLabel: "text-[14px] font-normal pb-2",
+                                formFieldInput:
+                                  "bg-slate-3 border border-slate-6 focus:outline-none focus:ring-blue-600 text-[14px] rounded-md placeholder-slate-9",
+                                profileSectionTitleText:
+                                  "text-[14px] font-normal",
+                                profileSectionPrimaryButton:
+                                  "text-blue-500 hover:bg-blue-2 tracking-normal",
+                                formButtonReset:
+                                  "text-blue-500 hover:bg-blue-2 tracking-normal",
+                                badge:
+                                  "text-blue-500 bg-blue-2 tracking-normal",
+                                profileSectionContent__activeDevices:
+                                  "tracking-normal",
+                                accordionTriggerButton: "tracking-normal",
+                                headerTitle: "text-[16px] font-medium",
+                                formFieldInput__signOutOfOtherSessions:
+                                  "h-[24px] w-[24px] max-w-[24px] p-0 text-blue-500 active:text-blue-500",
+                                formFieldLabelRow__signOutOfOtherSessions:
+                                  "pl-2 h-[24px] pt-2",
+                              },
+                            }}
+                          />
+                        </div>
+                      </Dialog.Panel>
+                    </Dialog>
                   </div>
                 </div>
               </div>

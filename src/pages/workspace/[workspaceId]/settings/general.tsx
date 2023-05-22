@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable @next/next/no-img-element */
+import React, { useState, useEffect, FC, useCallback } from "react";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
 import Image from "next/image";
@@ -20,6 +21,116 @@ import WorkspaceLayout from "@/components/WorkspaceLayout";
 import { X } from "@phosphor-icons/react";
 import { Dialog } from "@headlessui/react";
 import { friendlyRelativeDateToNow } from "@/utils/util";
+import { useDropzone } from "react-dropzone";
+
+const ImageUploader = ({
+  iconUrl,
+  customWorkspaceBase64Icon,
+  currentWorkspace,
+  base64URL,
+  setBase64URL,
+  hasDroppedNewIcon,
+  setHasDroppedNewIcon,
+}: {
+  iconUrl: string;
+  customWorkspaceBase64Icon: string | null;
+  currentWorkspace: any;
+  base64URL: string | null;
+  setBase64URL: React.Dispatch<React.SetStateAction<string | null>>;
+  hasDroppedNewIcon: boolean;
+  setHasDroppedNewIcon: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isUserHoveringOverDropzone, setIsUserHoveringOverDropzone] =
+    useState(false);
+
+  // shows the customWorkspaceBase64Icon if it exists, otherwise shows the standard default iconUrl
+  useEffect(() => {
+    if (customWorkspaceBase64Icon) {
+      setBase64URL(customWorkspaceBase64Icon);
+    } else {
+      setBase64URL(iconUrl);
+    }
+  }, [customWorkspaceBase64Icon, iconUrl, setBase64URL]);
+
+  const onDrop = useCallback(
+    (acceptedFiles: any) => {
+      setError(null); // reset the error
+
+      const file = acceptedFiles[0];
+      const MAX_SIZE = 1 * 1024 * 1024; // 1MB
+      const VALID_TYPES = [
+        "image/png",
+        "image/jpeg",
+        "image/gif",
+        "image/svg+xml",
+      ];
+
+      if (file && VALID_TYPES.indexOf(file.type) === -1) {
+        console.log("file.type", file.type);
+        setError("Invalid file type. Please select an image file.");
+      } else if (file && file.size > MAX_SIZE) {
+        setError("File size exceeds 1MB. Please select another image.");
+      } else if (file) {
+        const reader = new FileReader();
+
+        reader.readAsDataURL(file);
+
+        reader.onloadend = () => {
+          setBase64URL(reader.result as string);
+          setFile(file);
+          setHasDroppedNewIcon(true);
+        };
+
+        reader.onerror = () => {
+          setError("Something went wrong! Please try again.");
+        };
+      }
+    },
+    [setBase64URL]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+  });
+
+  return (
+    <div className="">
+      <div {...getRootProps()} className="w-[128px] h-[128px] relative">
+        <input {...getInputProps()} accept="image/*" className="absolute" />
+        {base64URL && (
+          <div
+            className="absolute rounded-lg overflow-clip flex items-center justify-center h-full w-full"
+            onMouseEnter={() => setIsUserHoveringOverDropzone(true)}
+            onMouseLeave={() => setIsUserHoveringOverDropzone(false)}
+          >
+            {(isUserHoveringOverDropzone || isDragActive) && (
+              <div className="absolute w-full h-full z-20 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
+                Upload
+              </div>
+            )}
+            {!customWorkspaceBase64Icon && hasDroppedNewIcon == false && (
+              <p className="absolute text-white text-[36px]">
+                {currentWorkspace?.name?.slice(0, 1)}
+              </p>
+            )}
+
+            <img
+              src={base64URL}
+              alt="Uploaded"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+      </div>
+      <div className="text-slate-11 text-[13px] mt-3">
+        Recommended icon size is 256 x 256
+      </div>
+      {error && <div className="text-red-9 text-[13px] mt-1">{error}</div>}
+    </div>
+  );
+};
 
 export default function Settings() {
   const handleRenameWorkspace = async (e: any) => {
@@ -33,7 +144,10 @@ export default function Settings() {
 
       const workspaceData = {
         name: workspaceName,
+        customWorkspaceBase64Icon:
+          base64URL && hasDroppedNewIcon ? base64URL : null,
       };
+
       try {
         const response = await updateWorkspaceMutation.mutateAsync({
           workspaceId: currentWorkspace.id,
@@ -59,6 +173,8 @@ export default function Settings() {
     useState(false);
   const [deleteWorkspaceErrorMessage, setDeleteWorkspaceErrorMessage] =
     useState("");
+  const [base64URL, setBase64URL] = useState<string | null>(null);
+  const [hasDroppedNewIcon, setHasDroppedNewIcon] = useState(false);
 
   const openDeleteWorkspaceDialog = () => {
     setIsDeleteWorkspaceDialogOpen(true);
@@ -229,7 +345,20 @@ export default function Settings() {
                         className="flex flex-col gap-4"
                       >
                         <div className="flex flex-col gap-2">
-                          <label className="text-[14px] w-[120px]">
+                          <label className="text-[14px] w-[120px]">Icon</label>
+                          <ImageUploader
+                            iconUrl={currentWorkspace?.iconUrl}
+                            customWorkspaceBase64Icon={
+                              currentWorkspace?.customWorkspaceBase64Icon ??
+                              null
+                            }
+                            currentWorkspace={currentWorkspace}
+                            base64URL={base64URL}
+                            setBase64URL={setBase64URL}
+                            hasDroppedNewIcon={hasDroppedNewIcon}
+                            setHasDroppedNewIcon={setHasDroppedNewIcon}
+                          />
+                          <label className="text-[14px] w-[120px] mt-4">
                             Workspace name
                           </label>
                           <input
@@ -347,7 +476,24 @@ export default function Settings() {
                 {currentUserMembership?.role !== "admin" && (
                   <div className="flex flex-col text-[14px] mt-[16px]">
                     <div className="flex flex-col gap-2">
-                      <p className="text-[13px] text-slate-11">
+                      <label className="text-[14px] w-[120px] text-slate-11">
+                        Icon
+                      </label>
+                      <div
+                        className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
+                        style={{
+                          backgroundImage: `url(${
+                            currentWorkspace?.customWorkspaceBase64Icon
+                              ? currentWorkspace?.customWorkspaceBase64Icon
+                              : currentWorkspace?.iconUrl
+                          })`,
+                          backgroundSize: "cover",
+                        }}
+                      >
+                        {!currentWorkspace?.customWorkspaceBase64Icon &&
+                          currentWorkspace.name.slice(0, 1)}
+                      </div>
+                      <p className="text-[13px] text-slate-11 mt-4">
                         Workspace name
                       </p>
                       <p>{currentWorkspace.name}</p>
