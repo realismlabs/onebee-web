@@ -204,7 +204,6 @@ export default function Signup() {
     e.preventDefault();
 
     try {
-      // https://clerk.com/docs/authentication/oauth-custom-flow
       await signUp
         ?.authenticateWithRedirect({
           strategy: "oauth_google",

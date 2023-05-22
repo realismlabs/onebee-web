@@ -110,7 +110,7 @@ export default function Login() {
       await signIn
         ?.authenticateWithRedirect({
           strategy: "oauth_google",
-          redirectUrl: "/dashboard",
+          redirectUrl: "/sso-callback",
           redirectUrlComplete: "/dashboard",
         })
         .catch((err: any) => {
