@@ -45,7 +45,6 @@ export default function App({ Component, pageProps }: AppProps) {
     "/login",
     "/sandbox",
     "/signup",
-    "/reset-password",
     "/",
   ];
 
