@@ -13,6 +13,7 @@
   "dependencies": {
     "@clerk/clerk-js": "^4.41.0",
     "@clerk/nextjs": "^4.18.1",
+    "@clerk/themes": "^1.7.2",
     "@headlessui/react": "^1.7.14",
     "@phosphor-icons/react": "^2.0.8",
     "@radix-ui/react-dialog": "^1.0.3",

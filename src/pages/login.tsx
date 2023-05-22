@@ -103,6 +103,24 @@ export default function Login() {
     }
   };
 
+  const handleGoogleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      await signIn
+        ?.authenticateWithRedirect({
+          strategy: "oauth_google",
+          redirectUrl: "/dashboard",
+          redirectUrlComplete: "/dashboard",
+        })
+        .catch((err: any) => {
+          console.error(JSON.stringify(err, null, 2));
+        });
+    } catch (err: any) {
+      console.error(JSON.stringify(err, null, 2));
+    }
+  };
+
   if (isLoadedUser && !isSignedIn) {
     return (
       <>
@@ -152,7 +170,10 @@ export default function Login() {
                 <h3 className="text-[14px] text-slate-11">Log into Dataland</h3>
                 <div className="flex flex-col gap-4 mt-8 w-full">
                   <div className="w-full flex flex-col gap-2">
-                    <button className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                    <button
+                      className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center"
+                      onClick={(e) => handleGoogleSubmit(e)}
+                    >
                       <Image
                         src="/images/logo_google.svg"
                         width={24}

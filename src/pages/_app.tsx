@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import { dark } from "@clerk/themes";
 import type { AppProps } from "next/app";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
@@ -52,7 +53,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const isPublicPage = publicPages.includes(pathname);
 
   return (
-    <ClerkProvider {...pageProps}>
+    <ClerkProvider
+      {...pageProps}
+      appearance={{
+        baseTheme: dark,
+      }}
+    >
       {isPublicPage ? (
         <PersistQueryClientProvider
           client={queryClient}

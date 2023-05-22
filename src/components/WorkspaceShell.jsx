@@ -6,7 +6,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery, useQueryClient, useQueries } from '@tanstack/react-query';
 import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspace } from '../utils/api';
-import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, } from '@phosphor-icons/react';
+import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, Gear, } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
 import { getWorkspaces } from '@/utils/api';
@@ -16,7 +16,7 @@ import { useLocalStorageState } from '@/utils/util';
 import InvitePeopleDialog from './InvitePeopleDialog';
 import { useClerk } from "@clerk/clerk-react";
 
-function AccountPopover() {
+function AccountPopover({ currentWorkspace }) {
   const { signOut } = useClerk();
   const queryClient = useQueryClient();
   const handleLogout = async () => {
@@ -51,7 +51,13 @@ function AccountPopover() {
           >
             <Popover.Panel className="absolute mb-[32px] bottom-0 ">
               <div className="overflow-visible rounded-md shadow-2xl ring-1 ring-black ring-opacity-5 bg-slate-2 w-[180px] p-[8px] text-[13px] cursor-pointer">
-                <div className="hover:bg-slate-4 px-[8px] py-[4px] flex flex-row items-center gap-2" onClick={handleLogout}>
+                <Link href={`/workspace/${currentWorkspace?.id}/settings/profile`}>
+                  <div className="hover:bg-slate-4 px-[8px] py-[6px] flex flex-row rounded-md items-center gap-3" >
+                    <Gear size={16} weight="fill" className="text-slate-10" />
+                    Account settings
+                  </div>
+                </Link>
+                <div className="hover:bg-slate-4 px-[8px] py-[6px] flex flex-row rounded-md items-center gap-3" onClick={handleLogout}>
                   <SignOut size={16} weight="bold" className="text-slate-10" />
                   Log out
                 </div>
@@ -538,7 +544,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
             </Tooltip.Portal>
           </Tooltip.Root>
         </Tooltip.Provider>
-        <AccountPopover />
+        <AccountPopover currentWorkspace={currentWorkspace} />
       </div>
     </motion.div>
   );

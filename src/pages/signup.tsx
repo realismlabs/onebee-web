@@ -1,13 +1,12 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useSignUp } from "@clerk/nextjs";
+import { useSignUp, useUser, useSignIn } from "@clerk/nextjs";
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { callApi } from "../utils/util";
 import { createUser } from "@/utils/api";
 import { capitalizeString } from "../utils/util";
-import { useUser } from "@clerk/clerk-react";
 
 export default function Signup() {
   const router = useRouter();
@@ -23,6 +22,7 @@ export default function Signup() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
   const { isSignedIn, isLoaded: isLoadedUser } = useUser();
+  const { signIn } = useSignIn();
 
   if (!isSignedIn) {
   } else {
@@ -53,100 +53,6 @@ export default function Signup() {
       return { result: true, message: "" };
     }
   };
-
-  // // Handle Sign up (no clerk)
-  // const handleSubmit = async (event: any) => {
-  //   event.preventDefault();
-  //   console.log("Signup submit data:", { email, password });
-  //   // Here you can send the form data to your backend or perform any other necessary action.
-  //   setEmailErrorMessage("");
-  //   setPasswordErrorMessage("");
-
-  //   if (!email || !password) {
-  //     setEmailErrorMessage("Email and password are required.");
-  //     return;
-  //   }
-
-  //   const emailRegex =
-  //     /^[\w-]+(\.[\w-]+)*(\+[a-zA-Z0-9-_.+]+)?@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-
-  //   if (!emailRegex.test(email)) {
-  //     setEmailErrorMessage("Please enter a valid email address.");
-  //     return;
-  //   }
-
-  //   if (await isEmailRegistered(email)) {
-  //     setEmailErrorMessage("The email address is already registered.");
-  //     return;
-  //   }
-
-  //   const is_password_strong = isPasswordStrong(password);
-  //   if (!is_password_strong.result) {
-  //     setPasswordErrorMessage(isPasswordStrong(password).message);
-  //     return;
-  //   }
-
-  //   // If it passes all tests, create the new user
-  //   const newUser = {
-  //     email,
-  //     password, // You should hash the password before storing it
-  //     emailVerified: false,
-  //     createdAt: new Date().toISOString(),
-  //     updatedAt: new Date().toISOString(),
-  //   };
-
-  //   // Call the API to create a new user
-  //   const createdUser = await callApi({
-  //     method: "POST",
-  //     url: "/users",
-  //     data: newUser,
-  //   });
-
-  //   console.log("createdUser", createdUser);
-  //   console.log("createdUser.id", createdUser.id);
-
-  //   // Generate a unique token and expiration time for email verification
-  //   const emailVerificationData = {
-  //     userId: createdUser.id,
-  //     token: crypto.randomUUID(), // Replace with a function that generates a unique token
-  //     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Token expires in 24 hours
-  //   };
-
-  //   console.log("emailVerificationData:", emailVerificationData);
-
-  //   // Call the API to create a new email verification entry
-  //   await callApi({
-  //     method: "POST",
-  //     url: "/api/auth/verify-email",
-  //     data: emailVerificationData,
-  //   });
-
-  //   console.log("emailVerificationData created");
-  //   // Send an email to the user with the verification link
-
-  //   const send_verification_email_response = await fetch(
-  //     "/api/send-verification-email",
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         email,
-  //         verification_token: emailVerificationData.token,
-  //       }),
-  //     }
-  //   );
-  //   const send_verification_email_result =
-  //     await send_verification_email_response.json();
-  //   console.log(
-  //     "send_verification_email_result",
-  //     send_verification_email_result
-  //   );
-
-  //   // Re-route to verify screen
-  //   router.push("/verify-email");
-  // };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -245,6 +151,24 @@ export default function Signup() {
     }
   };
 
+  const handleGoogleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      await signIn
+        ?.authenticateWithRedirect({
+          strategy: "oauth_google",
+          redirectUrl: "/dashboard",
+          redirectUrlComplete: "/dashboard",
+        })
+        .catch((err: any) => {
+          console.error(JSON.stringify(err, null, 2));
+        });
+    } catch (err: any) {
+      console.error(JSON.stringify(err, null, 2));
+    }
+  };
+
   if (isLoadedUser && !isSignedIn) {
     return (
       <>
@@ -277,7 +201,10 @@ export default function Signup() {
                   </h3>
                   <div className="flex flex-col gap-4 mt-8 w-full">
                     <div className="w-full flex flex-col gap-2">
-                      <button className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                      <button
+                        className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center"
+                        onClick={(e) => handleGoogleSubmit(e)}
+                      >
                         <Image
                           src="/images/logo_google.svg"
                           width={24}
