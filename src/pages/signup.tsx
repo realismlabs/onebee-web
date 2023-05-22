@@ -1,11 +1,21 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useSignUp, useUser, useSignIn } from "@clerk/nextjs";
-import React, { useState } from "react";
+import { useSignUp, useUser, useSignIn, SignUp } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { callApi } from "../utils/util";
 import { createUser } from "@/utils/api";
+import React, {
+  SyntheticEvent,
+  useState,
+  useEffect,
+  createRef,
+  ChangeEvent,
+  KeyboardEvent,
+} from "react";
+import type { NextPage } from "next";
+import { CircleNotch, CheckCircle } from "@phosphor-icons/react";
+import { set } from "date-fns";
 import { capitalizeString } from "../utils/util";
 
 export default function Signup() {
@@ -20,9 +30,47 @@ export default function Signup() {
   // Clerk specific
   const { isLoaded: isLoadedSignUp, signUp, setActive } = useSignUp();
   const [pendingVerification, setPendingVerification] = useState(false);
-  const [code, setCode] = useState("");
   const { isSignedIn, isLoaded: isLoadedUser } = useUser();
   const { signIn } = useSignIn();
+
+  // ----------------------------------------------------
+  const [code, setCode] = useState<Array<string>>(Array(6).fill(""));
+  const inputs = Array(6)
+    .fill(0)
+    .map(() => createRef<HTMLInputElement>());
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>, i: number) => {
+    const newCode = [...code];
+    newCode[i] = e.target.value;
+    setCode(newCode);
+
+    if (i < code.length - 1 && e.target.value) {
+      inputs[i + 1].current?.focus();
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, i: number) => {
+    if (e.key === "Backspace" && code[i] === "" && i > 0) {
+      inputs[i - 1].current?.focus();
+    }
+  };
+
+  const handlePaste = (
+    e: React.ClipboardEvent<HTMLInputElement>,
+    i: number
+  ) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text/plain");
+    if (pastedData.length > 6 - i || !/^\d*$/.test(pastedData)) return;
+    const newCode = [...code];
+    for (let j = 0; j < pastedData.length; j++) {
+      newCode[i + j] = pastedData[j];
+    }
+    setCode(newCode);
+
+    inputs[i + pastedData.length - 1].current?.focus();
+  };
+  //----------------------------------------------------
 
   if (!isSignedIn) {
   } else {
@@ -118,8 +166,9 @@ export default function Signup() {
     }
 
     try {
+      const submitted_code = code.join("");
       const completeSignUp = await signUp.attemptEmailAddressVerification({
-        code,
+        code: submitted_code,
       });
 
       if (completeSignUp.status !== "complete") {
@@ -155,10 +204,11 @@ export default function Signup() {
     e.preventDefault();
 
     try {
-      await signIn
+      // https://clerk.com/docs/authentication/oauth-custom-flow
+      await signUp
         ?.authenticateWithRedirect({
           strategy: "oauth_google",
-          redirectUrl: "/dashboard",
+          redirectUrl: "/sso-callback",
           redirectUrlComplete: "/dashboard",
         })
         .catch((err: any) => {
@@ -337,17 +387,25 @@ export default function Signup() {
                   </div>
                   <form>
                     <div className="flex flex-col gap-4 mt-4 items-start">
-                      <input
-                        value={code}
-                        placeholder="Code..."
-                        onChange={(e) => setCode(e.target.value)}
-                        onBlur={() => setVerificationErrorMessage("")}
-                        className={`bg-slate-3 hover:border-slate-7 border text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 placeholder-slate-9 ${
-                          verificationErrorMessage !== ""
-                            ? "border-red-9"
-                            : "border-slate-6"
-                        }`}
-                      />
+                      <div className="flex space-x-2">
+                        {code.map((c, i) => (
+                          <input
+                            title="Reset code"
+                            key={i}
+                            type="text"
+                            required
+                            ref={inputs[i]}
+                            value={c}
+                            onChange={(e) => handleChange(e, i)}
+                            onKeyDown={(e) => handleKeyDown(e, i)}
+                            onPaste={(e) => handlePaste(e, i)}
+                            maxLength={1}
+                            className={`bg-slate-3 hover:border-slate-7 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md w-[36px] placeholder-slate-9 flex items-center justify-center  text-center ${
+                              verificationErrorMessage && "border-red-9"
+                            }`}
+                          />
+                        ))}
+                      </div>
                       {verificationErrorMessage && (
                         <div className="text-red-9 text-[13px]">
                           {verificationErrorMessage}

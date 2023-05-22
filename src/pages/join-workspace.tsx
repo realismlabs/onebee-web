@@ -201,6 +201,7 @@ export default function JoinWorkspace() {
                               ? workspaceDetail?.customWorkspaceBase64Icon
                               : workspaceDetail?.iconUrl
                           })`,
+                          backgroundSize: "cover",
                         }}
                       >
                         {!workspaceDetail?.customWorkspaceBase64Icon &&
@@ -249,6 +250,7 @@ export default function JoinWorkspace() {
                               ? workspace?.customWorkspaceBase64Icon
                               : workspace?.iconUrl
                           })`,
+                          backgroundSize: "cover",
                         }}
                       >
                         {!workspace?.customWorkspaceBase64Icon &&
