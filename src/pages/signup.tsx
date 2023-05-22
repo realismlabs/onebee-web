@@ -286,7 +286,7 @@ export default function Signup() {
                         ></Image>
                         Sign up with Google
                       </button>
-                      <button className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                      {/* <button className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                         <Image
                           src="/images/logo_github.svg"
                           width={24}
@@ -294,7 +294,7 @@ export default function Signup() {
                           alt="Google logo"
                         ></Image>
                         Sign up with GitHub
-                      </button>
+                      </button> */}
                     </div>
                     <div className="flex flex-row items-center justify-center">
                       <hr className="w-full border-1 border-slate-6" />

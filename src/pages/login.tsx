@@ -142,7 +142,13 @@ export default function Login() {
                     workspace
                   </div>
                 )}
-                <h1 className={`text-xl mt-8`}>Welcome back</h1>
+                <h1
+                  className={`text-xl ${
+                    !isWorkspaceRedirectUrl ? "mt-32" : "mt-8"
+                  }`}
+                >
+                  Welcome back
+                </h1>
                 <h3 className="text-[14px] text-slate-11">Log into Dataland</h3>
                 <div className="flex flex-col gap-4 mt-8 w-full">
                   <div className="w-full flex flex-col gap-2">
@@ -155,7 +161,7 @@ export default function Login() {
                       ></Image>
                       Log in with Google
                     </button>
-                    <button className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
+                    {/* <button className="w-full bg-slate-3 border border-slate-6 text-slate-12 text-[14px] font-medium rounded-md px-3 py-2 flex flex-row gap-3 hover:bg-slate-4 justify-center">
                       <Image
                         src="/images/logo_github.svg"
                         width={24}
@@ -163,7 +169,7 @@ export default function Login() {
                         alt="Google logo"
                       ></Image>
                       Log in with GitHub
-                    </button>
+                    </button> */}
                   </div>
                   <div className="flex flex-row items-center justify-center">
                     <hr className="w-full border-1 border-slate-6" />
