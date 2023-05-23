@@ -79,18 +79,19 @@ export const createUser = async ({ email, name, clerkUserId, jwt }) => {
 export const createInvite = async ({
   workspaceId,
   inviterEmail,
-  recipientEmail
+  recipientEmail,
+  jwt
 }
 ) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   // first see if the recipient has already been invited or is already a member
-  const existingInvites = await getInvitesForUserEmail(recipientEmail.trim());
-  const existingMemberships = await getWorkspaceMemberships(workspaceId);
+  const existingInvites = await getInvitesForUserEmail(recipientEmail.trim(), jwt);
+  const existingMemberships = await getWorkspaceMemberships(workspaceId, jwt);
 
   // for each existing membership, get the user details
   const existingUsers = await Promise.all(
     existingMemberships.map(async (membership) => {
-      const user = await getUser(membership.userId);
+      const user = await getUser(membership.userId, jwt);
       return user;
     })
   );
@@ -120,6 +121,7 @@ export const createInvite = async ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
         },
         body: JSON.stringify({
           inviterEmail,
@@ -140,14 +142,19 @@ export const createInvite = async ({
   }
 };
 
-export const getInvitesForUserEmail = async (recipientEmail) => {
+export const getInvitesForUserEmail = async (recipientEmail, jwt) => {
   console.log("getInvitesForUserEmail", recipientEmail);
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
 
   const encodedEmail = encodeURIComponent(recipientEmail);
 
   const response = await fetch(
-    `${API_BASE_URL}/api/invites/recipient/${encodedEmail}`
+    `${API_BASE_URL}/api/invites/recipient/${encodedEmail}`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   // const response = await fetch(`${API_BASE_URL}/invites?recipientEmail=${recipientEmail}`);
 
@@ -160,11 +167,16 @@ export const getInvitesForUserEmail = async (recipientEmail) => {
   return filteredResult;
 };
 
-export const getWorkspaceInvites = async (workspaceId) => {
+export const getWorkspaceInvites = async (workspaceId, jwt) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
 
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/invites`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/invites`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
 
   if (!response.ok) {
@@ -178,12 +190,16 @@ export const getWorkspaceInvites = async (workspaceId) => {
 };
 
 // "/api/workspaces/:workspaceId/invites/:inviteId/delete": "/invites/:inviteId",
-export const deleteWorkspaceInvite = async ({ workspaceId, inviteId }) => {
+export const deleteWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/invites/${inviteId}/delete`,
     {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
     }
   );
   const deletedInvite = await response.json();
@@ -191,7 +207,7 @@ export const deleteWorkspaceInvite = async ({ workspaceId, inviteId }) => {
 };
 
 // "/api/workspaces/:workspaceId/accept-invite/:inviteId": "/invites/:inviteId",
-export const acceptWorkspaceInvite = async ({ workspaceId, inviteId }) => {
+export const acceptWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/accept-invite/${inviteId}`,
@@ -199,6 +215,7 @@ export const acceptWorkspaceInvite = async ({ workspaceId, inviteId }) => {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify({
         accepted: true,
@@ -209,9 +226,15 @@ export const acceptWorkspaceInvite = async ({ workspaceId, inviteId }) => {
   return acceptedInvite;
 };
 
+// This is a public route that does not require authentication
 export const getWorkspaceDetails = async (workspaceId) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
-  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch workspace details for id: ${workspaceId}`);
@@ -219,26 +242,19 @@ export const getWorkspaceDetails = async (workspaceId) => {
   return await response.json();
 };
 
-export const getUsers = async () => {
+export const getUser = async (userId, jwt) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
-  const response = await fetch(`${API_BASE_URL}/api/users/`);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch users`);
-  }
-  return await response.json();
-};
-
-export const getUser = async (userId) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
-  const response = await fetch(`${API_BASE_URL}/api/users/${userId}`);
+  const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    }
+  });
   const user = await response.json();
   return user;
 };
 
-
 // Update a specific user
-export const updateUser = async ({ userId, userData }) => {
+export const updateUser = async ({ userId, userData, jwt }) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/users/${userId}/update`,
@@ -246,6 +262,7 @@ export const updateUser = async ({ userId, userData }) => {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(userData),
     }
@@ -255,13 +272,14 @@ export const updateUser = async ({ userId, userData }) => {
 };
 
 
-export const createWorkspace = async (workspaceData) => {
+export const createWorkspace = async (workspaceData, jwt) => {
   const icon = generateWorkspaceIcon(workspaceData.name);
 
   const response = await fetch(`${API_BASE_URL}/api/workspaces`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({
       ...workspaceData,
@@ -273,13 +291,14 @@ export const createWorkspace = async (workspaceData) => {
 };
 
 // Update a specific workspace
-export const updateWorkspace = async ({ workspaceId, workspaceData }) => {
+export const updateWorkspace = async ({ workspaceId, workspaceData, jwt }) => {
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/update`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(workspaceData),
     }
@@ -289,11 +308,15 @@ export const updateWorkspace = async ({ workspaceId, workspaceData }) => {
 };
 
 // Delete workspace
-export const deleteWorkspace = async ({ workspaceId }) => {
+export const deleteWorkspace = async ({ workspaceId, jwt }) => {
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/delete`,
     {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
     }
   );
   const deletedWorkspace = await response.json();
@@ -302,18 +325,28 @@ export const deleteWorkspace = async ({ workspaceId }) => {
 
 
 // Get all tables associated with a workspace
-export const getTables = async (workspaceId) => {
+export const getTables = async (workspaceId, jwt) => {
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/tables`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/tables`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const tables = await response.json();
   return tables;
 };
 
 // Get tables associated with a connection in a workspace
-export const getTablesFromConnection = async (workspaceId, connectionId) => {
+export const getTablesFromConnection = async (workspaceId, connectionId, jwt) => {
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/tables`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/tables`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const tables = await response.json();
   console.log("getTablesFromConnection", tables, workspaceId, connectionId)
@@ -322,13 +355,14 @@ export const getTablesFromConnection = async (workspaceId, connectionId) => {
 
 
 // Create a table in a workspace
-export const createTable = async (tableData) => {
+export const createTable = async (tableData, jwt) => {
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${tableData.workspaceId}/tables`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(tableData),
     }
@@ -566,19 +600,19 @@ export const getUserMemberships = async (userId) => {
   return memberships;
 }
 
-export const getAllowedWorkspacesForUser = async (userId) => {
+export const getAllowedWorkspacesForUser = async (userId, jwt) => {
   // fetch all workspaces
   const workspaces = await getWorkspaces();
 
   // fetch user email domain
-  const user = await getUser(userId);
+  const user = await getUser(userId, jwt);
 
   const user_domain = user.email.split("@")[1].toLowerCase();
 
   // get the user's existing memberships
-  const memberships = await getUserMemberships(userId);
+  const memberships = await getUserMemberships(userId, jwt);
 
-  const invites = await getInvitesForUserEmail(user.email);
+  const invites = await getInvitesForUserEmail(user.email, jwt);
 
   // filter workspaces' allowedDomains array by email domain. 
   // Also filter out workspaces that the user is already a member of.

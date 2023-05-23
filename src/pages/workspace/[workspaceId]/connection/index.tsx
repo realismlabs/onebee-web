@@ -19,6 +19,7 @@ import { PencilSimpleLine, X, TreeStructure } from "@phosphor-icons/react";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { Dialog } from "@headlessui/react";
 import Image from "next/image";
+import { useAuth } from "@clerk/nextjs";
 
 function findSelectedConnection(
   connectionsData: any,
@@ -31,6 +32,7 @@ function findSelectedConnection(
 }
 
 export default function Connections() {
+  const { getToken } = useAuth();
   const router = useRouter();
   const { tableId } = router.query;
 
@@ -97,9 +99,11 @@ export default function Connections() {
       selectedConnectionId,
     ],
     queryFn: async () => {
+      const jwt = await getToken({ template: "test" });
       const response = await getTablesFromConnection(
         currentWorkspace?.id,
-        selectedConnectionId
+        selectedConnectionId,
+        jwt
       );
       return response;
     },

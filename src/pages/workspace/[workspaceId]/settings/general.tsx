@@ -22,6 +22,7 @@ import { X } from "@phosphor-icons/react";
 import { Dialog } from "@headlessui/react";
 import { friendlyRelativeDateToNow } from "@/utils/util";
 import { useDropzone } from "react-dropzone";
+import { useAuth } from "@clerk/nextjs";
 
 const ImageUploader = ({
   iconUrl,
@@ -133,6 +134,7 @@ const ImageUploader = ({
 };
 
 export default function Settings() {
+  const { getToken } = useAuth();
   const handleRenameWorkspace = async (e: any) => {
     e.preventDefault();
     console.log("clicked");
@@ -149,9 +151,11 @@ export default function Settings() {
       };
 
       try {
+        const jwt = await getToken({ template: "test" });
         const response = await updateWorkspaceMutation.mutateAsync({
           workspaceId: currentWorkspace.id,
           workspaceData: workspaceData,
+          jwt,
         });
       } catch (error) {
         console.error("Error updating workspace:", error);
@@ -161,8 +165,10 @@ export default function Settings() {
 
   const handleDeleteWorkspace = async () => {
     try {
+      const jwt = await getToken({ template: "test" });
       const response = await deleteWorkspaceMutation.mutateAsync({
         workspaceId: currentWorkspace.id,
+        jwt,
       });
     } catch (error) {
       console.error("Error deleting workspace:", error);
@@ -250,7 +256,8 @@ export default function Settings() {
       return {
         queryKey: ["getUser", membership.userId],
         queryFn: async () => {
-          const response = await getUser(membership.userId);
+          const jwt = await getToken({ template: "test" });
+          const response = await getUser(membership.userId, jwt);
           return response;
         },
         enabled: membership.userId !== null,

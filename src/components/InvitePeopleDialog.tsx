@@ -13,6 +13,7 @@ import { Disclosure, Transition, Dialog } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { createInvite } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/nextjs";
 
 interface ToastProps {
   message: string;
@@ -73,6 +74,7 @@ const InvitePeopleDialog = ({
   customInvitePeopleSubject?: string;
 }) => {
   let inviterEmail = currentUser.email;
+  const { getToken } = useAuth();
 
   const [emailAddresses, setEmailAddresses] = useState<string>("");
   const [isValid, setIsValid] = useState(true);
@@ -104,6 +106,7 @@ const InvitePeopleDialog = ({
   });
 
   const handleSubmit = async (e: any) => {
+    const token = await getToken({ template: "test" });
     e.preventDefault();
     if (emailAddresses === "") {
       setIsValid(false);
@@ -142,6 +145,7 @@ const InvitePeopleDialog = ({
                 workspaceId: currentWorkspace.id,
                 inviterEmail,
                 recipientEmail,
+                jwt: token,
               });
             } catch (err: any) {
               allSuccess = false; // update the flag to false when an error occurs

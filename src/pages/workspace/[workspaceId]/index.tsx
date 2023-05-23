@@ -19,6 +19,7 @@ import {
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { abbreviateNumber, friendlyRelativeDateToNow } from "@/utils/util";
 import { useLocalStorageState, capitalizeString } from "@/utils/util";
+import { useAuth } from "@clerk/nextjs";
 
 const TableCard = ({
   table,
@@ -172,6 +173,8 @@ const TableCard = ({
   );
 };
 export default function WorkspaceHome() {
+  const { getToken } = useAuth();
+
   const [tableLayout, setTableLayout] = useLocalStorageState(
     "tableLayout",
     "grid"
@@ -228,7 +231,8 @@ export default function WorkspaceHome() {
   } = useQuery({
     queryKey: ["getTables", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getTables(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getTables(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,

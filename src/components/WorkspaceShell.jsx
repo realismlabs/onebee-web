@@ -15,6 +15,7 @@ import * as Tooltip from '@radix-ui/react-tooltip';
 import { useLocalStorageState } from '@/utils/util';
 import InvitePeopleDialog from './InvitePeopleDialog';
 import { useClerk } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/nextjs";
 
 function AccountPopover({ currentWorkspace }) {
   const { signOut } = useClerk();
@@ -249,6 +250,7 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
 
 const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   // Replace the items array with your dynamic data
+  const { getToken } = useAuth();
   const router = useRouter();
   const [shellExpanded, setShellExpanded] = useLocalStorageState("shellExpanded", true);
   const [isInvitePeopleDialogOpen, setIsInvitePeopleDialogOpen] = useState(false);
@@ -300,7 +302,9 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   } = useQuery({
     queryKey: ["getTables", currentWorkspace?.id],
     queryFn: async () => {
-      return await getTables(currentWorkspace?.id)
+      const jwt = await getToken({ template: "test" });
+      const result = await getTables(currentWorkspace?.id, jwt)
+      return result;
     },
     enabled: currentWorkspace?.id !== null,
     staleTime: 1000

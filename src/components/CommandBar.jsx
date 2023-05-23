@@ -8,9 +8,10 @@ import { CircleNotch, TreeStructure, House, Table, Plus, Gear } from '@phosphor-
 import { getTables } from '@/utils/api';
 import { useRouter } from 'next/router';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
-
+import { useAuth } from "@clerk/nextjs";
 
 export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
+  const { getToken } = useAuth();
   const router = useRouter();
   // const [commandBarOpen, setCommandBarOpen] = React.useState(false)
   const [value, setValue] = React.useState('homehome')
@@ -52,7 +53,9 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
   } = useQuery({
     queryKey: ["getTables", currentWorkspace?.id],
     queryFn: async () => {
-      return await getTables(currentWorkspace?.id)
+      const jwt = await getToken({ template: "test" });
+      const result = await getTables(currentWorkspace?.id, jwt)
+      return result
     },
     enabled: currentWorkspace?.id !== null,
     staleTime: 1000

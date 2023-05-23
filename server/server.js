@@ -150,7 +150,7 @@ app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
 });
 
 // createInvite
-app.post('/api/workspaces/:workspaceId/invite', async (req, res) => {
+app.post('/api/workspaces/:workspaceId/invite', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = req.params.workspaceId;
   const { inviterEmail, recipientEmail } = req.body;
 
@@ -171,7 +171,7 @@ app.post('/api/workspaces/:workspaceId/invite', async (req, res) => {
 });
 
 // getInvitesforUserEmail
-app.get('/api/invites/recipient/:recipientEmail', async (req, res) => {
+app.get('/api/invites/recipient/:recipientEmail', ClerkExpressRequireAuth(), async (req, res) => {
   const recipientEmail = req.params.recipientEmail;
 
   try {
@@ -188,7 +188,7 @@ app.get('/api/invites/recipient/:recipientEmail', async (req, res) => {
 });
 
 // getWorkspaceInvites
-app.get('/api/workspaces/:workspaceId/invites', async (req, res) => {
+app.get('/api/workspaces/:workspaceId/invites', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = req.params.workspaceId;
 
   try {
@@ -205,7 +205,7 @@ app.get('/api/workspaces/:workspaceId/invites', async (req, res) => {
 });
 
 // deleteWorkspaceInvite
-app.delete('/api/workspaces/:workspaceId/invites/:inviteId/delete', async (req, res) => {
+app.delete('/api/workspaces/:workspaceId/invites/:inviteId/delete', ClerkExpressRequireAuth(), async (req, res) => {
   const { workspaceId, inviteId } = req.params;
 
   try {
@@ -221,7 +221,7 @@ app.delete('/api/workspaces/:workspaceId/invites/:inviteId/delete', async (req, 
 });
 
 // acceptWorkspaceInvite
-app.patch('/api/workspaces/:workspaceId/accept-invite/:inviteId', async (req, res) => {
+app.patch('/api/workspaces/:workspaceId/accept-invite/:inviteId', ClerkExpressRequireAuth(), async (req, res) => {
   const { workspaceId, inviteId } = req.params;
 
   try {
@@ -236,7 +236,7 @@ app.patch('/api/workspaces/:workspaceId/accept-invite/:inviteId', async (req, re
   }
 });
 
-// getWorkspaceDetails
+// getWorkspaceDetails - note this is a public route
 app.get('/api/workspaces/:workspaceId', async (req, res) => {
   const workspaceId = req.params.workspaceId;
 
@@ -251,21 +251,8 @@ app.get('/api/workspaces/:workspaceId', async (req, res) => {
 });
 
 
-// getUsers
-app.get('/api/users/', async (req, res) => {
-
-  try {
-    const result = await client.query(`SELECT * FROM users`);
-    const users = result.rows;
-    res.json(users);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error fetching users" });
-  }
-});
-
 // getUser
-app.get('/api/users/:userId', async (req, res) => {
+app.get('/api/users/:userId', ClerkExpressRequireAuth(), async (req, res) => {
   const userId = req.params.userId;
 
   try {
@@ -279,7 +266,7 @@ app.get('/api/users/:userId', async (req, res) => {
 });
 
 // createWorkspace
-app.post('/api/workspaces', async (req, res) => {
+app.post('/api/workspaces', ClerkExpressRequireAuth(), async (req, res) => {
   const { name, createdAt, creatorUserId, iconUrl } = req.body;
 
   const client = await pool.connect();
@@ -296,7 +283,7 @@ app.post('/api/workspaces', async (req, res) => {
 });
 
 // updateWorkspace
-app.patch('/api/workspaces/:workspaceId/update', async (req, res) => {
+app.patch('/api/workspaces/:workspaceId/update', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = req.params.workspaceId;
   const { name, creatorUserId, iconUrl } = req.body;
 
@@ -314,7 +301,7 @@ app.patch('/api/workspaces/:workspaceId/update', async (req, res) => {
 });
 
 // deleteWorkspace
-app.delete('/api/workspaces/:workspaceId/delete', async (req, res) => {
+app.delete('/api/workspaces/:workspaceId/delete', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = req.params.workspaceId;
 
   const client = await pool.connect();
@@ -330,7 +317,7 @@ app.delete('/api/workspaces/:workspaceId/delete', async (req, res) => {
 });
 
 // getTables
-app.get('/api/workspaces/:workspaceId/tables', async (req, res) => {
+app.get('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = req.params.workspaceId;
 
   const client = await pool.connect();
@@ -348,7 +335,7 @@ app.get('/api/workspaces/:workspaceId/tables', async (req, res) => {
 
 
 // getTablesFromConnection
-app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', async (req, res) => {
+app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = req.params.workspaceId;
   const connectionId = req.params.connectionId;
 

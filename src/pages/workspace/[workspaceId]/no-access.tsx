@@ -16,13 +16,14 @@ import {
   acceptWorkspaceInvite,
 } from "@/utils/api";
 import { AccountHeader } from "@/components/AccountHeader";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 
-export default function Welcome() {
+export default function NoAccess() {
   const router = useRouter();
   const { workspaceId } = router.query;
   const workspaceId_as_number = parseInt(workspaceId as string);
+  const { getToken } = useAuth();
 
   // clerk
   const { isLoaded: isLoadedClerkUser, user } = useUser();
@@ -51,9 +52,11 @@ export default function Welcome() {
 
       try {
         // accept the invite
+        const jwt = await getToken({ template: "test" });
         const delete_invite_result = await acceptWorkspaceInvite({
           workspaceId: workspace.id,
           inviteId: invite.id,
+          jwt,
         });
 
         router.push(`/workspace/${workspace.id}`);
@@ -102,7 +105,10 @@ export default function Welcome() {
     isError: isWorkspaceDetailsError,
   } = useQuery({
     queryKey: ["workspaceDetail", workspaceId],
-    queryFn: () => getWorkspaceDetails(workspaceId),
+    queryFn: async () => {
+      const response = await getWorkspaceDetails(workspaceId);
+      return response;
+    },
     enabled: !!workspaceId,
   });
 
@@ -114,7 +120,8 @@ export default function Welcome() {
     queryKey: ["invites", currentUser?.email],
     enabled: currentUser?.email != null,
     queryFn: async () => {
-      const result = await getInvitesForUserEmail(currentUser.email);
+      const token = await getToken({ template: "test" });
+      const result = await getInvitesForUserEmail(currentUser.email, token);
       return result;
     },
     staleTime: 1000, // 1 second
@@ -128,7 +135,10 @@ export default function Welcome() {
   const workspacesQuery = useQueries({
     queries: workspaceIds.map((id) => ({
       queryKey: ["workspace", id],
-      queryFn: () => getWorkspaceDetails(id),
+      queryFn: async () => {
+        const response = await getWorkspaceDetails(id);
+        return response;
+      },
     })),
   });
 

@@ -3,7 +3,7 @@ import router, { useRouter } from "next/router";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { getWorkspaceMemberships, getUser, updateUser } from "@/utils/api";
+import { getWorkspaceMemberships, updateUser } from "@/utils/api";
 import {
   useQuery,
   useMutation,
@@ -18,8 +18,10 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { CircleNotch, CheckCircle, X } from "@phosphor-icons/react";
 import { UserProfile } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 
 export default function Profile() {
+  const { getToken } = useAuth();
   const handleRenameUser = async (e: any) => {
     e.preventDefault();
     console.log("clicked");
@@ -29,10 +31,12 @@ export default function Profile() {
       const userData = {
         name: userName,
       };
+      const jwt = await getToken({ template: "test" });
       try {
         const response = await updateUserMutation.mutateAsync({
           userId: currentUser.id,
           userData: userData,
+          jwt,
         });
       } catch (error) {
         console.error("Error updating workspace:", error);

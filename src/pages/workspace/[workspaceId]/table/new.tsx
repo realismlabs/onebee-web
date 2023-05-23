@@ -22,6 +22,7 @@ import { Listbox } from "@headlessui/react";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
+import { useAuth } from "@clerk/nextjs";
 
 function getIconSvgStringFromName(iconName: string): string {
   const iconItem = IconList.find((icon) => icon.name === iconName);
@@ -696,6 +697,7 @@ const FileTree: React.FC<FileTreeProps> = ({
 };
 
 export default function CreateTable() {
+  const { getToken } = useAuth();
   const [useCustomHost, setUseCustomHost] = useLocalStorageState(
     "useCustomHost",
     false
@@ -805,7 +807,11 @@ export default function CreateTable() {
       updatedAt: new Date().toISOString(),
     };
 
-    const create_table_response = await createTable(createTableRequestBody);
+    const jwt = await getToken({ template: "test" });
+    const create_table_response = await createTable(
+      createTableRequestBody,
+      jwt
+    );
 
     //  route to the table page
     router.push(

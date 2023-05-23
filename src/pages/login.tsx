@@ -3,7 +3,6 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { getUsers } from "@/utils/api";
 import { useSignIn } from "@clerk/nextjs";
 import { set } from "date-fns";
 import { CircleNotch } from "@phosphor-icons/react";
@@ -35,7 +34,10 @@ export default function Login() {
     isError: isWorkspaceDetailsError,
   } = useQuery({
     queryKey: ["workspaceDetail", workspaceId],
-    queryFn: () => getWorkspaceDetails(workspaceId),
+    queryFn: async () => {
+      const response = await getWorkspaceDetails(workspaceId);
+      return response;
+    },
     enabled: !!workspaceId,
   });
 
