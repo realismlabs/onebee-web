@@ -14,10 +14,18 @@ export default authMiddleware({
     const auth_header = {
       Authorization: `Bearer ${token}`,
     };
+
     console.log("auth_header", auth_header);
-    const currentUser = await fetchCurrentUser(auth.userId, auth_header);
-    // const result = await fetchCurrentUser(user?.id, { Authorization: `Bearer ${await getToken({ template: 'test' })}` })
-    console.log("currentUser", currentUser);
+    let currentUser = null;
+    try {
+      currentUser = await fetchCurrentUser(auth.userId, auth_header);
+      console.log("currentUser", currentUser);
+    } catch (error) {
+      console.log("Error fetching current user:", error);
+      // Respond with an error, don't leave the request hanging
+      return NextResponse.error();
+    }
+
     // if no currentUser exists in the Dataland db, but there is an authenticated user in Clerk, (
     // happens bc someone signs up via OAuth first), then create a user for them
     // and user is not visiting a public route

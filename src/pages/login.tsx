@@ -28,6 +28,8 @@ export default function Login() {
     ? redirectUrl?.split("/")[2]
     : null;
 
+  console.log("workspaceId", workspaceId);
+
   const {
     data: workspaceDetail,
     isLoading: isWorkspaceDetailsLoading,

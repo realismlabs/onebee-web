@@ -84,8 +84,8 @@ app.get('/api/users/clerkUserId/:clerkUserId', ClerkExpressRequireAuth(), async 
   }
 });
 
-// fetchCurrentWorkspace 
-app.get('/api/workspaces/:workspaceId', ClerkExpressRequireAuth(), async (req, res) => {
+// fetchCurrentWorkspace + getWorkspaceDetails -- public route
+app.get('/api/workspaces/:workspaceId', async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
 
   const client = await pool.connect();
@@ -107,7 +107,6 @@ app.get('/api/workspaces/:workspaceId', ClerkExpressRequireAuth(), async (req, r
     client.release();
   }
 });
-
 
 // createUser
 app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
@@ -238,21 +237,6 @@ app.patch('/api/workspaces/:workspaceId/accept-invite/:inviteId', ClerkExpressRe
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error accepting invite" });
-  }
-});
-
-// getWorkspaceDetails - note this is a public route
-app.get('/api/workspaces/:workspaceId', async (req, res) => {
-  const workspaceId = parseInt(req.params.workspaceId, 10);
-
-  try {
-    const client = await pool.connect();
-    const result = await client.query(`SELECT * FROM workspaces WHERE id = $1`, [workspaceId]);
-    const workspace = result.rows[0];
-    res.json(workspace);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error fetching workspace details" });
   }
 });
 
