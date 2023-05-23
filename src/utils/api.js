@@ -38,8 +38,8 @@ export const createUser = async ({ email, name, clerkUserId }) => {
   const existingUser = await fetchCurrentUser(clerkUserId);
 
   if (existingUser) {
-    throw new Error("User already exists:", existingUser);
-    return;
+    console.log("User already exists:", existingUser)
+    return null;
   }
 
   console.log("createUser", email, name, clerkUserId)

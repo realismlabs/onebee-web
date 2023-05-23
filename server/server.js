@@ -6,7 +6,7 @@ const cors = require('cors');
 const port = process.env.PORT || 5002;
 const app = express();
 
-const allowedOrigins = ['http://localhost:3000', 'http://dataland.io', 'https://dataland.io', "https://dataland-demo-995df.uc.r.appspot.com"];
+const allowedOrigins = ['http://localhost:3000', 'http://dataland.io', 'https://dataland.io', "https://onebee-web.vercel.app", "onebee-web-git-aw-express-realismlabs.vercel.app",];
 
 app.use(cors({
   origin: function (origin, callback) {

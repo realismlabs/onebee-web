@@ -4,20 +4,22 @@ import { fetchCurrentUser, getUserMemberships, createUser } from "./utils/api";
 import { capitalizeString } from "./utils/util";
 import clerk from "@clerk/clerk-sdk-node";
 
+// These logs show up in Vercel logs
 export default authMiddleware({
   publicRoutes: ["/forgot-password", "/login", "/sandbox", "/signup", "/"],
   async afterAuth(auth, req, evt) {
-    const currentUser = await fetchCurrentUser(auth.userId);
-
     console.log("auth", auth);
-
+    const currentUser = await fetchCurrentUser(auth.userId);
+    console.log("currentUser", currentUser);
     // if no currentUser exists in the Dataland db, but there is an authenticated user in Clerk, (
     // happens bc someone signs up via OAuth first), then create a user for them
     // and user is not visiting a public route
     if (!currentUser && auth.userId && !auth.isPublicRoute) {
       const clerkUser = await clerk.users.getUser(auth.userId);
+      console.log("clerkUser", clerkUser);
       const emailAddress = clerkUser.emailAddresses[0].emailAddress;
-      const created_user = await createUser({
+      console.log("emailAddress", emailAddress);
+      await createUser({
         email: emailAddress,
         name: capitalizeString(emailAddress.split("@")[0]),
         clerkUserId: auth.userId,
