@@ -529,6 +529,7 @@ export const getWorkspaceConnections = async (workspaceId, jwt) => {
 // Get all connections associated with a workspace
 export const getWorkspaces = async (jwt) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+  console.log("getWorkspaces jwt", jwt)
   const response = await fetch(`${API_BASE_URL}/api/workspaces/`,
     {
       headers: {
