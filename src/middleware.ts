@@ -10,8 +10,9 @@ export default authMiddleware({
   async afterAuth(auth, req, evt) {
     // console.log("auth", auth);
     const { getToken } = auth;
+    const token = await getToken({ template: "test" });
     const auth_header = {
-      Authorization: `Bearer ${await getToken({ template: "test" })}`,
+      Authorization: `Bearer ${token}`,
     };
     console.log("auth_header", auth_header);
     const currentUser = await fetchCurrentUser(auth.userId, auth_header);
@@ -29,6 +30,7 @@ export default authMiddleware({
         email: emailAddress,
         name: capitalizeString(emailAddress.split("@")[0]),
         clerkUserId: auth.userId,
+        jwt: token,
       });
     }
 
