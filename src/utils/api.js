@@ -273,6 +273,7 @@ export const updateUser = async ({ userId, userData, jwt }) => {
 
 
 export const createWorkspace = async (workspaceData, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const icon = generateWorkspaceIcon(workspaceData.name);
 
   const response = await fetch(`${API_BASE_URL}/api/workspaces`, {
@@ -292,6 +293,7 @@ export const createWorkspace = async (workspaceData, jwt) => {
 
 // Update a specific workspace
 export const updateWorkspace = async ({ workspaceId, workspaceData, jwt }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/update`,
     {
@@ -309,6 +311,7 @@ export const updateWorkspace = async ({ workspaceId, workspaceData, jwt }) => {
 
 // Delete workspace
 export const deleteWorkspace = async ({ workspaceId, jwt }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/delete`,
     {
@@ -326,6 +329,7 @@ export const deleteWorkspace = async ({ workspaceId, jwt }) => {
 
 // Get all tables associated with a workspace
 export const getTables = async (workspaceId, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables`,
     {
@@ -340,6 +344,7 @@ export const getTables = async (workspaceId, jwt) => {
 
 // Get tables associated with a connection in a workspace
 export const getTablesFromConnection = async (workspaceId, connectionId, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/tables`,
     {
@@ -356,6 +361,7 @@ export const getTablesFromConnection = async (workspaceId, connectionId, jwt) =>
 
 // Create a table in a workspace
 export const createTable = async (tableData, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${tableData.workspaceId}/tables`,
     {
