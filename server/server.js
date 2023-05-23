@@ -360,6 +360,324 @@ app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', ClerkEx
 });
 
 
+// createTable
+app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const { name, createdAt, createdByUserId, connectionId, sourceTableId } = req.body;
+
+  console.log("Request body: ", req.body); // logging the body
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'INSERT INTO "tables"("name", "createdAt", "createdByUserId", "connectionId", "sourceTableId", "workspaceId") VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, createdAt, createdByUserId, connectionId, sourceTableId, workspaceId]
+    );
+    const createdTable = result.rows[0];
+    console.log('Created table', createdTable);
+    res.json(createdTable);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error creating table" });
+  } finally {
+    client.release();
+  }
+});
+
+
+// getTable
+app.get('/api/workspaces/:workspaceId/tables/:tableId', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const tableId = parseInt(req.params.tableId, 10);
+
+  console.log("Request params: ", req.params); // logging the params
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM "tables" WHERE "workspaceId"=$1 AND "id"=$2', [workspaceId, tableId]);
+    const table = result.rows[0];
+    console.log('Fetched table', table);
+    res.json(table);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting table" });
+  } finally {
+    client.release();
+  }
+});
+
+
+// updateTable
+app.patch('/api/workspaces/:workspaceId/tables/:tableId/update', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const tableId = parseInt(req.params.tableId, 10);
+  const { name, createdByUserId, connectionId, sourceTableId } = req.body;
+
+  console.log("Request body: ", req.body); // logging the body
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'UPDATE "tables" SET "name"=$1, "createdByUserId"=$2, "connectionId"=$3, "sourceTableId"=$4 WHERE "workspaceId"=$5 AND "id"=$6 RETURNING *',
+      [name, createdByUserId, connectionId, sourceTableId, workspaceId, tableId]
+    );
+    const updatedTable = result.rows[0];
+    console.log('Updated table', updatedTable);
+    res.json(updatedTable);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error updating table" });
+  } finally {
+    client.release();
+  }
+});
+
+// deleteTable
+app.delete('/api/workspaces/:workspaceId/tables/:tableId/delete', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const tableId = parseInt(req.params.tableId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('DELETE FROM "tables" WHERE "workspaceId"=$1 AND "id"=$2 RETURNING *', [workspaceId, tableId]);
+    const deletedTable = result.rows[0];
+    console.log('Deleted table', deletedTable);
+    res.json(deletedTable);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error deleting table" });
+  } finally {
+    client.release();
+  }
+});
+
+// createConnection
+app.post('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const { name, host, port, database, username, password } = req.body;
+
+  console.log("Request body: ", req.body); // logging the body
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'INSERT INTO "connections"("name", "host", "port", "database", "username", "password", "workspaceId") VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [name, host, port, database, username, password, workspaceId]
+    );
+    const createdConnection = result.rows[0];
+    console.log('Created connection', createdConnection);
+    res.json(createdConnection);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error creating connection" });
+  } finally {
+    client.release();
+  }
+});
+
+// getConnection
+app.get('/api/workspaces/:workspaceId/connections/:connectionId', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const connectionId = parseInt(req.params.connectionId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM "connections" WHERE "workspaceId"=$1 AND "id"=$2', [workspaceId, connectionId]);
+    const connection = result.rows[0];
+    console.log('Fetched connection', connection);
+    res.json(connection);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting connection" });
+  } finally {
+    client.release();
+  }
+});
+
+
+// updateConnectionDisplayName
+app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const connectionId = parseInt(req.params.connectionId, 10);
+  const { name } = req.body;
+
+  console.log("Request body: ", req.body); // logging the body
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'UPDATE "connections" SET "name"=$1 WHERE "workspaceId"=$2 AND "id"=$3 RETURNING *',
+      [name, workspaceId, connectionId]
+    );
+    const updatedConnection = result.rows[0];
+    console.log('Updated connection', updatedConnection);
+    res.json(updatedConnection);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error updating connection" });
+  } finally {
+    client.release();
+  }
+});
+
+// deleteConnection
+app.delete('/api/workspaces/:workspaceId/connections/:connectionId', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const connectionId = parseInt(req.params.connectionId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('DELETE FROM "connections" WHERE "workspaceId"=$1 AND "id"=$2 RETURNING *', [workspaceId, connectionId]);
+    const deletedConnection = result.rows[0];
+    console.log('Deleted connection', deletedConnection);
+    res.json(deletedConnection);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error deleting connection" });
+  } finally {
+    client.release();
+  }
+});
+
+// getWorkspaceConnections
+app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM "connections" WHERE "workspaceId"=$1', [workspaceId]);
+    const connections = result.rows;
+    console.log('Fetched connections', connections);
+    res.json(connections);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting connections" });
+  } finally {
+    client.release();
+  }
+});
+
+// createMembership
+app.post('/api/memberships', ClerkExpressRequireAuth(), async (req, res) => {
+  const { userId, workspaceId } = req.body;
+
+  console.log("Request body: ", req.body); // logging the body
+
+  const client = await pool.connect();
+  try {
+    const membershipCheck = await client.query('SELECT * FROM "memberships" WHERE "userId"=$1 AND "workspaceId"=$2', [userId, workspaceId]);
+    if (membershipCheck.rowCount > 0) {
+      throw new Error("User already has membership of this workspace");
+    }
+    const result = await client.query('INSERT INTO "memberships"("userId", "workspaceId") VALUES($1, $2) RETURNING *', [userId, workspaceId]);
+    const createdMembership = result.rows[0];
+    console.log('Created membership', createdMembership);
+    res.json(createdMembership);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  } finally {
+    client.release();
+  }
+});
+
+
+// getWorkspaces
+app.get('/api/workspaces/', ClerkExpressRequireAuth(), async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM "workspaces"');
+    const workspaces = result.rows;
+    console.log('Fetched workspaces', workspaces);
+    res.json(workspaces);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting workspaces" });
+  } finally {
+    client.release();
+  }
+});
+
+// updateMembership
+app.patch('/api/memberships/:membershipId/update', ClerkExpressRequireAuth(), async (req, res) => {
+  const membershipId = parseInt(req.params.membershipId, 10);
+  const membershipData = req.body;
+
+  console.log("Request body: ", req.body); // logging the body
+
+  const client = await pool.connect();
+  try {
+    const keys = Object.keys(membershipData).map((key, index) => `"${key}"=$${index + 1}`).join(', ');
+    const values = Object.values(membershipData);
+    const result = await client.query(`UPDATE "memberships" SET ${keys} WHERE "id"=$${values.length + 1} RETURNING *`, [...values, membershipId]);
+    const updatedMembership = result.rows[0];
+    console.log('Updated membership', updatedMembership);
+    res.json(updatedMembership);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error updating membership" });
+  } finally {
+    client.release();
+  }
+});
+
+
+// deleteMembership
+app.delete('/api/memberships/:membershipId/delete', ClerkExpressRequireAuth(), async (req, res) => {
+  const membershipId = parseInt(req.params.membershipId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('DELETE FROM "memberships" WHERE "id"=$1 RETURNING *', [membershipId]);
+    const deletedMembership = result.rows[0];
+    console.log('Deleted membership', deletedMembership);
+    res.json(deletedMembership);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error deleting membership" });
+  } finally {
+    client.release();
+  }
+});
+
+// getWorkspaceMemberships
+app.get('/api/workspaces/:workspaceId/memberships', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM "memberships" WHERE "workspaceId"=$1', [workspaceId]);
+    const memberships = result.rows;
+    console.log('Fetched memberships', memberships);
+    res.json(memberships);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting memberships" });
+  } finally {
+    client.release();
+  }
+});
+
+
+// getUserMemberships
+app.get('/api/users/:userId/memberships', ClerkExpressRequireAuth(), async (req, res) => {
+  const userId = parseInt(req.params.userId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM "memberships" WHERE "userId"=$1', [userId]);
+    const memberships = result.rows;
+    console.log('Fetched memberships', memberships);
+    res.json(memberships);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting memberships" });
+  } finally {
+    client.release();
+  }
+});
+
+
 // Catch errors from ClerkExpressRequireAuth
 app.use((err, req, res, next) => {
   console.error(err.stack);
