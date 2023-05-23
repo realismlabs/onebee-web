@@ -60,7 +60,7 @@ app.get(
 
 // fetchCurrentUser
 app.get('/api/users/clerkUserId/:clerkUserId', ClerkExpressRequireAuth(), async (req, res) => {
-  const clerkUserId = req.params.clerkUserId;
+  const clerkUserId = parseInt(req.params.clerkUserId, 10);
 
   console.log("clerkUserId", clerkUserId)
 
@@ -151,7 +151,7 @@ app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
 
 // createInvite
 app.post('/api/workspaces/:workspaceId/invite', ClerkExpressRequireAuth(), async (req, res) => {
-  const workspaceId = req.params.workspaceId;
+  const workspaceId = parseInt(req.params.workspaceId, 10);
   const { inviterEmail, recipientEmail } = req.body;
 
   // here should be logic of checking if invite or membership already exists
@@ -189,7 +189,7 @@ app.get('/api/invites/recipient/:recipientEmail', ClerkExpressRequireAuth(), asy
 
 // getWorkspaceInvites
 app.get('/api/workspaces/:workspaceId/invites', ClerkExpressRequireAuth(), async (req, res) => {
-  const workspaceId = req.params.workspaceId;
+  const workspaceId = parseInt(req.params.workspaceId, 10);
 
   try {
     const result = await client.query(
@@ -238,7 +238,7 @@ app.patch('/api/workspaces/:workspaceId/accept-invite/:inviteId', ClerkExpressRe
 
 // getWorkspaceDetails - note this is a public route
 app.get('/api/workspaces/:workspaceId', async (req, res) => {
-  const workspaceId = req.params.workspaceId;
+  const workspaceId = parseInt(req.params.workspaceId, 10);
 
   try {
     const result = await client.query(`SELECT * FROM workspaces WHERE id = $1`, [workspaceId]);
@@ -253,7 +253,7 @@ app.get('/api/workspaces/:workspaceId', async (req, res) => {
 
 // getUser
 app.get('/api/users/:userId', ClerkExpressRequireAuth(), async (req, res) => {
-  const userId = req.params.userId;
+  const userId = parseInt(req.params.userId, 10);
 
   try {
     const result = await client.query(`SELECT * FROM users WHERE id = $1`, [userId]);
@@ -284,7 +284,7 @@ app.post('/api/workspaces', ClerkExpressRequireAuth(), async (req, res) => {
 
 // updateWorkspace
 app.patch('/api/workspaces/:workspaceId/update', ClerkExpressRequireAuth(), async (req, res) => {
-  const workspaceId = req.params.workspaceId;
+  const workspaceId = parseInt(req.params.workspaceId, 10);
   const { name, creatorUserId, iconUrl } = req.body;
 
   const client = await pool.connect();
@@ -302,7 +302,7 @@ app.patch('/api/workspaces/:workspaceId/update', ClerkExpressRequireAuth(), asyn
 
 // deleteWorkspace
 app.delete('/api/workspaces/:workspaceId/delete', ClerkExpressRequireAuth(), async (req, res) => {
-  const workspaceId = req.params.workspaceId;
+  const workspaceId = parseInt(req.params.workspaceId, 10);
 
   const client = await pool.connect();
   try {
@@ -318,7 +318,7 @@ app.delete('/api/workspaces/:workspaceId/delete', ClerkExpressRequireAuth(), asy
 
 // getTables
 app.get('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async (req, res) => {
-  const workspaceId = req.params.workspaceId;
+  const workspaceId = parseInt(req.params.workspaceId, 10);
 
   const client = await pool.connect();
   try {
@@ -336,8 +336,8 @@ app.get('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async 
 
 // getTablesFromConnection
 app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', ClerkExpressRequireAuth(), async (req, res) => {
-  const workspaceId = req.params.workspaceId;
-  const connectionId = req.params.connectionId;
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const connectionId = parseInt(req.params.connectionId, 10);
 
   const client = await pool.connect();
   try {
