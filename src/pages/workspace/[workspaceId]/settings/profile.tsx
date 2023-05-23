@@ -3,7 +3,7 @@ import router, { useRouter } from "next/router";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { getWorkspaceMemberships, updateUser } from "@/utils/api";
+import { updateUser } from "@/utils/api";
 import {
   useQuery,
   useMutation,
