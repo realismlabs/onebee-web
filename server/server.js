@@ -584,6 +584,7 @@ app.post('/api/memberships', ClerkExpressRequireAuth(), async (req, res) => {
 
 // getWorkspaces
 app.get('/api/workspaces/', ClerkExpressRequireAuth(), async (req, res) => {
+  console.log("getWorkspaces request", req);
   const client = await pool.connect();
   try {
     const result = await client.query('SELECT * FROM "workspaces"');
