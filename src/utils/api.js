@@ -19,6 +19,7 @@ export const fetchCurrentUser = async (clerkUserId, headers) => {
 };
 
 export const fetchCurrentWorkspace = async (workspaceId, headers) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`, {
     headers
   });
@@ -27,6 +28,7 @@ export const fetchCurrentWorkspace = async (workspaceId, headers) => {
   }
 
   const result = await response.json();
+  console.log("fetchCurrentWorkspace result", result)
   return result;
 };
 

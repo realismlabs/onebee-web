@@ -78,6 +78,29 @@ app.get('/api/users/clerkUserId/:clerkUserId', ClerkExpressRequireAuth(), async 
   }
 });
 
+// fetchCurrentWorkspace 
+app.get('/api/workspaces/:workspaceId', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM workspaces WHERE "id" = $1', [workspaceId]);
+    const workspace = result.rows[0];
+
+    if (!workspace) {
+      console.error("Error fetching current workspace", result);
+      res.status(404).json({ message: "Workspace not found" });
+      return;
+    }
+
+    res.json(workspace);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching current workspace" });
+  } finally {
+    client.release();
+  }
+});
 
 
 app.use((err, req, res, next) => {
