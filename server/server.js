@@ -2,17 +2,16 @@ require('dotenv').config(); // To read CLERK_API_KEY
 const express = require('express');
 const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node');
 
-
 const port = process.env.PORT || 5002;
 const app = express();
 
 const { Pool } = require('pg');
 const pool = new Pool({
-  user: 'postgres',
-  host: 'db.htnkbjjakwynjxocwsll.supabase.co',
-  database: 'postgres',
-  password: '7mUMCMFCAw4Cc2bc',
-  port: 6543,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
 
 app.get('/users', ClerkExpressRequireAuth(), async (req, res) => {
