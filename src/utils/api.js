@@ -8,7 +8,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const fetchCurrentUser = async (clerkUserId, headers) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(`${API_BASE_URL}/api/users/clerkUserId/${clerkUserId}`, {
-    headers
+    headers:
+      { headers }
   });
   if (!response.ok) {
     console.error("Error fetching current user", response);

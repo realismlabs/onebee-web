@@ -11,6 +11,7 @@ const allowedOrigins = ['http://localhost:3000', 'http://dataland.io', 'https://
 app.use(cors({
   origin: function (origin, callback) {
     // allow requests with no origin (like mobile apps or curl requests)
+    console.log("origin", origin)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
       var msg = 'The CORS policy for this site does not allow access from the specified Origin.';
@@ -20,6 +21,10 @@ app.use(cors({
   }
 }));
 
+app.use((req, res, next) => {
+  console.log('Headers:', req.headers);
+  next();
+});
 
 const { Pool } = require('pg');
 const pool = new Pool({
@@ -105,7 +110,7 @@ app.get('/api/workspaces/:workspaceId', ClerkExpressRequireAuth(), async (req, r
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(401).send('Unauthenticated!');
+  res.status(401).send('awu: Unauthenticated, no valid JWT found in request headers');
 });
 
 app.listen(port, () => {
