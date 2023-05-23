@@ -322,7 +322,7 @@ app.get('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async 
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM tables WHERE workspaceId=$1', [workspaceId]);
+    const result = await client.query('SELECT * FROM tables WHERE "workspaceId"=$1', [workspaceId]);
     const tables = result.rows;
     res.json(tables);
   } catch (err) {
@@ -341,7 +341,7 @@ app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', ClerkEx
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM tables WHERE workspaceId=$1 AND connectionId=$2', [workspaceId, connectionId]);
+    const result = await client.query('SELECT * FROM tables WHERE "workspaceId"=$1 AND "connectionId"=$2', [workspaceId, connectionId]);
     const tables = result.rows;
     res.json(tables);
   } catch (err) {
