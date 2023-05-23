@@ -9,8 +9,12 @@ export default authMiddleware({
   async afterAuth(auth, req, evt) {
     const currentUser = await fetchCurrentUser(auth.userId);
 
-    // if no currentUser exists in the Dataland db, but there is an authenticated user in Clerk, (happens bc someone signs up via OAuth first), then create a user for them
-    if (!currentUser && auth.userId) {
+    console.log("auth", auth);
+
+    // if no currentUser exists in the Dataland db, but there is an authenticated user in Clerk, (
+    // happens bc someone signs up via OAuth first), then create a user for them
+    // and user is not visiting a public route
+    if (!currentUser && auth.userId && !auth.isPublicRoute) {
       const clerkUser = await clerk.users.getUser(auth.userId);
       const emailAddress = clerkUser.emailAddresses[0].emailAddress;
       const created_user = await createUser({
