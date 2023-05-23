@@ -6,6 +6,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 // const API_BASE_URL = "http://localhost:5002";
 
 export const fetchCurrentUser = async (clerkUserId, headers) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(`${API_BASE_URL}/api/users/clerkUserId/${clerkUserId}`, {
     headers
   });
@@ -14,8 +15,7 @@ export const fetchCurrentUser = async (clerkUserId, headers) => {
     return null;
   }
   const result = await response.json();
-  // since we're fetching by clerkUserId, we should only get one result
-  return result[0];
+  return result;
 };
 
 export const fetchCurrentWorkspace = async (workspaceId, headers) => {
