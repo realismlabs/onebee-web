@@ -195,7 +195,7 @@ app.get('/api/workspaces/:workspaceId/invites', ClerkExpressRequireAuth(), async
   try {
     const client = await pool.connect();
     const result = await client.query(
-      `SELECT * FROM invites WHERE workspaceId = $1 AND accepted = false`, [workspaceId]
+      `SELECT * FROM invites WHERE "workspaceId" = $1 AND accepted = false`, [workspaceId]
     );
 
     const invites = result.rows;
@@ -213,7 +213,7 @@ app.delete('/api/workspaces/:workspaceId/invites/:inviteId/delete', ClerkExpress
   try {
     const client = await pool.connect();
     const result = await client.query(
-      `DELETE FROM invites WHERE id = $1 AND workspaceId = $2 RETURNING *`, [inviteId, workspaceId]
+      `DELETE FROM invites WHERE id = $1 AND "workspaceId" = $2 RETURNING *`, [inviteId, workspaceId]
     );
     const deletedInvite = result.rows[0];
     res.json(deletedInvite);
@@ -230,7 +230,7 @@ app.patch('/api/workspaces/:workspaceId/accept-invite/:inviteId', ClerkExpressRe
   try {
     const client = await pool.connect();
     const result = await client.query(
-      `UPDATE invites SET accepted = true WHERE id = $1 AND workspaceId = $2 RETURNING *`, [inviteId, workspaceId]
+      `UPDATE invites SET accepted = true WHERE id = $1 AND "workspaceId" = $2 RETURNING *`, [inviteId, workspaceId]
     );
     const acceptedInvite = result.rows[0];
     res.json(acceptedInvite);
