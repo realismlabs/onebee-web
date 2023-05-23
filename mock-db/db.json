@@ -110,6 +110,15 @@
       "updatedAt": "2023-05-22T20:33:53.863Z",
       "emailVerified": false,
       "id": 30
+    },
+    {
+      "email": "arthur+zxnmcz@dataland.io",
+      "name": "Arthur+zxnmcz",
+      "clerkUserId": "user_2QCMOLEAZMFckrfSIxpRNSmswmV",
+      "createdAt": "2023-05-23T14:44:37.809Z",
+      "updatedAt": "2023-05-23T14:44:37.809Z",
+      "emailVerified": false,
+      "id": 31
     }
   ],
   "workspaces": [

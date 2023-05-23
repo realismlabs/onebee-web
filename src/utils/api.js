@@ -35,9 +35,13 @@ export const fetchCurrentWorkspace = async (workspaceId, headers) => {
 };
 
 // "/api/users/": "/users",
-export const createUser = async ({ email, name, clerkUserId }) => {
+export const createUser = async ({ email, name, clerkUserId, jwt }) => {
   // see if user already exists by clerkUserId
-  const existingUser = await fetchCurrentUser(clerkUserId);
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
+  const existingUser = await fetchCurrentUser(clerkUserId, {
+    Authorization: `Bearer ${jwt}`,
+  });
 
   if (existingUser) {
     console.log("User already exists:", existingUser)
@@ -60,6 +64,7 @@ export const createUser = async ({ email, name, clerkUserId }) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(requestBody),
   });

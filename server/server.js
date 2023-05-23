@@ -6,6 +6,8 @@ const cors = require('cors');
 const port = process.env.PORT || 5002;
 const app = express();
 
+// app url is https://dataland-demo-995df.uc.r.appspot.com/api/users/clerkUserId/user_2QADjxJOASIi8uWWDd9SqUh1d0a
+
 const allowedOrigins = ['http://localhost:3000', 'http://dataland.io', 'https://dataland.io', "https://onebee-web.vercel.app", "https://onebee-web-git-aw-express-realismlabs.vercel.app",];
 
 app.use(cors({
@@ -13,6 +15,12 @@ app.use(cors({
     // allow requests with no origin (like mobile apps or curl requests)
     console.log("origin", origin)
     if (!origin) return callback(null, true);
+
+    // allow any origin matching the pattern https://onebee-web-git-[whatever].vercel.app
+    // This lets us use Vercel commit previews
+    if (/^https:\/\/onebee-web-git-.*\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
     if (allowedOrigins.indexOf(origin) === -1) {
       var msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
@@ -62,9 +70,6 @@ app.get('/api/users/clerkUserId/:clerkUserId', ClerkExpressRequireAuth(), async 
 
   const client = await pool.connect();
   try {
-    const result1 = await client.query('SELECT * FROM users');
-    console.log("result1", result1.rows);
-
     const result = await client.query('SELECT * FROM users WHERE "clerkUserId" = $1', [clerkUserId]);
     const user = result.rows[0];
 
@@ -108,6 +113,48 @@ app.get('/api/workspaces/:workspaceId', ClerkExpressRequireAuth(), async (req, r
 });
 
 
+// create user
+app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
+  const { email, name, clerkUserId } = req.body;
+  console.log("awus req.body", email, name, clerkUserId)
+
+  const client = await pool.connect();
+  try {
+    // see if user already exists by clerkUserId
+    const resultCheck = await client.query('SELECT * FROM users WHERE "clerkUserId" = $1', [clerkUserId]);
+    console.log("awus resultCheck", resultCheck)
+    const existingUser = resultCheck.rows[0];
+    console.log("awus existingUser", existingUser)
+
+    if (existingUser) {
+      console.log("User already exists:", existingUser)
+      res.status(400).json({ message: "User already exists" });
+      return;
+    }
+
+    console.log("createUser", email, name, clerkUserId)
+
+    const createdAt = new Date().toISOString();
+    const updatedAt = new Date().toISOString();
+    const emailVerified = false;
+
+    const result = await client.query(
+      'INSERT INTO users (email, name, "clerkUserId", "createdAt", "updatedAt", "emailVerified") VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [email, name, clerkUserId, createdAt, updatedAt, emailVerified]
+    );
+    const user = result.rows[0];
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error creating user" });
+  } finally {
+    client.release();
+  }
+});
+
+
+// Catch errors from ClerkExpressRequireAuth
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(401).send('awu: Unauthenticated, no valid JWT found in request headers');
