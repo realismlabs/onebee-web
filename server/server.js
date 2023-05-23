@@ -30,11 +30,6 @@ app.use(cors({
   }
 }));
 
-app.use((req, res, next) => {
-  console.log('Headers:', req.headers);
-  next();
-});
-
 const { Pool } = require('pg');
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -63,7 +58,7 @@ app.get(
   }
 );
 
-// get user by clerkUserId
+// fetchCurrentUser
 app.get('/api/users/clerkUserId/:clerkUserId', ClerkExpressRequireAuth(), async (req, res) => {
   const clerkUserId = req.params.clerkUserId;
 
@@ -114,7 +109,7 @@ app.get('/api/workspaces/:workspaceId', ClerkExpressRequireAuth(), async (req, r
 });
 
 
-// create user
+// createUser
 app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
   const { email, name, clerkUserId } = req.body;
   console.log("awus req.body", email, name, clerkUserId)
@@ -149,6 +144,222 @@ app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error creating user" });
+  } finally {
+    client.release();
+  }
+});
+
+// createInvite
+app.post('/api/workspaces/:workspaceId/invite', async (req, res) => {
+  const workspaceId = req.params.workspaceId;
+  const { inviterEmail, recipientEmail } = req.body;
+
+  // here should be logic of checking if invite or membership already exists
+
+  try {
+    const result = await client.query(
+      `INSERT INTO invites(inviterEmail, recipientEmail, workspaceId, accepted)
+       VALUES($1, $2, $3, $4) RETURNING *`, [inviterEmail, recipientEmail, workspaceId, false]
+    );
+
+    const invite = result.rows[0];
+    res.json(invite);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error creating invite" });
+  }
+});
+
+// getInvitesforUserEmail
+app.get('/api/invites/recipient/:recipientEmail', async (req, res) => {
+  const recipientEmail = req.params.recipientEmail;
+
+  try {
+    const result = await client.query(
+      `SELECT * FROM invites WHERE recipientEmail = $1 AND accepted = false`, [recipientEmail]
+    );
+
+    const invites = result.rows;
+    res.json(invites);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching invites for user" });
+  }
+});
+
+// getWorkspaceInvites
+app.get('/api/workspaces/:workspaceId/invites', async (req, res) => {
+  const workspaceId = req.params.workspaceId;
+
+  try {
+    const result = await client.query(
+      `SELECT * FROM invites WHERE workspaceId = $1 AND accepted = false`, [workspaceId]
+    );
+
+    const invites = result.rows;
+    res.json(invites);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching workspace invites" });
+  }
+});
+
+// deleteWorkspaceInvite
+app.delete('/api/workspaces/:workspaceId/invites/:inviteId/delete', async (req, res) => {
+  const { workspaceId, inviteId } = req.params;
+
+  try {
+    const result = await client.query(
+      `DELETE FROM invites WHERE id = $1 AND workspaceId = $2 RETURNING *`, [inviteId, workspaceId]
+    );
+    const deletedInvite = result.rows[0];
+    res.json(deletedInvite);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error deleting invite" });
+  }
+});
+
+// acceptWorkspaceInvite
+app.patch('/api/workspaces/:workspaceId/accept-invite/:inviteId', async (req, res) => {
+  const { workspaceId, inviteId } = req.params;
+
+  try {
+    const result = await client.query(
+      `UPDATE invites SET accepted = true WHERE id = $1 AND workspaceId = $2 RETURNING *`, [inviteId, workspaceId]
+    );
+    const acceptedInvite = result.rows[0];
+    res.json(acceptedInvite);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error accepting invite" });
+  }
+});
+
+// getWorkspaceDetails
+app.get('/api/workspaces/:workspaceId', async (req, res) => {
+  const workspaceId = req.params.workspaceId;
+
+  try {
+    const result = await client.query(`SELECT * FROM workspaces WHERE id = $1`, [workspaceId]);
+    const workspace = result.rows[0];
+    res.json(workspace);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching workspace details" });
+  }
+});
+
+
+// getUsers
+app.get('/api/users/', async (req, res) => {
+
+  try {
+    const result = await client.query(`SELECT * FROM users`);
+    const users = result.rows;
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching users" });
+  }
+});
+
+// getUser
+app.get('/api/users/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const result = await client.query(`SELECT * FROM users WHERE id = $1`, [userId]);
+    const user = result.rows[0];
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching user" });
+  }
+});
+
+// createWorkspace
+app.post('/api/workspaces', async (req, res) => {
+  const { name, createdAt, creatorUserId, iconUrl } = req.body;
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('INSERT INTO workspaces(name, createdAt, creatorUserId, iconUrl) VALUES($1, $2, $3, $4) RETURNING *', [name, createdAt, creatorUserId, iconUrl]);
+    const createdWorkspace = result.rows[0];
+    res.json(createdWorkspace);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error creating workspace" });
+  } finally {
+    client.release();
+  }
+});
+
+// updateWorkspace
+app.patch('/api/workspaces/:workspaceId/update', async (req, res) => {
+  const workspaceId = req.params.workspaceId;
+  const { name, creatorUserId, iconUrl } = req.body;
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('UPDATE workspaces SET name=$1, creatorUserId=$2, iconUrl=$3 WHERE id=$4 RETURNING *', [name, creatorUserId, iconUrl, workspaceId]);
+    const updatedWorkspace = result.rows[0];
+    res.json(updatedWorkspace);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error updating workspace" });
+  } finally {
+    client.release();
+  }
+});
+
+// deleteWorkspace
+app.delete('/api/workspaces/:workspaceId/delete', async (req, res) => {
+  const workspaceId = req.params.workspaceId;
+
+  const client = await pool.connect();
+  try {
+    await client.query('DELETE FROM workspaces WHERE id=$1', [workspaceId]);
+    res.json({ message: "Workspace deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error deleting workspace" });
+  } finally {
+    client.release();
+  }
+});
+
+// getTables
+app.get('/api/workspaces/:workspaceId/tables', async (req, res) => {
+  const workspaceId = req.params.workspaceId;
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM tables WHERE workspaceId=$1', [workspaceId]);
+    const tables = result.rows;
+    res.json(tables);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting tables" });
+  } finally {
+    client.release();
+  }
+});
+
+
+// getTablesFromConnection
+app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', async (req, res) => {
+  const workspaceId = req.params.workspaceId;
+  const connectionId = req.params.connectionId;
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM tables WHERE workspaceId=$1 AND connectionId=$2', [workspaceId, connectionId]);
+    const tables = result.rows;
+    res.json(tables);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting tables from connection" });
   } finally {
     client.release();
   }

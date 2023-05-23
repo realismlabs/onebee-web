@@ -82,8 +82,7 @@ export const createInvite = async ({
   recipientEmail
 }
 ) => {
-  const api_url = process.env.NEXT_PUBLIC_API_URL;
-
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   // first see if the recipient has already been invited or is already a member
   const existingInvites = await getInvitesForUserEmail(recipientEmail.trim());
   const existingMemberships = await getWorkspaceMemberships(workspaceId);
@@ -116,7 +115,7 @@ export const createInvite = async ({
 
   try {
     const response = await fetch(
-      `${api_url}/api/workspaces/${workspaceId}/invite`,
+      `${API_BASE_URL}/api/workspaces/${workspaceId}/invite`,
       {
         method: "POST",
         headers: {
@@ -141,9 +140,9 @@ export const createInvite = async ({
   }
 };
 
-
 export const getInvitesForUserEmail = async (recipientEmail) => {
   console.log("getInvitesForUserEmail", recipientEmail);
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
 
   const encodedEmail = encodeURIComponent(recipientEmail);
 
@@ -161,8 +160,9 @@ export const getInvitesForUserEmail = async (recipientEmail) => {
   return filteredResult;
 };
 
-// "/api/workspaces/:workspaceId/invites": "/invites?workspaceId=:workspaceId",
 export const getWorkspaceInvites = async (workspaceId) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/invites`
   );
@@ -179,6 +179,7 @@ export const getWorkspaceInvites = async (workspaceId) => {
 
 // "/api/workspaces/:workspaceId/invites/:inviteId/delete": "/invites/:inviteId",
 export const deleteWorkspaceInvite = async ({ workspaceId, inviteId }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/invites/${inviteId}/delete`,
     {
@@ -191,6 +192,7 @@ export const deleteWorkspaceInvite = async ({ workspaceId, inviteId }) => {
 
 // "/api/workspaces/:workspaceId/accept-invite/:inviteId": "/invites/:inviteId",
 export const acceptWorkspaceInvite = async ({ workspaceId, inviteId }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/accept-invite/${inviteId}`,
     {
@@ -208,6 +210,7 @@ export const acceptWorkspaceInvite = async ({ workspaceId, inviteId }) => {
 };
 
 export const getWorkspaceDetails = async (workspaceId) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
 
   if (!response.ok) {
@@ -217,6 +220,7 @@ export const getWorkspaceDetails = async (workspaceId) => {
 };
 
 export const getUsers = async () => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(`${API_BASE_URL}/api/users/`);
 
   if (!response.ok) {
@@ -226,6 +230,7 @@ export const getUsers = async () => {
 };
 
 export const getUser = async (userId) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(`${API_BASE_URL}/api/users/${userId}`);
   const user = await response.json();
   return user;
@@ -234,6 +239,7 @@ export const getUser = async (userId) => {
 
 // Update a specific user
 export const updateUser = async ({ userId, userData }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/users/${userId}/update`,
     {
@@ -248,20 +254,6 @@ export const updateUser = async ({ userId, userData }) => {
   return updatedUser;
 };
 
-// Example usage + request body
-// const workspaceData = {
-//   name: 'My New Workspace',
-//   createdAt: '2023-04-27T12:00:00Z',
-//   creatorUserId: '123',
-//   iconUrl: 'https://example.com/icon.png'
-// };
-// createWorkspace(workspaceData)
-//   .then((createdWorkspace) => {
-//     console.log('Created workspace:', createdWorkspace);
-//   })
-//   .catch((error) => {
-//     console.error('Error creating workspace:', error);
-//   });
 
 export const createWorkspace = async (workspaceData) => {
   const icon = generateWorkspaceIcon(workspaceData.name);
