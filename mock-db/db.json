@@ -324,6 +324,12 @@
       "createdAt": "2023-05-22T20:40:58.208Z",
       "role": "admin",
       "id": 20
+    },
+    {
+      "userId": 31,
+      "createdAt": "2023-05-23T16:19:51.497Z",
+      "role": "admin",
+      "id": 21
     }
   ],
   "tables": [

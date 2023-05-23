@@ -271,7 +271,7 @@ app.post('/api/workspaces', ClerkExpressRequireAuth(), async (req, res) => {
 
   const client = await pool.connect();
   try {
-    const result = await client.query('INSERT INTO workspaces(name, createdAt, creatorUserId, iconUrl) VALUES($1, $2, $3, $4) RETURNING *', [name, createdAt, creatorUserId, iconUrl]);
+    const result = await client.query('INSERT INTO workspaces("name", "createdAt", "creatorUserId", "iconUrl") VALUES($1, $2, $3, $4) RETURNING *', [name, createdAt, creatorUserId, iconUrl]);
     const createdWorkspace = result.rows[0];
     res.json(createdWorkspace);
   } catch (err) {
@@ -289,7 +289,7 @@ app.patch('/api/workspaces/:workspaceId/update', ClerkExpressRequireAuth(), asyn
 
   const client = await pool.connect();
   try {
-    const result = await client.query('UPDATE workspaces SET name=$1, creatorUserId=$2, iconUrl=$3 WHERE id=$4 RETURNING *', [name, creatorUserId, iconUrl, workspaceId]);
+    const result = await client.query('UPDATE workspaces SET "name"=$1, "creatorUserId"=$2, "iconUrl"=$3 WHERE id=$4 RETURNING *', [name, creatorUserId, iconUrl, workspaceId]);
     const updatedWorkspace = result.rows[0];
     res.json(updatedWorkspace);
   } catch (err) {
