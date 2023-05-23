@@ -244,7 +244,8 @@ export default function Settings() {
   } = useQuery({
     queryKey: ["getWorkspaceMemberships", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceMemberships(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceMemberships(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,

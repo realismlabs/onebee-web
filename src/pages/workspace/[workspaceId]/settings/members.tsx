@@ -48,6 +48,7 @@ const MemberPopover = ({
   currentUserMembership: any;
   targetMembership: any;
 }) => {
+  const { getToken } = useAuth();
   const targetMembershipId = targetMembership.id;
   const userId = targetMembership.userId;
   const workspaceId = targetMembership.workspaceId;
@@ -56,7 +57,11 @@ const MemberPopover = ({
 
   const handleRemoveMember = async () => {
     // check if user is the last member of the workspace. If so, delete the workspace
-    const workspaceMemberships = await getWorkspaceMemberships(workspaceId);
+    const jwt = await getToken({ template: "test" });
+    const workspaceMemberships = await getWorkspaceMemberships(
+      workspaceId,
+      jwt
+    );
     // check if there is at least one other admin left besides user
     const otherAdmins = workspaceMemberships.filter(
       (membership: any) =>
@@ -65,8 +70,10 @@ const MemberPopover = ({
 
     if (otherAdmins.length >= 1) {
       try {
+        const jwt = await getToken({ template: "test" });
         const deletedMembership = await deleteMembershipMutation.mutateAsync({
           membershipId: targetMembershipId,
+          jwt,
         });
         if (deletedMembership.userId === currentUser.id) {
           await signOut();
@@ -183,6 +190,7 @@ const MemberRolePopover = ({
   targetUserMembership: any;
   memberships: any;
 }) => {
+  const { getToken } = useAuth();
   const currentUserMembershipId = currentUserMembership?.id;
   const targetUserMembershipId = targetUserMembership.id;
   const currentUserId = currentUser.id;
@@ -216,11 +224,13 @@ const MemberRolePopover = ({
     }
 
     try {
+      const jwt = await getToken({ template: "test" });
       const changedMember = await updateMembershipMutation.mutateAsync({
         membershipId: targetUserMembershipId,
         membershipData: {
           role: targetUserRole,
         },
+        jwt,
       });
     } catch (error) {
       alert(`Error updating membership: + ${error}`);
@@ -471,7 +481,8 @@ export default function Members() {
   } = useQuery({
     queryKey: ["getWorkspaceMemberships", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceMemberships(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceMemberships(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,

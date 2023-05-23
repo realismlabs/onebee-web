@@ -40,8 +40,10 @@ export default function JoinWorkspace() {
     };
 
     try {
+      const jwt = await getToken({ template: "test" });
       const created_membership_result = await createMembership(
-        createMembershipRequestBody
+        createMembershipRequestBody,
+        jwt
       );
 
       try {
@@ -78,8 +80,10 @@ export default function JoinWorkspace() {
     };
 
     try {
+      const jwt = await getToken({ template: "test" });
       const created_membership_result = await createMembership(
-        createMembershipRequestBody
+        createMembershipRequestBody,
+        jwt
       );
       router.push(`/workspace/${workspace.id}`);
     } catch (e) {

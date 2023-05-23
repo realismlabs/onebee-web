@@ -42,7 +42,7 @@ export default authMiddleware({
     ) {
       // If the user is logged in, but they don't have access to the workspace, redirect them to the no access page
       if (currentUser && currentUser.id) {
-        const data = await getUserMemberships(currentUser.id);
+        const data = await getUserMemberships(currentUser.id, token);
         const after_base_url = req.url.split("workspace/")[1];
         const workspaceId = after_base_url.split("/")[0];
         const userHasAccess = data.some(

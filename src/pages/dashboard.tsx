@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { getUserMemberships, getWorkspace } from "../utils/api";
+import { getUserMemberships, getWorkspaceDetails } from "../utils/api";
 import { useRouter } from "next/router";
 import { useQuery, useQueries } from "@tanstack/react-query";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 
 // This is the default page a user lands on after logging in via Clerk.
 // To change the destination in Clerk, you need to edit the paths .env.local in local dev mode.
 // In production, you need to edit the paths in the Clerk dashboard.
 
 export default function Welcome() {
+  const { getToken } = useAuth();
   const router = useRouter();
 
   const {
@@ -26,7 +27,8 @@ export default function Welcome() {
   } = useQuery({
     queryKey: ["currentUserMemberships", currentUser?.id],
     queryFn: async () => {
-      return await getUserMemberships(currentUser?.id);
+      const jwt = await getToken({ template: "test" });
+      return await getUserMemberships(currentUser?.id, jwt);
     },
     enabled: currentUser?.id !== null,
   });
@@ -36,7 +38,7 @@ export default function Welcome() {
       return {
         queryKey: ["getWorkspace", membership?.workspaceId],
         queryFn: async () => {
-          const response = await getWorkspace(membership?.workspaceId);
+          const response = await getWorkspaceDetails(membership?.workspaceId);
           if (response) {
             return response;
           } else {

@@ -634,9 +634,12 @@ export default function CreateTable() {
     };
     console.log("createConnectionRequestBody", createConnectionRequestBody);
 
+    const jwt = await getToken({ template: "test" });
+
     const create_connection_response = await createConnection(
       currentWorkspace?.id,
-      createConnectionRequestBody
+      createConnectionRequestBody,
+      jwt
     );
     console.log("create_connection_response", create_connection_response);
 
@@ -656,7 +659,7 @@ export default function CreateTable() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    const jwt = await getToken({ template: "test" });
+
     const create_table_response = await createTable(
       createTableRequestBody,
       jwt

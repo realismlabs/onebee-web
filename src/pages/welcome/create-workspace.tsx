@@ -59,8 +59,10 @@ export default function CreateWorkspace() {
           };
 
           console.log("Creating membership", createMembershipRequestBody);
+          const jwt = await getToken({ template: "test" });
           const created_membership_result = await createMembership(
-            createMembershipRequestBody
+            createMembershipRequestBody,
+            jwt
           );
 
           console.log("Created membership", created_membership_result);

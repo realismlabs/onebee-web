@@ -218,7 +218,8 @@ export default function WorkspaceHome() {
   } = useQuery({
     queryKey: ["getConnections", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceConnections(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,

@@ -337,6 +337,13 @@
       "createdAt": "2023-05-23T16:23:00.696Z",
       "role": "admin",
       "id": 22
+    },
+    {
+      "userId": 31,
+      "workspaceId": 18,
+      "createdAt": "2023-05-23T16:55:33.914Z",
+      "role": "admin",
+      "id": 23
     }
   ],
   "tables": [

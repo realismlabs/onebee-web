@@ -13,12 +13,14 @@ import { useState, Fragment, useRef, useEffect } from "react";
 import IconPickerPopoverEditTable from "@/components/IconPickerPopoverEditTable";
 import { Popover, Transition, Dialog } from "@headlessui/react";
 import InvitePeopleDialog from "@/components/InvitePeopleDialog";
+import { useAuth } from "@clerk/nextjs";
 
 const TablePopover = ({
   tableName,
   tableId,
   workspaceId,
 }) => {
+  const { getToken } = useAuth();
   const router = useRouter();
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
 
@@ -68,7 +70,8 @@ const TablePopover = ({
       displayName: new_table_name,
     };
     try {
-      await updateTableMutation.mutateAsync({ workspaceId, tableId, tableData });
+      const jwt = await getToken({ template: "test" });
+      await updateTableMutation.mutateAsync({ workspaceId, tableId, tableData, jwt });
       setIsEditingDisplayName(false);
       closeRenameDialog();
     } catch (error) {
@@ -78,7 +81,8 @@ const TablePopover = ({
 
   const handleDeleteTable = async () => {
     try {
-      await deleteTableMutation.mutateAsync({ workspaceId, tableId });
+      const jwt = await getToken({ template: "test" });
+      await deleteTableMutation.mutateAsync({ workspaceId, tableId, jwt });
       closeDeleteDialog();
     } catch (error) {
       console.error('Error deleting table:', error);
@@ -276,6 +280,7 @@ const TablePopover = ({
 };
 
 export default function TablePage() {
+  const { getToken } = useAuth();
   const router = useRouter();
   const { tableId } = router.query;
 
@@ -323,7 +328,8 @@ export default function TablePage() {
   } = useQuery({
     queryKey: ["getTable", currentWorkspace?.id, tableId],
     queryFn: async () => {
-      const response = await getTable(currentWorkspace?.id, tableId);
+      const jwt = await getToken({ template: "test" });
+      const response = await getTable(currentWorkspace?.id, tableId, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -336,9 +342,11 @@ export default function TablePage() {
   } = useQuery({
     queryKey: ["getConnection", currentWorkspace?.id, tableData?.connectionId],
     queryFn: async () => {
+      const jwt = await getToken({ template: "test" });
       const response = await getConnection(
         currentWorkspace.id,
-        tableData.connectionId
+        tableData.connectionId,
+        jwt
       );
       return response;
     },

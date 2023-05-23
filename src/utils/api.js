@@ -229,12 +229,7 @@ export const acceptWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
 // This is a public route that does not require authentication
 export const getWorkspaceDetails = async (workspaceId) => {
   const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
-  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      }
-    });
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch workspace details for id: ${workspaceId}`);
@@ -378,22 +373,30 @@ export const createTable = async (tableData, jwt) => {
 };
 
 // Get a specific table in a workspace
-export const getTable = async (workspaceId, tableId) => {
+export const getTable = async (workspaceId, tableId, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const table = await response.json();
   return table;
 };
 
 // Update a specific table in a workspace
-export const updateTable = async ({ workspaceId, tableId, tableData }) => {
+export const updateTable = async ({ workspaceId, tableId, tableData, jwt }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/update`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(tableData),
     }
@@ -403,11 +406,16 @@ export const updateTable = async ({ workspaceId, tableId, tableData }) => {
 };
 
 // Delete a specific table in a workspace
-export const deleteTable = async ({ workspaceId, tableId }) => {
+export const deleteTable = async ({ workspaceId, tableId, jwt }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/delete`,
     {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
     }
   );
   const deletedTable = await response.json();
@@ -415,13 +423,15 @@ export const deleteTable = async ({ workspaceId, tableId }) => {
 };
 
 // Create a new connection
-export const createConnection = async (workspaceId, connectionData) => {
+export const createConnection = async (workspaceId, connectionData, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(connectionData),
     }
@@ -431,9 +441,15 @@ export const createConnection = async (workspaceId, connectionData) => {
 };
 
 // Get a specific connection
-export const getConnection = async (workspaceId, connectionId) => {
+export const getConnection = async (workspaceId, connectionId, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const connection = await response.json();
   return connection;
@@ -444,10 +460,12 @@ export const updateConnectionDisplayName = async ({
   workspaceId,
   connectionId,
   data,
+  jwt
 }
 ) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   //  print all args
-  console.log("updateConnectionDisplayName", workspaceId, connectionId, data)
+  console.log("updateConnectionDisplayName", workspaceId, connectionId, data,)
 
   const displayName = data.name;
 
@@ -457,6 +475,7 @@ export const updateConnectionDisplayName = async ({
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify({ name: displayName }),
     }
@@ -467,7 +486,8 @@ export const updateConnectionDisplayName = async ({
 };
 
 // Delete a specific connection
-export const deleteConnection = async ({ workspaceId, connectionId }) => {
+export const deleteConnection = async ({ workspaceId, connectionId, jwt }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`,
@@ -475,6 +495,7 @@ export const deleteConnection = async ({ workspaceId, connectionId }) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
         },
       }
     );
@@ -490,57 +511,45 @@ export const deleteConnection = async ({ workspaceId, connectionId }) => {
   }
 };
 
-// Get all connections
-export const getConnections = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/connections`);
-  const connections = await response.json();
-  return connections;
-};
-
 // Get all connections associated with a workspace
-export const getWorkspaceConnections = async (workspaceId) => {
+export const getWorkspaceConnections = async (workspaceId, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const connections = await response.json();
   return connections;
 };
 
 // Get all connections associated with a workspace
-export const getWorkspaces = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/workspaces/`);
+export const getWorkspaces = async (jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
+  );
   const connections = await response.json();
   return connections;
 };
 
-export const getWorkspace = async (workspaceId) => {
-  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
-  const workspace = await response.json();
-  return workspace;
-};
-
-// "/api/memberships": "/memberships",
-export const getMemberships = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/memberships`);
-  const memberships = await response.json();
-  return memberships;
-};
-
-// "/api/memberships/:membershipId": "/memberships/:membershipId",
-export const getMembership = async (membershipId) => {
-  const response = await fetch(`${API_BASE_URL}/api/memberships/${membershipId}`);
-  const membership = await response.json();
-  return membership;
-};
 
 // create membership
-export const createMembership = async (membershipData) => {
+export const createMembership = async (membershipData, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   // check first if user already has membership of this workspace
 
   const userId = membershipData.userId;
   const workspaceId = membershipData.workspaceId;
 
-  const user_memberships = await getUserMemberships(userId);
+  const user_memberships = await getUserMemberships(userId, jwt);
   const user_memberships_workspaceIds = user_memberships.map((membership) => {
     return membership.workspaceId;
   });
@@ -553,6 +562,7 @@ export const createMembership = async (membershipData) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(membershipData),
   });
@@ -561,13 +571,15 @@ export const createMembership = async (membershipData) => {
 };
 
 // "/api/memberships/:membershipId/update": "/memberships/:membershipId",
-export const updateMembership = async ({ membershipId, membershipData }) => {
+export const updateMembership = async ({ membershipId, membershipData, jwt }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/memberships/${membershipId}/update`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(membershipData),
     }
@@ -577,11 +589,16 @@ export const updateMembership = async ({ membershipId, membershipData }) => {
 };
 
 // "/api/memberships/:membershipId/delete": "/memberships/:membershipId",
-export const deleteMembership = async ({ membershipId }) => {
+export const deleteMembership = async ({ membershipId, jwt }) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
     `${API_BASE_URL}/api/memberships/${membershipId}/delete`,
     {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
     }
   );
   const deletedMembership = await response.json();
@@ -589,26 +606,37 @@ export const deleteMembership = async ({ membershipId }) => {
 };
 
 // "/api/workspaces/:workspaceId/memberships": "/memberships?workspaceId=:workspaceId",
-export const getWorkspaceMemberships = async (workspaceId) => {
+export const getWorkspaceMemberships = async (workspaceId, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/memberships`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/memberships`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    }
+  }
   );
   const memberships = await response.json();
   return memberships;
 };
 
 // "/api/users/:userId/memberships": "/memberships?userId=:userId"
-export const getUserMemberships = async (userId) => {
+export const getUserMemberships = async (userId, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   const response = await fetch(
-    `${API_BASE_URL}/api/users/${userId}/memberships`
+    `${API_BASE_URL}/api/users/${userId}/memberships`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    }
+  }
   );
   const memberships = await response.json();
   return memberships;
 }
 
 export const getAllowedWorkspacesForUser = async (userId, jwt) => {
+  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
   // fetch all workspaces
-  const workspaces = await getWorkspaces();
+  const workspaces = await getWorkspaces(jwt);
 
   // fetch user email domain
   const user = await getUser(userId, jwt);

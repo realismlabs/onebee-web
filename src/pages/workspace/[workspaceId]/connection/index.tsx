@@ -82,7 +82,8 @@ export default function Connections() {
   } = useQuery({
     queryKey: ["getConnections", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceConnections(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -119,9 +120,11 @@ export default function Connections() {
 
   const handleDeleteConnection = async () => {
     try {
+      const jwt = await getToken({ template: "test" });
       await deleteConnectionMutation.mutateAsync({
         workspaceId: currentWorkspace.id,
         connectionId: selectedConnectionId,
+        jwt,
       });
       setIsDeleteDialogOpen(false);
     } catch (error: any) {
@@ -136,12 +139,14 @@ export default function Connections() {
   });
 
   const handleUpdateDisplayName = async () => {
+    const jwt = await getToken({ template: "test" });
     await updateConnectionMutation.mutateAsync({
       workspaceId: currentWorkspace.id,
       connectionId: selectedConnectionId,
       data: {
         name: displayNameInputValue,
       },
+      jwt,
     });
     setIsEditingDisplayName(false);
   };

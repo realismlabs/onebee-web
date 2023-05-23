@@ -5,11 +5,10 @@ import Image from 'next/image';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery, useQueryClient, useQueries } from '@tanstack/react-query';
-import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspace } from '../utils/api';
+import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspaceDetails } from '../utils/api';
 import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, Gear, } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
-import { getWorkspaces } from '@/utils/api';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useLocalStorageState } from '@/utils/util';
@@ -91,7 +90,7 @@ const KeyCombination = ({ keys }) => {
 
 function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   const router = useRouter();
-
+  const { getToken } = useAuth();
   // get user's current memberships
   const {
     data: userMembershipsData,
@@ -100,7 +99,8 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   } = useQuery({
     queryKey: ["currentUserMemberships", currentUser.id],
     queryFn: async () => {
-      return await getUserMemberships(currentUser.id);
+      const jwt = await getToken({ template: "test" });
+      return await getUserMemberships(currentUser.id, jwt);
     },
   });
 
@@ -110,7 +110,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
       return {
         queryKey: ["getWorkspace", membership.workspaceId],
         queryFn: async () => {
-          const response = await getWorkspace(membership.workspaceId);
+          const response = await getWorkspaceDetails(membership.workspaceId);
           return response;
         },
         enabled: membership.workspaceId !== null,
@@ -317,7 +317,8 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   } = useQuery({
     queryKey: ["getConnections", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceConnections(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,

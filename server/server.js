@@ -60,7 +60,7 @@ app.get(
 
 // fetchCurrentUser
 app.get('/api/users/clerkUserId/:clerkUserId', ClerkExpressRequireAuth(), async (req, res) => {
-  const clerkUserId = parseInt(req.params.clerkUserId, 10);
+  const clerkUserId = req.params.clerkUserId;
 
   console.log("clerkUserId", clerkUserId)
 
@@ -118,12 +118,12 @@ app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
   try {
     // see if user already exists by clerkUserId
     const resultCheck = await client.query('SELECT * FROM users WHERE "clerkUserId" = $1', [clerkUserId]);
-    console.log("awus resultCheck", resultCheck)
+    console.log("awus resultCheck", JSON.stringify(resultCheck))
     const existingUser = resultCheck.rows[0];
-    console.log("awus existingUser", existingUser)
+    console.log("awus existingUser", JSON.stringify(existingUser))
 
     if (existingUser) {
-      console.log("User already exists:", existingUser)
+      console.log("User already exists:", JSON.stringify(existingUser))
       res.status(400).json({ message: "User already exists" });
       return;
     }
@@ -157,8 +157,9 @@ app.post('/api/workspaces/:workspaceId/invite', ClerkExpressRequireAuth(), async
   // here should be logic of checking if invite or membership already exists
 
   try {
+    const client = await pool.connect();
     const result = await client.query(
-      `INSERT INTO invites(inviterEmail, recipientEmail, workspaceId, accepted)
+      `INSERT INTO invites("inviterEmail", "recipientEmail", "workspaceId", accepted)
        VALUES($1, $2, $3, $4) RETURNING *`, [inviterEmail, recipientEmail, workspaceId, false]
     );
 
@@ -175,8 +176,9 @@ app.get('/api/invites/recipient/:recipientEmail', ClerkExpressRequireAuth(), asy
   const recipientEmail = req.params.recipientEmail;
 
   try {
+    const client = await pool.connect();
     const result = await client.query(
-      `SELECT * FROM invites WHERE recipientEmail = $1 AND accepted = false`, [recipientEmail]
+      `SELECT * FROM invites WHERE "recipientEmail" = $1 AND accepted = false`, [recipientEmail]
     );
 
     const invites = result.rows;
@@ -192,6 +194,7 @@ app.get('/api/workspaces/:workspaceId/invites', ClerkExpressRequireAuth(), async
   const workspaceId = parseInt(req.params.workspaceId, 10);
 
   try {
+    const client = await pool.connect();
     const result = await client.query(
       `SELECT * FROM invites WHERE workspaceId = $1 AND accepted = false`, [workspaceId]
     );
@@ -209,6 +212,7 @@ app.delete('/api/workspaces/:workspaceId/invites/:inviteId/delete', ClerkExpress
   const { workspaceId, inviteId } = req.params;
 
   try {
+    const client = await pool.connect();
     const result = await client.query(
       `DELETE FROM invites WHERE id = $1 AND workspaceId = $2 RETURNING *`, [inviteId, workspaceId]
     );
@@ -225,6 +229,7 @@ app.patch('/api/workspaces/:workspaceId/accept-invite/:inviteId', ClerkExpressRe
   const { workspaceId, inviteId } = req.params;
 
   try {
+    const client = await pool.connect();
     const result = await client.query(
       `UPDATE invites SET accepted = true WHERE id = $1 AND workspaceId = $2 RETURNING *`, [inviteId, workspaceId]
     );
@@ -241,6 +246,7 @@ app.get('/api/workspaces/:workspaceId', async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
 
   try {
+    const client = await pool.connect();
     const result = await client.query(`SELECT * FROM workspaces WHERE id = $1`, [workspaceId]);
     const workspace = result.rows[0];
     res.json(workspace);
@@ -256,6 +262,7 @@ app.get('/api/users/:userId', ClerkExpressRequireAuth(), async (req, res) => {
   const userId = parseInt(req.params.userId, 10);
 
   try {
+    const client = await pool.connect();
     const result = await client.query(`SELECT * FROM users WHERE id = $1`, [userId]);
     const user = result.rows[0];
     res.json(user);
