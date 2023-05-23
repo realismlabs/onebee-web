@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const port = process.env.PORT || 5002;
 const app = express();
+app.use(express.json()); // The express.json() middleware is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on the body-parser module.
 
 // app url is https://dataland-demo-995df.uc.r.appspot.com/api/users/clerkUserId/user_2QADjxJOASIi8uWWDd9SqUh1d0a
 
