@@ -357,7 +357,7 @@ export default function Welcome() {
               </div>
               <div className="bg-slate-1 text-slate-12 text-center text-[22px] mt-8 max-w-[420px]">
                 You don&apos;t have access to the{" "}
-                <span className="font-semibold">{workspaceDetail?.name}</span>
+                <span className="font-semibold">{workspaceDetail?.name}</span>{" "}
                 workspace
               </div>
 

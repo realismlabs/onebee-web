@@ -8,10 +8,14 @@ import clerk from "@clerk/clerk-sdk-node";
 export default authMiddleware({
   publicRoutes: ["/forgot-password", "/login", "/sandbox", "/signup", "/"],
   async afterAuth(auth, req, evt) {
-    console.log("auth", auth);
-    const currentUser = await fetchCurrentUser(auth.userId, {
-      "x-awu-vercel-secret-key": process.env.AWU_VERCEL_SECRET_KEY,
-    });
+    // console.log("auth", auth);
+    const { getToken } = auth;
+    const auth_header = {
+      Authorization: `Bearer ${await getToken({ template: "test" })}`,
+    };
+    console.log("auth_header", auth_header);
+    const currentUser = await fetchCurrentUser(auth.userId, auth_header);
+    // const result = await fetchCurrentUser(user?.id, { Authorization: `Bearer ${await getToken({ template: 'test' })}` })
     console.log("currentUser", currentUser);
     // if no currentUser exists in the Dataland db, but there is an authenticated user in Clerk, (
     // happens bc someone signs up via OAuth first), then create a user for them
