@@ -134,7 +134,8 @@ export default function JoinWorkspace() {
   } = useQuery({
     queryKey: ["getAllowedWorkspacesForUser", currentUser?.id],
     queryFn: async () => {
-      const result = await getAllowedWorkspacesForUser(currentUser?.id);
+      const jwt = await getToken({ template: "test" });
+      const result = await getAllowedWorkspacesForUser(currentUser?.id, jwt);
       return result;
     },
     enabled: currentUser?.id != null,
