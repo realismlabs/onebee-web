@@ -18,7 +18,6 @@ export const fetchCurrentUser = async (clerkUserId, headers) => {
     return null;
   }
   const result = await response.json();
-  console.log("awu: fetchCurrentUser response from gapp", result);
   return result;
 };
 
@@ -32,7 +31,6 @@ export const fetchCurrentWorkspace = async (workspaceId, headers) => {
   }
 
   const result = await response.json();
-  console.log("fetchCurrentWorkspace result", result)
   return result;
 };
 

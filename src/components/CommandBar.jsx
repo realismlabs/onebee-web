@@ -27,12 +27,6 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
     return () => document.removeEventListener('keydown', down)
   }, [])
 
-
-  React.useEffect(() => {
-    console.log("selected value", value)
-  }, [value])
-
-
   const {
     data: currentUser,
     isLoading: isUserLoading,
@@ -143,7 +137,6 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
           value={value}
           loop={true}
           onValueChange={(v) => {
-            console.log('value', v)
             setValue(v)
           }}
           label="Global Command Menu"
@@ -169,9 +162,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                         value={searchable_id_name}
                         className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
                         onMouseEnter={() => {
-                          console.log("hovering", searchable_id_name);
                           setValue(searchable_id_name);
-                          console.log("value", value);
                         }}
                         onSelect={
                           () => {
@@ -203,9 +194,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                           value={searchable_id_name}
                           className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
                           onMouseEnter={() => {
-                            console.log("hovering", searchable_id_name);
                             setValue(searchable_id_name);
-                            console.log("value", value);
                           }}
                           onSelect={
                             () => {
