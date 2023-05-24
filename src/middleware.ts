@@ -54,18 +54,13 @@ export default authMiddleware({
         console.log("awu after_base_url", after_base_url);
         const workspaceId = after_base_url.split("/")[0];
         console.log("awu workspaceId", workspaceId);
-        console.log("awu req.url", req.url);
-        // console log the original base URL (without everything after the domain tld)
-        console.log("awu req.url.split", req.url.split("workspace/")[0]);
-        console.log("awu req headers origin", req.headers.get("origin"));
         const userHasAccess = data.some(
           (membership: any) => membership.workspaceId === parseInt(workspaceId)
         );
         if (!userHasAccess) {
           const noAccessUrl = new URL(
             `/workspace/${workspaceId}/no-access`,
-            // process.env.NEXT_PUBLIC_APP_URL
-            req.url.split("workspace/")[0]
+            req.url.split("workspace/")[0] // this is the base URL (without everything after the domain tld)
           );
           return NextResponse.redirect(noAccessUrl);
         } else {
