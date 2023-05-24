@@ -576,6 +576,11 @@ export const createMembership = async (membershipData, jwt) => {
 // "/api/memberships/:membershipId/update": "/memberships/:membershipId",
 export const updateMembership = async ({ membershipId, membershipData, jwt }) => {
 
+  console.log("updateMembership membershipId", membershipId)
+  console.log("updateMembership membershipData", membershipData)
+
+  const role = membershipData.role;
+
   const response = await fetch(
     `${API_BASE_URL}/api/memberships/${membershipId}/update`,
     {
@@ -584,7 +589,9 @@ export const updateMembership = async ({ membershipId, membershipData, jwt }) =>
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`,
       },
-      body: JSON.stringify(membershipData),
+      body: JSON.stringify({
+        role: role,
+      }),
     }
   );
   const updatedMembership = await response.json();
@@ -632,6 +639,7 @@ export const getUserMemberships = async (userId, jwt) => {
     }
   }
   );
+
   const memberships = await response.json();
   return memberships;
 }

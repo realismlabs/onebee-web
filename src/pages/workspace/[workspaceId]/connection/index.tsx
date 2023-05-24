@@ -479,14 +479,14 @@ export default function Connections() {
                                       <div className="text-[13px] text-slate-12">
                                         <IconLoaderFromSvgString
                                           iconSvgString={table.iconSvgString}
-                                          tableName={table.displayName}
+                                          tableName={table.name}
                                         />
                                       </div>
                                       <div className="w-[180px] truncate">
-                                        {table.displayName}
+                                        {table.name}
                                       </div>
                                       <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate">
-                                        {table.connectionPath}
+                                        {table.outerPath}
                                       </pre>
                                       <div className="ml-auto">
                                         {abbreviateNumber(table.rowCount) +

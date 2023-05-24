@@ -42,6 +42,7 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
+  max: 20, // Increase this value
 });
 
 app.get('/users', ClerkExpressRequireAuth(), async (req, res) => {
@@ -358,15 +359,38 @@ app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', ClerkEx
 // createTable
 app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
-  const { name, createdAt, createdByUserId, connectionId, sourceTableId } = req.body;
+  const {
+    fullPath,
+    name,
+    outerPath,
+    rowCount,
+    connectionId,
+    iconSvgString,
+    iconColor,
+    createdAt,
+    updatedAt
+  } = req.body;
 
   console.log("Request body: ", req.body); // logging the body
 
   const client = await pool.connect();
   try {
     const result = await client.query(
-      'INSERT INTO "tables"("name", "createdAt", "createdByUserId", "connectionId", "sourceTableId", "workspaceId") VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
-      [name, createdAt, createdByUserId, connectionId, sourceTableId, workspaceId]
+      `INSERT INTO "tables" ("workspaceId", "fullPath", "name", "outerPath", "rowCount", "connectionId", "iconSvgString", "iconColor", "createdAt", "updatedAt") 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+      RETURNING *`,
+      [
+        workspaceId,
+        fullPath,
+        name,
+        outerPath,
+        rowCount,
+        connectionId,
+        iconSvgString,
+        iconColor,
+        createdAt,
+        updatedAt
+      ]
     );
     const createdTable = result.rows[0];
     console.log('Created table', createdTable);
@@ -406,15 +430,24 @@ app.get('/api/workspaces/:workspaceId/tables/:tableId', ClerkExpressRequireAuth(
 app.patch('/api/workspaces/:workspaceId/tables/:tableId/update', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
   const tableId = parseInt(req.params.tableId, 10);
-  const { name, createdByUserId, connectionId, sourceTableId } = req.body;
 
   console.log("Request body: ", req.body); // logging the body
 
   const client = await pool.connect();
+
+  const validKeys = ["name", "iconColor", "iconSvgString"];
+
+  const fields = Object.keys(req.body).filter(key => validKeys.includes(key));
+  const values = Object.values(req.body);
+  const setString = fields.map((field, index) => `"${field}"=$${index + 1}`).join(',');
+
+  values.push(workspaceId);
+  values.push(tableId);
+
   try {
     const result = await client.query(
-      'UPDATE "tables" SET "name"=$1, "createdByUserId"=$2, "connectionId"=$3, "sourceTableId"=$4 WHERE "workspaceId"=$5 AND "id"=$6 RETURNING *',
-      [name, createdByUserId, connectionId, sourceTableId, workspaceId, tableId]
+      `UPDATE "tables" SET ${setString} WHERE "workspaceId"=$${values.length - 1} AND "id"=$${values.length} RETURNING *`,
+      values
     );
     const updatedTable = result.rows[0];
     console.log('Updated table', updatedTable);
@@ -449,15 +482,44 @@ app.delete('/api/workspaces/:workspaceId/tables/:tableId/delete', ClerkExpressRe
 // createConnection
 app.post('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
-  const { name, host, port, database, username, password } = req.body;
+
+  const {
+    accountIdentifier,
+    warehouse,
+    basicAuthUsername,
+    basicAuthPassword,
+    keyPairAuthUsername,
+    keyPairAuthPrivateKey,
+    keyPairAuthPrivateKeyPassphrase,
+    role,
+    connectionType,
+    name,
+    createdAt
+  } = req.body;
+  // const { name, host, port, database, username, password } = req.body;
 
   console.log("Request body: ", req.body); // logging the body
 
   const client = await pool.connect();
   try {
     const result = await client.query(
-      'INSERT INTO "connections"("name", "host", "port", "database", "username", "password", "workspaceId") VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-      [name, host, port, database, username, password, workspaceId]
+      `INSERT INTO "connections" ("accountIdentifier", "warehouse", "basicAuthUsername", "basicAuthPassword", "keyPairAuthUsername", "keyPairAuthPrivateKey", "keyPairAuthPrivateKeyPassphrase", "role", "connectionType", "name", "createdAt", "workspaceId") 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
+      RETURNING *`,
+      [
+        accountIdentifier,
+        warehouse,
+        basicAuthUsername,
+        basicAuthPassword,
+        keyPairAuthUsername,
+        keyPairAuthPrivateKey,
+        keyPairAuthPrivateKeyPassphrase,
+        role,
+        connectionType,
+        name,
+        createdAt,
+        workspaceId
+      ]
     );
     const createdConnection = result.rows[0];
     console.log('Created connection', createdConnection);
@@ -488,6 +550,26 @@ app.get('/api/workspaces/:workspaceId/connections/:connectionId', ClerkExpressRe
     client.release();
   }
 });
+
+// getConnections
+app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM connections WHERE "workspaceId"=$1', [workspaceId]);
+    const connections = result.rows;
+    console.log('Fetched connections', connections)
+    res.json(connections);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting connections" });
+  } finally {
+    client.release();
+  }
+});
+
+
 
 
 // updateConnectionDisplayName
@@ -595,18 +677,28 @@ app.get('/api/workspaces/', ClerkExpressRequireAuth(), async (req, res) => {
   }
 });
 
-// updateMembership
+// updateMembership role
 app.patch('/api/memberships/:membershipId/update', ClerkExpressRequireAuth(), async (req, res) => {
   const membershipId = parseInt(req.params.membershipId, 10);
-  const membershipData = req.body;
+  const { role } = req.body;
 
-  console.log("Request body: ", req.body); // logging the body
+  console.log("Request body:", role); // logging the body
+  console.log("Statement", `UPDATE "memberships" SET "role" = ${role} WHERE "id" = ${membershipId} RETURNING *`)
 
   const client = await pool.connect();
+  pool.on('acquire', (client) => {
+    console.log('Connection acquired');
+  });
+
+  pool.on('release', (client) => {
+    console.log('Connection released');
+  });
   try {
-    const keys = Object.keys(membershipData).map((key, index) => `"${key}"=$${index + 1}`).join(', ');
-    const values = Object.values(membershipData);
-    const result = await client.query(`UPDATE "memberships" SET ${keys} WHERE "id"=$${values.length + 1} RETURNING *`, [...values, membershipId]);
+    const result = await client.query(
+      `UPDATE "memberships" SET "role" = $1 WHERE "id" = $2 RETURNING *`,
+      [role, membershipId]
+    );
+    console.log("Result", result)
     const updatedMembership = result.rows[0];
     console.log('Updated membership', updatedMembership);
     res.json(updatedMembership);

@@ -782,7 +782,7 @@ export default function CreateTable() {
     }
 
     const displayName = selectedTable?.split(".")[2];
-    const connectionPath =
+    const outerPath =
       selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
 
     // parse color from iconSvgString
@@ -796,9 +796,9 @@ export default function CreateTable() {
 
     const createTableRequestBody = {
       workspaceId: currentWorkspace?.id,
-      fullName: selectedTable,
-      displayName: tableDisplayName,
-      connectionPath,
+      fullPath: selectedTable,
+      name: tableDisplayName,
+      outerPath,
       rowCount: selectedTableRowCount,
       connectionId: selectedConnection?.id,
       iconSvgString: iconSvgString,

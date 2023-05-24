@@ -123,8 +123,8 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
   if (tablesData.length > 0) {
     tablesData.forEach((table) => {
       tables.push({
-        name: table.displayName,
-        description: table.fullName,
+        name: table.name,
+        description: table.fullPath,
         iconSvgString: table.iconSvgString,
         type: 'table',
         id: String(table.id),

@@ -644,14 +644,14 @@ export default function CreateTable() {
     console.log("create_connection_response", create_connection_response);
 
     const displayName = selectedTable?.split(".")[2];
-    const connectionPath =
+    const outerPath =
       selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
 
     const createTableRequestBody = {
       workspaceId: currentWorkspace?.id,
-      fullName: selectedTable,
-      displayName: tableDisplayName,
-      connectionPath,
+      fullPath: selectedTable,
+      name: tableDisplayName,
+      outerPath,
       rowCount: selectedTableRowCount,
       connectionId: create_connection_response.id,
       iconSvgString: iconSvgString,

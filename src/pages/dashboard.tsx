@@ -28,26 +28,36 @@ export default function Welcome() {
     queryKey: ["currentUserMemberships", currentUser?.id],
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
-      return await getUserMemberships(currentUser?.id, jwt);
+      const result = await getUserMemberships(currentUser?.id, jwt);
+      return result;
     },
     enabled: currentUser?.id !== null,
   });
 
+  console.log("userMembershipsData", userMembershipsData);
   const currentWorkspacesForUserQueries = useQueries({
-    queries: (userMembershipsData ?? []).map((membership: any) => {
-      return {
-        queryKey: ["getWorkspace", membership?.workspaceId],
-        queryFn: async () => {
-          const response = await getWorkspaceDetails(membership?.workspaceId);
-          if (response) {
-            return response;
-          } else {
-            return null;
-          }
-        },
-        enabled: membership?.workspaceId !== null,
-      };
-    }),
+    queries: Array.isArray(userMembershipsData)
+      ? userMembershipsData.map((membership: any) => {
+          return {
+            queryKey: ["getWorkspace", membership?.workspaceId],
+            queryFn: async () => {
+              const response = await getWorkspaceDetails(
+                membership?.workspaceId
+              );
+              if (response) {
+                return response;
+              } else {
+                throw new Error("No response from server");
+              }
+            },
+            onError: (error: any) => {
+              console.error("Error fetching workspace details:", error);
+              // handle the error here
+            },
+            enabled: membership?.workspaceId !== null,
+          };
+        })
+      : [],
   });
 
   const currentWorkspacesForUserError = currentWorkspacesForUserQueries.map(
