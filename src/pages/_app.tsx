@@ -66,13 +66,14 @@ export default function App({ Component, pageProps }: AppProps) {
         </title>
         <meta
           name="description"
-          content="Dataland lets your whole team browse your data warehouse at billion-row scale. 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789"
+          content="Dataland lets your whole team browse your data warehouse at billion-row scale. Connect Snowflake, BigQuery, Postgres in 1 min. Get started for free."
         />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Dataland" />
+        {/* following is used for Slack */}
         <meta
           property="og:description"
-          content="Dataland lets your whole team browse your data warehouse at billion-row scale. Connect Snowflake, BigQuery, Redshift, and more. Get started for free."
+          content="Dataland lets your whole team browse your data warehouse at billion-row scale. Connect Snowflake, BigQuery, Postgres in 1 min. Get started for free."
         />
         <meta
           property="og:site_name"
