@@ -701,7 +701,7 @@ app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), a
 
 // createMembership
 app.post('/api/memberships', ClerkExpressRequireAuth(), async (req, res) => {
-  const { userId, workspaceId } = req.body;
+  const { userId, workspaceId, role } = req.body;
 
   console.log("Request body: ", req.body); // logging the body
 
@@ -712,7 +712,6 @@ app.post('/api/memberships', ClerkExpressRequireAuth(), async (req, res) => {
       throw new Error("User already has membership of this workspace");
     }
     const createdAt = new Date().toISOString();
-    const role = "member";
     const result = await client.query('INSERT INTO "memberships"("userId", "workspaceId", "createdAt", "role") VALUES($1, $2, $3, $4) RETURNING *', [userId, workspaceId, createdAt, role]);
     const createdMembership = result.rows[0];
     console.log('Created membership', createdMembership);
