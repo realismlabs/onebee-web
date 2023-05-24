@@ -2,6 +2,7 @@ import React, { useState, useEffect, FC } from "react";
 import Link from "next/link";
 import router from "next/router";
 import Image from "next/image";
+import Head from "next/head";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   X,
@@ -400,55 +401,60 @@ export default function AddDataSource() {
   const workspace_name = currentWorkspace.name;
 
   return (
-    <WorkspaceLayout>
-      <div className="h-screen bg-slate-1">
-        <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[12px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
-          <div className="h-[24px] w-[24px] flex items-center justify-center">
-            <Plus size={20} weight="bold" className="text-slate-10" />
-          </div>
-          <p className="text-slate-12 text-[13px]">Add data connection</p>
-        </div>
-        <div className="flex flex-col justify-center items-center w-full pt-32">
-          <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4 flex flex-row">
-            <p>Connect a data source</p>
-          </div>
-          <form className="flex flex-col gap-4 mt-4">
-            <div className="flex gap-4">
-              <div
-                className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer"
-                onClick={(e) => handleSourceClick("snowflake")}
-              >
-                <div className="h-[32px] w-[32px]">
-                  <LogoSnowflake />
-                </div>
-                <p>Snowflake</p>
-              </div>
-              <Link href="/welcome/add-bigquery">
-                <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
-                  <div className="h-[32px] w-[32px]">
-                    <LogoBigQuery />
-                  </div>
-                  <p>BigQuery</p>
-                </div>
-              </Link>
-              <Link href="/welcome/add-postgres">
-                <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
-                  <div className="h-[32px] w-[32px]">
-                    <LogoPostgres />
-                  </div>
-                  <p>Postgres</p>
-                </div>
-              </Link>
+    <>
+      <Head>
+        <title>{currentWorkspace.name} › New connection</title>
+      </Head>
+      <WorkspaceLayout>
+        <div className="h-screen bg-slate-1">
+          <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[12px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
+            <div className="h-[24px] w-[24px] flex items-center justify-center">
+              <Plus size={20} weight="bold" className="text-slate-10" />
             </div>
-            <InviteTeammateDialog email={email} workspace={workspace_name} />
-            <Link href={`/workspace/${currentWorkspace.id}`}>
-              <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">
-                Do this later
+            <p className="text-slate-12 text-[13px]">Add data connection</p>
+          </div>
+          <div className="flex flex-col justify-center items-center w-full pt-32">
+            <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4 flex flex-row">
+              <p>Connect a data source</p>
+            </div>
+            <form className="flex flex-col gap-4 mt-4">
+              <div className="flex gap-4">
+                <div
+                  className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer"
+                  onClick={(e) => handleSourceClick("snowflake")}
+                >
+                  <div className="h-[32px] w-[32px]">
+                    <LogoSnowflake />
+                  </div>
+                  <p>Snowflake</p>
+                </div>
+                <Link href="/welcome/add-bigquery">
+                  <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+                    <div className="h-[32px] w-[32px]">
+                      <LogoBigQuery />
+                    </div>
+                    <p>BigQuery</p>
+                  </div>
+                </Link>
+                <Link href="/welcome/add-postgres">
+                  <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+                    <div className="h-[32px] w-[32px]">
+                      <LogoPostgres />
+                    </div>
+                    <p>Postgres</p>
+                  </div>
+                </Link>
               </div>
-            </Link>
-          </form>
+              <InviteTeammateDialog email={email} workspace={workspace_name} />
+              <Link href={`/workspace/${currentWorkspace.id}`}>
+                <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">
+                  Do this later
+                </div>
+              </Link>
+            </form>
+          </div>
         </div>
-      </div>
-    </WorkspaceLayout>
+      </WorkspaceLayout>
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import Head from "next/head";
 import router from "next/router";
 import {
   CaretRight,
@@ -911,43 +912,48 @@ export default function CreateTable() {
   }
 
   return (
-    <WorkspaceLayout>
-      <div className="h-screen bg-slate-1 flex flex-col">
-        <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[12px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
-          <div className="h-[24px] w-[24px] flex items-center justify-center">
-            <Plus size={20} weight="bold" className="text-slate-10" />
+    <>
+      <Head>
+        <title>{currentWorkspace.name} › New table</title>
+      </Head>
+      <WorkspaceLayout>
+        <div className="h-screen bg-slate-1 flex flex-col">
+          <div className="flex flex-row gap-2 items-center border-b border-slate-4 py-[12px] pl-[12px] pr-[12px] sticky top-0 bg-slate-1 h-[48px]">
+            <div className="h-[24px] w-[24px] flex items-center justify-center">
+              <Plus size={20} weight="bold" className="text-slate-10" />
+            </div>
+            <p className="text-slate-12 text-[13px]">New table</p>
           </div>
-          <p className="text-slate-12 text-[13px]">New table</p>
+          <div className="flex flex-1 flex-col justify-start items-start w-full mt-4">
+            <PreviewTableUI
+              tablesQueryData={tablesQueryData}
+              handleSubmit={handleSubmit}
+              selectedTable={selectedTable}
+              setSelectedTable={setSelectedTable}
+              selectedTableRowCount={selectedTableRowCount}
+              setSelectedTableRowCount={setSelectedTableRowCount}
+              selectedIconName={selectedIconName}
+              setSelectedIconName={setSelectedIconName}
+              isIconSuggestionLoading={isIconSuggestionLoading}
+              setIsIconSuggestionLoading={setIsIconSuggestionLoading}
+              iconSvgString={iconSvgString}
+              setIconSvgString={setIconSvgString}
+              selectedColor={selectedColor}
+              setSelectedColor={setSelectedColor}
+              tableDisplayName={tableDisplayName}
+              setTableDisplayName={setTableDisplayName}
+              tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
+              setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
+              setSelectedConnection={setSelectedConnection}
+              selectedConnection={selectedConnection}
+              connectionsData={connectionsData}
+              isLoading={
+                isUserLoading || isTablesQueryLoading || isConnectionsLoading
+              }
+            />
+          </div>
         </div>
-        <div className="flex flex-1 flex-col justify-start items-start w-full mt-4">
-          <PreviewTableUI
-            tablesQueryData={tablesQueryData}
-            handleSubmit={handleSubmit}
-            selectedTable={selectedTable}
-            setSelectedTable={setSelectedTable}
-            selectedTableRowCount={selectedTableRowCount}
-            setSelectedTableRowCount={setSelectedTableRowCount}
-            selectedIconName={selectedIconName}
-            setSelectedIconName={setSelectedIconName}
-            isIconSuggestionLoading={isIconSuggestionLoading}
-            setIsIconSuggestionLoading={setIsIconSuggestionLoading}
-            iconSvgString={iconSvgString}
-            setIconSvgString={setIconSvgString}
-            selectedColor={selectedColor}
-            setSelectedColor={setSelectedColor}
-            tableDisplayName={tableDisplayName}
-            setTableDisplayName={setTableDisplayName}
-            tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
-            setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
-            setSelectedConnection={setSelectedConnection}
-            selectedConnection={selectedConnection}
-            connectionsData={connectionsData}
-            isLoading={
-              isUserLoading || isTablesQueryLoading || isConnectionsLoading
-            }
-          />
-        </div>
-      </div>
-    </WorkspaceLayout>
+      </WorkspaceLayout>
+    </>
   );
 }

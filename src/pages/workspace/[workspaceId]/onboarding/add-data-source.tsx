@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FC } from "react";
 import Link from "next/link";
 import router from "next/router";
+import Head from "next/head";
 import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X, CaretRight, CircleNotch, CheckCircle } from "@phosphor-icons/react";
@@ -76,75 +77,80 @@ export default function AddDataSource() {
   };
 
   return (
-    <div className="h-screen bg-slate-1">
-      <AccountHeader email={email ?? "placeholder@example.com"} />
-      <motion.div
-        className="flex flex-col justify-center items-center w-full pt-32"
-        variants={container}
-        initial="hidden"
-        animate="show"
-        transition={{ duration: 1 }}
-      >
+    <>
+      <Head>
+        <title>{currentWorkspace.name} › Add data connection</title>
+      </Head>
+      <div className="h-screen bg-slate-1">
+        <AccountHeader email={email ?? "placeholder@example.com"} />
         <motion.div
-          className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"
-          variants={item}
+          className="flex flex-col justify-center items-center w-full pt-32"
+          variants={container}
+          initial="hidden"
+          animate="show"
+          transition={{ duration: 1 }}
         >
-          Connect a data source
-        </motion.div>
-        <motion.form className="flex flex-col gap-4 mt-4" variants={item}>
-          <div className="flex gap-4">
-            <div
-              className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer"
-              onClick={(e) => handleSourceClick("snowflake")}
-            >
-              <div className="h-[32px] w-[32px]">
-                <LogoSnowflake />
-              </div>
-              <p>Snowflake</p>
-            </div>
-            <Link href="/welcome/add-bigquery">
-              <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
-                <div className="h-[32px] w-[32px]">
-                  <LogoBigQuery />
-                </div>
-                <p>BigQuery</p>
-              </div>
-            </Link>
-            <Link href="/welcome/add-postgres">
-              <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
-                <div className="h-[32px] w-[32px]">
-                  <LogoPostgres />
-                </div>
-                <p>Postgres</p>
-              </div>
-            </Link>
-          </div>
-          {/* <InviteTeammateDialog email={email} workspace={workspace_name} /> */}
-          <div
-            className="text-[14px] text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16 focus:outline-none"
-            tabIndex={-1}
-            onClick={() => setIsInvitePeopleDialogOpen(true)}
+          <motion.div
+            className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"
+            variants={item}
           >
-            <p className="text-slate-10">Don&apos;t have credentials?</p>
-            <p className="text-slate-12">Invite a teammate to help →</p>
-          </div>
-          <InvitePeopleDialog
-            isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
-            setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
-            currentUser={currentUser}
-            currentWorkspace={currentWorkspace}
-            customMessage={customMessage}
-            setCustomMessage={setCustomMessage}
-            emailTemplateLanguage={`Help ${currentUser.name} set up a read-only data source connection.`}
-            customInvitePeopleSubject={`Help ${currentUser.name} set up a data connection on Dataland.io`}
-          />
-          <Link href={`/workspace/${currentWorkspace.id}`}>
-            <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">
-              Do this later
+            Connect a data source
+          </motion.div>
+          <motion.form className="flex flex-col gap-4 mt-4" variants={item}>
+            <div className="flex gap-4">
+              <div
+                className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer"
+                onClick={(e) => handleSourceClick("snowflake")}
+              >
+                <div className="h-[32px] w-[32px]">
+                  <LogoSnowflake />
+                </div>
+                <p>Snowflake</p>
+              </div>
+              <Link href="/welcome/add-bigquery">
+                <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+                  <div className="h-[32px] w-[32px]">
+                    <LogoBigQuery />
+                  </div>
+                  <p>BigQuery</p>
+                </div>
+              </Link>
+              <Link href="/welcome/add-postgres">
+                <div className="bg-slate-3 text-slate-12 text-[14px] w-28 h-24 flex flex-col gap-3 items-center justify-center rounded-md border border-slate-6 hover:bg-slate-4 cursor-pointer">
+                  <div className="h-[32px] w-[32px]">
+                    <LogoPostgres />
+                  </div>
+                  <p>Postgres</p>
+                </div>
+              </Link>
             </div>
-          </Link>
-        </motion.form>
-      </motion.div>
-    </div>
+            {/* <InviteTeammateDialog email={email} workspace={workspace_name} /> */}
+            <div
+              className="text-[14px] text-center mx-16 cursor-pointer hover:text-slate-11 px-6 py-3 bg-slate-2 hover:bg-slate-3 rounded-md mt-16 focus:outline-none"
+              tabIndex={-1}
+              onClick={() => setIsInvitePeopleDialogOpen(true)}
+            >
+              <p className="text-slate-10">Don&apos;t have credentials?</p>
+              <p className="text-slate-12">Invite a teammate to help →</p>
+            </div>
+            <InvitePeopleDialog
+              isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
+              setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
+              currentUser={currentUser}
+              currentWorkspace={currentWorkspace}
+              customMessage={customMessage}
+              setCustomMessage={setCustomMessage}
+              emailTemplateLanguage={`Help ${currentUser.name} set up a read-only data source connection.`}
+              customInvitePeopleSubject={`Help ${currentUser.name} set up a data connection on Dataland.io`}
+            />
+            <Link href={`/workspace/${currentWorkspace.id}`}>
+              <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">
+                Do this later
+              </div>
+            </Link>
+          </motion.form>
+        </motion.div>
+      </div>
+    </>
   );
 }

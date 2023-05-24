@@ -18,6 +18,7 @@ import {
 import { AccountHeader } from "@/components/AccountHeader";
 import { useUser, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export default function NoAccess() {
   const router = useRouter();
@@ -199,6 +200,9 @@ export default function NoAccess() {
   if (user == null) {
     return (
       <>
+        <Head>
+          <title>Dataland | No access</title>
+        </Head>
         <div className="h-screen bg-slate-1 z-10 relative text-white">
           <header className="fixed top-8 left-8">
             <Link href="/" tabIndex={-1}>
@@ -279,122 +283,127 @@ export default function NoAccess() {
   // If user does exist, then check to see if they have this workspace as a membership.
 
   return (
-    <div className="h-screen bg-slate-1 z-10 relative text-white">
-      <AccountHeader email={currentUser.email} />
-      <div className="w-full flex flex-col mt-32 items-center justify-center">
-        {allowedAccess && (
-          <>
-            <div className="flex flex-col justify-center items-center w-full pb-32">
-              <div
-                className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
-                style={{
-                  backgroundImage: `url(${
-                    workspaceDetail?.customWorkspaceBase64Icon
-                      ? workspaceDetail?.customWorkspaceBase64Icon
-                      : workspaceDetail?.iconUrl
-                  })`,
-                  backgroundSize: "cover",
-                }}
-              >
-                {!workspaceDetail?.customWorkspaceBase64Icon &&
-                  workspaceDetail.name.slice(0, 1)}
-              </div>
-              <div className="bg-slate-1 text-slate-12 text-center text-[22px] mt-8 max-w-[420px]">
-                Welcome to{" "}
-                <span className="font-semibold">{workspaceDetail?.name}</span>{" "}
-                on Dataland
-              </div>
-              {matchingInvite && (
-                <>
-                  <div className="bg-slate-1 text-slate-11 text-center text-[16px] mt-4">
-                    {matchingInvite.inviterEmail} invited you to join this
-                    workspace
-                  </div>
-                  <div className="flex flex-col items-center gap-4 mt-4">
-                    {/* If invited, add text */}
-                    <button
-                      className={`w-[240px] bg-blue-600 text-slate-12 text-[16px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center`}
-                      onClick={() =>
-                        handleAcceptInvite({
-                          user: currentUser,
-                          workspace: workspaceDetail,
-                          invite: matchingInvite,
-                        })
-                      }
-                    >
-                      Join workspace
-                    </button>
-                  </div>
-                </>
-              )}
-              {matchingAllowedWorkspace && (
-                <>
-                  <div className="bg-slate-1 text-slate-11 text-center text-[16px] mt-4">
-                    Anyone {"@" + currentUser.email.split("@")[1]} can join this
-                    workspace.
-                  </div>
-                  <div className="flex flex-col items-center gap-4 mt-4">
-                    {/* If invited, add text */}
-                    <button
-                      className={`w-[240px] bg-blue-600 text-slate-12 text-[16px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center
+    <>
+      <Head>
+        <title>Dataland | No access</title>
+      </Head>
+      <div className="h-screen bg-slate-1 z-10 relative text-white">
+        <AccountHeader email={currentUser.email} />
+        <div className="w-full flex flex-col mt-32 items-center justify-center">
+          {allowedAccess && (
+            <>
+              <div className="flex flex-col justify-center items-center w-full pb-32">
+                <div
+                  className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
+                  style={{
+                    backgroundImage: `url(${
+                      workspaceDetail?.customWorkspaceBase64Icon
+                        ? workspaceDetail?.customWorkspaceBase64Icon
+                        : workspaceDetail?.iconUrl
+                    })`,
+                    backgroundSize: "cover",
+                  }}
+                >
+                  {!workspaceDetail?.customWorkspaceBase64Icon &&
+                    workspaceDetail.name.slice(0, 1)}
+                </div>
+                <div className="bg-slate-1 text-slate-12 text-center text-[22px] mt-8 max-w-[420px]">
+                  Welcome to{" "}
+                  <span className="font-semibold">{workspaceDetail?.name}</span>{" "}
+                  on Dataland
+                </div>
+                {matchingInvite && (
+                  <>
+                    <div className="bg-slate-1 text-slate-11 text-center text-[16px] mt-4">
+                      {matchingInvite.inviterEmail} invited you to join this
+                      workspace
+                    </div>
+                    <div className="flex flex-col items-center gap-4 mt-4">
+                      {/* If invited, add text */}
+                      <button
+                        className={`w-[240px] bg-blue-600 text-slate-12 text-[16px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center`}
+                        onClick={() =>
+                          handleAcceptInvite({
+                            user: currentUser,
+                            workspace: workspaceDetail,
+                            invite: matchingInvite,
+                          })
+                        }
+                      >
+                        Join workspace
+                      </button>
+                    </div>
+                  </>
+                )}
+                {matchingAllowedWorkspace && (
+                  <>
+                    <div className="bg-slate-1 text-slate-11 text-center text-[16px] mt-4">
+                      Anyone {"@" + currentUser.email.split("@")[1]} can join
+                      this workspace.
+                    </div>
+                    <div className="flex flex-col items-center gap-4 mt-4">
+                      {/* If invited, add text */}
+                      <button
+                        className={`w-[240px] bg-blue-600 text-slate-12 text-[16px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center
                                         `}
-                      onClick={() =>
-                        handleJoinWorkspaceFromAllowedDomain({
-                          user: currentUser,
-                          workspace: workspaceDetail,
-                        })
-                      }
-                    >
-                      Join workspace
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </>
-        )}
-        {allowedAccess == false && (
-          <>
-            <div className="flex flex-col justify-center items-center w-full pb-32">
-              <div
-                className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
-                style={{
-                  backgroundImage: `url(${
-                    workspaceDetail?.customWorkspaceBase64Icon
-                      ? workspaceDetail?.customWorkspaceBase64Icon
-                      : workspaceDetail?.iconUrl
-                  })`,
-                  backgroundSize: "cover",
-                }}
-              >
-                {!workspaceDetail?.customWorkspaceBase64Icon &&
-                  workspaceDetail.name.slice(0, 1)}
+                        onClick={() =>
+                          handleJoinWorkspaceFromAllowedDomain({
+                            user: currentUser,
+                            workspace: workspaceDetail,
+                          })
+                        }
+                      >
+                        Join workspace
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="bg-slate-1 text-slate-12 text-center text-[22px] mt-8 max-w-[420px]">
-                You don&apos;t have access to the
-                <br />{" "}
-                <span className="font-semibold">
-                  {workspaceDetail?.name}
-                </span>{" "}
-                workspace
-              </div>
+            </>
+          )}
+          {allowedAccess == false && (
+            <>
+              <div className="flex flex-col justify-center items-center w-full pb-32">
+                <div
+                  className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
+                  style={{
+                    backgroundImage: `url(${
+                      workspaceDetail?.customWorkspaceBase64Icon
+                        ? workspaceDetail?.customWorkspaceBase64Icon
+                        : workspaceDetail?.iconUrl
+                    })`,
+                    backgroundSize: "cover",
+                  }}
+                >
+                  {!workspaceDetail?.customWorkspaceBase64Icon &&
+                    workspaceDetail.name.slice(0, 1)}
+                </div>
+                <div className="bg-slate-1 text-slate-12 text-center text-[22px] mt-8 max-w-[420px]">
+                  You don&apos;t have access to the
+                  <br />{" "}
+                  <span className="font-semibold">
+                    {workspaceDetail?.name}
+                  </span>{" "}
+                  workspace
+                </div>
 
-              <div className="bg-slate-1 text-slate-11 text-center text-[16px] mt-4">
-                Ask a workspace member to invite you first.
+                <div className="bg-slate-1 text-slate-11 text-center text-[16px] mt-4">
+                  Ask a workspace member to invite you first.
+                </div>
+                <div className="flex flex-col items-center gap-4 mt-12">
+                  <Link href="/dashboard">
+                    <button
+                      className={`bg-slate-3 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-slate-4 justify-center h-10 items-center`}
+                    >
+                      Go back to Dataland
+                    </button>
+                  </Link>
+                </div>
               </div>
-              <div className="flex flex-col items-center gap-4 mt-12">
-                <Link href="/dashboard">
-                  <button
-                    className={`bg-slate-3 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-slate-4 justify-center h-10 items-center`}
-                  >
-                    Go back to Dataland
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

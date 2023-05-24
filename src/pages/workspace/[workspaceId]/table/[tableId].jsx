@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Head from "next/head";
 import { getTable, getConnection, updateTable, deleteTable } from "@/utils/api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -377,78 +378,83 @@ export default function TablePage() {
   }
 
   return (
-    <WorkspaceLayout>
-      <div className="bg-slate-1 max-h-screen text-slate-12 flex flex-col divide-slate-4 divide-y">
-        <div className="flex flex-row gap-2 items-center py-[12px] px-[12px] h-[48px]">
-          <div className="flex flex-row items-center justify-center">
-            <IconPickerPopoverEditTable
-              iconSvgString={tableData.iconSvgString}
-              tableName={tableData.name}
-              tableId={tableData.id}
-              workspaceId={currentWorkspace?.id}
-            />
-            <TablePopover
-              tableName={tableData.name}
-              tableId={tableData.id}
-              workspaceId={currentWorkspace?.id}
-            />
-          </div>
-          <div
-            className={`flex flex-grow bg-slate-3 hover:bg-slate-4 text-[13px] px-[8px] py-[6px] border border-slate-4 ${isSearchFocused ? "ring-2 ring-blue-600" : ""
-              } cursor-pointer rounded-[6px] flex flex-row gap-2 items-center w-[600px]`}
-          >
-            <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
-            <input
-              title="Search"
-              className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10 flex-grow"
-              placeholder="Search.."
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              onFocus={handleSearchbarFocus}
-              onBlur={handleSearchbarBlur}
-              onKeyDown={handleSearchbarKeyDown}
-            />
-          </div>
-          <div className="flex flex-row gap-2 flex-grow ml-auto justify-end">
-            <div className="bg-slate-2 hover:bg-slate-3 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
-              <p>Columns</p>
-              <CaretDown size={12} className="text-slate-11" />
+    <>
+      <Head>
+        <title>{tableData.name}</title>
+      </Head>
+      <WorkspaceLayout>
+        <div className="bg-slate-1 max-h-screen text-slate-12 flex flex-col divide-slate-4 divide-y">
+          <div className="flex flex-row gap-2 items-center py-[12px] px-[12px] h-[48px]">
+            <div className="flex flex-row items-center justify-center">
+              <IconPickerPopoverEditTable
+                iconSvgString={tableData.iconSvgString}
+                tableName={tableData.name}
+                tableId={tableData.id}
+                workspaceId={currentWorkspace?.id}
+              />
+              <TablePopover
+                tableName={tableData.name}
+                tableId={tableData.id}
+                workspaceId={currentWorkspace?.id}
+              />
             </div>
-            <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
-              onClick={() => setIsInvitePeopleDialogOpen(true)}>
-              <p>Share</p>
+            <div
+              className={`flex flex-grow bg-slate-3 hover:bg-slate-4 text-[13px] px-[8px] py-[6px] border border-slate-4 ${isSearchFocused ? "ring-2 ring-blue-600" : ""
+                } cursor-pointer rounded-[6px] flex flex-row gap-2 items-center w-[600px]`}
+            >
+              <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
+              <input
+                title="Search"
+                className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10 flex-grow"
+                placeholder="Search.."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onFocus={handleSearchbarFocus}
+                onBlur={handleSearchbarBlur}
+                onKeyDown={handleSearchbarKeyDown}
+              />
             </div>
-            <InvitePeopleDialog
-              isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
-              setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
-              currentUser={currentUser}
-              currentWorkspace={currentWorkspace}
-              customMessage={customInviteMessage}
-              setCustomMessage={setCustomInviteMessage}
-              emailTemplateLanguage={""}
-              customInvitePeopleDialogHeader={`Share ${tableData.name} with your team`}
-              customInvitePeopleSubject={`${currentUser.name} shared ${tableData.name} with you on Dataland.io`}
-            />
-          </div>
-        </div>
-        <div className="grow-1 overflow-x-auto overflow-y-scroll max-w-screen">
-          <MemoizedMockTable />
-        </div>
-        <div className="flex flex-row gap-2 items-center border-b border-slate-4 px-[20px] py-[8px] text-[13px] text-slate-11">
-          <div>Table synced from</div>
-          <div className="font-mono text-[12px]">{tableData.fullPath?.replaceAll(".", "/")}</div>
-          <div>from</div>
-          <div className="flex flex-row gap-2 items-center">
-            {" "}
-            {connectionData.connectionType === "snowflake" && (
-              <div className="h-[16px] w-[16px]">
-                <LogoSnowflake />
+            <div className="flex flex-row gap-2 flex-grow ml-auto justify-end">
+              <div className="bg-slate-2 hover:bg-slate-3 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
+                <p>Columns</p>
+                <CaretDown size={12} className="text-slate-11" />
               </div>
-            )}
-            {connectionData.name}
+              <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
+                onClick={() => setIsInvitePeopleDialogOpen(true)}>
+                <p>Share</p>
+              </div>
+              <InvitePeopleDialog
+                isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
+                setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
+                currentUser={currentUser}
+                currentWorkspace={currentWorkspace}
+                customMessage={customInviteMessage}
+                setCustomMessage={setCustomInviteMessage}
+                emailTemplateLanguage={""}
+                customInvitePeopleDialogHeader={`Share ${tableData.name} with your team`}
+                customInvitePeopleSubject={`${currentUser.name} shared ${tableData.name} with you on Dataland.io`}
+              />
+            </div>
+          </div>
+          <div className="grow-1 overflow-x-auto overflow-y-scroll max-w-screen">
+            <MemoizedMockTable />
+          </div>
+          <div className="flex flex-row gap-2 items-center border-b border-slate-4 px-[20px] py-[8px] text-[13px] text-slate-11">
+            <div>Table synced from</div>
+            <div className="font-mono text-[12px]">{tableData.fullPath?.replaceAll(".", "/")}</div>
+            <div>from</div>
+            <div className="flex flex-row gap-2 items-center">
+              {" "}
+              {connectionData.connectionType === "snowflake" && (
+                <div className="h-[16px] w-[16px]">
+                  <LogoSnowflake />
+                </div>
+              )}
+              {connectionData.name}
+            </div>
           </div>
         </div>
-      </div>
-    </WorkspaceLayout>
+      </WorkspaceLayout>
+    </>
   );
 }

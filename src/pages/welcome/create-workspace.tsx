@@ -7,6 +7,7 @@ import { createWorkspace, createMembership } from "@/utils/api";
 import { isCommonEmailProvider } from "@/utils/util";
 import { AccountHeader } from "@/components/AccountHeader";
 import { useAuth } from "@clerk/nextjs";
+import Head from "next/head";
 
 export default function CreateWorkspace() {
   const { getToken } = useAuth();
@@ -124,69 +125,74 @@ export default function CreateWorkspace() {
   const email = currentUser.email;
 
   return (
-    <div className="h-screen bg-slate-1">
-      <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full pt-12">
-        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4">
-          Name your workspace
-        </div>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-3 w-[300px] mt-4"
-        >
-          <div className="relative">
-            <input
-              type={"text"}
-              id="workspaceNameInput"
-              value={workspaceName}
-              onChange={(e) => {
-                setWorkspaceName(e.target.value);
-                setErrorMessage("");
-              }}
-              placeholder="i.e. Acme organization"
-              className={`w-full bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9
+    <>
+      <Head>
+        <title>Dataland | Create workspace</title>
+      </Head>
+      <div className="h-screen bg-slate-1">
+        <AccountHeader email={email ?? "placeholder@example.com"} />
+        <div className="flex flex-col justify-center items-center w-full pt-12">
+          <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4">
+            Name your workspace
+          </div>
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-3 w-[300px] mt-4"
+          >
+            <div className="relative">
+              <input
+                type={"text"}
+                id="workspaceNameInput"
+                value={workspaceName}
+                onChange={(e) => {
+                  setWorkspaceName(e.target.value);
+                  setErrorMessage("");
+                }}
+                placeholder="i.e. Acme organization"
+                className={`w-full bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9
               ${errorMessage !== "" ? "border-red-9" : "border-slate-6"} 
               focus:outline-none focus:ring-blue-600
               `}
-            />
-
-            {errorMessage && (
-              <p className="text-red-9 text-[13px] mt-2">{errorMessage}</p>
-            )}
-          </div>
-          {/* Check if common email provider. If not, provide option */}
-          {!isCommonEmailProvider(email) && (
-            <div className="flex items-start">
-              <input
-                id="allowOthersFromDomain"
-                type="checkbox"
-                className="mt-0.5 w-[18px] h-[18px] text-blue-600 bg-slate-3 border-slate-6 rounded focus:ring-blue-500 focus:ring-1"
-                checked={allowOthersFromDomainChecked}
-                onChange={handleAllowOthersFromDomainCheckboxChange}
               />
-              <label
-                htmlFor="allowOthersFromDomain"
-                className="ml-2 block text-slate-11 text-[14px]"
-              >
-                Allow anyone with an{" "}
-                <span className="text-slate-12 font-medium">
-                  {"@" + domain}
-                </span>{" "}
-                email to join this workspace
-              </label>
+
+              {errorMessage && (
+                <p className="text-red-9 text-[13px] mt-2">{errorMessage}</p>
+              )}
             </div>
-          )}
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md mt-4"
-          >
-            Create workspace
-          </button>
-          <div className="text-blue-500 text-center text-[14px] mt-12">
-            <Link href="/join-workspace">Join an existing workspace →</Link>
-          </div>
-        </form>
+            {/* Check if common email provider. If not, provide option */}
+            {!isCommonEmailProvider(email) && (
+              <div className="flex items-start">
+                <input
+                  id="allowOthersFromDomain"
+                  type="checkbox"
+                  className="mt-0.5 w-[18px] h-[18px] text-blue-600 bg-slate-3 border-slate-6 rounded focus:ring-blue-500 focus:ring-1"
+                  checked={allowOthersFromDomainChecked}
+                  onChange={handleAllowOthersFromDomainCheckboxChange}
+                />
+                <label
+                  htmlFor="allowOthersFromDomain"
+                  className="ml-2 block text-slate-11 text-[14px]"
+                >
+                  Allow anyone with an{" "}
+                  <span className="text-slate-12 font-medium">
+                    {"@" + domain}
+                  </span>{" "}
+                  email to join this workspace
+                </label>
+              </div>
+            )}
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md mt-4"
+            >
+              Create workspace
+            </button>
+            <div className="text-blue-500 text-center text-[14px] mt-12">
+              <Link href="/join-workspace">Join an existing workspace →</Link>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

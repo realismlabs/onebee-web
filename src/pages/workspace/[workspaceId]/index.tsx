@@ -20,6 +20,7 @@ import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { abbreviateNumber, friendlyRelativeDateToNow } from "@/utils/util";
 import { useLocalStorageState, capitalizeString } from "@/utils/util";
 import { useAuth } from "@clerk/nextjs";
+import Head from "next/head";
 
 const TableCard = ({
   table,
@@ -264,338 +265,360 @@ export default function WorkspaceHome() {
   });
 
   return (
-    <WorkspaceLayout>
-      <div className="h-screen bg-slate-1 overflow-y-auto">
-        <div className="flex flex-col justify-center items-center w-full pt-16">
-          <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[1000px] gap-4">
-            <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
-              Welcome, {currentUser.name ?? email_content_before_at}!
-            </div>
-            {/* Actions */}
-            {/* If there are no connections, get them to add a connection */}
-            {connectionsData?.length === 0 && (
-              <div
-                className="bg-blue-2 rounded-lg border border-blue-9 w-full pb-[200px] overflow-hidden items-center justify-center"
-                style={{
-                  backgroundImage:
-                    "url('/images/add-data-connection-splash-half-opacity.svg')",
-                  backgroundPosition: "center 84px",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "contain",
-                }}
-              >
-                <div className="absolute text-blue-11 text-[14px] text-center py-[4px] px-[12px] bg-blue-2 border-opacity-10 border-blue-9 border-b border-r rounded-tl-lg rounded-br-lg">
-                  Finish setup
-                </div>
-                <div className="z-10 pt-[48px] flex flex-col gap-2 items-center justify-center">
-                  <div className="text-slate-12 text-[16px] text-center">
-                    Add a data connection
-                  </div>
-                  <div className="text-slate-11 text-[14px]">
-                    Connect your Snowflake, BigQuery, or Postgres
-                  </div>
-                  <Link
-                    href={`/workspace/${currentWorkspace?.id}/onboarding/add-data-source`}
-                  >
-                    <button
-                      type="button"
-                      className="mt-[8px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
-                    >
-                      Add connection
-                    </button>
-                  </Link>
-                </div>
+    <>
+      <Head>
+        <title>{currentWorkspace.name} › Home</title>
+      </Head>
+      <WorkspaceLayout>
+        <div className="h-screen bg-slate-1 overflow-y-auto">
+          <div className="flex flex-col justify-center items-center w-full pt-16">
+            <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[1000px] gap-4">
+              <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
+                Welcome, {currentUser.name ?? email_content_before_at}!
               </div>
-            )}
-            {connectionsData?.length > 0 && tablesData?.length === 0 && (
-              <div
-                className="bg-blue-2 rounded-lg border border-blue-9 w-full pb-[200px] overflow-hidden items-center justify-center"
-                style={{
-                  backgroundImage: "url('/images/gradient-table-circles.png')",
-                  backgroundPosition: "center -30px",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                }}
-              >
-                <div className="absolute text-blue-11 text-[14px] text-center py-[4px] px-[12px] bg-blue-2 border-opacity-10 border-blue-9 border-b border-r rounded-tl-lg rounded-br-lg">
-                  Finish setup
-                </div>
-                <div className="z-10 pt-[48px] flex flex-col gap-2 items-center justify-center">
-                  <div className="text-slate-12 text-[16px] text-center">
-                    Create a table
+              {/* Actions */}
+              {/* If there are no connections, get them to add a connection */}
+              {connectionsData?.length === 0 && (
+                <div
+                  className="bg-blue-2 rounded-lg border border-blue-9 w-full pb-[200px] overflow-hidden items-center justify-center"
+                  style={{
+                    backgroundImage:
+                      "url('/images/add-data-connection-splash-half-opacity.svg')",
+                    backgroundPosition: "center 84px",
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "contain",
+                  }}
+                >
+                  <div className="absolute text-blue-11 text-[14px] text-center py-[4px] px-[12px] bg-blue-2 border-opacity-10 border-blue-9 border-b border-r rounded-tl-lg rounded-br-lg">
+                    Finish setup
                   </div>
-                  <div className="text-slate-11 text-[14px]">
-                    Sync a source table from data connection
-                  </div>
-                  <Link href={`/workspace/${currentWorkspace?.id}/table/new`}>
-                    <button
-                      type="button"
-                      className="mt-[8px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
+                  <div className="z-10 pt-[48px] flex flex-col gap-2 items-center justify-center">
+                    <div className="text-slate-12 text-[16px] text-center">
+                      Add a data connection
+                    </div>
+                    <div className="text-slate-11 text-[14px]">
+                      Connect your Snowflake, BigQuery, or Postgres
+                    </div>
+                    <Link
+                      href={`/workspace/${currentWorkspace?.id}/onboarding/add-data-source`}
                     >
-                      Import table
-                    </button>
-                  </Link>
+                      <button
+                        type="button"
+                        className="mt-[8px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
+                      >
+                        Add connection
+                      </button>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            )}
-            {/* If there are no tables, get them to add a table */}
+              )}
+              {connectionsData?.length > 0 && tablesData?.length === 0 && (
+                <div
+                  className="bg-blue-2 rounded-lg border border-blue-9 w-full pb-[200px] overflow-hidden items-center justify-center"
+                  style={{
+                    backgroundImage:
+                      "url('/images/gradient-table-circles.png')",
+                    backgroundPosition: "center -30px",
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                  }}
+                >
+                  <div className="absolute text-blue-11 text-[14px] text-center py-[4px] px-[12px] bg-blue-2 border-opacity-10 border-blue-9 border-b border-r rounded-tl-lg rounded-br-lg">
+                    Finish setup
+                  </div>
+                  <div className="z-10 pt-[48px] flex flex-col gap-2 items-center justify-center">
+                    <div className="text-slate-12 text-[16px] text-center">
+                      Create a table
+                    </div>
+                    <div className="text-slate-11 text-[14px]">
+                      Sync a source table from data connection
+                    </div>
+                    <Link href={`/workspace/${currentWorkspace?.id}/table/new`}>
+                      <button
+                        type="button"
+                        className="mt-[8px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
+                      >
+                        Import table
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+              {/* If there are no tables, get them to add a table */}
 
-            {tablesData?.length > 0 && (
-              <>
-                <div className="w-full text-[14px] flex flex-row gap-4 items-center">
-                  <div className="w-[84px]">Tables</div>
-                  <div className="flex flex-row p-1 bg-slate-2 gap-0.5 rounded-md ml-auto">
-                    <button
-                      className={`bg-slate-2 hover:bg-slate-5 hover:border-slate-6 rounded-md p-1 ${
-                        tableLayout === "grid" && "bg-slate-5"
-                      }`}
-                      onClick={() => setTableLayout("grid")}
-                    >
-                      <GridFour
-                        className={`w-5 h-5 ${
-                          tableLayout === "grid"
-                            ? "text-slate-12"
-                            : "text-slate-10"
+              {tablesData?.length > 0 && (
+                <>
+                  <div className="w-full text-[14px] flex flex-row gap-4 items-center">
+                    <div className="w-[84px]">Tables</div>
+                    <div className="flex flex-row p-1 bg-slate-2 gap-0.5 rounded-md ml-auto">
+                      <button
+                        className={`bg-slate-2 hover:bg-slate-5 hover:border-slate-6 rounded-md p-1 ${
+                          tableLayout === "grid" && "bg-slate-5"
                         }`}
-                        weight="fill"
-                      />
-                    </button>
-                    <button
-                      className={`bg-slate-2 hover:bg-slate-5 hover:border-slate-6 rounded-md p-1 ${
-                        tableLayout === "list" && "bg-slate-5"
-                      }`}
-                      onClick={() => setTableLayout("list")}
-                    >
-                      <List
-                        className={`w-5 h-5 ${
-                          tableLayout === "list"
-                            ? "text-slate-12"
-                            : "text-slate-10"
+                        onClick={() => setTableLayout("grid")}
+                      >
+                        <GridFour
+                          className={`w-5 h-5 ${
+                            tableLayout === "grid"
+                              ? "text-slate-12"
+                              : "text-slate-10"
+                          }`}
+                          weight="fill"
+                        />
+                      </button>
+                      <button
+                        className={`bg-slate-2 hover:bg-slate-5 hover:border-slate-6 rounded-md p-1 ${
+                          tableLayout === "list" && "bg-slate-5"
                         }`}
-                        weight="fill"
-                      />
-                    </button>
+                        onClick={() => setTableLayout("list")}
+                      >
+                        <List
+                          className={`w-5 h-5 ${
+                            tableLayout === "list"
+                              ? "text-slate-12"
+                              : "text-slate-10"
+                          }`}
+                          weight="fill"
+                        />
+                      </button>
+                    </div>
                   </div>
-                </div>
-                {/* set up grid */}
-                {tableLayout === "list" && (
-                  <div className="w-full flex flex-col">
-                    <div className="flex flex-row gap-4 items-center text-[13px] text-slate-12 pb-3">
-                      <div
-                        className="text-[12px] text-slate-11 cursor-pointer w-[376px] flex flex-row gap-1 items-center"
-                        onClick={() => handleTableListHeaderClick("name")}
-                      >
-                        <p>Name</p>
-                        {tableListSortField === "name" &&
-                          tableListSortDirection === "desc" && (
-                            <CaretDown
-                              className="w-3 h-3 text-slate-10"
-                              weight="fill"
-                            />
-                          )}
-                        {tableListSortField === "name" &&
-                          tableListSortDirection === "asc" && (
-                            <CaretUp
-                              className="w-3 h-3 text-slate-10"
-                              weight="fill"
-                            />
-                          )}
+                  {/* set up grid */}
+                  {tableLayout === "list" && (
+                    <div className="w-full flex flex-col">
+                      <div className="flex flex-row gap-4 items-center text-[13px] text-slate-12 pb-3">
+                        <div
+                          className="text-[12px] text-slate-11 cursor-pointer w-[376px] flex flex-row gap-1 items-center"
+                          onClick={() => handleTableListHeaderClick("name")}
+                        >
+                          <p>Name</p>
+                          {tableListSortField === "name" &&
+                            tableListSortDirection === "desc" && (
+                              <CaretDown
+                                className="w-3 h-3 text-slate-10"
+                                weight="fill"
+                              />
+                            )}
+                          {tableListSortField === "name" &&
+                            tableListSortDirection === "asc" && (
+                              <CaretUp
+                                className="w-3 h-3 text-slate-10"
+                                weight="fill"
+                              />
+                            )}
+                        </div>
+                        <div
+                          className="text-[12px] text-slate-11 cursor-pointer flex flex-row gap-1 items-center mr-auto"
+                          onClick={() =>
+                            handleTableListHeaderClick("outerPath")
+                          }
+                        >
+                          <p>Connection path</p>
+                          {tableListSortField === "outerPath" &&
+                            tableListSortDirection === "desc" && (
+                              <CaretDown
+                                className="w-3 h-3 text-slate-10"
+                                weight="fill"
+                              />
+                            )}
+                          {tableListSortField === "outerPath" &&
+                            tableListSortDirection === "asc" && (
+                              <CaretUp
+                                className="w-3 h-3 text-slate-10"
+                                weight="fill"
+                              />
+                            )}
+                        </div>
+                        <div
+                          className="w-[164px] text-[12px] text-slate-11 cursor-pointer flex flex-row gap-1 items-center"
+                          onClick={() =>
+                            handleTableListHeaderClick("updatedAt")
+                          }
+                        >
+                          Updated at
+                          {tableListSortField === "updatedAt" &&
+                            tableListSortDirection === "desc" && (
+                              <CaretDown
+                                className="w-3 h-3 text-slate-10"
+                                weight="fill"
+                              />
+                            )}
+                          {tableListSortField === "updatedAt" &&
+                            tableListSortDirection === "asc" && (
+                              <CaretUp
+                                className="w-3 h-3 text-slate-10"
+                                weight="fill"
+                              />
+                            )}
+                        </div>
+                        <div
+                          className="w-[80px] text-right cursor-pointer  text-[12px] text-slate-11  flex flex-row gap-1 items-center"
+                          onClick={() => handleTableListHeaderClick("rowCount")}
+                        >
+                          Row count
+                          {tableListSortField === "rowCount" &&
+                            tableListSortDirection === "desc" && (
+                              <CaretDown
+                                className="w-3 h-3 text-slate-10"
+                                weight="fill"
+                              />
+                            )}
+                          {tableListSortField === "rowCount" &&
+                            tableListSortDirection === "asc" && (
+                              <CaretUp
+                                className="w-3 h-3 text-slate-10"
+                                weight="fill"
+                              />
+                            )}
+                        </div>
                       </div>
-                      <div
-                        className="text-[12px] text-slate-11 cursor-pointer flex flex-row gap-1 items-center mr-auto"
-                        onClick={() => handleTableListHeaderClick("outerPath")}
-                      >
-                        <p>Connection path</p>
-                        {tableListSortField === "outerPath" &&
-                          tableListSortDirection === "desc" && (
-                            <CaretDown
-                              className="w-3 h-3 text-slate-10"
-                              weight="fill"
-                            />
-                          )}
-                        {tableListSortField === "outerPath" &&
-                          tableListSortDirection === "asc" && (
-                            <CaretUp
-                              className="w-3 h-3 text-slate-10"
-                              weight="fill"
-                            />
-                          )}
-                      </div>
-                      <div
-                        className="w-[164px] text-[12px] text-slate-11 cursor-pointer flex flex-row gap-1 items-center"
-                        onClick={() => handleTableListHeaderClick("updatedAt")}
-                      >
-                        Updated at
-                        {tableListSortField === "updatedAt" &&
-                          tableListSortDirection === "desc" && (
-                            <CaretDown
-                              className="w-3 h-3 text-slate-10"
-                              weight="fill"
-                            />
-                          )}
-                        {tableListSortField === "updatedAt" &&
-                          tableListSortDirection === "asc" && (
-                            <CaretUp
-                              className="w-3 h-3 text-slate-10"
-                              weight="fill"
-                            />
-                          )}
-                      </div>
-                      <div
-                        className="w-[80px] text-right cursor-pointer  text-[12px] text-slate-11  flex flex-row gap-1 items-center"
-                        onClick={() => handleTableListHeaderClick("rowCount")}
-                      >
-                        Row count
-                        {tableListSortField === "rowCount" &&
-                          tableListSortDirection === "desc" && (
-                            <CaretDown
-                              className="w-3 h-3 text-slate-10"
-                              weight="fill"
-                            />
-                          )}
-                        {tableListSortField === "rowCount" &&
-                          tableListSortDirection === "asc" && (
-                            <CaretUp
-                              className="w-3 h-3 text-slate-10"
-                              weight="fill"
-                            />
-                          )}
+                      <div className="flex flex-col border-slate-4 rounded-lg border overflow-clip">
+                        {sortedTablesData.map((table: any, index: number) => (
+                          <Link
+                            key={table.id}
+                            href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
+                          >
+                            <div
+                              className={`flex flex-row gap-4 items-center ${
+                                index < tablesData.length - 1
+                                  ? "border-b border-slate-4"
+                                  : ""
+                              } text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-slate-12`}
+                            >
+                              <div className="text-[13px] text-slate-12">
+                                <IconLoaderFromSvgString
+                                  iconSvgString={table.iconSvgString}
+                                  tableName={table.name}
+                                />
+                              </div>
+                              <div className="w-[320px] truncate">
+                                {table.name}
+                              </div>
+
+                              <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate mr-auto">
+                                {table.outerPath}
+                              </pre>
+                              <div className="min-w-[100px] max-w-[100px] text-left text-slate-11">
+                                {friendlyRelativeDateToNow(table.updatedAt)}
+                              </div>
+                              <div className="w-[120px] text-right lining-nums text-slate-11">
+                                {abbreviateNumber(table.rowCount)}
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
                       </div>
                     </div>
-                    <div className="flex flex-col border-slate-4 rounded-lg border overflow-clip">
-                      {sortedTablesData.map((table: any, index: number) => (
-                        <Link
+                  )}
+                  {tableLayout === "grid" && (
+                    <div className="w-full grid grid-cols-3 gap-4">
+                      {tablesData.map((table: any) => (
+                        <TableCard
+                          table={table}
+                          currentWorkspace={currentWorkspace}
                           key={table.id}
-                          href={`/workspace/${currentWorkspace.id}/table/${table.id}`}
-                        >
-                          <div
-                            className={`flex flex-row gap-4 items-center ${
-                              index < tablesData.length - 1
-                                ? "border-b border-slate-4"
-                                : ""
-                            } text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-slate-12`}
-                          >
-                            <div className="text-[13px] text-slate-12">
-                              <IconLoaderFromSvgString
-                                iconSvgString={table.iconSvgString}
-                                tableName={table.name}
-                              />
-                            </div>
-                            <div className="w-[320px] truncate">
-                              {table.name}
-                            </div>
-
-                            <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate mr-auto">
-                              {table.outerPath}
-                            </pre>
-                            <div className="min-w-[100px] max-w-[100px] text-left text-slate-11">
-                              {friendlyRelativeDateToNow(table.updatedAt)}
-                            </div>
-                            <div className="w-[120px] text-right lining-nums text-slate-11">
-                              {abbreviateNumber(table.rowCount)}
-                            </div>
-                          </div>
-                        </Link>
+                        />
                       ))}
                     </div>
-                  </div>
-                )}
-                {tableLayout === "grid" && (
-                  <div className="w-full grid grid-cols-3 gap-4">
-                    {tablesData.map((table: any) => (
-                      <TableCard
-                        table={table}
-                        currentWorkspace={currentWorkspace}
-                        key={table.id}
-                      />
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-            <div className="w-full text-slate-12 text-[14px] mt-[32px] flex flex-row gap-4 items-end">
-              <div className="">Sandbox</div>
-              <div className="text-slate-10 text-[13px]">
-                Play with example datasets in our sandbox
-              </div>
-            </div>
-            <div className="w-full flex flex-row gap-4">
-              <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
-                <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
-                  <Chat className="text-orange-9" weight="fill" size={20} />
-                </div>
-                <div className="flex flex-col">
-                  <div className="text-[14px]">Hacker News comments</div>
-                  <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
-                    1.2B rows
-                  </div>
+                  )}
+                </>
+              )}
+              <div className="w-full text-slate-12 text-[14px] mt-[32px] flex flex-row gap-4 items-end">
+                <div className="">Sandbox</div>
+                <div className="text-slate-10 text-[13px]">
+                  Play with example datasets in our sandbox
                 </div>
               </div>
-              <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
-                <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
-                  <Warning className="text-amber-11" weight="fill" size={20} />
-                </div>
-                <div className="flex flex-col">
-                  <div className="text-[14px]">CFPB consumer complaints</div>
-                  <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
-                    1.6B rows
+              <div className="w-full flex flex-row gap-4">
+                <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
+                  <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
+                    <Chat className="text-orange-9" weight="fill" size={20} />
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="text-[14px]">Hacker News comments</div>
+                    <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
+                      1.2B rows
+                    </div>
                   </div>
                 </div>
+                <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
+                  <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
+                    <Warning
+                      className="text-amber-11"
+                      weight="fill"
+                      size={20}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="text-[14px]">CFPB consumer complaints</div>
+                    <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
+                      1.6B rows
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
+                  <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
+                    <Gavel
+                      className="text-crimson-11"
+                      weight="fill"
+                      size={20}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="text-[14px]">
+                      USPTO Patent Assignment Data
+                    </div>
+                    <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
+                      1.2B rows
+                    </div>
+                  </div>
+                </div>{" "}
               </div>
-              <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
-                <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
-                  <Gavel className="text-crimson-11" weight="fill" size={20} />
-                </div>
-                <div className="flex flex-col">
-                  <div className="text-[14px]">
-                    USPTO Patent Assignment Data
-                  </div>
-                  <div className="text-[11px] text-slate-11 pt-[6px] font-mono">
-                    1.2B rows
-                  </div>
-                </div>
-              </div>{" "}
-            </div>
 
-            {/* General */}
-            {/* Generally show links to things like Docs, Sandbox, Demo video, Invite other teammates environment */}
-            {/* Generally, show tables list Subwa*/}
-            <div className="w-full text-slate-12 text-[14px] mt-[32px]">
-              Resources
-            </div>
-            <div className="w-full grid grid-cols-3 gap-4">
-              <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
-                <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
-                  <Files className="text-slate-12" weight="duotone" size={20} />
-                </div>
-                <div className="flex flex-col">
-                  <div className="text-[14px]">Docs</div>
-                  <div className="text-[13px] text-slate-11 pt-[6px]">
-                    Read user guides and docs on how to get the most out of
-                    Dataland
+              {/* General */}
+              {/* Generally show links to things like Docs, Sandbox, Demo video, Invite other teammates environment */}
+              {/* Generally, show tables list Subwa*/}
+              <div className="w-full text-slate-12 text-[14px] mt-[32px]">
+                Resources
+              </div>
+              <div className="w-full grid grid-cols-3 gap-4">
+                <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
+                  <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
+                    <Files
+                      className="text-slate-12"
+                      weight="duotone"
+                      size={20}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="text-[14px]">Docs</div>
+                    <div className="text-[13px] text-slate-11 pt-[6px]">
+                      Read user guides and docs on how to get the most out of
+                      Dataland
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
-                <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
-                  <UserPlus
-                    className="text-slate-12"
-                    weight="duotone"
-                    size={20}
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <div className="text-[14px]">Invite teammates</div>
-                  <div className="text-[13px] text-slate-11 pt-[6px]">
-                    You get unlimited seats on Dataland. Invite your teammates
-                    to browse data in Dataland.
+                <div className="bg-slate-2 border hover:bg-slate-3 hover:border-slate-6 border-slate-3 rounded-md w-full pl-[16px] pr-[32px] py-[16px] text-[16px] flex flex-row gap-4">
+                  <div className="h-[36px] min-w-[36px] flex items-center justify-center bg-slate-3 border border-slate-6 rounded-md">
+                    <UserPlus
+                      className="text-slate-12"
+                      weight="duotone"
+                      size={20}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="text-[14px]">Invite teammates</div>
+                    <div className="text-[13px] text-slate-11 pt-[6px]">
+                      You get unlimited seats on Dataland. Invite your teammates
+                      to browse data in Dataland.
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </WorkspaceLayout>
+      </WorkspaceLayout>
+    </>
   );
 }

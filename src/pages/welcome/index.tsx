@@ -15,6 +15,7 @@ import {
   getAllowedWorkspacesForUser,
 } from "@/utils/api";
 import { useAuth } from "@clerk/nextjs";
+import Head from "next/head";
 
 const handleSubmit = async (total_available_workspaces: number) => {
   console.log("clicked");
@@ -657,66 +658,71 @@ export default function Welcome() {
   };
 
   return (
-    <div className="h-screen bg-slate-1 z-10 relative">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 2.2 }}
-        className="z-50"
-      >
-        <AccountHeader email={email ?? "placeholder@example.com"} />
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="z-0 pointer-events-none"
-      >
-        <CometAnimation />
-      </motion.div>
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        transition={{ duration: 1, delay: 2.2 }}
-      >
-        <div className="absolute inset-0 flex flex-col justify-start items-center h-screen pointer-events-none">
-          <div className="flex flex-col justify-center items-center mt-[30vh]">
-            <motion.div
-              className="bg-slate-2 border border-slate-4 p-4 rounded-lg"
-              variants={item}
-            >
-              <HandWaving
-                size={48}
-                className="text-slate-12"
-                weight="duotone"
-              />
-            </motion.div>
-            <motion.div
-              className="text-slate-12 text-center text-[22px] mt-12 pb-4"
-              variants={item}
-            >
-              Welcome to Dataland,{" "}
-              {capitalizeString(email?.split("@")[0]) ?? "friend"}!
-            </motion.div>
-            <motion.div
-              className="text-slate-11 max-w-md text-center text-lg pb-8"
-              variants={item}
-            >
-              Dataland makes it easy for your whole team to browse data from
-              your data warehouse.
-            </motion.div>
-            <motion.button
-              type="button"
-              className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[16px] font-medium py-2 px-4 rounded-md pointer-events-auto"
-              onClick={() => handleSubmit(total_available_workspaces)}
-              variants={item}
-            >
-              Get started
-            </motion.button>
+    <>
+      <Head>
+        <title>Dataland | Welcome</title>
+      </Head>
+      <div className="h-screen bg-slate-1 z-10 relative">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 2.2 }}
+          className="z-50"
+        >
+          <AccountHeader email={email ?? "placeholder@example.com"} />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="z-0 pointer-events-none"
+        >
+          <CometAnimation />
+        </motion.div>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          transition={{ duration: 1, delay: 2.2 }}
+        >
+          <div className="absolute inset-0 flex flex-col justify-start items-center h-screen pointer-events-none">
+            <div className="flex flex-col justify-center items-center mt-[30vh]">
+              <motion.div
+                className="bg-slate-2 border border-slate-4 p-4 rounded-lg"
+                variants={item}
+              >
+                <HandWaving
+                  size={48}
+                  className="text-slate-12"
+                  weight="duotone"
+                />
+              </motion.div>
+              <motion.div
+                className="text-slate-12 text-center text-[22px] mt-12 pb-4"
+                variants={item}
+              >
+                Welcome to Dataland,{" "}
+                {capitalizeString(email?.split("@")[0]) ?? "friend"}!
+              </motion.div>
+              <motion.div
+                className="text-slate-11 max-w-md text-center text-lg pb-8"
+                variants={item}
+              >
+                Dataland makes it easy for your whole team to browse data from
+                your data warehouse.
+              </motion.div>
+              <motion.button
+                type="button"
+                className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[16px] font-medium py-2 px-4 rounded-md pointer-events-auto"
+                onClick={() => handleSubmit(total_available_workspaces)}
+                variants={item}
+              >
+                Get started
+              </motion.button>
+            </div>
           </div>
-        </div>
-      </motion.div>
-    </div>
+        </motion.div>
+      </div>
+    </>
   );
 }
