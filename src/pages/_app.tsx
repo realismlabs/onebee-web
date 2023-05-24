@@ -73,7 +73,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta property="og:title" content="Dataland" />
         <meta
           property="og:description"
-          content="Dataland lets your whole team browse your data warehouse at billion-row-scale. Get started for free."
+          content="Dataland lets your whole team browse your data warehouse at billion-row scale. Connect your Snowflake, BigQuery, or Postgres in <1min. Secure & SOC2 compliant. Get started for free."
         />
         <meta
           property="og:site_name"
