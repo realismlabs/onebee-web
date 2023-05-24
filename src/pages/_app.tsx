@@ -61,7 +61,9 @@ export default function App({ Component, pageProps }: AppProps) {
       }}
     >
       <Head>
-        <title>Dataland</title>
+        <title>
+          Dataland | Browse your data warehouse fast. Even billion-row scale.
+        </title>
         <meta
           name="description"
           content={`
