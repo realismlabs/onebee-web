@@ -57,6 +57,7 @@ export default authMiddleware({
         console.log("awu req.url", req.url);
         // console log the original base URL (without everything after the domain tld)
         console.log("awu req.url.split", req.url.split("workspace/")[0]);
+        console.log("awu req headers origin", req.headers.get("origin"));
         const userHasAccess = data.some(
           (membership: any) => membership.workspaceId === parseInt(workspaceId)
         );
