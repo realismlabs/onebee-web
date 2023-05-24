@@ -23,6 +23,7 @@ import { Dialog } from "@headlessui/react";
 import { friendlyRelativeDateToNow } from "@/utils/util";
 import { useDropzone } from "react-dropzone";
 import { useAuth } from "@clerk/nextjs";
+import { useClerk } from "@clerk/clerk-react";
 
 const ImageUploader = ({
   iconUrl,
@@ -134,6 +135,7 @@ const ImageUploader = ({
 };
 
 export default function Settings() {
+  const { signOut } = useClerk();
   const { getToken } = useAuth();
   const handleRenameWorkspace = async (e: any) => {
     e.preventDefault();
@@ -171,12 +173,17 @@ export default function Settings() {
   };
 
   const handleDeleteWorkspace = async () => {
+    if (deleteWorkspaceName !== currentWorkspace.name) {
+      setDeleteWorkspaceErrorMessage("Workspace name does not match.");
+      return;
+    }
     try {
       const jwt = await getToken({ template: "test" });
       const response = await deleteWorkspaceMutation.mutateAsync({
         workspaceId: currentWorkspace.id,
         jwt,
       });
+      closeDeleteWorkspaceDialog();
     } catch (error) {
       console.error("Error deleting workspace:", error);
     }
@@ -186,6 +193,7 @@ export default function Settings() {
     useState(false);
   const [deleteWorkspaceErrorMessage, setDeleteWorkspaceErrorMessage] =
     useState("");
+  const [deleteWorkspaceName, setDeleteWorkspaceName] = useState("");
   const [base64URL, setBase64URL] = useState<string | null>(null);
   const [hasDroppedNewIcon, setHasDroppedNewIcon] = useState(false);
 
@@ -217,9 +225,9 @@ export default function Settings() {
         "currentWorkspace",
         currentWorkspace?.id,
       ]);
+
       // awu: Log the user out (I don't want to giga-brain / confuse the user by switching to a random workspace. This step forces users to select a new workspace)
-      // TODO: Handle logout with proper auth
-      router.push("/login");
+      await signOut();
     },
     onError: (error) => {
       console.error("Error updating workspace", error);
@@ -449,14 +457,44 @@ export default function Settings() {
                             <Dialog.Title className="text-[14px]">
                               Delete workspace
                             </Dialog.Title>
-                            <Dialog.Description className="text-[13px] mt-[16px] gap-2 flex flex-col">
+                            <Dialog.Description className="text-[13px] mt-[16px] gap-2 flex flex-col text-slate-11">
                               <div>
                                 Are you sure you want to delete this workspace?
-                                This action is irreversible.
+                                This will also delete all of this
+                                workspace&apos;s imported tables, connections,
+                                and members.{" "}
+                                <span className="font-semibold text-red-9">
+                                  This action is irreversible.
+                                </span>
                               </div>
                             </Dialog.Description>
-                            <div className="font-mono w-full break-all bg-slate-3 text-slate-12 border border-slate-4 rounded-md font-medium text-[13px] px-[8px] py-[4px] mt-[12px]">
-                              {currentWorkspace?.name}
+                            {/* to proceed, user needs to type the name of the workspace */}
+                            <div className="flex flex-col mt-[16px] gap-2">
+                              <label className="text-[13px]">
+                                Input the name of the workspace ({workspaceName}
+                                ) to confirm
+                              </label>
+                              <input
+                                type={"text"}
+                                id="workspaceNameInput"
+                                value={deleteWorkspaceName}
+                                onChange={(e) => {
+                                  setDeleteWorkspaceName(e.target.value);
+                                }}
+                                className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
+                                  ${
+                                    deleteWorkspaceErrorMessage !== ""
+                                      ? "border-red-9"
+                                      : "border-slate-6"
+                                  }
+                                  focus:outline-none focus:ring-blue-600
+                                  `}
+                              />
+                              {deleteWorkspaceErrorMessage && (
+                                <div className="text-red-9 text-[13px]">
+                                  {deleteWorkspaceErrorMessage}
+                                </div>
+                              )}
                             </div>
                             <div className="flex w-full justify-end mt-[24px] gap-2">
                               <button
@@ -471,17 +509,11 @@ export default function Settings() {
                                 className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
                                 onClick={() => {
                                   handleDeleteWorkspace();
-                                  closeDeleteWorkspaceDialog();
                                 }}
                               >
                                 Delete
                               </button>
                             </div>
-                            {deleteWorkspaceErrorMessage && (
-                              <div className="text-red-5 text-[13px] mt-[12px]">
-                                {deleteWorkspaceErrorMessage}
-                              </div>
-                            )}
                           </div>
                         </Dialog.Panel>
                       </Dialog>
