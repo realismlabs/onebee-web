@@ -14,8 +14,6 @@ export default authMiddleware({
     const auth_header = {
       Authorization: `Bearer ${token}`,
     };
-
-    console.log("auth_header", auth_header);
     let currentUser = null;
     try {
       currentUser = await fetchCurrentUser(auth.userId, auth_header);

@@ -3,12 +3,14 @@ import { useAuth } from "@clerk/nextjs";
 //  this file holds several  the api calls for the app mocked to a local json server
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-// const API_BASE_URL = "http://localhost:5002";
 
 export const fetchCurrentUser = async (clerkUserId, headers) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(`${API_BASE_URL}/api/users/clerkUserId/${clerkUserId}`, {
-    headers
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    }
   });
 
   if (!response.ok) {
@@ -21,7 +23,7 @@ export const fetchCurrentUser = async (clerkUserId, headers) => {
 };
 
 export const fetchCurrentWorkspace = async (workspaceId, headers) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`, {
     headers
   });
@@ -37,7 +39,7 @@ export const fetchCurrentWorkspace = async (workspaceId, headers) => {
 // "/api/users/": "/users",
 export const createUser = async ({ email, name, clerkUserId, jwt }) => {
   // see if user already exists by clerkUserId
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
 
   const existingUser = await fetchCurrentUser(clerkUserId, {
     Authorization: `Bearer ${jwt}`,
@@ -83,7 +85,7 @@ export const createInvite = async ({
   jwt
 }
 ) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   // first see if the recipient has already been invited or is already a member
   const existingInvites = await getInvitesForUserEmail(recipientEmail.trim(), jwt);
   const existingMemberships = await getWorkspaceMemberships(workspaceId, jwt);
@@ -144,7 +146,7 @@ export const createInvite = async ({
 
 export const getInvitesForUserEmail = async (recipientEmail, jwt) => {
   console.log("getInvitesForUserEmail", recipientEmail);
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
 
   const encodedEmail = encodeURIComponent(recipientEmail);
 
@@ -168,7 +170,7 @@ export const getInvitesForUserEmail = async (recipientEmail, jwt) => {
 };
 
 export const getWorkspaceInvites = async (workspaceId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
 
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/invites`,
@@ -191,7 +193,7 @@ export const getWorkspaceInvites = async (workspaceId, jwt) => {
 
 // "/api/workspaces/:workspaceId/invites/:inviteId/delete": "/invites/:inviteId",
 export const deleteWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/invites/${inviteId}/delete`,
     {
@@ -208,7 +210,7 @@ export const deleteWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
 
 // "/api/workspaces/:workspaceId/accept-invite/:inviteId": "/invites/:inviteId",
 export const acceptWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/accept-invite/${inviteId}`,
     {
@@ -228,7 +230,7 @@ export const acceptWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
 
 // This is a public route that does not require authentication
 export const getWorkspaceDetails = async (workspaceId) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
 
   if (!response.ok) {
@@ -238,7 +240,7 @@ export const getWorkspaceDetails = async (workspaceId) => {
 };
 
 export const getUser = async (userId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -250,7 +252,7 @@ export const getUser = async (userId, jwt) => {
 
 // Update a specific user
 export const updateUser = async ({ userId, userData, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/users/${userId}/update`,
     {
@@ -268,7 +270,7 @@ export const updateUser = async ({ userId, userData, jwt }) => {
 
 
 export const createWorkspace = async (workspaceData, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const icon = generateWorkspaceIcon(workspaceData.name);
 
   const response = await fetch(`${API_BASE_URL}/api/workspaces`, {
@@ -288,7 +290,7 @@ export const createWorkspace = async (workspaceData, jwt) => {
 
 // Update a specific workspace
 export const updateWorkspace = async ({ workspaceId, workspaceData, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/update`,
     {
@@ -306,7 +308,7 @@ export const updateWorkspace = async ({ workspaceId, workspaceData, jwt }) => {
 
 // Delete workspace
 export const deleteWorkspace = async ({ workspaceId, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/delete`,
     {
@@ -324,7 +326,7 @@ export const deleteWorkspace = async ({ workspaceId, jwt }) => {
 
 // Get all tables associated with a workspace
 export const getTables = async (workspaceId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables`,
     {
@@ -339,7 +341,7 @@ export const getTables = async (workspaceId, jwt) => {
 
 // Get tables associated with a connection in a workspace
 export const getTablesFromConnection = async (workspaceId, connectionId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/tables`,
     {
@@ -356,7 +358,7 @@ export const getTablesFromConnection = async (workspaceId, connectionId, jwt) =>
 
 // Create a table in a workspace
 export const createTable = async (tableData, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${tableData.workspaceId}/tables`,
     {
@@ -374,7 +376,7 @@ export const createTable = async (tableData, jwt) => {
 
 // Get a specific table in a workspace
 export const getTable = async (workspaceId, tableId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}`,
     {
@@ -389,7 +391,7 @@ export const getTable = async (workspaceId, tableId, jwt) => {
 
 // Update a specific table in a workspace
 export const updateTable = async ({ workspaceId, tableId, tableData, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/update`,
     {
@@ -407,7 +409,7 @@ export const updateTable = async ({ workspaceId, tableId, tableData, jwt }) => {
 
 // Delete a specific table in a workspace
 export const deleteTable = async ({ workspaceId, tableId, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/delete`,
     {
@@ -424,7 +426,7 @@ export const deleteTable = async ({ workspaceId, tableId, jwt }) => {
 
 // Create a new connection
 export const createConnection = async (workspaceId, connectionData, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`,
     {
@@ -442,7 +444,7 @@ export const createConnection = async (workspaceId, connectionData, jwt) => {
 
 // Get a specific connection
 export const getConnection = async (workspaceId, connectionId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`,
     {
@@ -463,7 +465,7 @@ export const updateConnectionDisplayName = async ({
   jwt
 }
 ) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   //  print all args
   console.log("updateConnectionDisplayName", workspaceId, connectionId, data,)
 
@@ -487,7 +489,7 @@ export const updateConnectionDisplayName = async ({
 
 // Delete a specific connection
 export const deleteConnection = async ({ workspaceId, connectionId, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`,
@@ -513,7 +515,7 @@ export const deleteConnection = async ({ workspaceId, connectionId, jwt }) => {
 
 // Get all connections associated with a workspace
 export const getWorkspaceConnections = async (workspaceId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`,
     {
@@ -528,7 +530,7 @@ export const getWorkspaceConnections = async (workspaceId, jwt) => {
 
 // Get all connections associated with a workspace
 export const getWorkspaces = async (jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   console.log("getWorkspaces jwt", jwt)
   const response = await fetch(`${API_BASE_URL}/api/workspaces/`,
     {
@@ -544,7 +546,7 @@ export const getWorkspaces = async (jwt) => {
 
 // create membership
 export const createMembership = async (membershipData, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   // check first if user already has membership of this workspace
 
   const userId = membershipData.userId;
@@ -573,7 +575,7 @@ export const createMembership = async (membershipData, jwt) => {
 
 // "/api/memberships/:membershipId/update": "/memberships/:membershipId",
 export const updateMembership = async ({ membershipId, membershipData, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/memberships/${membershipId}/update`,
     {
@@ -591,7 +593,7 @@ export const updateMembership = async ({ membershipId, membershipData, jwt }) =>
 
 // "/api/memberships/:membershipId/delete": "/memberships/:membershipId",
 export const deleteMembership = async ({ membershipId, jwt }) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/memberships/${membershipId}/delete`,
     {
@@ -608,7 +610,7 @@ export const deleteMembership = async ({ membershipId, jwt }) => {
 
 // "/api/workspaces/:workspaceId/memberships": "/memberships?workspaceId=:workspaceId",
 export const getWorkspaceMemberships = async (workspaceId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/memberships`, {
     headers: {
@@ -622,7 +624,7 @@ export const getWorkspaceMemberships = async (workspaceId, jwt) => {
 
 // "/api/users/:userId/memberships": "/memberships?userId=:userId"
 export const getUserMemberships = async (userId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(
     `${API_BASE_URL}/api/users/${userId}/memberships`, {
     headers: {
@@ -635,7 +637,7 @@ export const getUserMemberships = async (userId, jwt) => {
 }
 
 export const getAllowedWorkspacesForUser = async (userId, jwt) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   // fetch all workspaces
   const workspaces = await getWorkspaces(jwt);
 

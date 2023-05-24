@@ -363,6 +363,7 @@ const InvitePeopleDialog = ({
                 <button
                   className="px-4 h-[36px] bg-slate-3 rounded-md text-[13px] font-medium leading-none focus:outline-none hover:bg-slate-4"
                   onClick={() => setIsInvitePeopleDialogOpen(false)}
+                  tabIndex={-1}
                 >
                   Cancel
                 </button>

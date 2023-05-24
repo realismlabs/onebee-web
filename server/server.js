@@ -30,6 +30,11 @@ app.use(cors({
   }
 }));
 
+app.use((req, res, next) => {
+  console.log(`Received a ${req.method} request for ${req.url}`);
+  next();
+});
+
 const { Pool } = require('pg');
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -87,6 +92,7 @@ app.get('/api/users/clerkUserId/:clerkUserId', ClerkExpressRequireAuth(), async 
 // fetchCurrentWorkspace + getWorkspaceDetails -- public route
 app.get('/api/workspaces/:workspaceId', async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
+  console.log("workspaceId", workspaceId)
 
   const client = await pool.connect();
   try {
@@ -152,6 +158,7 @@ app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
 app.post('/api/workspaces/:workspaceId/invite', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
   const { inviterEmail, recipientEmail } = req.body;
+  console.log("createInvite", workspaceId, inviterEmail, recipientEmail)
 
   // here should be logic of checking if invite or membership already exists
 
@@ -166,19 +173,23 @@ app.post('/api/workspaces/:workspaceId/invite', ClerkExpressRequireAuth(), async
     res.json(invite);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error creating invite" });
+    res.status(500).json({ message: `Error creating invite + ${err}` });
   }
 });
 
 // getInvitesforUserEmail
 app.get('/api/invites/recipient/:recipientEmail', ClerkExpressRequireAuth(), async (req, res) => {
   const recipientEmail = req.params.recipientEmail;
+  // recipientEmail has gone through encodeURIComponent() on the frontend
+  const recipientEmailDecoded = decodeURIComponent(recipientEmail);
+  console.log("getInvitesforUserEmail", recipientEmailDecoded)
 
   try {
     const client = await pool.connect();
     const result = await client.query(
-      `SELECT * FROM invites WHERE "recipientEmail" = $1 AND accepted = false`, [recipientEmail]
+      `SELECT * FROM invites WHERE "recipientEmail" = $1 AND accepted = false`, [recipientEmailDecoded]
     );
+    console.log("getInvitesforUserEmail result", JSON.stringify(result));
 
     const invites = result.rows;
     res.json(invites);
@@ -553,7 +564,9 @@ app.post('/api/memberships', ClerkExpressRequireAuth(), async (req, res) => {
     if (membershipCheck.rowCount > 0) {
       throw new Error("User already has membership of this workspace");
     }
-    const result = await client.query('INSERT INTO "memberships"("userId", "workspaceId") VALUES($1, $2) RETURNING *', [userId, workspaceId]);
+    const createdAt = new Date().toISOString();
+    const role = "member";
+    const result = await client.query('INSERT INTO "memberships"("userId", "workspaceId", "createdAt", "role") VALUES($1, $2, $3, $4) RETURNING *', [userId, workspaceId, createdAt, role]);
     const createdMembership = result.rows[0];
     console.log('Created membership', createdMembership);
     res.json(createdMembership);
@@ -573,7 +586,6 @@ app.get('/api/workspaces/', ClerkExpressRequireAuth(), async (req, res) => {
   try {
     const result = await client.query('SELECT * FROM "workspaces"');
     const workspaces = result.rows;
-    console.log('Fetched workspaces', workspaces);
     res.json(workspaces);
   } catch (err) {
     console.error(err);
@@ -619,7 +631,7 @@ app.delete('/api/memberships/:membershipId/delete', ClerkExpressRequireAuth(), a
     res.json(deletedMembership);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error deleting membership" });
+    res.status(500).json({ message: `Error deleting membership + ${err}` });
   } finally {
     client.release();
   }
