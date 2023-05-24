@@ -150,7 +150,7 @@ export default function Settings() {
       }
 
       const workspaceData: WorkspaceData = {
-        name: workspaceName,
+        name: workspaceName ?? "",
       };
 
       if (hasDroppedNewIcon && base64URL) {
