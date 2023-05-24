@@ -19,6 +19,7 @@ import {
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { abbreviateNumber, friendlyRelativeDateToNow } from "@/utils/util";
 import { useLocalStorageState, capitalizeString } from "@/utils/util";
+import { useAuth } from "@clerk/nextjs";
 
 const TableCard = ({
   table,
@@ -148,14 +149,14 @@ const TableCard = ({
           </div>
           <div className="flex flex-col truncate">
             <div className="text-slate-12 text-[14px] font-medium truncate block">
-              {table.displayName}
+              {table.name}
             </div>
           </div>
         </div>
         <div className="flex flex-col truncate">
           <div className="flex flex-row gap-2">
             <div className="font-mono block truncate text-[12px] text-slate-11">
-              {table.fullName.replaceAll(".", "/")}
+              {table?.fullPath?.replaceAll(".", "/")}
             </div>
           </div>
           <div className="flex flex-row gap-2 items-center mt-2">
@@ -172,6 +173,8 @@ const TableCard = ({
   );
 };
 export default function WorkspaceHome() {
+  const { getToken } = useAuth();
+
   const [tableLayout, setTableLayout] = useLocalStorageState(
     "tableLayout",
     "grid"
@@ -215,7 +218,8 @@ export default function WorkspaceHome() {
   } = useQuery({
     queryKey: ["getConnections", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceConnections(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -228,7 +232,8 @@ export default function WorkspaceHome() {
   } = useQuery({
     queryKey: ["getTables", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getTables(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getTables(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -378,19 +383,17 @@ export default function WorkspaceHome() {
                     <div className="flex flex-row gap-4 items-center text-[13px] text-slate-12 pb-3">
                       <div
                         className="text-[12px] text-slate-11 cursor-pointer w-[376px] flex flex-row gap-1 items-center"
-                        onClick={() =>
-                          handleTableListHeaderClick("displayName")
-                        }
+                        onClick={() => handleTableListHeaderClick("name")}
                       >
                         <p>Name</p>
-                        {tableListSortField === "displayName" &&
+                        {tableListSortField === "name" &&
                           tableListSortDirection === "desc" && (
                             <CaretDown
                               className="w-3 h-3 text-slate-10"
                               weight="fill"
                             />
                           )}
-                        {tableListSortField === "displayName" &&
+                        {tableListSortField === "name" &&
                           tableListSortDirection === "asc" && (
                             <CaretUp
                               className="w-3 h-3 text-slate-10"
@@ -400,19 +403,17 @@ export default function WorkspaceHome() {
                       </div>
                       <div
                         className="text-[12px] text-slate-11 cursor-pointer flex flex-row gap-1 items-center mr-auto"
-                        onClick={() =>
-                          handleTableListHeaderClick("connectionPath")
-                        }
+                        onClick={() => handleTableListHeaderClick("outerPath")}
                       >
                         <p>Connection path</p>
-                        {tableListSortField === "connectionPath" &&
+                        {tableListSortField === "outerPath" &&
                           tableListSortDirection === "desc" && (
                             <CaretDown
                               className="w-3 h-3 text-slate-10"
                               weight="fill"
                             />
                           )}
-                        {tableListSortField === "connectionPath" &&
+                        {tableListSortField === "outerPath" &&
                           tableListSortDirection === "asc" && (
                             <CaretUp
                               className="w-3 h-3 text-slate-10"
@@ -477,15 +478,15 @@ export default function WorkspaceHome() {
                             <div className="text-[13px] text-slate-12">
                               <IconLoaderFromSvgString
                                 iconSvgString={table.iconSvgString}
-                                tableName={table.displayName}
+                                tableName={table.name}
                               />
                             </div>
                             <div className="w-[320px] truncate">
-                              {table.displayName}
+                              {table.name}
                             </div>
 
                             <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate mr-auto">
-                              {table.connectionPath}
+                              {table.outerPath}
                             </pre>
                             <div className="min-w-[100px] max-w-[100px] text-left text-slate-11">
                               {friendlyRelativeDateToNow(table.updatedAt)}

@@ -4,23 +4,39 @@ import { fetchCurrentUser, getUserMemberships, createUser } from "./utils/api";
 import { capitalizeString } from "./utils/util";
 import clerk from "@clerk/clerk-sdk-node";
 
+// These logs show up in Vercel logs
 export default authMiddleware({
   publicRoutes: ["/forgot-password", "/login", "/sandbox", "/signup", "/"],
   async afterAuth(auth, req, evt) {
-    const currentUser = await fetchCurrentUser(auth.userId);
-
-    console.log("auth", auth);
+    // console.log("auth", auth);
+    const { getToken } = auth;
+    const token = await getToken({ template: "test" });
+    const auth_header = {
+      Authorization: `Bearer ${token}`,
+    };
+    let currentUser = null;
+    try {
+      currentUser = await fetchCurrentUser(auth.userId, auth_header);
+      console.log("currentUser", currentUser);
+    } catch (error) {
+      console.log("Error fetching current user:", error);
+      // Respond with an error, don't leave the request hanging
+      return NextResponse.error();
+    }
 
     // if no currentUser exists in the Dataland db, but there is an authenticated user in Clerk, (
     // happens bc someone signs up via OAuth first), then create a user for them
     // and user is not visiting a public route
     if (!currentUser && auth.userId && !auth.isPublicRoute) {
       const clerkUser = await clerk.users.getUser(auth.userId);
+      console.log("clerkUser", clerkUser);
       const emailAddress = clerkUser.emailAddresses[0].emailAddress;
-      const created_user = await createUser({
+      console.log("emailAddress", emailAddress);
+      await createUser({
         email: emailAddress,
         name: capitalizeString(emailAddress.split("@")[0]),
         clerkUserId: auth.userId,
+        jwt: token,
       });
     }
 
@@ -32,7 +48,7 @@ export default authMiddleware({
     ) {
       // If the user is logged in, but they don't have access to the workspace, redirect them to the no access page
       if (currentUser && currentUser.id) {
-        const data = await getUserMemberships(currentUser.id);
+        const data = await getUserMemberships(currentUser.id, token);
         const after_base_url = req.url.split("workspace/")[1];
         const workspaceId = after_base_url.split("/")[0];
         const userHasAccess = data.some(

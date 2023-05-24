@@ -13,12 +13,14 @@ import { useState, Fragment, useRef, useEffect } from "react";
 import IconPickerPopoverEditTable from "@/components/IconPickerPopoverEditTable";
 import { Popover, Transition, Dialog } from "@headlessui/react";
 import InvitePeopleDialog from "@/components/InvitePeopleDialog";
+import { useAuth } from "@clerk/nextjs";
 
 const TablePopover = ({
   tableName,
   tableId,
   workspaceId,
 }) => {
+  const { getToken } = useAuth();
   const router = useRouter();
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
 
@@ -65,10 +67,11 @@ const TablePopover = ({
       setDisplayNameInputError("");
     }
     const tableData = {
-      displayName: new_table_name,
+      name: new_table_name,
     };
     try {
-      await updateTableMutation.mutateAsync({ workspaceId, tableId, tableData });
+      const jwt = await getToken({ template: "test" });
+      await updateTableMutation.mutateAsync({ workspaceId, tableId, tableData, jwt });
       setIsEditingDisplayName(false);
       closeRenameDialog();
     } catch (error) {
@@ -78,7 +81,8 @@ const TablePopover = ({
 
   const handleDeleteTable = async () => {
     try {
-      await deleteTableMutation.mutateAsync({ workspaceId, tableId });
+      const jwt = await getToken({ template: "test" });
+      await deleteTableMutation.mutateAsync({ workspaceId, tableId, jwt });
       closeDeleteDialog();
     } catch (error) {
       console.error('Error deleting table:', error);
@@ -276,6 +280,7 @@ const TablePopover = ({
 };
 
 export default function TablePage() {
+  const { getToken } = useAuth();
   const router = useRouter();
   const { tableId } = router.query;
 
@@ -323,7 +328,8 @@ export default function TablePage() {
   } = useQuery({
     queryKey: ["getTable", currentWorkspace?.id, tableId],
     queryFn: async () => {
-      const response = await getTable(currentWorkspace?.id, tableId);
+      const jwt = await getToken({ template: "test" });
+      const response = await getTable(currentWorkspace?.id, tableId, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -336,9 +342,11 @@ export default function TablePage() {
   } = useQuery({
     queryKey: ["getConnection", currentWorkspace?.id, tableData?.connectionId],
     queryFn: async () => {
+      const jwt = await getToken({ template: "test" });
       const response = await getConnection(
         currentWorkspace.id,
-        tableData.connectionId
+        tableData.connectionId,
+        jwt
       );
       return response;
     },
@@ -351,7 +359,7 @@ export default function TablePage() {
   useEffect(() => {
     if (tableData) {
       setCustomInviteMessage(
-        `Hi! Check out the ${tableData.displayName} table on our workspace in Dataland.io. \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse.`
+        `Hi! Check out the ${tableData.name} table on our workspace in Dataland.io. \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse.`
       );
     }
   }, [tableData]);
@@ -375,12 +383,12 @@ export default function TablePage() {
           <div className="flex flex-row items-center justify-center">
             <IconPickerPopoverEditTable
               iconSvgString={tableData.iconSvgString}
-              tableName={tableData.displayName}
+              tableName={tableData.name}
               tableId={tableData.id}
               workspaceId={currentWorkspace?.id}
             />
             <TablePopover
-              tableName={tableData.displayName}
+              tableName={tableData.name}
               tableId={tableData.id}
               workspaceId={currentWorkspace?.id}
             />
@@ -418,8 +426,8 @@ export default function TablePage() {
               customMessage={customInviteMessage}
               setCustomMessage={setCustomInviteMessage}
               emailTemplateLanguage={""}
-              customInvitePeopleDialogHeader={`Share ${tableData.displayName} with your team`}
-              customInvitePeopleSubject={`${currentUser.name} shared ${tableData.displayName} with you on Dataland.io`}
+              customInvitePeopleDialogHeader={`Share ${tableData.name} with your team`}
+              customInvitePeopleSubject={`${currentUser.name} shared ${tableData.name} with you on Dataland.io`}
             />
           </div>
         </div>
@@ -428,7 +436,7 @@ export default function TablePage() {
         </div>
         <div className="flex flex-row gap-2 items-center border-b border-slate-4 px-[20px] py-[8px] text-[13px] text-slate-11">
           <div>Table synced from</div>
-          <div className="font-mono text-[12px]">{tableData.fullName.replaceAll(".", "/")}</div>
+          <div className="font-mono text-[12px]">{tableData.fullPath?.replaceAll(".", "/")}</div>
           <div>from</div>
           <div className="flex flex-row gap-2 items-center">
             {" "}

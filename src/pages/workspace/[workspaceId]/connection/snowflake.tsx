@@ -23,6 +23,7 @@ import WorkspaceLayout from "@/components/WorkspaceLayout";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import { createConnection } from "@/utils/api";
 import { capitalizeString } from "@/utils/util";
+import { useAuth } from "@clerk/nextjs";
 
 const PreviewTablesDialog = lazy(
   () => import("@/components/PreviewTablesDialog")
@@ -53,6 +54,8 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
 };
 
 export default function AddSnowflake() {
+  const { getToken } = useAuth();
+
   // Snowflake vars
   const [useCustomHost, setUseCustomHost] = useLocalStorageState(
     "useCustomHost",
@@ -129,9 +132,11 @@ export default function AddSnowflake() {
         workspaceId: currentWorkspace?.id,
       };
       try {
+        const jwt = await getToken({ template: "test" });
         const create_connection_response = await createConnection(
           currentWorkspace?.id,
-          createConnectionRequestBody
+          createConnectionRequestBody,
+          jwt
         );
         console.log("create_connection_response", create_connection_response);
         router.push(`/workspace/${currentWorkspace?.id}/connection`);

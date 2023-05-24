@@ -8,9 +8,10 @@ import { CircleNotch, TreeStructure, House, Table, Plus, Gear } from '@phosphor-
 import { getTables } from '@/utils/api';
 import { useRouter } from 'next/router';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
-
+import { useAuth } from "@clerk/nextjs";
 
 export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
+  const { getToken } = useAuth();
   const router = useRouter();
   // const [commandBarOpen, setCommandBarOpen] = React.useState(false)
   const [value, setValue] = React.useState('homehome')
@@ -25,12 +26,6 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
     document.addEventListener('keydown', down)
     return () => document.removeEventListener('keydown', down)
   }, [])
-
-
-  React.useEffect(() => {
-    console.log("selected value", value)
-  }, [value])
-
 
   const {
     data: currentUser,
@@ -52,7 +47,9 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
   } = useQuery({
     queryKey: ["getTables", currentWorkspace?.id],
     queryFn: async () => {
-      return await getTables(currentWorkspace?.id)
+      const jwt = await getToken({ template: "test" });
+      const result = await getTables(currentWorkspace?.id, jwt)
+      return result
     },
     enabled: currentWorkspace?.id !== null,
     staleTime: 1000
@@ -120,8 +117,8 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
   if (tablesData.length > 0) {
     tablesData.forEach((table) => {
       tables.push({
-        name: table.displayName,
-        description: table.fullName,
+        name: table.name,
+        description: table.fullPath,
         iconSvgString: table.iconSvgString,
         type: 'table',
         id: String(table.id),
@@ -140,7 +137,6 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
           value={value}
           loop={true}
           onValueChange={(v) => {
-            console.log('value', v)
             setValue(v)
           }}
           label="Global Command Menu"
@@ -166,9 +162,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                         value={searchable_id_name}
                         className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
                         onMouseEnter={() => {
-                          console.log("hovering", searchable_id_name);
                           setValue(searchable_id_name);
-                          console.log("value", value);
                         }}
                         onSelect={
                           () => {
@@ -200,9 +194,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                           value={searchable_id_name}
                           className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
                           onMouseEnter={() => {
-                            console.log("hovering", searchable_id_name);
                             setValue(searchable_id_name);
-                            console.log("value", value);
                           }}
                           onSelect={
                             () => {

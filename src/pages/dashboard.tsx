@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { getUserMemberships, getWorkspace } from "../utils/api";
+import { getUserMemberships, getWorkspaceDetails } from "../utils/api";
 import { useRouter } from "next/router";
 import { useQuery, useQueries } from "@tanstack/react-query";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 
 // This is the default page a user lands on after logging in via Clerk.
 // To change the destination in Clerk, you need to edit the paths .env.local in local dev mode.
 // In production, you need to edit the paths in the Clerk dashboard.
 
 export default function Welcome() {
+  const { getToken } = useAuth();
   const router = useRouter();
 
   const {
@@ -26,26 +27,37 @@ export default function Welcome() {
   } = useQuery({
     queryKey: ["currentUserMemberships", currentUser?.id],
     queryFn: async () => {
-      return await getUserMemberships(currentUser?.id);
+      const jwt = await getToken({ template: "test" });
+      const result = await getUserMemberships(currentUser?.id, jwt);
+      return result;
     },
     enabled: currentUser?.id !== null,
   });
 
+  console.log("userMembershipsData", userMembershipsData);
   const currentWorkspacesForUserQueries = useQueries({
-    queries: (userMembershipsData ?? []).map((membership: any) => {
-      return {
-        queryKey: ["getWorkspace", membership?.workspaceId],
-        queryFn: async () => {
-          const response = await getWorkspace(membership?.workspaceId);
-          if (response) {
-            return response;
-          } else {
-            return null;
-          }
-        },
-        enabled: membership?.workspaceId !== null,
-      };
-    }),
+    queries: Array.isArray(userMembershipsData)
+      ? userMembershipsData.map((membership: any) => {
+          return {
+            queryKey: ["getWorkspace", membership?.workspaceId],
+            queryFn: async () => {
+              const response = await getWorkspaceDetails(
+                membership?.workspaceId
+              );
+              if (response) {
+                return response;
+              } else {
+                throw new Error("No response from server");
+              }
+            },
+            onError: (error: any) => {
+              console.error("Error fetching workspace details:", error);
+              // handle the error here
+            },
+            enabled: membership?.workspaceId !== null,
+          };
+        })
+      : [],
   });
 
   const currentWorkspacesForUserError = currentWorkspacesForUserQueries.map(

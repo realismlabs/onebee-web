@@ -19,6 +19,7 @@ import {
 import { stringToVibrantColor, generateWorkspaceIcon } from "../utils/util";
 import { CaretRight, UsersThree } from "@phosphor-icons/react";
 import { AccountHeader } from "@/components/AccountHeader";
+import { useAuth } from "@clerk/nextjs";
 
 export default function JoinWorkspace() {
   const handleAcceptInvite = async ({
@@ -39,15 +40,19 @@ export default function JoinWorkspace() {
     };
 
     try {
+      const jwt = await getToken({ template: "test" });
       const created_membership_result = await createMembership(
-        createMembershipRequestBody
+        createMembershipRequestBody,
+        jwt
       );
 
       try {
         // accept the invite
+        const jwt = await getToken({ template: "test" });
         const delete_invite_result = await acceptWorkspaceInvite({
           workspaceId: workspace.id,
           inviteId: invite.id,
+          jwt,
         });
 
         router.push(`/workspace/${workspace.id}`);
@@ -75,14 +80,17 @@ export default function JoinWorkspace() {
     };
 
     try {
+      const jwt = await getToken({ template: "test" });
       const created_membership_result = await createMembership(
-        createMembershipRequestBody
+        createMembershipRequestBody,
+        jwt
       );
       router.push(`/workspace/${workspace.id}`);
     } catch (e) {
       console.error(e);
     }
   };
+  const { getToken } = useAuth();
 
   const {
     data: currentUser,
@@ -94,7 +102,8 @@ export default function JoinWorkspace() {
     queryKey: ["invites", currentUser?.email],
     enabled: currentUser?.email != null,
     queryFn: async () => {
-      const result = await getInvitesForUserEmail(currentUser.email);
+      const token = await getToken({ template: "test" });
+      const result = await getInvitesForUserEmail(currentUser.email, token);
       console.log("invitesQuery result", result);
       return result;
     },
@@ -111,7 +120,10 @@ export default function JoinWorkspace() {
   const workspacesQuery = useQueries({
     queries: workspaceIds.map((id) => ({
       queryKey: ["workspace", id],
-      queryFn: () => getWorkspaceDetails(id),
+      queryFn: async () => {
+        const response = await getWorkspaceDetails(id);
+        return response;
+      },
     })),
   });
 
@@ -122,7 +134,8 @@ export default function JoinWorkspace() {
   } = useQuery({
     queryKey: ["getAllowedWorkspacesForUser", currentUser?.id],
     queryFn: async () => {
-      const result = await getAllowedWorkspacesForUser(currentUser?.id);
+      const jwt = await getToken({ template: "test" });
+      const result = await getAllowedWorkspacesForUser(currentUser?.id, jwt);
       return result;
     },
     enabled: currentUser?.id != null,

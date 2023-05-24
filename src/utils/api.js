@@ -3,13 +3,16 @@ import { useAuth } from "@clerk/nextjs";
 //  this file holds several  the api calls for the app mocked to a local json server
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-// const API_BASE_URL = "http://localhost:5002";
 
 export const fetchCurrentUser = async (clerkUserId, headers) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(`${API_BASE_URL}/api/users/clerkUserId/${clerkUserId}`, {
-    headers
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    }
   });
+
   if (!response.ok) {
     console.error("Error fetching current user", response);
     return null;
@@ -19,7 +22,7 @@ export const fetchCurrentUser = async (clerkUserId, headers) => {
 };
 
 export const fetchCurrentWorkspace = async (workspaceId, headers) => {
-  const API_BASE_URL = "https://dataland-demo-995df.uc.r.appspot.com";
+
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`, {
     headers
   });
@@ -28,18 +31,21 @@ export const fetchCurrentWorkspace = async (workspaceId, headers) => {
   }
 
   const result = await response.json();
-  console.log("fetchCurrentWorkspace result", result)
   return result;
 };
 
 // "/api/users/": "/users",
-export const createUser = async ({ email, name, clerkUserId }) => {
+export const createUser = async ({ email, name, clerkUserId, jwt }) => {
   // see if user already exists by clerkUserId
-  const existingUser = await fetchCurrentUser(clerkUserId);
+
+
+  const existingUser = await fetchCurrentUser(clerkUserId, {
+    Authorization: `Bearer ${jwt}`,
+  });
 
   if (existingUser) {
-    throw new Error("User already exists:", existingUser);
-    return;
+    console.log("User already exists:", existingUser)
+    return null;
   }
 
   console.log("createUser", email, name, clerkUserId)
@@ -58,6 +64,7 @@ export const createUser = async ({ email, name, clerkUserId }) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(requestBody),
   });
@@ -72,29 +79,32 @@ export const createUser = async ({ email, name, clerkUserId }) => {
 export const createInvite = async ({
   workspaceId,
   inviterEmail,
-  recipientEmail
+  recipientEmail,
+  jwt
 }
 ) => {
-  const api_url = process.env.NEXT_PUBLIC_API_URL;
 
+  console.log("awu recipientEmail", recipientEmail)
+  const recipientEmailCleaned = recipientEmail.trim();
+  console.log("awu recipientEmailCleaned", recipientEmailCleaned)
   // first see if the recipient has already been invited or is already a member
-  const existingInvites = await getInvitesForUserEmail(recipientEmail.trim());
-  const existingMemberships = await getWorkspaceMemberships(workspaceId);
+  const existingInvites = await getInvitesForUserEmail(recipientEmailCleaned, jwt);
+  const existingMemberships = await getWorkspaceMemberships(workspaceId, jwt);
 
   // for each existing membership, get the user details
   const existingUsers = await Promise.all(
     existingMemberships.map(async (membership) => {
-      const user = await getUser(membership.userId);
+      const user = await getUser(membership.userId, jwt);
       return user;
     })
   );
 
   const existingInvite = existingInvites.find(
-    (invite) => invite.recipientEmail === recipientEmail.trim()
+    (invite) => invite.recipientEmail === recipientEmailCleaned
   );
 
   const existingUser = existingUsers.find(
-    (user) => user.email === recipientEmail.trim()
+    (user) => user.email === recipientEmailCleaned
   );
 
   if (existingInvite) {
@@ -109,15 +119,16 @@ export const createInvite = async ({
 
   try {
     const response = await fetch(
-      `${api_url}/api/workspaces/${workspaceId}/invite`,
+      `${API_BASE_URL}/api/workspaces/${workspaceId}/invite`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
         },
         body: JSON.stringify({
           inviterEmail,
-          recipientEmail,
+          recipientEmail: recipientEmailCleaned,
           accepted: false,
           workspaceId: workspaceId,
         }),
@@ -134,14 +145,19 @@ export const createInvite = async ({
   }
 };
 
-
-export const getInvitesForUserEmail = async (recipientEmail) => {
+export const getInvitesForUserEmail = async (recipientEmail, jwt) => {
   console.log("getInvitesForUserEmail", recipientEmail);
+
 
   const encodedEmail = encodeURIComponent(recipientEmail);
 
   const response = await fetch(
-    `${API_BASE_URL}/api/invites/recipient/${encodedEmail}`
+    `${API_BASE_URL}/api/invites/recipient/${encodedEmail}`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   // const response = await fetch(`${API_BASE_URL}/invites?recipientEmail=${recipientEmail}`);
 
@@ -154,10 +170,16 @@ export const getInvitesForUserEmail = async (recipientEmail) => {
   return filteredResult;
 };
 
-// "/api/workspaces/:workspaceId/invites": "/invites?workspaceId=:workspaceId",
-export const getWorkspaceInvites = async (workspaceId) => {
+export const getWorkspaceInvites = async (workspaceId, jwt) => {
+
+
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/invites`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/invites`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
 
   if (!response.ok) {
@@ -171,11 +193,16 @@ export const getWorkspaceInvites = async (workspaceId) => {
 };
 
 // "/api/workspaces/:workspaceId/invites/:inviteId/delete": "/invites/:inviteId",
-export const deleteWorkspaceInvite = async ({ workspaceId, inviteId }) => {
+export const deleteWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/invites/${inviteId}/delete`,
     {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
     }
   );
   const deletedInvite = await response.json();
@@ -183,13 +210,15 @@ export const deleteWorkspaceInvite = async ({ workspaceId, inviteId }) => {
 };
 
 // "/api/workspaces/:workspaceId/accept-invite/:inviteId": "/invites/:inviteId",
-export const acceptWorkspaceInvite = async ({ workspaceId, inviteId }) => {
+export const acceptWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/accept-invite/${inviteId}`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify({
         accepted: true,
@@ -200,7 +229,9 @@ export const acceptWorkspaceInvite = async ({ workspaceId, inviteId }) => {
   return acceptedInvite;
 };
 
+// This is a public route that does not require authentication
 export const getWorkspaceDetails = async (workspaceId) => {
+
   const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
 
   if (!response.ok) {
@@ -209,30 +240,27 @@ export const getWorkspaceDetails = async (workspaceId) => {
   return await response.json();
 };
 
-export const getUsers = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/users/`);
+export const getUser = async (userId, jwt) => {
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch users`);
-  }
-  return await response.json();
-};
-
-export const getUser = async (userId) => {
-  const response = await fetch(`${API_BASE_URL}/api/users/${userId}`);
+  const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    }
+  });
   const user = await response.json();
   return user;
 };
 
-
 // Update a specific user
-export const updateUser = async ({ userId, userData }) => {
+export const updateUser = async ({ userId, userData, jwt }) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/users/${userId}/update`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(userData),
     }
@@ -241,28 +269,16 @@ export const updateUser = async ({ userId, userData }) => {
   return updatedUser;
 };
 
-// Example usage + request body
-// const workspaceData = {
-//   name: 'My New Workspace',
-//   createdAt: '2023-04-27T12:00:00Z',
-//   creatorUserId: '123',
-//   iconUrl: 'https://example.com/icon.png'
-// };
-// createWorkspace(workspaceData)
-//   .then((createdWorkspace) => {
-//     console.log('Created workspace:', createdWorkspace);
-//   })
-//   .catch((error) => {
-//     console.error('Error creating workspace:', error);
-//   });
 
-export const createWorkspace = async (workspaceData) => {
+export const createWorkspace = async (workspaceData, jwt) => {
+
   const icon = generateWorkspaceIcon(workspaceData.name);
 
   const response = await fetch(`${API_BASE_URL}/api/workspaces`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({
       ...workspaceData,
@@ -274,13 +290,15 @@ export const createWorkspace = async (workspaceData) => {
 };
 
 // Update a specific workspace
-export const updateWorkspace = async ({ workspaceId, workspaceData }) => {
+export const updateWorkspace = async ({ workspaceId, workspaceData, jwt }) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/update`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(workspaceData),
     }
@@ -290,11 +308,16 @@ export const updateWorkspace = async ({ workspaceId, workspaceData }) => {
 };
 
 // Delete workspace
-export const deleteWorkspace = async ({ workspaceId }) => {
+export const deleteWorkspace = async ({ workspaceId, jwt }) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/delete`,
     {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
     }
   );
   const deletedWorkspace = await response.json();
@@ -303,18 +326,30 @@ export const deleteWorkspace = async ({ workspaceId }) => {
 
 
 // Get all tables associated with a workspace
-export const getTables = async (workspaceId) => {
+export const getTables = async (workspaceId, jwt) => {
+
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/tables`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/tables`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const tables = await response.json();
   return tables;
 };
 
 // Get tables associated with a connection in a workspace
-export const getTablesFromConnection = async (workspaceId, connectionId) => {
+export const getTablesFromConnection = async (workspaceId, connectionId, jwt) => {
+
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/tables`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/tables`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const tables = await response.json();
   console.log("getTablesFromConnection", tables, workspaceId, connectionId)
@@ -323,13 +358,15 @@ export const getTablesFromConnection = async (workspaceId, connectionId) => {
 
 
 // Create a table in a workspace
-export const createTable = async (tableData) => {
+export const createTable = async (tableData, jwt) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${tableData.workspaceId}/tables`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(tableData),
     }
@@ -339,22 +376,30 @@ export const createTable = async (tableData) => {
 };
 
 // Get a specific table in a workspace
-export const getTable = async (workspaceId, tableId) => {
+export const getTable = async (workspaceId, tableId, jwt) => {
+
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const table = await response.json();
   return table;
 };
 
 // Update a specific table in a workspace
-export const updateTable = async ({ workspaceId, tableId, tableData }) => {
+export const updateTable = async ({ workspaceId, tableId, tableData, jwt }) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/update`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(tableData),
     }
@@ -364,11 +409,16 @@ export const updateTable = async ({ workspaceId, tableId, tableData }) => {
 };
 
 // Delete a specific table in a workspace
-export const deleteTable = async ({ workspaceId, tableId }) => {
+export const deleteTable = async ({ workspaceId, tableId, jwt }) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/tables/${tableId}/delete`,
     {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
     }
   );
   const deletedTable = await response.json();
@@ -376,13 +426,15 @@ export const deleteTable = async ({ workspaceId, tableId }) => {
 };
 
 // Create a new connection
-export const createConnection = async (workspaceId, connectionData) => {
+export const createConnection = async (workspaceId, connectionData, jwt) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(connectionData),
     }
@@ -392,9 +444,15 @@ export const createConnection = async (workspaceId, connectionData) => {
 };
 
 // Get a specific connection
-export const getConnection = async (workspaceId, connectionId) => {
+export const getConnection = async (workspaceId, connectionId, jwt) => {
+
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const connection = await response.json();
   return connection;
@@ -405,10 +463,12 @@ export const updateConnectionDisplayName = async ({
   workspaceId,
   connectionId,
   data,
+  jwt
 }
 ) => {
+
   //  print all args
-  console.log("updateConnectionDisplayName", workspaceId, connectionId, data)
+  console.log("updateConnectionDisplayName", workspaceId, connectionId, data,)
 
   const displayName = data.name;
 
@@ -418,6 +478,7 @@ export const updateConnectionDisplayName = async ({
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify({ name: displayName }),
     }
@@ -428,7 +489,8 @@ export const updateConnectionDisplayName = async ({
 };
 
 // Delete a specific connection
-export const deleteConnection = async ({ workspaceId, connectionId }) => {
+export const deleteConnection = async ({ workspaceId, connectionId, jwt }) => {
+
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`,
@@ -436,6 +498,7 @@ export const deleteConnection = async ({ workspaceId, connectionId }) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
         },
       }
     );
@@ -451,57 +514,46 @@ export const deleteConnection = async ({ workspaceId, connectionId }) => {
   }
 };
 
-// Get all connections
-export const getConnections = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/connections`);
-  const connections = await response.json();
-  return connections;
-};
-
 // Get all connections associated with a workspace
-export const getWorkspaceConnections = async (workspaceId) => {
+export const getWorkspaceConnections = async (workspaceId, jwt) => {
+
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
   );
   const connections = await response.json();
   return connections;
 };
 
 // Get all connections associated with a workspace
-export const getWorkspaces = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/workspaces/`);
+export const getWorkspaces = async (jwt) => {
+
+  console.log("getWorkspaces jwt", jwt)
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
+  );
   const connections = await response.json();
   return connections;
 };
 
-export const getWorkspace = async (workspaceId) => {
-  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
-  const workspace = await response.json();
-  return workspace;
-};
-
-// "/api/memberships": "/memberships",
-export const getMemberships = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/memberships`);
-  const memberships = await response.json();
-  return memberships;
-};
-
-// "/api/memberships/:membershipId": "/memberships/:membershipId",
-export const getMembership = async (membershipId) => {
-  const response = await fetch(`${API_BASE_URL}/api/memberships/${membershipId}`);
-  const membership = await response.json();
-  return membership;
-};
 
 // create membership
-export const createMembership = async (membershipData) => {
+export const createMembership = async (membershipData, jwt) => {
+
   // check first if user already has membership of this workspace
 
   const userId = membershipData.userId;
   const workspaceId = membershipData.workspaceId;
 
-  const user_memberships = await getUserMemberships(userId);
+  const user_memberships = await getUserMemberships(userId, jwt);
   const user_memberships_workspaceIds = user_memberships.map((membership) => {
     return membership.workspaceId;
   });
@@ -514,6 +566,7 @@ export const createMembership = async (membershipData) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(membershipData),
   });
@@ -522,15 +575,24 @@ export const createMembership = async (membershipData) => {
 };
 
 // "/api/memberships/:membershipId/update": "/memberships/:membershipId",
-export const updateMembership = async ({ membershipId, membershipData }) => {
+export const updateMembership = async ({ membershipId, membershipData, jwt }) => {
+
+  console.log("updateMembership membershipId", membershipId)
+  console.log("updateMembership membershipData", membershipData)
+
+  const role = membershipData.role;
+
   const response = await fetch(
     `${API_BASE_URL}/api/memberships/${membershipId}/update`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
       },
-      body: JSON.stringify(membershipData),
+      body: JSON.stringify({
+        role: role,
+      }),
     }
   );
   const updatedMembership = await response.json();
@@ -538,11 +600,16 @@ export const updateMembership = async ({ membershipId, membershipData }) => {
 };
 
 // "/api/memberships/:membershipId/delete": "/memberships/:membershipId",
-export const deleteMembership = async ({ membershipId }) => {
+export const deleteMembership = async ({ membershipId, jwt }) => {
+
   const response = await fetch(
     `${API_BASE_URL}/api/memberships/${membershipId}/delete`,
     {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
     }
   );
   const deletedMembership = await response.json();
@@ -550,36 +617,48 @@ export const deleteMembership = async ({ membershipId }) => {
 };
 
 // "/api/workspaces/:workspaceId/memberships": "/memberships?workspaceId=:workspaceId",
-export const getWorkspaceMemberships = async (workspaceId) => {
+export const getWorkspaceMemberships = async (workspaceId, jwt) => {
+
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/memberships`
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/memberships`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    }
+  }
   );
   const memberships = await response.json();
   return memberships;
 };
 
 // "/api/users/:userId/memberships": "/memberships?userId=:userId"
-export const getUserMemberships = async (userId) => {
+export const getUserMemberships = async (userId, jwt) => {
+
   const response = await fetch(
-    `${API_BASE_URL}/api/users/${userId}/memberships`
+    `${API_BASE_URL}/api/users/${userId}/memberships`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    }
+  }
   );
+
   const memberships = await response.json();
   return memberships;
 }
 
-export const getAllowedWorkspacesForUser = async (userId) => {
+export const getAllowedWorkspacesForUser = async (userId, jwt) => {
+
   // fetch all workspaces
-  const workspaces = await getWorkspaces();
+  const workspaces = await getWorkspaces(jwt);
 
   // fetch user email domain
-  const user = await getUser(userId);
+  const user = await getUser(userId, jwt);
 
   const user_domain = user.email.split("@")[1].toLowerCase();
 
   // get the user's existing memberships
-  const memberships = await getUserMemberships(userId);
+  const memberships = await getUserMemberships(userId, jwt);
 
-  const invites = await getInvitesForUserEmail(user.email);
+  const invites = await getInvitesForUserEmail(user.email, jwt);
 
   // filter workspaces' allowedDomains array by email domain. 
   // Also filter out workspaces that the user is already a member of.

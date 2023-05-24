@@ -22,6 +22,7 @@ import { Listbox } from "@headlessui/react";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
+import { useAuth } from "@clerk/nextjs";
 
 function getIconSvgStringFromName(iconName: string): string {
   const iconItem = IconList.find((icon) => icon.name === iconName);
@@ -696,6 +697,7 @@ const FileTree: React.FC<FileTreeProps> = ({
 };
 
 export default function CreateTable() {
+  const { getToken } = useAuth();
   const [useCustomHost, setUseCustomHost] = useLocalStorageState(
     "useCustomHost",
     false
@@ -780,7 +782,7 @@ export default function CreateTable() {
     }
 
     const displayName = selectedTable?.split(".")[2];
-    const connectionPath =
+    const outerPath =
       selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
 
     // parse color from iconSvgString
@@ -794,9 +796,9 @@ export default function CreateTable() {
 
     const createTableRequestBody = {
       workspaceId: currentWorkspace?.id,
-      fullName: selectedTable,
-      displayName: tableDisplayName,
-      connectionPath,
+      fullPath: selectedTable,
+      name: tableDisplayName,
+      outerPath,
       rowCount: selectedTableRowCount,
       connectionId: selectedConnection?.id,
       iconSvgString: iconSvgString,
@@ -805,7 +807,11 @@ export default function CreateTable() {
       updatedAt: new Date().toISOString(),
     };
 
-    const create_table_response = await createTable(createTableRequestBody);
+    const jwt = await getToken({ template: "test" });
+    const create_table_response = await createTable(
+      createTableRequestBody,
+      jwt
+    );
 
     //  route to the table page
     router.push(
@@ -850,7 +856,8 @@ export default function CreateTable() {
   } = useQuery({
     queryKey: ["getConnections", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceConnections(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,

@@ -6,8 +6,10 @@ import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { createWorkspace, createMembership } from "@/utils/api";
 import { isCommonEmailProvider } from "@/utils/util";
 import { AccountHeader } from "@/components/AccountHeader";
+import { useAuth } from "@clerk/nextjs";
 
 export default function CreateWorkspace() {
+  const { getToken } = useAuth();
   const [errorMessage, setErrorMessage] = React.useState("");
   const [workspaceName, setWorkspaceName] = React.useState("");
   const [domain, setDomain] = React.useState("");
@@ -39,9 +41,11 @@ export default function CreateWorkspace() {
             : [{ domain: domain, createdBy: currentUser?.id }],
       };
       try {
+        const jwt = await getToken({ template: "test" });
         console.log("Before creating workspace");
         const created_workspace_result = await createWorkspace(
-          createWorkspaceRequestBody
+          createWorkspaceRequestBody,
+          jwt
         );
         console.log("After creating workspace");
 
@@ -55,8 +59,10 @@ export default function CreateWorkspace() {
           };
 
           console.log("Creating membership", createMembershipRequestBody);
+          const jwt = await getToken({ template: "test" });
           const created_membership_result = await createMembership(
-            createMembershipRequestBody
+            createMembershipRequestBody,
+            jwt
           );
 
           console.log("Created membership", created_membership_result);

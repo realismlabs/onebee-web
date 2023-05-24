@@ -19,6 +19,7 @@ import { PencilSimpleLine, X, TreeStructure } from "@phosphor-icons/react";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { Dialog } from "@headlessui/react";
 import Image from "next/image";
+import { useAuth } from "@clerk/nextjs";
 
 function findSelectedConnection(
   connectionsData: any,
@@ -31,6 +32,7 @@ function findSelectedConnection(
 }
 
 export default function Connections() {
+  const { getToken } = useAuth();
   const router = useRouter();
   const { tableId } = router.query;
 
@@ -80,7 +82,8 @@ export default function Connections() {
   } = useQuery({
     queryKey: ["getConnections", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceConnections(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -97,9 +100,11 @@ export default function Connections() {
       selectedConnectionId,
     ],
     queryFn: async () => {
+      const jwt = await getToken({ template: "test" });
       const response = await getTablesFromConnection(
         currentWorkspace?.id,
-        selectedConnectionId
+        selectedConnectionId,
+        jwt
       );
       return response;
     },
@@ -115,9 +120,11 @@ export default function Connections() {
 
   const handleDeleteConnection = async () => {
     try {
+      const jwt = await getToken({ template: "test" });
       await deleteConnectionMutation.mutateAsync({
         workspaceId: currentWorkspace.id,
         connectionId: selectedConnectionId,
+        jwt,
       });
       setIsDeleteDialogOpen(false);
     } catch (error: any) {
@@ -132,12 +139,14 @@ export default function Connections() {
   });
 
   const handleUpdateDisplayName = async () => {
+    const jwt = await getToken({ template: "test" });
     await updateConnectionMutation.mutateAsync({
       workspaceId: currentWorkspace.id,
       connectionId: selectedConnectionId,
       data: {
         name: displayNameInputValue,
       },
+      jwt,
     });
     setIsEditingDisplayName(false);
   };
@@ -470,14 +479,14 @@ export default function Connections() {
                                       <div className="text-[13px] text-slate-12">
                                         <IconLoaderFromSvgString
                                           iconSvgString={table.iconSvgString}
-                                          tableName={table.displayName}
+                                          tableName={table.name}
                                         />
                                       </div>
                                       <div className="w-[180px] truncate">
-                                        {table.displayName}
+                                        {table.name}
                                       </div>
                                       <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate">
-                                        {table.connectionPath}
+                                        {table.outerPath}
                                       </pre>
                                       <div className="ml-auto">
                                         {abbreviateNumber(table.rowCount) +

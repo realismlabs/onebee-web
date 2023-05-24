@@ -14,6 +14,7 @@ import {
   getWorkspaceDetails,
   getAllowedWorkspacesForUser,
 } from "@/utils/api";
+import { useAuth } from "@clerk/nextjs";
 
 const handleSubmit = async (total_available_workspaces: number) => {
   console.log("clicked");
@@ -24,7 +25,6 @@ const handleSubmit = async (total_available_workspaces: number) => {
     router.push("/welcome/create-workspace");
   }
 };
-
 function generateCircles(
   count: number,
   path: string,
@@ -572,6 +572,8 @@ const CometAnimation: React.FC = () => {
 };
 
 export default function Welcome() {
+  const { getToken } = useAuth();
+
   const {
     data: currentUser,
     isLoading: isUserLoading,
@@ -586,7 +588,8 @@ export default function Welcome() {
     queryKey: ["invites", currentUser?.email],
     enabled: currentUser?.email != null,
     queryFn: async () => {
-      const result = await getInvitesForUserEmail(currentUser.email);
+      const jwt = await getToken({ template: "test" });
+      const result = await getInvitesForUserEmail(currentUser.email, jwt);
       return result;
     },
     staleTime: 1000, // 1 second
@@ -600,7 +603,10 @@ export default function Welcome() {
   const workspacesQuery = useQueries({
     queries: workspaceIds.map((id) => ({
       queryKey: ["workspace", id],
-      queryFn: () => getWorkspaceDetails(id),
+      queryFn: async () => {
+        const response = await getWorkspaceDetails(id);
+        return response;
+      },
     })),
   });
 
@@ -611,7 +617,8 @@ export default function Welcome() {
   } = useQuery({
     queryKey: ["getAllowedWorkspacesForUser", currentUser?.id],
     queryFn: async () => {
-      const result = await getAllowedWorkspacesForUser(currentUser?.id);
+      const jwt = await getToken({ template: "test" });
+      const result = await getAllowedWorkspacesForUser(currentUser?.id, jwt);
       return result;
     },
     enabled: currentUser?.id != null,

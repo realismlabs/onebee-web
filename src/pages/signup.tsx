@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useSignUp, useUser, useSignIn, SignUp } from "@clerk/nextjs";
+import { useSignUp, useUser, useSignIn, SignUp, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { callApi } from "../utils/util";
@@ -32,6 +32,7 @@ export default function Signup() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const { isSignedIn, isLoaded: isLoadedUser } = useUser();
   const { signIn } = useSignIn();
+  const { getToken } = useAuth();
 
   // ----------------------------------------------------
   const [code, setCode] = useState<Array<string>>(Array(6).fill(""));
@@ -186,6 +187,7 @@ export default function Signup() {
             email,
             name: capitalizeString(email.split("@")[0]),
             clerkUserId,
+            jwt: await getToken({ template: "test" }),
           });
 
           await setActive({ session: completeSignUp.createdSessionId });

@@ -13,6 +13,7 @@ import { Disclosure, Transition, Dialog } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { createInvite } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/nextjs";
 
 interface ToastProps {
   message: string;
@@ -73,6 +74,7 @@ const InvitePeopleDialog = ({
   customInvitePeopleSubject?: string;
 }) => {
   let inviterEmail = currentUser.email;
+  const { getToken } = useAuth();
 
   const [emailAddresses, setEmailAddresses] = useState<string>("");
   const [isValid, setIsValid] = useState(true);
@@ -105,6 +107,7 @@ const InvitePeopleDialog = ({
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    const token = await getToken({ template: "test" });
     if (emailAddresses === "") {
       setIsValid(false);
       setErrorMessage("Email address is required.");
@@ -142,6 +145,7 @@ const InvitePeopleDialog = ({
                 workspaceId: currentWorkspace.id,
                 inviterEmail,
                 recipientEmail,
+                jwt: token,
               });
             } catch (err: any) {
               allSuccess = false; // update the flag to false when an error occurs
@@ -250,9 +254,9 @@ const InvitePeopleDialog = ({
         <div className="pl-4 py-2 border-l border-slate-12 italic">
           <p>{message}</p>
         </div>
-        <button className="bg-blue-600 px-3 py-1.5 rounded-md text-slate-12 font-medium pointer-events-none">
+        <div className="bg-blue-600 px-3 py-1.5 rounded-md text-slate-12 font-medium pointer-events-none">
           Accept invite
-        </button>
+        </div>
         <p>You can also copy + paste this link into your browser:</p>
         <Link
           href="https://dataland.io"
@@ -304,6 +308,9 @@ const InvitePeopleDialog = ({
                       value={emailAddresses}
                       onChange={(e) => handleEmailAddressChange(e)}
                       placeholder="teammate@example.com, teammate2@example.com"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") e.preventDefault();
+                      }}
                     />
                     {errorMessage !== "" ? (
                       <p className="text-[11px] text-red-500">{errorMessage}</p>
@@ -357,13 +364,13 @@ const InvitePeopleDialog = ({
               </div>
               <div className="mt-5 flex justify-end gap-2">
                 <button
-                  className="px-4 h-[36px] bg-slate-3 rounded-md text-[13px] font-medium leading-none focus:outline-none hover:bg-slate-4"
+                  className="px-4 h-[36px] bg-slate-3 rounded-md text-[13px] font-medium leading-none  hover:bg-slate-4"
                   onClick={() => setIsInvitePeopleDialogOpen(false)}
                 >
                   Cancel
                 </button>
                 <button
-                  className={`px-4 h-[36px] bg-blue-600 rounded-md text-[13px] font-medium leading-none focus:outline-none w-[105px]
+                  className={`px-4 h-[36px] bg-blue-600 rounded-md text-[13px] font-medium leading-none  w-[105px]
                     ${loading ? "opacity-50" : "hover:bg-blue-700"}`}
                   type="submit"
                   disabled={loading}

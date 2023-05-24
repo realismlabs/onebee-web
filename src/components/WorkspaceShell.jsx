@@ -5,16 +5,16 @@ import Image from 'next/image';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery, useQueryClient, useQueries } from '@tanstack/react-query';
-import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspace } from '../utils/api';
+import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspaceDetails } from '../utils/api';
 import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, Gear, } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
-import { getWorkspaces } from '@/utils/api';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useLocalStorageState } from '@/utils/util';
 import InvitePeopleDialog from './InvitePeopleDialog';
 import { useClerk } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/nextjs";
 
 function AccountPopover({ currentWorkspace }) {
   const { signOut } = useClerk();
@@ -90,7 +90,7 @@ const KeyCombination = ({ keys }) => {
 
 function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   const router = useRouter();
-
+  const { getToken } = useAuth();
   // get user's current memberships
   const {
     data: userMembershipsData,
@@ -99,7 +99,8 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   } = useQuery({
     queryKey: ["currentUserMemberships", currentUser.id],
     queryFn: async () => {
-      return await getUserMemberships(currentUser.id);
+      const jwt = await getToken({ template: "test" });
+      return await getUserMemberships(currentUser.id, jwt);
     },
   });
 
@@ -109,7 +110,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
       return {
         queryKey: ["getWorkspace", membership.workspaceId],
         queryFn: async () => {
-          const response = await getWorkspace(membership.workspaceId);
+          const response = await getWorkspaceDetails(membership.workspaceId);
           return response;
         },
         enabled: membership.workspaceId !== null,
@@ -249,6 +250,7 @@ function WorkspacePopover({ currentWorkspace, currentUser }) {
 
 const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   // Replace the items array with your dynamic data
+  const { getToken } = useAuth();
   const router = useRouter();
   const [shellExpanded, setShellExpanded] = useLocalStorageState("shellExpanded", true);
   const [isInvitePeopleDialogOpen, setIsInvitePeopleDialogOpen] = useState(false);
@@ -300,7 +302,9 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   } = useQuery({
     queryKey: ["getTables", currentWorkspace?.id],
     queryFn: async () => {
-      return await getTables(currentWorkspace?.id)
+      const jwt = await getToken({ template: "test" });
+      const result = await getTables(currentWorkspace?.id, jwt)
+      return result;
     },
     enabled: currentWorkspace?.id !== null,
     staleTime: 1000
@@ -313,7 +317,8 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   } = useQuery({
     queryKey: ["getConnections", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceConnections(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -459,8 +464,8 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
                       <Tooltip.Root>
                         <Tooltip.Trigger asChild>
                           <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/table/${item.id}` ? "bg-slate-3" : ""}`}>
-                            <IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.displayName} />
-                            <div className="truncate w-full">{item.displayName}</div>
+                            <IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.name} />
+                            <div className="truncate w-full">{item.name}</div>
                           </div>
                         </Tooltip.Trigger>
                         <Tooltip.Portal>
@@ -469,7 +474,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
                             sideOffset={12}
                             side="left"
                           >
-                            {item.displayName}
+                            {item.name}
                             <Tooltip.Arrow className="fill-black" />
                           </Tooltip.Content>
                         </Tooltip.Portal>

@@ -6,7 +6,6 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { useClerk } from "@clerk/clerk-react";
 import {
-  deleteWorkspace,
   updateWorkspace,
   getWorkspaceMemberships,
   getUser,
@@ -38,6 +37,7 @@ import {
 } from "@/utils/util";
 import { v4 as uuidv4 } from "uuid";
 import InvitePeopleDialog from "@/components/InvitePeopleDialog";
+import { useAuth } from "@clerk/nextjs";
 
 const MemberPopover = ({
   currentUser,
@@ -48,6 +48,7 @@ const MemberPopover = ({
   currentUserMembership: any;
   targetMembership: any;
 }) => {
+  const { getToken } = useAuth();
   const targetMembershipId = targetMembership.id;
   const userId = targetMembership.userId;
   const workspaceId = targetMembership.workspaceId;
@@ -56,7 +57,11 @@ const MemberPopover = ({
 
   const handleRemoveMember = async () => {
     // check if user is the last member of the workspace. If so, delete the workspace
-    const workspaceMemberships = await getWorkspaceMemberships(workspaceId);
+    const jwt = await getToken({ template: "test" });
+    const workspaceMemberships = await getWorkspaceMemberships(
+      workspaceId,
+      jwt
+    );
     // check if there is at least one other admin left besides user
     const otherAdmins = workspaceMemberships.filter(
       (membership: any) =>
@@ -65,8 +70,10 @@ const MemberPopover = ({
 
     if (otherAdmins.length >= 1) {
       try {
+        const jwt = await getToken({ template: "test" });
         const deletedMembership = await deleteMembershipMutation.mutateAsync({
           membershipId: targetMembershipId,
+          jwt,
         });
         if (deletedMembership.userId === currentUser.id) {
           await signOut();
@@ -183,6 +190,7 @@ const MemberRolePopover = ({
   targetUserMembership: any;
   memberships: any;
 }) => {
+  const { getToken } = useAuth();
   const currentUserMembershipId = currentUserMembership?.id;
   const targetUserMembershipId = targetUserMembership.id;
   const currentUserId = currentUser.id;
@@ -216,11 +224,13 @@ const MemberRolePopover = ({
     }
 
     try {
+      const jwt = await getToken({ template: "test" });
       const changedMember = await updateMembershipMutation.mutateAsync({
         membershipId: targetUserMembershipId,
         membershipData: {
           role: targetUserRole,
         },
+        jwt,
       });
     } catch (error) {
       alert(`Error updating membership: + ${error}`);
@@ -354,12 +364,16 @@ const InvitePopover = ({
   currentWorkspace: any;
   workspaceInvite: any;
 }) => {
+  const { getToken } = useAuth();
+
   const handleDeleteInvite = async () => {
     // User is revoking an invite
+    const jwt = await getToken({ template: "test" });
     const deletedWorkspaceInvite =
       await deleteWorkspaceInviteMutation.mutateAsync({
         workspaceId: currentWorkspace.id,
         inviteId: workspaceInvite.id,
+        jwt: jwt,
       });
   };
 
@@ -438,6 +452,7 @@ const InvitePopover = ({
 
 export default function Members() {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   // get router path - foramt is /workspace/6/settings/members, need to grab everything after /settings/
   const router = useRouter();
@@ -466,7 +481,8 @@ export default function Members() {
   } = useQuery({
     queryKey: ["getWorkspaceMemberships", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceMemberships(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceMemberships(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -479,7 +495,8 @@ export default function Members() {
       return {
         queryKey: ["getUser", membership.userId],
         queryFn: async () => {
-          const response = await getUser(membership.userId);
+          const jwt = await getToken({ template: "test" });
+          const response = await getUser(membership.userId, jwt);
           if (response) {
             return response;
           } else {
@@ -501,7 +518,8 @@ export default function Members() {
   } = useQuery({
     queryKey: ["getWorkspaceInvites", currentWorkspace?.id],
     queryFn: async () => {
-      const response = await getWorkspaceInvites(currentWorkspace?.id);
+      const jwt = await getToken({ template: "test" });
+      const response = await getWorkspaceInvites(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: currentWorkspace?.id !== null,
@@ -527,11 +545,13 @@ export default function Members() {
     );
 
     try {
+      const jwt = await getToken({ template: "test" });
       const response = await updateWorkspaceMutation.mutateAsync({
         workspaceId: currentWorkspace.id,
         workspaceData: {
           allowedDomains: updatedAllowedDomains,
         },
+        jwt,
       });
     } catch (error) {
       console.error("Error updating workspace:", error);
@@ -568,6 +588,7 @@ export default function Members() {
       return;
     }
     try {
+      const jwt = await getToken({ template: "test" });
       const response = await updateWorkspaceMutation.mutateAsync({
         workspaceId: currentWorkspace.id,
         workspaceData: {
@@ -579,6 +600,7 @@ export default function Members() {
             },
           ],
         },
+        jwt,
       });
       if (response) {
         closeAddAllowedDomainDialog();
@@ -720,7 +742,7 @@ export default function Members() {
                               onChange={(e) =>
                                 setAllowedDomainInput(e.target.value)
                               }
-                              placeholder="i.e. Acme organization"
+                              placeholder="i.e. acme.com"
                               className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
                                 ${
                                   addAllowedDomainErrorMessage !== ""

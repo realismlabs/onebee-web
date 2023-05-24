@@ -16,6 +16,7 @@ import { Transition } from "@headlessui/react";
 import IconPickerPopoverCreateTable from "@/components/IconPickerPopoverCreateTable";
 import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { AccountHeader } from "@/components/AccountHeader";
+import { useAuth } from "@clerk/nextjs";
 
 function getIconSvgStringFromName(iconName: string): string {
   const iconItem = IconList.find((icon) => icon.name === iconName);
@@ -541,6 +542,7 @@ const FileTree: React.FC<FileTreeProps> = ({
 };
 
 export default function CreateTable() {
+  const { getToken } = useAuth();
   const [useCustomHost, setUseCustomHost] = useLocalStorageState(
     "useCustomHost",
     false
@@ -632,21 +634,24 @@ export default function CreateTable() {
     };
     console.log("createConnectionRequestBody", createConnectionRequestBody);
 
+    const jwt = await getToken({ template: "test" });
+
     const create_connection_response = await createConnection(
       currentWorkspace?.id,
-      createConnectionRequestBody
+      createConnectionRequestBody,
+      jwt
     );
     console.log("create_connection_response", create_connection_response);
 
     const displayName = selectedTable?.split(".")[2];
-    const connectionPath =
+    const outerPath =
       selectedTable?.split(".").slice(0, 2).join(".").replace(".", "/") + "/";
 
     const createTableRequestBody = {
       workspaceId: currentWorkspace?.id,
-      fullName: selectedTable,
-      displayName: tableDisplayName,
-      connectionPath,
+      fullPath: selectedTable,
+      name: tableDisplayName,
+      outerPath,
       rowCount: selectedTableRowCount,
       connectionId: create_connection_response.id,
       iconSvgString: iconSvgString,
@@ -655,7 +660,10 @@ export default function CreateTable() {
       updatedAt: new Date().toISOString(),
     };
 
-    const create_table_response = await createTable(createTableRequestBody);
+    const create_table_response = await createTable(
+      createTableRequestBody,
+      jwt
+    );
     console.log("create_table_response", create_table_response);
     console.log("createTableRequestBody", createTableRequestBody);
 

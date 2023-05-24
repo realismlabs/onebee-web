@@ -34,7 +34,7 @@
     {
       "id": 1,
       "name": "Users Table",
-      "connectionPath": "SNOWFLAKE_SAMPLE_DATA.TCFS.USERS",
+      "outerPath": "SNOWFLAKE_SAMPLE_DATA.TCFS.USERS",
       "workspaceId": 1
     }
   ],

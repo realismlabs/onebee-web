@@ -4,7 +4,7 @@ import { Popover, Transition } from '@headlessui/react'
 import { updateTable } from '@/utils/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
-
+import { useAuth } from "@clerk/nextjs";
 
 const LazyIconGrid = lazy(() => import('./IconGrid'));
 
@@ -52,6 +52,8 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
 };
 
 const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspaceId }) => {
+  const { getToken } = useAuth();
+
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -79,7 +81,8 @@ const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspa
         iconColor: selectedColor,
       };
       try {
-        await updateTableMutation.mutateAsync({ workspaceId, tableId, tableData });
+        const jwt = await getToken({ template: "test" });
+        await updateTableMutation.mutateAsync({ workspaceId, tableId, tableData, jwt });
       } catch (error) {
         console.error('Error updating table:', error);
       }
