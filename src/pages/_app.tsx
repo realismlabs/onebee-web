@@ -62,13 +62,26 @@ export default function App({ Component, pageProps }: AppProps) {
     >
       <Head>
         <title>Dataland</title>
-        <meta name="description" content="Dataland" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content={`
+            Dataland lets your whole team browse your data warehouse at billion-row-scale. Get started for free.`}
+        />
+        <meta property="og:type" content="website" />
         <meta property="og:title" content="Dataland" />
-        <meta property="og:description" content="Dataland" />
-        <meta property="og:image" content="/favicon.ico" />
-        <meta property="og:url" content="https://dataland.io" />
-        <meta property="og:site_name" content="Dataland" />
+        <meta
+          property="og:description"
+          content="Dataland lets your whole team browse your data warehouse at billion-row-scale. Get started for free."
+        />
+        <meta
+          property="og:site_name"
+          content="Dataland | Browse your data warehouse fast"
+        />
+        <meta property="og:url" content="https://www.dataland.io" />
+        <meta
+          property="og:image"
+          content="https://www.mywebsite.com/default-image.jpg"
+        />
       </Head>
       {isPublicPage ? (
         <PersistQueryClientProvider
