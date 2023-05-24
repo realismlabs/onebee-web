@@ -144,11 +144,18 @@ export default function Settings() {
       // TODO: Create workspace and mock API call to create workspace + allow others to join from same domain (if enabled)
       console.log("TODO: Rename workspace and mock API call");
 
-      const workspaceData = {
+      interface WorkspaceData {
+        name: string;
+        customWorkspaceBase64Icon?: string;
+      }
+
+      const workspaceData: WorkspaceData = {
         name: workspaceName,
-        customWorkspaceBase64Icon:
-          base64URL && hasDroppedNewIcon ? base64URL : null,
       };
+
+      if (hasDroppedNewIcon && base64URL) {
+        workspaceData.customWorkspaceBase64Icon = base64URL;
+      }
 
       try {
         const jwt = await getToken({ template: "test" });

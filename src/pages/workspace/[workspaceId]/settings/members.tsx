@@ -742,7 +742,7 @@ export default function Members() {
                               onChange={(e) =>
                                 setAllowedDomainInput(e.target.value)
                               }
-                              placeholder="i.e. Acme organization"
+                              placeholder="i.e. acme.com"
                               className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
                                 ${
                                   addAllowedDomainErrorMessage !== ""

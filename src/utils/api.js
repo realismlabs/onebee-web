@@ -86,8 +86,11 @@ export const createInvite = async ({
 }
 ) => {
 
+  console.log("awu recipientEmail", recipientEmail)
+  const recipientEmailCleaned = recipientEmail.trim();
+  console.log("awu recipientEmailCleaned", recipientEmailCleaned)
   // first see if the recipient has already been invited or is already a member
-  const existingInvites = await getInvitesForUserEmail(recipientEmail.trim(), jwt);
+  const existingInvites = await getInvitesForUserEmail(recipientEmailCleaned, jwt);
   const existingMemberships = await getWorkspaceMemberships(workspaceId, jwt);
 
   // for each existing membership, get the user details
@@ -99,11 +102,11 @@ export const createInvite = async ({
   );
 
   const existingInvite = existingInvites.find(
-    (invite) => invite.recipientEmail === recipientEmail.trim()
+    (invite) => invite.recipientEmail === recipientEmailCleaned
   );
 
   const existingUser = existingUsers.find(
-    (user) => user.email === recipientEmail.trim()
+    (user) => user.email === recipientEmailCleaned
   );
 
   if (existingInvite) {
@@ -127,7 +130,7 @@ export const createInvite = async ({
         },
         body: JSON.stringify({
           inviterEmail,
-          recipientEmail,
+          recipientEmail: recipientEmailCleaned,
           accepted: false,
           workspaceId: workspaceId,
         }),
