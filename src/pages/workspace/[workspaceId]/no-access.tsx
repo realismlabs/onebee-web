@@ -167,11 +167,7 @@ export default function NoAccess() {
     isInvitesLoading ||
     isAllowedWorkspacesForUserLoading
   ) {
-    return (
-      <div className="h-screen bg-slate-1 z-10 relative text-white">
-        Loading..
-      </div>
-    );
+    return <div className="h-screen bg-slate-1 z-10 relative text-white"></div>;
   }
 
   const allowed_domains_string = workspaceDetail.allowedDomains
