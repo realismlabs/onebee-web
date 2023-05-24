@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import Head from "next/head";
 import { dark } from "@clerk/themes";
 import type { AppProps } from "next/app";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -59,6 +60,16 @@ export default function App({ Component, pageProps }: AppProps) {
         baseTheme: dark,
       }}
     >
+      <Head>
+        <title>Dataland</title>
+        <meta name="description" content="Dataland" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta property="og:title" content="Dataland" />
+        <meta property="og:description" content="Dataland" />
+        <meta property="og:image" content="/favicon.ico" />
+        <meta property="og:url" content="https://dataland.io" />
+        <meta property="og:site_name" content="Dataland" />
+      </Head>
       {isPublicPage ? (
         <PersistQueryClientProvider
           client={queryClient}
