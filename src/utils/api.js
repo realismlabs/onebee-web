@@ -5,11 +5,10 @@ import { useAuth } from "@clerk/nextjs";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const fetchCurrentUser = async (clerkUserId, headers) => {
-
   const response = await fetch(`${API_BASE_URL}/api/users/clerkUserId/${clerkUserId}`, {
     headers: {
-      ...headers,
       "Content-Type": "application/json",
+      ...headers,
     }
   });
 
@@ -34,21 +33,17 @@ export const fetchCurrentWorkspace = async (workspaceId, headers) => {
   return result;
 };
 
+// used for the signup page
+export const getUserByEmail = async (email) => {
+  const user = await fetch(`${API_BASE_URL}/api/users/email/${email}`);
+  const result = await user.json();
+  console.log("getUserByEmail", result)
+  return result;
+}
+
+
 // "/api/users/": "/users",
-export const createUser = async ({ email, name, clerkUserId, jwt }) => {
-  // see if user already exists by clerkUserId
-
-
-  const existingUser = await fetchCurrentUser(clerkUserId, {
-    Authorization: `Bearer ${jwt}`,
-  });
-
-  if (existingUser) {
-    console.log("User already exists:", existingUser)
-    return null;
-  }
-
-  console.log("createUser", email, name, clerkUserId)
+export const createUser = async ({ email, name, clerkUserId }) => {
   const requestBody = {
     email,
     name,
@@ -64,12 +59,12 @@ export const createUser = async ({ email, name, clerkUserId, jwt }) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(requestBody),
   });
 
   if (!response.ok) {
+    return null;
     throw new Error("Error creating user");
   }
   const result = await response.json();

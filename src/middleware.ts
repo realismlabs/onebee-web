@@ -36,7 +36,6 @@ export default authMiddleware({
         email: emailAddress,
         name: capitalizeString(emailAddress.split("@")[0]),
         clerkUserId: auth.userId,
-        jwt: token,
       });
     }
 

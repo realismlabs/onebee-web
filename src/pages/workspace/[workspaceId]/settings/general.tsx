@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, FC, useCallback } from "react";
+import Head from "next/head";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
 import Image from "next/image";
@@ -302,98 +303,104 @@ export default function Settings() {
   const email = currentUser.email;
 
   return (
-    <WorkspaceLayout>
-      <div className="h-screen bg-slate-1 overflow-y-auto">
-        <div className="flex flex-col justify-center items-center w-full pt-16">
-          <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[1000px] gap-4 mr-[-24px]">
-            <div className="flex flex-row gap-[100px] w-full">
-              <div className="flex flex-col">
-                <div className="flex flex-col w-[120px] gap-8">
+    <>
+      <Head>
+        <title>{currentWorkspace.name} › General</title>
+      </Head>
+      <WorkspaceLayout>
+        <div className="h-screen bg-slate-1 overflow-y-auto">
+          <div className="flex flex-col justify-center items-center w-full pt-16">
+            <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[1000px] gap-4 mr-[-24px]">
+              <div className="flex flex-row gap-[100px] w-full">
+                <div className="flex flex-col">
                   <div className="flex flex-col w-[120px] gap-8">
-                    <div className="flex flex-col gap-0">
-                      <div className="px-[12px] items-start text-left text-[16px] pb-[16px] w-full">
-                        Settings
-                      </div>
-                      <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
-                        Workspace
-                      </div>
-                      <Link
-                        href={`/workspace/${currentWorkspace?.id}/settings/general`}
-                      >
-                        <div
-                          className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
+                    <div className="flex flex-col w-[120px] gap-8">
+                      <div className="flex flex-col gap-0">
+                        <div className="px-[12px] items-start text-left text-[16px] pb-[16px] w-full">
+                          Settings
+                        </div>
+                        <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
+                          Workspace
+                        </div>
+                        <Link
+                          href={`/workspace/${currentWorkspace?.id}/settings/general`}
+                        >
+                          <div
+                            className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
                     ${routerPath.includes("general") ? "bg-slate-3" : ""}`}
+                          >
+                            General
+                          </div>
+                        </Link>
+                        <Link
+                          href={`/workspace/${currentWorkspace?.id}/settings/members`}
                         >
-                          General
-                        </div>
-                      </Link>
-                      <Link
-                        href={`/workspace/${currentWorkspace?.id}/settings/members`}
-                      >
-                        <div
-                          className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
+                          <div
+                            className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
                     ${routerPath.includes("members") ? "bg-slate-3" : ""}`}
-                        >
-                          Members
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="flex flex-col gap-0">
-                      <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
-                        Account
+                          >
+                            Members
+                          </div>
+                        </Link>
                       </div>
-                      <Link
-                        href={`/workspace/${currentWorkspace?.id}/settings/profile`}
-                      >
-                        <div
-                          className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
-                    ${routerPath.includes("profile") ? "bg-slate-3" : ""}`}
-                        >
-                          Profile
+                      <div className="flex flex-col gap-0">
+                        <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
+                          Account
                         </div>
-                      </Link>
+                        <Link
+                          href={`/workspace/${currentWorkspace?.id}/settings/profile`}
+                        >
+                          <div
+                            className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
+                    ${routerPath.includes("profile") ? "bg-slate-3" : ""}`}
+                          >
+                            Profile
+                          </div>
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col grow">
-                <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
-                  Manage workspace
-                </div>
-                {currentUserMembership?.role == "admin" && (
-                  <div className="flex flex-col text-[14px] mt-[16px]">
-                    <div className="flex flex-col">
-                      <form
-                        onSubmit={handleRenameWorkspace}
-                        className="flex flex-col gap-4"
-                      >
-                        <div className="flex flex-col gap-2">
-                          <label className="text-[14px] w-[120px]">Icon</label>
-                          <ImageUploader
-                            iconUrl={currentWorkspace?.iconUrl}
-                            customWorkspaceBase64Icon={
-                              currentWorkspace?.customWorkspaceBase64Icon ??
-                              null
-                            }
-                            currentWorkspace={currentWorkspace}
-                            base64URL={base64URL}
-                            setBase64URL={setBase64URL}
-                            hasDroppedNewIcon={hasDroppedNewIcon}
-                            setHasDroppedNewIcon={setHasDroppedNewIcon}
-                          />
-                          <label className="text-[14px] w-[120px] mt-4">
-                            Workspace name
-                          </label>
-                          <input
-                            type={"text"}
-                            id="workspaceNameInput"
-                            value={workspaceName}
-                            onChange={(e) => {
-                              setWorkspaceName(e.target.value);
-                              setErrorMessage("");
-                            }}
-                            placeholder="i.e. Acme organization"
-                            className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-[240px]
+                <div className="flex flex-col grow">
+                  <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
+                    Manage workspace
+                  </div>
+                  {currentUserMembership?.role == "admin" && (
+                    <div className="flex flex-col text-[14px] mt-[16px]">
+                      <div className="flex flex-col">
+                        <form
+                          onSubmit={handleRenameWorkspace}
+                          className="flex flex-col gap-4"
+                        >
+                          <div className="flex flex-col gap-2">
+                            <label className="text-[14px] w-[120px]">
+                              Icon
+                            </label>
+                            <ImageUploader
+                              iconUrl={currentWorkspace?.iconUrl}
+                              customWorkspaceBase64Icon={
+                                currentWorkspace?.customWorkspaceBase64Icon ??
+                                null
+                              }
+                              currentWorkspace={currentWorkspace}
+                              base64URL={base64URL}
+                              setBase64URL={setBase64URL}
+                              hasDroppedNewIcon={hasDroppedNewIcon}
+                              setHasDroppedNewIcon={setHasDroppedNewIcon}
+                            />
+                            <label className="text-[14px] w-[120px] mt-4">
+                              Workspace name
+                            </label>
+                            <input
+                              type={"text"}
+                              id="workspaceNameInput"
+                              value={workspaceName}
+                              onChange={(e) => {
+                                setWorkspaceName(e.target.value);
+                                setErrorMessage("");
+                              }}
+                              placeholder="i.e. Acme organization"
+                              className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-[240px]
                                   ${
                                     errorMessage !== ""
                                       ? "border-red-9"
@@ -401,87 +408,87 @@ export default function Settings() {
                                   }
                                   focus:outline-none focus:ring-blue-600
                                   `}
-                          />
-                        </div>
-                        {errorMessage && (
-                          <p className="text-red-9 text-[13px] mt-3">
-                            {errorMessage}
+                            />
+                          </div>
+                          {errorMessage && (
+                            <p className="text-red-9 text-[13px] mt-3">
+                              {errorMessage}
+                            </p>
+                          )}
+                          <button
+                            type="submit"
+                            className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md self-start"
+                          >
+                            Save
+                          </button>
+                        </form>
+                        <div className="flex flex-col gap-2 mt-12 w-[360px]">
+                          <label className="text-[14px] w-[120px]">
+                            Delete workspace
+                          </label>
+                          <p className="text-slate-11 text-[13px]">
+                            Deleting a workspace is permanent. All imported
+                            tables and connections will be deleted. This action
+                            is irreversible.
                           </p>
-                        )}
-                        <button
-                          type="submit"
-                          className="bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md self-start"
+                          <button
+                            type="submit"
+                            className="bg-red-5 hover:bg-red-6 border-red-7 border text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md self-start mt-2"
+                            onClick={openDeleteWorkspaceDialog}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                        <Dialog
+                          as="div"
+                          open={isDeleteWorkspaceDialogOpen}
+                          onClose={() => setIsDeleteWorkspaceDialogOpen(false)}
+                          className="absolute inset-0 flex min-w-full h-screen"
                         >
-                          Save
-                        </button>
-                      </form>
-                      <div className="flex flex-col gap-2 mt-12 w-[360px]">
-                        <label className="text-[14px] w-[120px]">
-                          Delete workspace
-                        </label>
-                        <p className="text-slate-11 text-[13px]">
-                          Deleting a workspace is permanent. All imported tables
-                          and connections will be deleted. This action is
-                          irreversible.
-                        </p>
-                        <button
-                          type="submit"
-                          className="bg-red-5 hover:bg-red-6 border-red-7 border text-slate-12 text-[14px] font-medium py-2 px-4 rounded-md self-start mt-2"
-                          onClick={openDeleteWorkspaceDialog}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                      <Dialog
-                        as="div"
-                        open={isDeleteWorkspaceDialogOpen}
-                        onClose={() => setIsDeleteWorkspaceDialogOpen(false)}
-                        className="absolute inset-0 flex min-w-full h-screen"
-                      >
-                        <Dialog.Overlay>
-                          <div className="fixed inset-0 bg-slate-1 opacity-50" />
-                        </Dialog.Overlay>
-                        <Dialog.Panel className="absolute z-30 top-[25%] left-[50%] translate-x-[-50%] translate-y-[-25%] w-[400px]">
-                          <div className="flex flex-col bg-slate-2 border border-slate-4 rounded-[8px] w-full p-[24px] text-slate-12">
-                            {/* Close */}
-                            <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
-                              <button
-                                onClick={() => {
-                                  closeDeleteWorkspaceDialog();
-                                }}
-                                className="text-slate-11 hover:bg-slate-4 rounded-md h-[24px] w-[24px] ml-[12px] flex items-center justify-center"
-                              >
-                                <X size={16} />
-                              </button>
-                            </div>
-                            <Dialog.Title className="text-[14px]">
-                              Delete workspace
-                            </Dialog.Title>
-                            <Dialog.Description className="text-[13px] mt-[16px] gap-2 flex flex-col text-slate-11">
-                              <div>
-                                Are you sure you want to delete this workspace?
-                                This will also delete all of this
-                                workspace&apos;s imported tables, connections,
-                                and members.{" "}
-                                <span className="font-semibold text-red-9">
-                                  This action is irreversible.
-                                </span>
+                          <Dialog.Overlay>
+                            <div className="fixed inset-0 bg-slate-1 opacity-50" />
+                          </Dialog.Overlay>
+                          <Dialog.Panel className="absolute z-30 top-[25%] left-[50%] translate-x-[-50%] translate-y-[-25%] w-[400px]">
+                            <div className="flex flex-col bg-slate-2 border border-slate-4 rounded-[8px] w-full p-[24px] text-slate-12">
+                              {/* Close */}
+                              <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
+                                <button
+                                  onClick={() => {
+                                    closeDeleteWorkspaceDialog();
+                                  }}
+                                  className="text-slate-11 hover:bg-slate-4 rounded-md h-[24px] w-[24px] ml-[12px] flex items-center justify-center"
+                                >
+                                  <X size={16} />
+                                </button>
                               </div>
-                            </Dialog.Description>
-                            {/* to proceed, user needs to type the name of the workspace */}
-                            <div className="flex flex-col mt-[16px] gap-2">
-                              <label className="text-[13px]">
-                                Input the name of the workspace ({workspaceName}
-                                ) to confirm
-                              </label>
-                              <input
-                                type={"text"}
-                                id="workspaceNameInput"
-                                value={deleteWorkspaceName}
-                                onChange={(e) => {
-                                  setDeleteWorkspaceName(e.target.value);
-                                }}
-                                className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
+                              <Dialog.Title className="text-[14px]">
+                                Delete workspace
+                              </Dialog.Title>
+                              <Dialog.Description className="text-[13px] mt-[16px] gap-2 flex flex-col text-slate-11">
+                                <div>
+                                  Are you sure you want to delete this
+                                  workspace? This will also delete all of this
+                                  workspace&apos;s imported tables, connections,
+                                  and members.{" "}
+                                  <span className="font-semibold text-red-9">
+                                    This action is irreversible.
+                                  </span>
+                                </div>
+                              </Dialog.Description>
+                              {/* to proceed, user needs to type the name of the workspace */}
+                              <div className="flex flex-col mt-[16px] gap-2">
+                                <label className="text-[13px]">
+                                  Input the name of the workspace (
+                                  {workspaceName}) to confirm
+                                </label>
+                                <input
+                                  type={"text"}
+                                  id="workspaceNameInput"
+                                  value={deleteWorkspaceName}
+                                  onChange={(e) => {
+                                    setDeleteWorkspaceName(e.target.value);
+                                  }}
+                                  className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
                                   ${
                                     deleteWorkspaceErrorMessage !== ""
                                       ? "border-red-9"
@@ -489,69 +496,70 @@ export default function Settings() {
                                   }
                                   focus:outline-none focus:ring-blue-600
                                   `}
-                              />
-                              {deleteWorkspaceErrorMessage && (
-                                <div className="text-red-9 text-[13px]">
-                                  {deleteWorkspaceErrorMessage}
-                                </div>
-                              )}
+                                />
+                                {deleteWorkspaceErrorMessage && (
+                                  <div className="text-red-9 text-[13px]">
+                                    {deleteWorkspaceErrorMessage}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex w-full justify-end mt-[24px] gap-2">
+                                <button
+                                  className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                                  onClick={() => {
+                                    closeDeleteWorkspaceDialog();
+                                  }}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                                  onClick={() => {
+                                    handleDeleteWorkspace();
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
                             </div>
-                            <div className="flex w-full justify-end mt-[24px] gap-2">
-                              <button
-                                className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
-                                onClick={() => {
-                                  closeDeleteWorkspaceDialog();
-                                }}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
-                                onClick={() => {
-                                  handleDeleteWorkspace();
-                                }}
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        </Dialog.Panel>
-                      </Dialog>
-                    </div>
-                  </div>
-                )}
-                {currentUserMembership?.role !== "admin" && (
-                  <div className="flex flex-col text-[14px] mt-[16px]">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[14px] w-[120px] text-slate-11">
-                        Icon
-                      </label>
-                      <div
-                        className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
-                        style={{
-                          backgroundImage: `url(${
-                            currentWorkspace?.customWorkspaceBase64Icon
-                              ? currentWorkspace?.customWorkspaceBase64Icon
-                              : currentWorkspace?.iconUrl
-                          })`,
-                          backgroundSize: "cover",
-                        }}
-                      >
-                        {!currentWorkspace?.customWorkspaceBase64Icon &&
-                          currentWorkspace.name.slice(0, 1)}
+                          </Dialog.Panel>
+                        </Dialog>
                       </div>
-                      <p className="text-[13px] text-slate-11 mt-4">
-                        Workspace name
-                      </p>
-                      <p>{currentWorkspace.name}</p>
                     </div>
-                  </div>
-                )}
+                  )}
+                  {currentUserMembership?.role !== "admin" && (
+                    <div className="flex flex-col text-[14px] mt-[16px]">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[14px] w-[120px] text-slate-11">
+                          Icon
+                        </label>
+                        <div
+                          className={`h-[96px] w-[96px] flex items-center justify-center text-[32px] rounded-md`}
+                          style={{
+                            backgroundImage: `url(${
+                              currentWorkspace?.customWorkspaceBase64Icon
+                                ? currentWorkspace?.customWorkspaceBase64Icon
+                                : currentWorkspace?.iconUrl
+                            })`,
+                            backgroundSize: "cover",
+                          }}
+                        >
+                          {!currentWorkspace?.customWorkspaceBase64Icon &&
+                            currentWorkspace.name.slice(0, 1)}
+                        </div>
+                        <p className="text-[13px] text-slate-11 mt-4">
+                          Workspace name
+                        </p>
+                        <p>{currentWorkspace.name}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </WorkspaceLayout>
+      </WorkspaceLayout>
+    </>
   );
 }

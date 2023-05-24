@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, FC } from "react";
 import ReactDOM from "react-dom";
 import router from "next/router";
 import Image from "next/image";
+import Head from "next/head";
 import { CaretRight, Table } from "@phosphor-icons/react";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
@@ -745,32 +746,37 @@ export default function CreateTable() {
   console.log("first tablesQuery", tablesQueryData);
 
   return (
-    <div className="h-screen bg-slate-1">
-      <AccountHeader email={email ?? "placeholder@example.com"} />
-      <div className="flex flex-col justify-center items-center w-full">
-        <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"></div>
-        <PreviewTableUI
-          tablesQueryData={tablesQueryData}
-          handleSubmit={handleSubmit}
-          selectedTable={selectedTable}
-          setSelectedTable={setSelectedTable}
-          selectedTableRowCount={selectedTableRowCount}
-          setSelectedTableRowCount={setSelectedTableRowCount}
-          selectedIconName={selectedIconName}
-          setSelectedIconName={setSelectedIconName}
-          isIconSuggestionLoading={isIconSuggestionLoading}
-          setIsIconSuggestionLoading={setIsIconSuggestionLoading}
-          iconSvgString={iconSvgString}
-          setIconSvgString={setIconSvgString}
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-          tableDisplayName={tableDisplayName}
-          setTableDisplayName={setTableDisplayName}
-          tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
-          setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
-          isLoading={isUserLoading || isTablesQueryLoading}
-        />
+    <>
+      <Head>
+        <title>{currentWorkspace.name} › Import table</title>
+      </Head>
+      <div className="h-screen bg-slate-1">
+        <AccountHeader email={email ?? "placeholder@example.com"} />
+        <div className="flex flex-col justify-center items-center w-full">
+          <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4"></div>
+          <PreviewTableUI
+            tablesQueryData={tablesQueryData}
+            handleSubmit={handleSubmit}
+            selectedTable={selectedTable}
+            setSelectedTable={setSelectedTable}
+            selectedTableRowCount={selectedTableRowCount}
+            setSelectedTableRowCount={setSelectedTableRowCount}
+            selectedIconName={selectedIconName}
+            setSelectedIconName={setSelectedIconName}
+            isIconSuggestionLoading={isIconSuggestionLoading}
+            setIsIconSuggestionLoading={setIsIconSuggestionLoading}
+            iconSvgString={iconSvgString}
+            setIconSvgString={setIconSvgString}
+            selectedColor={selectedColor}
+            setSelectedColor={setSelectedColor}
+            tableDisplayName={tableDisplayName}
+            setTableDisplayName={setTableDisplayName}
+            tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
+            setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
+            isLoading={isUserLoading || isTablesQueryLoading}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

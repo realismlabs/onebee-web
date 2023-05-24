@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import Head from "next/head";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
 import Image from "next/image";
@@ -636,114 +637,118 @@ export default function Members() {
   }
 
   return (
-    <WorkspaceLayout>
-      <div className="h-screen bg-slate-1 overflow-y-auto">
-        <div className="flex flex-col justify-center items-center w-full pt-16">
-          <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[1000px] gap-4 mr-[-24px]">
-            <div className="flex flex-row gap-[100px] w-full">
-              <div className="flex flex-col">
-                <div className="flex flex-col w-[120px] gap-8">
-                  <div className="flex flex-col gap-0">
-                    <div className="px-[12px] items-start text-left text-[16px] pb-[16px] w-full">
-                      Settings
-                    </div>
-                    <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
-                      Workspace
-                    </div>
-                    <Link
-                      href={`/workspace/${currentWorkspace?.id}/settings/general`}
-                    >
-                      <div
-                        className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
+    <>
+      <Head>
+        <title>{currentWorkspace.name} › Members</title>
+      </Head>
+      <WorkspaceLayout>
+        <div className="h-screen bg-slate-1 overflow-y-auto">
+          <div className="flex flex-col justify-center items-center w-full pt-16">
+            <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[1000px] gap-4 mr-[-24px]">
+              <div className="flex flex-row gap-[100px] w-full">
+                <div className="flex flex-col">
+                  <div className="flex flex-col w-[120px] gap-8">
+                    <div className="flex flex-col gap-0">
+                      <div className="px-[12px] items-start text-left text-[16px] pb-[16px] w-full">
+                        Settings
+                      </div>
+                      <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
+                        Workspace
+                      </div>
+                      <Link
+                        href={`/workspace/${currentWorkspace?.id}/settings/general`}
+                      >
+                        <div
+                          className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
                     ${routerPath.includes("general") ? "bg-slate-3" : ""}`}
+                        >
+                          General
+                        </div>
+                      </Link>
+                      <Link
+                        href={`/workspace/${currentWorkspace?.id}/settings/members`}
                       >
-                        General
-                      </div>
-                    </Link>
-                    <Link
-                      href={`/workspace/${currentWorkspace?.id}/settings/members`}
-                    >
-                      <div
-                        className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
+                        <div
+                          className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
                     ${routerPath.includes("members") ? "bg-slate-3" : ""}`}
-                      >
-                        Members
-                      </div>
-                    </Link>
-                  </div>
-                  <div className="flex flex-col gap-0">
-                    <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
-                      Account
+                        >
+                          Members
+                        </div>
+                      </Link>
                     </div>
-                    <Link
-                      href={`/workspace/${currentWorkspace?.id}/settings/profile`}
-                    >
-                      <div
-                        className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
+                    <div className="flex flex-col gap-0">
+                      <div className="text-slate-11 text-[12px] tracking-wide py-[4px] px-[12px]">
+                        Account
+                      </div>
+                      <Link
+                        href={`/workspace/${currentWorkspace?.id}/settings/profile`}
+                      >
+                        <div
+                          className={`text-slate-12 text-[13px] hover:bg-slate-3 py-[4px] px-[12px] rounded-md 
                     ${routerPath.includes("profile") ? "bg-slate-3" : ""}`}
-                      >
-                        Profile
-                      </div>
-                    </Link>
+                        >
+                          Profile
+                        </div>
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col grow">
-                <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
-                  Members
-                </div>
-                <div className="text-[14px] flex flex-col gap-2 mt-4">
-                  <div className="flex flex-row gap-4 items-end">
-                    <div className="flex flex-col gap-2">
-                      <p>Allowed domains</p>
-                      <p className="text-slate-11 text-[13px]">
-                        Anyone from these domains can join this workspace
-                        without an invite
-                      </p>
-                    </div>
-                    {currentUserMembership?.role == "admin" && (
-                      <div
-                        className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto"
-                        onClick={openAddAllowedDomainDialog}
-                      >
-                        <p>Add allowed domain</p>
+                <div className="flex flex-col grow">
+                  <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
+                    Members
+                  </div>
+                  <div className="text-[14px] flex flex-col gap-2 mt-4">
+                    <div className="flex flex-row gap-4 items-end">
+                      <div className="flex flex-col gap-2">
+                        <p>Allowed domains</p>
+                        <p className="text-slate-11 text-[13px]">
+                          Anyone from these domains can join this workspace
+                          without an invite
+                        </p>
                       </div>
-                    )}
-                    <Dialog
-                      as="div"
-                      open={isAddAllowedDomainDialogOpen}
-                      onClose={() => setIsAddAllowedDomainDialogOpen(false)}
-                      className="absolute inset-0 flex min-w-full h-screen"
-                    >
-                      <Dialog.Overlay>
-                        <div className="fixed inset-0 bg-slate-1 opacity-50" />
-                      </Dialog.Overlay>
-                      <Dialog.Panel className="absolute z-30 top-[25%] left-[50%] translate-x-[-50%] translate-y-[-25%] w-[400px]">
-                        <div className="flex flex-col bg-slate-2 border border-slate-4 rounded-[8px] w-full p-[24px] text-slate-12">
-                          {/* Close */}
-                          <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
-                            <button
-                              onClick={() => {
-                                closeAddAllowedDomainDialog();
-                              }}
-                              className="text-slate-11 hover:bg-slate-4 rounded-md h-[24px] w-[24px] ml-[12px] flex items-center justify-center"
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                          <Dialog.Title className="text-[14px]">
-                            Add allowed domain
-                          </Dialog.Title>
-                          <Dialog.Description className="text-[13px] mt-[16px] gap-0 flex flex-col">
-                            <input
-                              type={"text"}
-                              id="workspaceNameInput"
-                              value={allowedDomainInput}
-                              onChange={(e) =>
-                                setAllowedDomainInput(e.target.value)
-                              }
-                              placeholder="i.e. acme.com"
-                              className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
+                      {currentUserMembership?.role == "admin" && (
+                        <div
+                          className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto"
+                          onClick={openAddAllowedDomainDialog}
+                        >
+                          <p>Add allowed domain</p>
+                        </div>
+                      )}
+                      <Dialog
+                        as="div"
+                        open={isAddAllowedDomainDialogOpen}
+                        onClose={() => setIsAddAllowedDomainDialogOpen(false)}
+                        className="absolute inset-0 flex min-w-full h-screen"
+                      >
+                        <Dialog.Overlay>
+                          <div className="fixed inset-0 bg-slate-1 opacity-50" />
+                        </Dialog.Overlay>
+                        <Dialog.Panel className="absolute z-30 top-[25%] left-[50%] translate-x-[-50%] translate-y-[-25%] w-[400px]">
+                          <div className="flex flex-col bg-slate-2 border border-slate-4 rounded-[8px] w-full p-[24px] text-slate-12">
+                            {/* Close */}
+                            <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
+                              <button
+                                onClick={() => {
+                                  closeAddAllowedDomainDialog();
+                                }}
+                                className="text-slate-11 hover:bg-slate-4 rounded-md h-[24px] w-[24px] ml-[12px] flex items-center justify-center"
+                              >
+                                <X size={16} />
+                              </button>
+                            </div>
+                            <Dialog.Title className="text-[14px]">
+                              Add allowed domain
+                            </Dialog.Title>
+                            <Dialog.Description className="text-[13px] mt-[16px] gap-0 flex flex-col">
+                              <input
+                                type={"text"}
+                                id="workspaceNameInput"
+                                value={allowedDomainInput}
+                                onChange={(e) =>
+                                  setAllowedDomainInput(e.target.value)
+                                }
+                                placeholder="i.e. acme.com"
+                                className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
                                 ${
                                   addAllowedDomainErrorMessage !== ""
                                     ? "border-red-9"
@@ -751,47 +756,47 @@ export default function Members() {
                                 }
                                 focus:outline-none focus:ring-blue-600
                                 `}
-                            />
-                            {addAllowedDomainErrorMessage && (
-                              <div className="text-red-9 text-[13px] mt-[12px]">
-                                {addAllowedDomainErrorMessage}
-                              </div>
-                            )}
-                          </Dialog.Description>
-                          <div className="flex w-full justify-end mt-[24px] gap-2">
-                            <button
-                              className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
-                              onClick={() => {
-                                closeAddAllowedDomainDialog();
-                              }}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px]"
-                              onClick={() => {
-                                handleAddAllowedDomain(allowedDomainInput);
-                              }}
-                            >
-                              Add domain
-                            </button>
+                              />
+                              {addAllowedDomainErrorMessage && (
+                                <div className="text-red-9 text-[13px] mt-[12px]">
+                                  {addAllowedDomainErrorMessage}
+                                </div>
+                              )}
+                            </Dialog.Description>
+                            <div className="flex w-full justify-end mt-[24px] gap-2">
+                              <button
+                                className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                                onClick={() => {
+                                  closeAddAllowedDomainDialog();
+                                }}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px]"
+                                onClick={() => {
+                                  handleAddAllowedDomain(allowedDomainInput);
+                                }}
+                              >
+                                Add domain
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      </Dialog.Panel>
-                    </Dialog>
-                  </div>
-                  <div className="flex flex-col border-slate-4 rounded-lg border mt-2">
-                    {currentWorkspace.allowedDomains.length > 0 &&
-                      currentWorkspace.allowedDomains?.map(
-                        (allowedDomain: any, index: number) => {
-                          let borderClasses = "";
+                        </Dialog.Panel>
+                      </Dialog>
+                    </div>
+                    <div className="flex flex-col border-slate-4 rounded-lg border mt-2">
+                      {currentWorkspace.allowedDomains.length > 0 &&
+                        currentWorkspace.allowedDomains?.map(
+                          (allowedDomain: any, index: number) => {
+                            let borderClasses = "";
 
-                          if (currentWorkspace.allowedDomains.length > 1) {
-                            borderClasses = `${
-                              index === 0
-                                ? "rounded-tl-lg rounded-tr-lg border-b border-slate-4"
-                                : ""
-                            }                                 
+                            if (currentWorkspace.allowedDomains.length > 1) {
+                              borderClasses = `${
+                                index === 0
+                                  ? "rounded-tl-lg rounded-tr-lg border-b border-slate-4"
+                                  : ""
+                              }                                 
                               ${
                                 index <
                                   currentWorkspace.allowedDomains.length - 1 &&
@@ -805,89 +810,97 @@ export default function Members() {
                                   ? "rounded-bl-lg rounded-br-lg"
                                   : ""
                               }`;
-                          } else {
-                            borderClasses = "rounded-lg";
-                          }
+                            } else {
+                              borderClasses = "rounded-lg";
+                            }
 
-                          return (
-                            <div
-                              key={allowedDomain.id}
-                              className={`flex flex-row gap-4 items-center ${borderClasses} text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
-                            >
-                              <div className="h-[24px] w-[24px] text-[12px] font-semibold rounded-full flex items-center justify-center text-slate-10">
-                                <Globe size={20} />
-                              </div>
-                              <div className="grow truncate">
-                                {allowedDomain.domain && (
-                                  <div key={allowedDomain.id}>
-                                    {allowedDomain.domain}
+                            return (
+                              <div
+                                key={allowedDomain.id}
+                                className={`flex flex-row gap-4 items-center ${borderClasses} text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
+                              >
+                                <div className="h-[24px] w-[24px] text-[12px] font-semibold rounded-full flex items-center justify-center text-slate-10">
+                                  <Globe size={20} />
+                                </div>
+                                <div className="grow truncate">
+                                  {allowedDomain.domain && (
+                                    <div key={allowedDomain.id}>
+                                      {allowedDomain.domain}
+                                    </div>
+                                  )}
+                                </div>
+                                {currentUserMembership?.role == "admin" && (
+                                  <div
+                                    className="h-[24px] w-[24px] flex items-center justify-center mr-[8px] hover:bg-slate-3 cursor-pointer rounded-md"
+                                    onClick={() =>
+                                      handleRemoveAllowedDomain(
+                                        allowedDomain.id
+                                      )
+                                    }
+                                  >
+                                    <Trash
+                                      size={16}
+                                      className="text-slate-11"
+                                    />
                                   </div>
                                 )}
                               </div>
-                              {currentUserMembership?.role == "admin" && (
-                                <div
-                                  className="h-[24px] w-[24px] flex items-center justify-center mr-[8px] hover:bg-slate-3 cursor-pointer rounded-md"
-                                  onClick={() =>
-                                    handleRemoveAllowedDomain(allowedDomain.id)
-                                  }
-                                >
-                                  <Trash size={16} className="text-slate-11" />
-                                </div>
-                              )}
-                            </div>
-                          );
-                        }
+                            );
+                          }
+                        )}
+                      {currentWorkspace.allowedDomains.length === 0 && (
+                        <div className="flex flex-row gap-4 items-center text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-2 justify-center text-slate-11 h-[96px]">
+                          No allowed domains yet
+                        </div>
                       )}
-                    {currentWorkspace.allowedDomains.length === 0 && (
-                      <div className="flex flex-row gap-4 items-center text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-2 justify-center text-slate-11 h-[96px]">
-                        No allowed domains yet
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-4 mt-8">
+                    <div className="flex flex-row gap-4 items-end">
+                      <div className="flex flex-col gap-2">
+                        <p className="text-[14px]">Members</p>
+                        <p className="text-slate-11 text-[13px]">
+                          Manage who can access this workspace
+                        </p>
                       </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col gap-4 mt-8">
-                  <div className="flex flex-row gap-4 items-end">
-                    <div className="flex flex-col gap-2">
-                      <p className="text-[14px]">Members</p>
-                      <p className="text-slate-11 text-[13px]">
-                        Manage who can access this workspace
-                      </p>
-                    </div>
-                    <div
-                      className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto"
-                      onClick={() => {
-                        setIsInvitePeopleDialogOpen(true);
-                      }}
-                    >
-                      <p>Invite people</p>
-                    </div>
-                    <InvitePeopleDialog
-                      isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
-                      setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
-                      currentUser={currentUser}
-                      currentWorkspace={currentWorkspace}
-                      customMessage={customMessage}
-                      setCustomMessage={setCustomMessage}
-                      emailTemplateLanguage={""}
-                    />
-                  </div>
-                  <div className="flex flex-col border-slate-4 rounded-lg border">
-                    {membershipsData.length > 0 &&
-                      membershipsData.map((membership: any, index: number) => {
-                        const user = getUserFromMembership(membership);
-
-                        if (!user) {
-                          return null;
+                      <div
+                        className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px] ml-auto"
+                        onClick={() => {
+                          setIsInvitePeopleDialogOpen(true);
+                        }}
+                      >
+                        <p>Invite people</p>
+                      </div>
+                      <InvitePeopleDialog
+                        isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
+                        setIsInvitePeopleDialogOpen={
+                          setIsInvitePeopleDialogOpen
                         }
+                        currentUser={currentUser}
+                        currentWorkspace={currentWorkspace}
+                        customMessage={customMessage}
+                        setCustomMessage={setCustomMessage}
+                        emailTemplateLanguage={""}
+                      />
+                    </div>
+                    <div className="flex flex-col border-slate-4 rounded-lg border">
+                      {membershipsData.length > 0 &&
+                        membershipsData.map(
+                          (membership: any, index: number) => {
+                            const user = getUserFromMembership(membership);
 
-                        let borderClasses = "";
+                            if (!user) {
+                              return null;
+                            }
 
-                        if (membershipsData.length > 1) {
-                          borderClasses = `${
-                            index === 0
-                              ? "rounded-tl-lg rounded-tr-lg border-b border-slate-4"
-                              : ""
-                          }                                 
+                            let borderClasses = "";
+
+                            if (membershipsData.length > 1) {
+                              borderClasses = `${
+                                index === 0
+                                  ? "rounded-tl-lg rounded-tr-lg border-b border-slate-4"
+                                  : ""
+                              }                                 
                             ${
                               index < membershipsData.length - 1 && index > 0
                                 ? "border-b border-slate-4"
@@ -898,112 +911,118 @@ export default function Members() {
                                 ? "rounded-bl-lg rounded-br-lg"
                                 : ""
                             }`;
-                        } else {
-                          borderClasses = "rounded-lg";
-                        }
+                            } else {
+                              borderClasses = "rounded-lg";
+                            }
 
-                        return (
-                          <div
-                            key={membership.id}
-                            className={`
-                              flex flex-row gap-4 items-center ${borderClasses} text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
-                          >
-                            <div className="bg-purple-8 h-[32px] w-[32px] text-[12px] font-semibold rounded-full flex items-center justify-center">
-                              {user.name ? (
-                                <div key={user.id}>
-                                  {getInitials(user?.name)}
-                                </div>
-                              ) : (
-                                <div key={user.id}>
-                                  {getInitials(user?.email?.split("@")[0])}
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex flex-col gap-0 w-[320px] truncate">
-                              <div className="truncate">
-                                {user.name ? (
-                                  <div key={user.id} className="truncate">
-                                    {user.name}
-                                  </div>
-                                ) : (
-                                  <div key={user.id} className="truncate">
-                                    {capitalizeString(
-                                      user.email?.split("@")[0]
-                                    )}
-                                  </div>
-                                )}
-                              </div>
+                            return (
                               <div
-                                key={user.id}
-                                className="text-slate-11 truncate"
+                                key={membership.id}
+                                className={`
+                              flex flex-row gap-4 items-center ${borderClasses} text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12`}
                               >
-                                {user.email}
-                              </div>
-                            </div>
-                            <div className="ml-4 text-slate-12">
-                              <MemberRolePopover
-                                currentUser={currentUser}
-                                currentUserMembership={currentUserMembership}
-                                targetUserMembership={membership}
-                                memberships={membershipsData}
-                              />
-                            </div>
-                            <div className="ml-auto text-left text-slate-11">
-                              <MemberPopover
-                                currentUser={currentUser}
-                                currentUserMembership={currentUserMembership}
-                                targetMembership={membership}
-                              />
-                            </div>
-                          </div>
-                        );
-                      })}
-                    {workspaceInvitesData &&
-                      workspaceInvitesData.length > 0 &&
-                      workspaceInvitesData.map(
-                        (workspaceInvite: any, index: number) => {
-                          return (
-                            <div
-                              className="flex flex-row gap-4 items-center text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12 border-t border-slate-4"
-                              key={index}
-                            >
-                              <div className="bg-purple-5 border border-purple-11 border-dashed opacity-50 h-[32px] w-[32px] text-[12px] font-semibold rounded-full flex items-center justify-center">
-                                <div key={workspaceInvite.recipientEmail}>
-                                  {getInitials(
-                                    workspaceInvite.recipientEmail?.split(
-                                      "@"
-                                    )[0]
+                                <div className="bg-purple-8 h-[32px] w-[32px] text-[12px] font-semibold rounded-full flex items-center justify-center">
+                                  {user.name ? (
+                                    <div key={user.id}>
+                                      {getInitials(user?.name)}
+                                    </div>
+                                  ) : (
+                                    <div key={user.id}>
+                                      {getInitials(user?.email?.split("@")[0])}
+                                    </div>
                                   )}
                                 </div>
-                              </div>
-                              <div className="w-[320px] truncate">
-                                <div className="truncate text-slate-12">
-                                  {workspaceInvite.recipientEmail}
+                                <div className="flex flex-col gap-0 w-[320px] truncate">
+                                  <div className="truncate">
+                                    {user.name ? (
+                                      <div key={user.id} className="truncate">
+                                        {user.name}
+                                      </div>
+                                    ) : (
+                                      <div key={user.id} className="truncate">
+                                        {capitalizeString(
+                                          user.email?.split("@")[0]
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div
+                                    key={user.id}
+                                    className="text-slate-11 truncate"
+                                  >
+                                    {user.email}
+                                  </div>
+                                </div>
+                                <div className="ml-4 text-slate-12">
+                                  <MemberRolePopover
+                                    currentUser={currentUser}
+                                    currentUserMembership={
+                                      currentUserMembership
+                                    }
+                                    targetUserMembership={membership}
+                                    memberships={membershipsData}
+                                  />
+                                </div>
+                                <div className="ml-auto text-left text-slate-11">
+                                  <MemberPopover
+                                    currentUser={currentUser}
+                                    currentUserMembership={
+                                      currentUserMembership
+                                    }
+                                    targetMembership={membership}
+                                  />
                                 </div>
                               </div>
-                              <div className="ml-[24px] flex flex-row items-center gap-3">
-                                <p>Member</p>
-                                <div className="truncate text-slate-11 bg-slate-4 rounded-md text-[12px] tracking-wide px-[6px] py-[3px] ">
-                                  Pending
+                            );
+                          }
+                        )}
+                      {workspaceInvitesData &&
+                        workspaceInvitesData.length > 0 &&
+                        workspaceInvitesData.map(
+                          (workspaceInvite: any, index: number) => {
+                            return (
+                              <div
+                                className="flex flex-row gap-4 items-center text-[13px] pl-[16px] pr-[20px] py-[12px] bg-slate-1 text-slate-12 border-t border-slate-4"
+                                key={index}
+                              >
+                                <div className="bg-purple-5 border border-purple-11 border-dashed opacity-50 h-[32px] w-[32px] text-[12px] font-semibold rounded-full flex items-center justify-center">
+                                  <div key={workspaceInvite.recipientEmail}>
+                                    {getInitials(
+                                      workspaceInvite.recipientEmail?.split(
+                                        "@"
+                                      )[0]
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="w-[320px] truncate">
+                                  <div className="truncate text-slate-12">
+                                    {workspaceInvite.recipientEmail}
+                                  </div>
+                                </div>
+                                <div className="ml-[24px] flex flex-row items-center gap-3">
+                                  <p>Member</p>
+                                  <div className="truncate text-slate-11 bg-slate-4 rounded-md text-[12px] tracking-wide px-[6px] py-[3px] ">
+                                    Pending
+                                  </div>
+                                </div>
+                                <div className="ml-auto text-left text-slate-11">
+                                  <InvitePopover
+                                    currentWorkspace={currentWorkspace}
+                                    workspaceInvite={workspaceInvite}
+                                  />
                                 </div>
                               </div>
-                              <div className="ml-auto text-left text-slate-11">
-                                <InvitePopover
-                                  currentWorkspace={currentWorkspace}
-                                  workspaceInvite={workspaceInvite}
-                                />
-                              </div>
-                            </div>
-                          );
-                        }
-                      )}
+                            );
+                          }
+                        )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </WorkspaceLayout>
+      </WorkspaceLayout>
+    </>
   );
 }

@@ -4,6 +4,7 @@ import { getUserMemberships, getWorkspaceDetails } from "../utils/api";
 import { useRouter } from "next/router";
 import { useQuery, useQueries } from "@tanstack/react-query";
 import { useUser, useAuth } from "@clerk/nextjs";
+import Head from "next/head";
 
 // This is the default page a user lands on after logging in via Clerk.
 // To change the destination in Clerk, you need to edit the paths .env.local in local dev mode.
@@ -100,16 +101,35 @@ export default function Welcome() {
   // ------------------------------------------------------------------
 
   if (isLoading) {
-    return <div className="h-screen bg-slate-1">Hi</div>;
+    return (
+      <>
+        <Head>
+          <title>Dataland</title>
+        </Head>
+        <div className="h-screen bg-slate-1">Hi</div>
+      </>
+    );
   }
 
   if (isError) {
-    return <div>Error: {JSON.stringify(userError)}</div>;
+    return (
+      <>
+        <Head>
+          <title>Dataland</title>
+        </Head>
+        <div>Error: {JSON.stringify(userError)}</div>
+      </>
+    );
   }
 
   return (
-    <div className="h-screen bg-slate-1 z-10 relative text-white flex items-center justify-center">
-      {/* Intentionally blank for good UX */}
-    </div>
+    <>
+      <Head>
+        <title>Dataland</title>
+      </Head>
+      <div className="h-screen bg-slate-1 z-10 relative text-white flex items-center justify-center">
+        {/* Intentionally blank for good UX */}
+      </div>
+    </>
   );
 }
