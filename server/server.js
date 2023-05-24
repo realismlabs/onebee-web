@@ -122,8 +122,32 @@ app.get('/api/workspaces/:workspaceId', async (req, res) => {
   }
 });
 
-// createUser
-app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
+// getUserByEmail -- public because signup page hits this first to see if user can use specified email
+app.get('/api/users/email/:email', async (req, res) => {
+  const email = req.params.email;
+
+  console.log("email", email)
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM users WHERE "email" = $1 ORDER BY id ASC', [email]);
+    const user = result.rows[0];
+    if (!user) {
+      res.json([]);
+      return;
+    }
+    console.log("user", user)
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching user" });
+  } finally {
+    client.release();
+  }
+});
+
+// createUser - also a public route
+app.post('/api/users', async (req, res) => {
   const { email, name, clerkUserId } = req.body;
   console.log("awus req.body", email, name, clerkUserId)
 
@@ -131,7 +155,6 @@ app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
   try {
     // see if user already exists by clerkUserId
     const resultCheck = await client.query('SELECT * FROM users WHERE "clerkUserId" = $1 ORDER BY id ASC', [clerkUserId]);
-    console.log("awus resultCheck", JSON.stringify(resultCheck))
     const existingUser = resultCheck.rows[0];
     console.log("awus existingUser", JSON.stringify(existingUser))
 
