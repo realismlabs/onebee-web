@@ -66,13 +66,13 @@ export default function App({ Component, pageProps }: AppProps) {
         </title>
         <meta
           name="description"
-          content="Dataland lets your whole team browse your data warehouse at billion-row scale. AWAW"
+          content="Dataland lets your whole team browse your data warehouse at billion-row scale. 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789"
         />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Dataland" />
         <meta
           property="og:description"
-          content="Dataland lets your whole team browse your data warehouse at billion-row scale.AWAW"
+          content="Dataland lets your whole team browse your data warehouse at billion-row scale.A 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789"
         />
         <meta
           property="og:site_name"
