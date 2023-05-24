@@ -55,7 +55,7 @@ pool.on('release', (client) => {
 app.get('/users', ClerkExpressRequireAuth(), async (req, res) => {
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM users');
+    const result = await client.query('SELECT * FROM users ORDER BY id ASC');
     res.send(result.rows);
   } finally {
     client.release();
@@ -79,7 +79,7 @@ app.get('/api/users/clerkUserId/:clerkUserId', ClerkExpressRequireAuth(), async 
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM users WHERE "clerkUserId" = $1', [clerkUserId]);
+    const result = await client.query('SELECT * FROM users WHERE "clerkUserId" = $1 ORDER BY id ASC', [clerkUserId]);
     const user = result.rows[0];
 
     if (!user) {
@@ -104,7 +104,7 @@ app.get('/api/workspaces/:workspaceId', async (req, res) => {
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM workspaces WHERE "id" = $1', [workspaceId]);
+    const result = await client.query('SELECT * FROM workspaces WHERE "id" = $1 ORDER BY id ASC', [workspaceId]);
     const workspace = result.rows[0];
 
     if (!workspace) {
@@ -130,7 +130,7 @@ app.post('/api/users', ClerkExpressRequireAuth(), async (req, res) => {
   const client = await pool.connect();
   try {
     // see if user already exists by clerkUserId
-    const resultCheck = await client.query('SELECT * FROM users WHERE "clerkUserId" = $1', [clerkUserId]);
+    const resultCheck = await client.query('SELECT * FROM users WHERE "clerkUserId" = $1 ORDER BY id ASC', [clerkUserId]);
     console.log("awus resultCheck", JSON.stringify(resultCheck))
     const existingUser = resultCheck.rows[0];
     console.log("awus existingUser", JSON.stringify(existingUser))
@@ -197,7 +197,7 @@ app.get('/api/invites/recipient/:recipientEmail', ClerkExpressRequireAuth(), asy
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `SELECT * FROM invites WHERE "recipientEmail" = $1 AND accepted = false`, [recipientEmailDecoded]
+      `SELECT * FROM invites WHERE "recipientEmail" = $1 AND accepted = false ORDER BY id ASC`, [recipientEmailDecoded]
     );
     console.log("getInvitesforUserEmail result", JSON.stringify(result));
 
@@ -218,7 +218,7 @@ app.get('/api/workspaces/:workspaceId/invites', ClerkExpressRequireAuth(), async
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `SELECT * FROM invites WHERE "workspaceId" = $1 AND accepted = false`, [workspaceId]
+      `SELECT * FROM invites WHERE "workspaceId" = $1 AND accepted = false ORDER BY id ASC`, [workspaceId]
     );
 
     const invites = result.rows;
@@ -276,7 +276,7 @@ app.get('/api/users/:userId', ClerkExpressRequireAuth(), async (req, res) => {
 
   const client = await pool.connect();
   try {
-    const result = await client.query(`SELECT * FROM users WHERE id = $1`, [userId]);
+    const result = await client.query(`SELECT * FROM users WHERE id = $1 ORDER BY id ASC`, [userId]);
     const user = result.rows[0];
     res.json(user);
   } catch (err) {
@@ -291,19 +291,13 @@ app.get('/api/users/:userId', ClerkExpressRequireAuth(), async (req, res) => {
 app.patch('/api/users/:userId/update', ClerkExpressRequireAuth(), async (req, res) => {
   const userId = parseInt(req.params.userId, 10);
   const { name } = req.body;
-  console.log("req.body", req.body)
-
-  console.log("inside patch - Request body:", name); // logging the body
-  console.log("inside patch", "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
   const client = await pool.connect();
   try {
-    console.log("inside patch - Before query")
     const result = await client.query(
       `UPDATE "users" SET "name" = $1 WHERE "id" = $2 RETURNING *`,
       [name, userId]
     );
     const updatedMembership = result.rows[0];
-    console.log('inside patch - Updated user', updatedMembership);
     res.json(updatedMembership);
   } catch (err) {
     console.error(err);
@@ -384,8 +378,14 @@ app.get('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async 
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM tables WHERE "workspaceId"=$1', [workspaceId]);
-    const tables = result.rows;
+    const result = await client.query('SELECT * FROM tables WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
+    const tables = result.rows.map(row => {
+      // If rowCount is expected to be a string representing a large integer, convert it to a number
+      if ('rowCount' in row) {
+        row.rowCount = Number(row.rowCount); // done to kind of handle int8 type
+      }
+      return row;
+    });
     res.json(tables);
   } catch (err) {
     console.error(err);
@@ -396,6 +396,7 @@ app.get('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async 
 });
 
 
+
 // getTablesFromConnection
 app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
@@ -403,8 +404,14 @@ app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', ClerkEx
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM tables WHERE "workspaceId"=$1 AND "connectionId"=$2', [workspaceId, connectionId]);
-    const tables = result.rows;
+    const result = await client.query('SELECT * FROM tables WHERE "workspaceId"=$1 AND "connectionId"=$2 ORDER BY id ASC', [workspaceId, connectionId]);
+    const tables = result.rows.map(row => {
+      // If rowCount is expected to be a string representing a large integer, convert it to a number
+      if ('rowCount' in row) {
+        row.rowCount = Number(row.rowCount);// done to kind of handle int8 type
+      }
+      return row;
+    });
     res.json(tables);
   } catch (err) {
     console.error(err);
@@ -463,7 +470,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
 });
 
 
-// getTable
+// getTable 
 app.get('/api/workspaces/:workspaceId/tables/:tableId', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
   const tableId = parseInt(req.params.tableId, 10);
@@ -472,8 +479,11 @@ app.get('/api/workspaces/:workspaceId/tables/:tableId', ClerkExpressRequireAuth(
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM "tables" WHERE "workspaceId"=$1 AND "id"=$2', [workspaceId, tableId]);
+    const result = await client.query('SELECT * FROM "tables" WHERE "workspaceId"=$1 AND "id"=$2 ORDER BY id ASC', [workspaceId, tableId]);
     const table = result.rows[0];
+    if ('rowCount' in table) {
+      table.rowCount = Number(table.rowCount); // done to kind of handle int8 type
+    }
     console.log('Fetched table', table);
     res.json(table);
   } catch (err) {
@@ -598,7 +608,7 @@ app.get('/api/workspaces/:workspaceId/connections/:connectionId', ClerkExpressRe
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM "connections" WHERE "workspaceId"=$1 AND "id"=$2', [workspaceId, connectionId]);
+    const result = await client.query('SELECT * FROM "connections" WHERE "workspaceId"=$1 AND "id"=$2 ORDER BY id ASC', [workspaceId, connectionId]);
     const connection = result.rows[0];
     console.log('Fetched connection', connection);
     res.json(connection);
@@ -616,7 +626,7 @@ app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), a
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM connections WHERE "workspaceId"=$1', [workspaceId]);
+    const result = await client.query('SELECT * FROM connections WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
     const connections = result.rows;
     res.json(connections);
   } catch (err) {
@@ -626,9 +636,6 @@ app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), a
     client.release();
   }
 });
-
-
-
 
 // updateConnectionDisplayName
 app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update', ClerkExpressRequireAuth(), async (req, res) => {
@@ -680,7 +687,7 @@ app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), a
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM "connections" WHERE "workspaceId"=$1', [workspaceId]);
+    const result = await client.query('SELECT * FROM "connections" WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
     const connections = result.rows;
     console.log('Fetched connections', connections);
     res.json(connections);
@@ -700,7 +707,7 @@ app.post('/api/memberships', ClerkExpressRequireAuth(), async (req, res) => {
 
   const client = await pool.connect();
   try {
-    const membershipCheck = await client.query('SELECT * FROM "memberships" WHERE "userId"=$1 AND "workspaceId"=$2', [userId, workspaceId]);
+    const membershipCheck = await client.query('SELECT * FROM "memberships" WHERE "userId"=$1 AND "workspaceId"=$2 ORDER BY id ASC', [userId, workspaceId]);
     if (membershipCheck.rowCount > 0) {
       throw new Error("User already has membership of this workspace");
     }
@@ -724,7 +731,7 @@ app.get('/api/workspaces/', ClerkExpressRequireAuth(), async (req, res) => {
   console.log("getWorkspaces request", req);
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM "workspaces"');
+    const result = await client.query('SELECT * FROM workspaces ORDER BY id ASC');
     const workspaces = result.rows;
     res.json(workspaces);
   } catch (err) {
@@ -740,17 +747,13 @@ app.patch('/api/memberships/:membershipId/update', ClerkExpressRequireAuth(), as
   const membershipId = parseInt(req.params.membershipId, 10);
   const { role } = req.body;
 
-  console.log("inside patch - Request body:", role); // logging the body
-  console.log("inside patch", "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
   const client = await pool.connect();
   try {
-    console.log("inside patch - Before query")
     const result = await client.query(
       `UPDATE "memberships" SET "role" = $1 WHERE "id" = $2 RETURNING *`,
       [role, membershipId]
     );
     const updatedMembership = result.rows[0];
-    console.log('inside patch - Updated membership', updatedMembership);
     res.json(updatedMembership);
   } catch (err) {
     console.error(err);
@@ -785,7 +788,7 @@ app.get('/api/workspaces/:workspaceId/memberships', ClerkExpressRequireAuth(), a
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM "memberships" WHERE "workspaceId"=$1', [workspaceId]);
+    const result = await client.query('SELECT * FROM "memberships" WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
     const memberships = result.rows;
     console.log('Fetched memberships', memberships);
     res.json(memberships);
@@ -804,7 +807,7 @@ app.get('/api/users/:userId/memberships', ClerkExpressRequireAuth(), async (req,
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM "memberships" WHERE "userId"=$1', [userId]);
+    const result = await client.query('SELECT * FROM "memberships" WHERE "userId"=$1 ORDER BY id ASC', [userId]);
     const memberships = result.rows;
     console.log('Fetched memberships', memberships);
     res.json(memberships);
