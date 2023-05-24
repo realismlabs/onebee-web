@@ -66,13 +66,13 @@ export default function App({ Component, pageProps }: AppProps) {
         </title>
         <meta
           name="description"
-          content="Dataland lets your whole team browse your data warehouse at billion-row scale. Connect Snowflake, BigQuery, or Postgres in <1min. Secure & SOC2 compliant. Get started for free."
+          content="Dataland lets your whole team browse your data warehouse at billion-row scale. AWAW"
         />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Dataland" />
         <meta
           property="og:description"
-          content="Dataland lets your whole team browse your data warehouse at billion-row scale. Connect Snowflake, BigQuery, or Postgres in <1min. Secure & SOC2 compliant. Get started for free."
+          content="Dataland lets your whole team browse your data warehouse at billion-row scale.AWAW"
         />
         <meta
           property="og:site_name"
