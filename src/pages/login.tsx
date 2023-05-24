@@ -10,25 +10,24 @@ import { useUser } from "@clerk/clerk-react";
 import queryString from "query-string";
 import { useQuery } from "@tanstack/react-query";
 import { getWorkspaceDetails } from "@/utils/api";
+import { convertResourceAliasToID } from "airplane/internal/builtins/builtins";
 
 export default function Login() {
   const router = useRouter();
+  const url = router.asPath;
 
-  let afterSignInUrl: any = "";
-  let afterSignUpUrl: any = "";
-  let redirectUrl: any = "";
+  function extractWorkspaceId(url: string): string | null {
+    const match = url.match(/%2Fworkspace%2F(\d+)%2F?/);
+    return match ? match[1] : null;
+  }
 
-  const hashParams = queryString.parse(router.asPath.split("#")[1]);
-  afterSignInUrl = hashParams?.after_sign_in_url;
-  afterSignUpUrl = hashParams.after_sign_up_url;
-  redirectUrl = hashParams.redirect_url;
-
-  const isWorkspaceRedirectUrl = redirectUrl?.includes("workspace");
-  const workspaceId = isWorkspaceRedirectUrl
-    ? redirectUrl?.split("/")[2]
-    : null;
+  const isWorkspaceRedirectUrl = url?.includes("workspace");
+  const workspaceId = isWorkspaceRedirectUrl ? extractWorkspaceId(url) : null;
 
   console.log("workspaceId", workspaceId);
+
+  // http://localhost:3000/login#/?redirect_url=%2Fworkspace%2F6
+  // parse out the workspaceId from ater the redirectUrl=
 
   const {
     data: workspaceDetail,
