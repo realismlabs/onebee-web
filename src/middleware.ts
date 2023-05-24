@@ -49,15 +49,18 @@ export default authMiddleware({
       // If the user is logged in, but they don't have access to the workspace, redirect them to the no access page
       if (currentUser && currentUser.id) {
         const data = await getUserMemberships(currentUser.id, token);
+        console.log("awu data", data);
         const after_base_url = req.url.split("workspace/")[1];
+        console.log("awu after_base_url", after_base_url);
         const workspaceId = after_base_url.split("/")[0];
+        console.log("awu workspaceId", workspaceId);
         const userHasAccess = data.some(
           (membership: any) => membership.workspaceId === parseInt(workspaceId)
         );
         if (!userHasAccess) {
           const noAccessUrl = new URL(
             `/workspace/${workspaceId}/no-access`,
-            process.env.NEXT_PUBLIC_APP_URL
+            req.url.split("workspace/")[0] // this is the base URL (without everything after the domain tld)
           );
           return NextResponse.redirect(noAccessUrl);
         } else {

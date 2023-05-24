@@ -371,21 +371,25 @@ export default function NoAccess() {
                   workspaceDetail.name.slice(0, 1)}
               </div>
               <div className="bg-slate-1 text-slate-12 text-center text-[22px] mt-8 max-w-[420px]">
-                You don&apos;t have access to the{" "}
-                <span className="font-semibold">{workspaceDetail?.name}</span>{" "}
+                You don&apos;t have access to the
+                <br />{" "}
+                <span className="font-semibold">
+                  {workspaceDetail?.name}
+                </span>{" "}
                 workspace
               </div>
 
               <div className="bg-slate-1 text-slate-11 text-center text-[16px] mt-4">
-                Ask a workspace member to invite you to join this workspace
-                first.
+                Ask a workspace member to invite you first.
               </div>
-              <div className="flex flex-col items-center gap-4 mt-4">
-                <button
-                  className={`w-[240px] bg-slate-2 text-slate-12 text-[16px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-slate-3 justify-center h-10 items-center`}
-                >
-                  Go back to Dataland
-                </button>
+              <div className="flex flex-col items-center gap-4 mt-12">
+                <Link href="/dashboard">
+                  <button
+                    className={`bg-slate-3 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-slate-4 justify-center h-10 items-center`}
+                  >
+                    Go back to Dataland
+                  </button>
+                </Link>
               </div>
             </div>
           </>
