@@ -292,7 +292,7 @@ const KeyCombination = ({ keys }) => {
           displayKey = isMac ? '⌘' : 'Ctrl';
         }
         return (
-          <p key={index} className="min-h-[20px] min-w-[20px] bg-slate-3 flex items-center justify-center rounded-[3px] text-slate-10">{displayKey}</p>
+          <p key={index} className="min-h-[20px] min-w-[20px] bg-slate-3 flex items-center justify-center rounded-[3px] text-slate-11">{displayKey}</p>
         );
       })}
     </div>
@@ -499,14 +499,14 @@ export default function TablePage() {
                 >
                   <div className="relative m-[-6px] p-[6px] bg-slate-3 rounded-t-[20px]">
                     <div
-                      className={`bg-slate-4 hover:bg-slate-5 text-[13px] px-[8px] py-[6px] border border-slate-4 ${isSearchFocused ? "ring-2 ring-blue-600" : ""
+                      className={`bg-slate-5 hover:bg-slate-6 text-[13px] px-[8px] py-[6px] border-2 border-slate-6  ${isSearchFocused ? "ring-2 ring-blue-600" : ""
                         } cursor-pointer rounded-full gap-2 flex flex-grow items-center`}
                     >
                       <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
                       <input
                         ref={inputRef}
                         title="Search"
-                        className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10 flex-grow"
+                        className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-11 flex-grow"
                         placeholder={`Search ${tableData.name}..`}
                         value={searchValue}
                         onChange={(e) => setSearchValue(e.target.value)}
@@ -570,14 +570,14 @@ export default function TablePage() {
                   style={{ width: '100%' }}  // Explicitly set width to 100%
                 >
                   <div
-                    className={`bg-slate-4 hover:bg-slate-5 text-[13px] px-[8px] py-[6px] border border-slate-4 ${isSearchFocused ? "ring-2 ring-blue-600" : ""
+                    className={`bg-slate-5 hover:bg-slate-6 text-[13px] px-[8px] py-[6px] border-2 border-slate-6  ${isSearchFocused ? "ring-2 ring-blue-600" : ""
                       } cursor-pointer rounded-full gap-2 flex flex-grow items-center`}
                   >
                     <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
                     <input
                       ref={inputRef}
                       title="Search"
-                      className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10 flex-grow"
+                      className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-11 flex-grow"
                       placeholder={`Search ${tableData.name}..`}
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
@@ -593,11 +593,11 @@ export default function TablePage() {
 
 
             <div className="flex flex-row gap-2 flex-none justify-end">
-              <div className="bg-slate-2 hover:bg-slate-3 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
+              <div className="bg-slate-3 hover:bg-slate-4 text-slate-11 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
                 <p>Columns</p>
                 <CaretDown size={12} className="text-slate-11" />
               </div>
-              <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
+              <div className="bg-slate-3 hover:bg-slate-4 text-slate-11 text-[13px] px-[12px] py-[6px] cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
                 onClick={() => setIsInvitePeopleDialogOpen(true)}>
                 <p>Share</p>
               </div>
