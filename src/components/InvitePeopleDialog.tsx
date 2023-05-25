@@ -148,6 +148,7 @@ const InvitePeopleDialog = ({
                   icon: (
                     <XCircle size={20} weight="fill" className="text-red-500" />
                   ),
+                  description: `Error removing invite + ${err}`,
                 });
               }
             }

@@ -97,6 +97,7 @@ const MemberPopover = ({
           icon: (
             <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
           ),
+          description: `Error removing invite + ${error}`,
         });
       }
     } else {
@@ -278,6 +279,7 @@ const MemberRolePopover = ({
         icon: (
           <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
         ),
+        description: `Error removing invite + ${error}`,
       });
     }
   };
