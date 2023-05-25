@@ -86,7 +86,7 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
           const response = await getWorkspaceDetails(membership.workspaceId);
           return response;
         },
-        enabled: membership.workspaceId !== null,
+        enabled: !!membership?.workspaceId,
       };
     }),
   });
@@ -305,7 +305,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
       const result = await getTables(currentWorkspace?.id, jwt)
       return result;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
     staleTime: 1000
   });
 
@@ -320,7 +320,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
       const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
   });
 
   if (areTablesLoading || isWorkspaceLoading || isUserLoading || isConnectionsLoading) {

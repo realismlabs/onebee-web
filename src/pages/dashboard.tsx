@@ -28,11 +28,12 @@ export default function Welcome() {
   } = useQuery({
     queryKey: ["currentUserMemberships", currentUser?.id],
     queryFn: async () => {
+      console.log("awu currentUser Dashboard", currentUser);
       const jwt = await getToken({ template: "test" });
       const result = await getUserMemberships(currentUser?.id, jwt);
       return result;
     },
-    enabled: currentUser?.id !== null,
+    enabled: !!currentUser?.id,
   });
 
   console.log("userMembershipsData", userMembershipsData);
@@ -55,7 +56,7 @@ export default function Welcome() {
               console.error("Error fetching workspace details:", error);
               // handle the error here
             },
-            enabled: membership?.workspaceId !== null,
+            enabled: !!membership?.workspaceId,
           };
         })
       : [],

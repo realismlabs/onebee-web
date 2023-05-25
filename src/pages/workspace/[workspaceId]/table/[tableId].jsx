@@ -356,7 +356,7 @@ export default function TablePage() {
       const response = await getTable(currentWorkspace?.id, tableId, jwt);
       return response;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
   });
 
   const {
@@ -374,7 +374,7 @@ export default function TablePage() {
       );
       return response;
     },
-    enabled: currentWorkspace?.id !== null && tableData?.connectionId !== null,
+    enabled: !!currentWorkspace?.id && !!tableData?.connectionId,
   });
 
 

@@ -587,7 +587,7 @@ export default function Welcome() {
     error: invitesError,
   } = useQuery({
     queryKey: ["invites", currentUser?.email],
-    enabled: currentUser?.email != null,
+    enabled: !!currentUser?.email,
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
       const result = await getInvitesForUserEmail(currentUser.email, jwt);
@@ -622,7 +622,7 @@ export default function Welcome() {
       const result = await getAllowedWorkspacesForUser(currentUser?.id, jwt);
       return result;
     },
-    enabled: currentUser?.id != null,
+    enabled: !!currentUser?.id,
   });
 
   if (isUserLoading || isInvitesLoading || isAllowedWorkspacesForUserLoading) {

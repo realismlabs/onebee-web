@@ -51,7 +51,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
       const result = await getTables(currentWorkspace?.id, jwt)
       return result
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
     staleTime: 1000
   });
 

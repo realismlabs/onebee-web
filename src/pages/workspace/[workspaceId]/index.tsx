@@ -223,7 +223,7 @@ export default function WorkspaceHome() {
       const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
   });
 
   const {
@@ -237,7 +237,7 @@ export default function WorkspaceHome() {
       const response = await getTables(currentWorkspace?.id, jwt);
       return response;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
   });
 
   if (

@@ -142,7 +142,7 @@ export default function AddSnowflake() {
       });
       return await response.json();
     },
-    enabled: false,
+    enabled: false, // query is disabled by default, but will run when refetched
     onSuccess: (data) => {
       setConnectionTestInProgress(false);
       setConnectionResult({
