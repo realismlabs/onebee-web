@@ -28,7 +28,6 @@ export default function Welcome() {
   } = useQuery({
     queryKey: ["currentUserMemberships", currentUser?.id],
     queryFn: async () => {
-      console.log("awu currentUser Dashboard", currentUser);
       const jwt = await getToken({ template: "test" });
       const result = await getUserMemberships(currentUser?.id, jwt);
       return result;
@@ -54,7 +53,6 @@ export default function Welcome() {
             },
             onError: (error: any) => {
               console.error("Error fetching workspace details:", error);
-              // handle the error here
             },
             enabled: !!membership?.workspaceId,
           };
@@ -89,23 +87,12 @@ export default function Welcome() {
   useEffect(() => {
     let next_route = null;
 
-    console.log(
-      "in use effect!, currentWorkspacesIdsForUser",
-      currentWorkspacesIdsForUser
-    );
-
     // Only set next_route if userMembershipsData is not null or undefined
-    if (!!userMembershipsData) {
-      if (!Array.isArray(currentWorkspacesIdsForUser)) {
-        console.log("currentWorkspacesIdsForUser is not an array, no route");
-      } else {
-        if (currentWorkspacesIdsForUser.length > 0) {
-          next_route = `/workspace/${currentWorkspacesIdsForUser[0]}`;
-          console.log("has workspaces, next route", next_route);
-        } else if (currentWorkspacesIdsForUser.length === 0) {
-          next_route = `/welcome`;
-          console.log("has NO workspaces, next route", next_route);
-        }
+    if (!!userMembershipsData && Array.isArray(currentWorkspacesIdsForUser)) {
+      if (currentWorkspacesIdsForUser.length > 0) {
+        next_route = `/workspace/${currentWorkspacesIdsForUser[0]}`;
+      } else if (currentWorkspacesIdsForUser.length === 0) {
+        next_route = `/welcome`;
       }
       if (next_route) {
         router.push(next_route);
