@@ -111,7 +111,7 @@ export default function Welcome() {
         router.push(next_route);
       }
     }
-  }, [isLoading, isError, currentWorkspacesIdsForUser, router]);
+  }, [userMembershipsData, currentWorkspacesIdsForUser, router]);
   // ------------------------------------------------------------------
 
   if (isLoading) {
