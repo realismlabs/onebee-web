@@ -88,15 +88,22 @@ export default function Welcome() {
   useEffect(() => {
     let next_route = null;
 
+    console.log(
+      "in use effect!, currentWorkspacesIdsForUser",
+      currentWorkspacesIdsForUser
+    );
+
     // Only set next_route if there are no errors and loading has completed
     if (!isLoading && !isError) {
-      // currentWorkspaceIdsForUser must be an array before continuing
       if (!Array.isArray(currentWorkspacesIdsForUser)) {
+        console.log("currentWorkspacesIdsForUser is not an array, no route");
       } else {
         if (currentWorkspacesIdsForUser.length > 0) {
           next_route = `/workspace/${currentWorkspacesIdsForUser[0]}`;
-        } else {
+          console.log("has workspaces, next route", next_route);
+        } else if (currentWorkspacesIdsForUser.length === 0) {
           next_route = `/welcome`;
+          console.log("has NO workspaces, next route", next_route);
         }
       }
       if (next_route) {
