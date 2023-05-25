@@ -6,8 +6,8 @@ import { Lightning } from "@phosphor-icons/react";
 import IconEyebrow from "../components/IconEyebrow";
 import React, { useState } from "react";
 import Link from "next/link";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
+import MarketingFooter from "../components/MarketingFooter";
+import MarketingHeader from "../components/MarketingHeader";
 import LogoSvgAnimation from "../components/LogoSvgAnimation";
 import HeroText from "../components/HeroText";
 import Carousel from "../components/Carousel";
@@ -38,7 +38,7 @@ export default function Home() {
       >
         {/* Add an input that changes the value of heroType */}
 
-        <Header />
+        <MarketingHeader />
         {/* This option is the header + two-line subheader with DWH logos */}
         <div className="fixed z-50 sm:top-1 sm:right-1 bottom-0 bg-black sm:bg-transparent px-2 py-2 rounded-full sm:py-0 sm:px-0 sm:w-auto">
           <div className="flex flex-row">
@@ -471,9 +471,9 @@ export default function Home() {
               <div className="flex flex-row gap-4 items-center">
                 <InsetButton
                   bgColor={`#4315F3`}
-                  href={`https://google.com`}
+                  href={`/signup`}
                   text={`Get started`}
-                  target={`_blank`}
+                  target={`_self`}
                   highlightValue={"0.4"}
                 />
               </div>
@@ -485,7 +485,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <Footer />
+        <MarketingFooter />
       </main>
     </>
   );

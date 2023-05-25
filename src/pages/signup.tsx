@@ -215,6 +215,13 @@ export default function Signup() {
     }
   };
 
+  // Focus on the first input when verification shows up
+  useEffect(() => {
+    if (pendingVerification && inputs[0] && inputs[0].current) {
+      inputs[0].current.focus();
+    }
+  }, [pendingVerification]);
+
   if (isLoadedUser && !isSignedIn) {
     return (
       <>
@@ -368,7 +375,7 @@ export default function Signup() {
               )}
 
               {pendingVerification && (
-                <div className="w-[600px] text-slate-12 flex flex-col left-0 py-3 gap-2 sm:px-24 px-12 h-screen justify-center">
+                <div className="w-[600px] text-slate-12 flex flex-col left-0 gap-2 sm:px-24 px-12 h-screen pt-64">
                   <div className="gap-4 flex flex-col">
                     <h1 className="text-lg flex flex-row gap-2 items-center">
                       Check your inbox for a verification code
@@ -406,11 +413,11 @@ export default function Signup() {
                         </div>
                       )}
                       <button
-                        className={`bg-slate-3 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 gap-3  justify-center h-10 items-center self-start flex flex-row`}
+                        className="bg-blue-600 text-slate-12 text-[14px] font-medium rounded-md px-4 py-2 mt-2 flex flex-row gap-3 hover:bg-blue-700 justify-center h-10 items-center"
                         type="submit"
                         onClick={onPressVerify}
                       >
-                        Verify Email
+                        Verify email
                       </button>
                     </div>
                   </form>
@@ -479,6 +486,7 @@ export default function Signup() {
       </>
     );
   }
+
   return (
     <>
       <Head>

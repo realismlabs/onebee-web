@@ -7,8 +7,8 @@ import { Lightning } from "@phosphor-icons/react";
 import IconEyebrow from "../../components/IconEyebrow";
 import React, { useState } from "react";
 import Link from "next/link";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
+import MarketingFooter from "../../components/MarketingFooter";
+import MarketingHeader from "../../components/MarketingHeader";
 import LogoSvgAnimation from "../../components/LogoSvgAnimation";
 import useScreenSize from "../../components/useScreenSize";
 
@@ -42,7 +42,7 @@ export default function Home() {
       <main
         className={`gap-6 md:gap-6 lg:gap-12 ${styles.main} sm:px-12 px-4 overflow-hidden`}
       >
-        <Header />
+        <MarketingHeader />
         <h1
           className="font-regular md:text-[48px] sm:text-[32px] text-[32px] text-slate-12 pt-2 md:pt-8 "
           style={{
@@ -454,7 +454,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <Footer />
+        <MarketingFooter />
       </main>
     </>
   );

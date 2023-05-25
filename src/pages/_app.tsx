@@ -82,7 +82,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta property="og:url" content="https://www.dataland.io" />
         <meta
           property="og:image"
-          content="https://storage.googleapis.com/dl_marketing_assets/dataland_og_image.png"
+          content="https://storage.googleapis.com/dl_marketing_assets/dataland_og_image_v2.png"
         />
       </Head>
       {isPublicPage ? (

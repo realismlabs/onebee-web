@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect, FC, useCallback } from "react";
+import { Toaster, toast } from "sonner";
 import Head from "next/head";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
@@ -19,9 +20,8 @@ import {
   useQueries,
 } from "@tanstack/react-query";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
-import { X } from "@phosphor-icons/react";
+import { X, XCircle, CheckCircle } from "@phosphor-icons/react";
 import { Dialog } from "@headlessui/react";
-import { friendlyRelativeDateToNow } from "@/utils/util";
 import { useDropzone } from "react-dropzone";
 import { useAuth } from "@clerk/nextjs";
 import { useClerk } from "@clerk/clerk-react";
@@ -167,8 +167,22 @@ export default function Settings() {
           workspaceData: workspaceData,
           jwt,
         });
+        toast(`Successfully updated workspace`, {
+          icon: (
+            <CheckCircle
+              size={20}
+              weight="fill"
+              className="text-green-500 mt-1.5"
+            />
+          ),
+        });
       } catch (error) {
         console.error("Error updating workspace:", error);
+        toast(`Unexpected error occurred`, {
+          icon: (
+            <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+          ),
+        });
       }
     }
   };
@@ -559,6 +573,20 @@ export default function Settings() {
             </div>
           </div>
         </div>
+        <Toaster
+          theme="dark"
+          expand
+          visibleToasts={6}
+          toastOptions={{
+            style: {
+              background: "var(--slate1)",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              borderColor: "var(--slate4)",
+            },
+          }}
+        />
       </WorkspaceLayout>
     </>
   );

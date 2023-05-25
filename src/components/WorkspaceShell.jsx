@@ -16,77 +16,50 @@ import InvitePeopleDialog from './InvitePeopleDialog';
 import { useClerk } from "@clerk/clerk-react";
 import { useAuth } from "@clerk/nextjs";
 
-function AccountPopover({ currentWorkspace }) {
-  const { signOut } = useClerk();
-  const queryClient = useQueryClient();
-  const handleLogout = async () => {
-    queryClient.removeQueries();
-    await signOut();
-  }
+function WorkspacePopover({ currentWorkspace, currentUser }) {
 
   return (
-    <Popover className="relative">
+    <Popover className="flex flex-grow">
       {({ open }) => (
         <>
           <Popover.Button
             className={`
-                ${open ? '' : 'text-opacity-90'}
-                flex flex-row gap-3 group hover:bg-slate-4 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md w-full`}
+                ${open ? 'bg-slate-3' : 'hover:bg-slate-3 active:bg-slate-4'}
+                flex flex-row flex-grow gap-3 items-center mx-[10px] focus:outline-none pl-[8px] pr-[13px] py-[6px] rounded-md`}
           >
-            <UserCircle
-              size={20}
-              weight="fill"
-              className="text-slate-10 group-hover:text-slate-11 transition-all duration-100 min-h-[20px] min-w-[20px]"
-            />
-            <div className="truncate w-full text-left">Account</div>
+            <div
+              className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
+              style={{
+                backgroundImage: `url(${currentWorkspace?.customWorkspaceBase64Icon ? currentWorkspace?.customWorkspaceBase64Icon : currentWorkspace?.iconUrl})`,
+                backgroundSize: 'cover',
+              }}
+            >
+              {currentWorkspace?.customWorkspaceBase64Icon == null && (
+                <div className="text-[10px] text-slate-12">{currentWorkspace?.name?.slice(0, 1)}</div>)}
+            </div>
+            <p className="text-slate-12 text-left flex-grow truncate w-0">
+              {currentWorkspace.name}
+            </p>
           </Popover.Button>
           <Transition
             as={Fragment}
-            enter="transition ease-out duration-100"
+            enter="transition ease-out duration-200"
             enterFrom="opacity-0 translate-y-1"
             enterTo="opacity-100 translate-y-0"
-            leave="transition ease-in duration-50"
+            leave="transition ease-in duration-150"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute mb-[32px] bottom-0 ">
-              <div className="overflow-visible rounded-md shadow-2xl ring-1 ring-black ring-opacity-5 bg-slate-2 w-[180px] p-[8px] text-[13px] cursor-pointer">
-                <Link href={`/workspace/${currentWorkspace?.id}/settings/profile`}>
-                  <div className="hover:bg-slate-4 px-[8px] py-[6px] flex flex-row rounded-md items-center gap-3" >
-                    <Gear size={16} weight="fill" className="text-slate-10" />
-                    Account settings
-                  </div>
-                </Link>
-                <div className="hover:bg-slate-4 px-[8px] py-[6px] flex flex-row rounded-md items-center gap-3" onClick={handleLogout}>
-                  <SignOut size={16} weight="bold" className="text-slate-10" />
-                  Log out
-                </div>
-              </div>
+            <Popover.Panel className="absolute mt-[44px] max-h-[80vh] ml-[13px] top-0 rounded-md bg-slate-2 shadow-2xl border border-slate-4 flex flex-shrink w-[260px] flex-col items-start justify-start">
+              <WorkspacePopoverContents currentUser={currentUser} currentWorkspace={currentWorkspace} />
             </Popover.Panel>
           </Transition>
         </>
-      )}
+      )
+      }
     </Popover>
   )
 }
-
-const KeyCombination = ({ keys }) => {
-  const isMac = window.navigator.userAgent.includes('Mac');
-
-  return (
-    <div className="flex flex-row gap-1">
-      {keys.map((key, index) => {
-        let displayKey = key;
-        if (key.toLowerCase() === 'cmd' || key.toLowerCase() === 'meta') {
-          displayKey = isMac ? '⌘' : 'ctrl';
-        }
-        return (
-          <p key={index} className="min-h-[20px] min-w-[20px] bg-slate-3 flex items-center justify-center rounded-[3px]">{displayKey}</p>
-        );
-      })}
-    </div>
-  );
-};
 
 function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   const router = useRouter();
@@ -202,51 +175,77 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
   );
 }
 
-function WorkspacePopover({ currentWorkspace, currentUser }) {
+function AccountPopover({ currentWorkspace }) {
+  const { signOut } = useClerk();
+  const queryClient = useQueryClient();
+  const handleLogout = async () => {
+    queryClient.removeQueries();
+    await signOut();
+  }
 
   return (
-    <Popover className="flex flex-grow">
+    <Popover className="relative">
       {({ open }) => (
         <>
           <Popover.Button
             className={`
-                ${open ? 'bg-slate-3' : 'hover:bg-slate-3 active:bg-slate-4'}
-                flex flex-row flex-grow gap-3 items-center mx-[10px] focus:outline-none pl-[8px] pr-[13px] py-[6px] rounded-md`}
+                ${open ? '' : 'text-opacity-90'}
+                flex flex-row gap-3 group hover:bg-slate-4 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md w-full`}
           >
-            <div
-              className={`h-[24px] w-[24px] flex items-center justify-center text-[18px] rounded-sm`}
-              style={{
-                backgroundImage: `url(${currentWorkspace?.customWorkspaceBase64Icon ? currentWorkspace?.customWorkspaceBase64Icon : currentWorkspace?.iconUrl})`,
-                backgroundSize: 'cover',
-              }}
-            >
-              {currentWorkspace?.customWorkspaceBase64Icon == null && (
-                <div className="text-[10px] text-slate-12">{currentWorkspace?.name?.slice(0, 1)}</div>)}
-            </div>
-            <p className="text-slate-12 text-left flex-grow truncate w-0">
-              {currentWorkspace.name}
-            </p>
+            <UserCircle
+              size={20}
+              weight="fill"
+              className="text-slate-10 group-hover:text-slate-11 transition-all duration-100 min-h-[20px] min-w-[20px]"
+            />
+            <div className="truncate w-full text-left">Account</div>
           </Popover.Button>
           <Transition
             as={Fragment}
-            enter="transition ease-out duration-200"
+            enter="transition ease-out duration-100"
             enterFrom="opacity-0 translate-y-1"
             enterTo="opacity-100 translate-y-0"
-            leave="transition ease-in duration-150"
+            leave="transition ease-in duration-50"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute mt-[44px] max-h-[80vh] ml-[13px] top-0 rounded-md bg-slate-2 shadow-2xl border border-slate-4 flex flex-shrink w-[260px] flex-col items-start justify-start">
-              <WorkspacePopoverContents currentUser={currentUser} currentWorkspace={currentWorkspace} />
+            <Popover.Panel className="absolute mb-[32px] bottom-0 ">
+              <div className="overflow-visible rounded-md shadow-2xl ring-1 ring-black ring-opacity-5 bg-slate-2 w-[180px] p-[8px] text-[13px] cursor-pointer">
+                <Link href={`/workspace/${currentWorkspace?.id}/settings/profile`}>
+                  <div className="hover:bg-slate-4 px-[8px] py-[6px] flex flex-row rounded-md items-center gap-3" >
+                    <Gear size={16} weight="fill" className="text-slate-10" />
+                    Account settings
+                  </div>
+                </Link>
+                <div className="hover:bg-slate-4 px-[8px] py-[6px] flex flex-row rounded-md items-center gap-3" onClick={handleLogout}>
+                  <SignOut size={16} weight="bold" className="text-slate-10" />
+                  Log out
+                </div>
+              </div>
             </Popover.Panel>
           </Transition>
         </>
-      )
-      }
+      )}
     </Popover>
   )
 }
 
+const KeyCombination = ({ keys }) => {
+  const isMac = window.navigator.userAgent.includes('Mac');
+
+  return (
+    <div className="flex flex-row gap-1">
+      {keys.map((key, index) => {
+        let displayKey = key;
+        if (key.toLowerCase() === 'cmd' || key.toLowerCase() === 'meta') {
+          displayKey = isMac ? '⌘' : 'Ctrl';
+        }
+        return (
+          <p key={index} className="min-h-[20px] min-w-[20px] bg-slate-3 flex items-center justify-center rounded-[3px]">{displayKey}</p>
+        );
+      })}
+    </div>
+  );
+};
 
 const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   // Replace the items array with your dynamic data
@@ -335,12 +334,12 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   }
 
   return (
-    <motion.div className="bg-slate-1 py-[10px] text-[13px] text-slate-12 flex flex-col border-r border-slate-4"
+    <motion.div className="bg-slate-1 pb-[10px] text-[13px] text-slate-12 flex flex-col border-r border-slate-4"
       animate={controls}
       initial={{
         width: shellExpanded ? "240px" : "56px",
       }}>
-      <div className="flex flex-row w-full items-center justify-start h-[36px]">
+      <div className="flex flex-row w-full items-center justify-start h-[48px]">
         {shellExpanded && (<WorkspacePopover currentWorkspace={currentWorkspace} currentUser={currentUser} />)}
         <Tooltip.Provider>
           <Tooltip.Root>

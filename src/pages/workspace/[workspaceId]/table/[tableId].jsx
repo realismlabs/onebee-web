@@ -9,12 +9,13 @@ import MemoizedMockTable from "@/components/MemoizedMockTable";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
-import { CaretDown, MagnifyingGlass, Gear, X, Pencil, Trash } from "@phosphor-icons/react";
+import { CaretDown, MagnifyingGlass, Gear, X, Pencil, Trash, ClockCounterClockwise } from "@phosphor-icons/react";
 import { useState, Fragment, useRef, useEffect } from "react";
 import IconPickerPopoverEditTable from "@/components/IconPickerPopoverEditTable";
 import { Popover, Transition, Dialog } from "@headlessui/react";
 import InvitePeopleDialog from "@/components/InvitePeopleDialog";
 import { useAuth } from "@clerk/nextjs";
+import { useLocalStorageState } from "@/utils/util"
 
 const TablePopover = ({
   tableName,
@@ -280,10 +281,31 @@ const TablePopover = ({
   );
 };
 
+const KeyCombination = ({ keys }) => {
+  const isMac = window.navigator.userAgent.includes('Mac');
+
+  return (
+    <div className="flex flex-row gap-1">
+      {keys.map((key, index) => {
+        let displayKey = key;
+        if (key.toLowerCase() === 'cmd' || key.toLowerCase() === 'meta') {
+          displayKey = isMac ? '⌘' : 'Ctrl';
+        }
+        return (
+          <p key={index} className="min-h-[20px] min-w-[20px] bg-slate-3 flex items-center justify-center rounded-[3px] text-slate-10">{displayKey}</p>
+        );
+      })}
+    </div>
+  );
+};
+
 export default function TablePage() {
   const { getToken } = useAuth();
   const router = useRouter();
   const { tableId } = router.query;
+  const searchRef = useRef(null);
+  const inputRef = useRef(null);
+
 
   const [isInvitePeopleDialogOpen, setIsInvitePeopleDialogOpen] = useState(false);
   const [customInviteMessage, setCustomInviteMessage] = useState(
@@ -295,6 +317,7 @@ export default function TablePage() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [onboardingTableHint, setOnboardingTableHint] = useLocalStorageState("onboardingTableHint", false);
 
   const handleSearchbarFocus = () => {
     setIsSearchFocused(true);
@@ -356,7 +379,6 @@ export default function TablePage() {
 
 
   // use useEffect to update the customMessage with the table name
-
   useEffect(() => {
     if (tableData) {
       setCustomInviteMessage(
@@ -364,6 +386,54 @@ export default function TablePage() {
       );
     }
   }, [tableData]);
+
+  // useEffect to use Escape key to exit search
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setIsSearchFocused(false);
+      }
+    }
+
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchFocused(false);
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setIsSearchFocused]);
+
+
+  // If user clicks on search, focus on input
+  useEffect(() => {
+    if (isSearchFocused && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isSearchFocused]);
+
+
+  // Cmd/Ctrl + F to focus on search
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'f') {
+        event.preventDefault();  // prevent the browser's default search box
+        setIsSearchFocused(true);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+
 
   if (isTableLoading || isConnectionLoading) {
     return (
@@ -377,6 +447,26 @@ export default function TablePage() {
     return <div>There was an error loading your table</div>;
   }
 
+  const example_column_names = [
+    "order_id",
+    "order_amount",
+    "payment_status",
+    "fulfillment_status",
+    "sku_list",
+    "customer_id",
+    "customer_email",
+  ]
+
+  const example_recent_searches = [
+    "arthurwu1",
+    "Wu",
+    "Zuo",
+    "rust",
+    "commenting",
+    "29318923",
+  ]
+
+
   return (
     <>
       <Head>
@@ -384,7 +474,7 @@ export default function TablePage() {
       </Head>
       <WorkspaceLayout>
         <div className="bg-slate-1 max-h-screen text-slate-12 flex flex-col divide-slate-4 divide-y">
-          <div className="flex flex-row gap-2 items-center py-[12px] px-[12px] h-[48px]">
+          <div className="flex flex-row gap-2 items-center py-[12px] pl-[12px] h-[48px]">
             <div className="flex flex-row items-center justify-center">
               <IconPickerPopoverEditTable
                 iconSvgString={tableData.iconSvgString}
@@ -398,28 +488,116 @@ export default function TablePage() {
                 workspaceId={currentWorkspace?.id}
               />
             </div>
-            <div
-              className={`flex flex-grow bg-slate-3 hover:bg-slate-4 text-[13px] px-[8px] py-[6px] border border-slate-4 ${isSearchFocused ? "ring-2 ring-blue-600" : ""
-                } cursor-pointer rounded-[6px] flex flex-row gap-2 items-center w-[600px]`}
-            >
-              <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
-              <input
-                title="Search"
-                className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10 flex-grow"
-                placeholder="Search.."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onFocus={handleSearchbarFocus}
-                onBlur={handleSearchbarBlur}
-                onKeyDown={handleSearchbarKeyDown}
-              />
-            </div>
-            <div className="flex flex-row gap-2 flex-grow ml-auto justify-end">
+            {/* Search */}
+            {isSearchFocused ? (
+              <>
+                <div
+                  ref={searchRef}
+                  className="flex flex-col flex-grow mx-[120px]"
+                  onClick={() => setIsSearchFocused(true)}
+                  style={{ width: '100%' }}  // Explicitly set width to 100%
+                >
+                  <div className="relative m-[-6px] p-[6px] bg-slate-3 rounded-t-[20px]">
+                    <div
+                      className={`bg-slate-4 hover:bg-slate-5 text-[13px] px-[8px] py-[6px] border border-slate-4 ${isSearchFocused ? "ring-2 ring-blue-600" : ""
+                        } cursor-pointer rounded-full gap-2 flex flex-grow items-center`}
+                    >
+                      <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
+                      <input
+                        ref={inputRef}
+                        title="Search"
+                        className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10 flex-grow"
+                        placeholder={`Search ${tableData.name}..`}
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        onFocus={handleSearchbarFocus}
+                        onBlur={handleSearchbarBlur}
+                        onKeyDown={handleSearchbarKeyDown}
+                      />
+                      <KeyCombination keys={['cmd', 'F']} />
+                    </div>
+                    <div className="h-auto mt-1 mx-[-6px] px-4 py-3 rounded-b-[20px] absolute bg-slate-3 w-full text-white shadow-2xl">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex flex-row gap-2">
+                          <p className="text-slate-11 text-[12px]">Search by column</p>
+                          <p className="text-slate-10 text-[12px] flex-grow">Or type `column:` in the searchbar</p>
+                          <p className="text-slate-12 text-[12px]">Advanced search</p>
+                        </div>
+                        <div className="flex flex-row gap-2 overflow-x-scroll">
+                          {example_column_names.map((column_name) => {
+                            return (
+                              <div
+                                key={column_name}
+                                className="bg-slate-1 hover:bg-slate-2 text-[13px] px-[8px] py-[4px] border border-slate-4 cursor-pointer rounded-md gap-2 flex items-center"
+                              >
+                                <p className="text-slate-12">{column_name}</p>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2 mt-4">
+                        <div className="flex flex-row gap-2">
+                          <p className="text-slate-11 text-[12px]">Recent searches</p>
+                        </div>
+                        <div className="flex flex-row gap-2 overflow-x-scroll">
+                          {/* set up grid 3 column layout, make each column take up as kmuch space as*/}
+                          <div className="grid grid-cols-3 gap-2 w-full">
+                            {example_recent_searches.map((recent_search) => {
+                              return (
+                                <div
+                                  key={recent_search}
+                                  className="hover:bg-slate-5 text-[13px] py-[4px] cursor-pointer rounded-md gap-2 flex flex-grow items-center"
+                                >
+                                  <ClockCounterClockwise size={16} weight="bold" className="text-slate-11" />
+                                  <p className="text-slate-12">{recent_search}</p>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  ref={searchRef}
+                  className="flex flex-col flex-grow mx-[120px]"
+                  onClick={() => setIsSearchFocused(true)}
+                  style={{ width: '100%' }}  // Explicitly set width to 100%
+                >
+                  <div
+                    className={`bg-slate-4 hover:bg-slate-5 text-[13px] px-[8px] py-[6px] border border-slate-4 ${isSearchFocused ? "ring-2 ring-blue-600" : ""
+                      } cursor-pointer rounded-full gap-2 flex flex-grow items-center`}
+                  >
+                    <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
+                    <input
+                      ref={inputRef}
+                      title="Search"
+                      className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-10 flex-grow"
+                      placeholder={`Search ${tableData.name}..`}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      onFocus={handleSearchbarFocus}
+                      onBlur={handleSearchbarBlur}
+                      onKeyDown={handleSearchbarKeyDown}
+                    />
+                    <KeyCombination keys={['cmd', 'F']} />
+                  </div>
+                </div>
+              </>
+            )}
+
+
+            <div className="flex flex-row gap-2 flex-none justify-end">
               <div className="bg-slate-2 hover:bg-slate-3 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
                 <p>Columns</p>
                 <CaretDown size={12} className="text-slate-11" />
               </div>
-              <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
+              <div className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
                 onClick={() => setIsInvitePeopleDialogOpen(true)}>
                 <p>Share</p>
               </div>
