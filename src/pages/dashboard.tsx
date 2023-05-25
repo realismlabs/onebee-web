@@ -90,13 +90,18 @@ export default function Welcome() {
 
     // Only set next_route if there are no errors and loading has completed
     if (!isLoading && !isError) {
-      if (currentWorkspacesIdsForUser.length > 0) {
-        next_route = `/workspace/${currentWorkspacesIdsForUser[0]}`;
+      // currentWorkspaceIdsForUser must be an array before continuing
+      if (!Array.isArray(currentWorkspacesIdsForUser)) {
       } else {
-        next_route = `/welcome`;
+        if (currentWorkspacesIdsForUser.length > 0) {
+          next_route = `/workspace/${currentWorkspacesIdsForUser[0]}`;
+        } else {
+          next_route = `/welcome`;
+        }
       }
-
-      router.push(next_route);
+      if (next_route) {
+        router.push(next_route);
+      }
     }
   }, [isLoading, isError, currentWorkspacesIdsForUser, router]);
   // ------------------------------------------------------------------
