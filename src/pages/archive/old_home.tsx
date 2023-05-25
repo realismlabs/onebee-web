@@ -8,7 +8,7 @@ import IconEyebrow from "../../components/IconEyebrow";
 import React, { useState } from "react";
 import Link from "next/link";
 import Footer from "../../components/Footer";
-import Header from "../../components/Header";
+import Header from "../../components/MarketingHeader";
 import LogoSvgAnimation from "../../components/LogoSvgAnimation";
 import useScreenSize from "../../components/useScreenSize";
 

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import InsetButton from "../components/InsetButton";
+import InsetButton from "./InsetButton";
 import Image from "next/image";
 import Link from "next/link";
+// get useAuthUser from context
+import { useAuth } from "@clerk/nextjs";
 
 function Header() {
   const [divHeight, setDivHeight] = useState(80);
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,14 +61,23 @@ function Header() {
               )}
             </div>
           </div>
-          <div>
+          {isSignedIn ? (
             <InsetButton
-              bgColor={`var(--slate1)`}
-              href={`/signup`}
-              text={`Sign up`}
-              highlightValue={"0.2"}
+              bgColor={`#4315F3`}
+              href={`/dashboard`}
+              text={`Dashboard →`}
+              highlightValue={"0.4"}
             />
-          </div>
+          ) : (
+            <div>
+              <InsetButton
+                bgColor={`var(--slate1)`}
+                href={`/signup`}
+                text={`Sign up`}
+                highlightValue={"0.2"}
+              />
+            </div>
+          )}
         </div>
       </nav>
     </header>
