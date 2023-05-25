@@ -87,7 +87,7 @@ export default function Connections() {
       const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
   });
 
   const {
@@ -109,7 +109,7 @@ export default function Connections() {
       );
       return response;
     },
-    enabled: currentWorkspace?.id !== null && selectedConnectionId !== null,
+    enabled: !!currentWorkspace?.id && !!selectedConnectionId,
   });
 
   const deleteConnectionMutation = useMutation(deleteConnection, {

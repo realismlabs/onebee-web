@@ -278,7 +278,7 @@ export default function Settings() {
       const response = await getWorkspaceMemberships(currentWorkspace?.id, jwt);
       return response;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
   });
 
   //  fetch user data for each membership
@@ -291,7 +291,7 @@ export default function Settings() {
           const response = await getUser(membership.userId, jwt);
           return response;
         },
-        enabled: membership.userId !== null,
+        enabled: !!membership?.userId,
       };
     }),
   });

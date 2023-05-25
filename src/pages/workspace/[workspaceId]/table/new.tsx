@@ -861,7 +861,7 @@ export default function CreateTable() {
       const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
       return response;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
   });
 
   if (isUserLoading || isTablesQueryLoading || isConnectionsLoading) {

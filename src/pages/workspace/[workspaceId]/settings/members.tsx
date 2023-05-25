@@ -548,7 +548,7 @@ export default function Members() {
       const response = await getWorkspaceMemberships(currentWorkspace?.id, jwt);
       return response;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
   });
 
   console.log("membershipsData:", membershipsData);
@@ -566,7 +566,7 @@ export default function Members() {
             return null;
           }
         },
-        enabled: membership.userId !== null,
+        enabled: !!membership.userId,
       };
     }),
   });
@@ -585,7 +585,7 @@ export default function Members() {
       const response = await getWorkspaceInvites(currentWorkspace?.id, jwt);
       return response;
     },
-    enabled: currentWorkspace?.id !== null,
+    enabled: !!currentWorkspace?.id,
   });
 
   const updateWorkspaceMutation = useMutation(updateWorkspace, {

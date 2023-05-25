@@ -18,6 +18,6 @@ export const useCurrentUser = () => {
       // console.log("awu test gapp", response)
       return result
     },
-    enabled: user?.id !== null,
+    enabled: !!user?.id,
   });
 };

@@ -32,7 +32,7 @@ export default function Welcome() {
       const result = await getUserMemberships(currentUser?.id, jwt);
       return result;
     },
-    enabled: currentUser?.id !== null,
+    enabled: !!currentUser?.id,
   });
 
   console.log("userMembershipsData", userMembershipsData);
@@ -53,9 +53,8 @@ export default function Welcome() {
             },
             onError: (error: any) => {
               console.error("Error fetching workspace details:", error);
-              // handle the error here
             },
-            enabled: membership?.workspaceId !== null,
+            enabled: !!membership?.workspaceId,
           };
         })
       : [],
@@ -81,23 +80,25 @@ export default function Welcome() {
   const isLoading =
     isUserLoading ||
     currentWorkspacesForUserIsLoading.some((isLoading) => isLoading);
+
   const isError =
     userError || currentWorkspacesForUserError.some((error) => error);
 
   useEffect(() => {
     let next_route = null;
 
-    // Only set next_route if there are no errors and loading has completed
-    if (!isLoading && !isError) {
+    // Only set next_route if userMembershipsData is not null or undefined
+    if (!!userMembershipsData && Array.isArray(currentWorkspacesIdsForUser)) {
       if (currentWorkspacesIdsForUser.length > 0) {
         next_route = `/workspace/${currentWorkspacesIdsForUser[0]}`;
-      } else {
+      } else if (currentWorkspacesIdsForUser.length === 0) {
         next_route = `/welcome`;
       }
-
-      router.push(next_route);
+      if (next_route) {
+        router.push(next_route);
+      }
     }
-  }, [isLoading, isError, currentWorkspacesIdsForUser, router]);
+  }, [userMembershipsData, currentWorkspacesIdsForUser, router]);
   // ------------------------------------------------------------------
 
   if (isLoading) {
