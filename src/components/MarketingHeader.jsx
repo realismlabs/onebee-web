@@ -67,6 +67,7 @@ function Header() {
               href={`/dashboard`}
               text={`Dashboard →`}
               highlightValue={"0.4"}
+              target={`_self`}
             />
           ) : (
             <div>
@@ -75,6 +76,7 @@ function Header() {
                 href={`/signup`}
                 text={`Sign up`}
                 highlightValue={"0.2"}
+                target={`_self`}
               />
             </div>
           )}

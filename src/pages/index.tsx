@@ -473,6 +473,7 @@ export default function Home() {
                   bgColor={`#4315F3`}
                   href={`/signup`}
                   text={`Get started`}
+                  target={`_self`}
                   highlightValue={"0.4"}
                 />
               </div>
