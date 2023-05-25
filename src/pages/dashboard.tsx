@@ -82,6 +82,7 @@ export default function Welcome() {
   const isLoading =
     isUserLoading ||
     currentWorkspacesForUserIsLoading.some((isLoading) => isLoading);
+
   const isError =
     userError || currentWorkspacesForUserError.some((error) => error);
 
@@ -93,8 +94,8 @@ export default function Welcome() {
       currentWorkspacesIdsForUser
     );
 
-    // Only set next_route if there are no errors and loading has completed
-    if (!isLoading && !isError) {
+    // Only set next_route if userMembershipsData is not null or undefined
+    if (!!userMembershipsData) {
       if (!Array.isArray(currentWorkspacesIdsForUser)) {
         console.log("currentWorkspacesIdsForUser is not an array, no route");
       } else {
