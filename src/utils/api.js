@@ -95,8 +95,7 @@ export const createInvite = async ({
   );
 
   const existingInvite = existingInvites.find(
-    (invite) => invite.recipientEmail === recipientEmailCleaned
-  );
+    (invite) => invite.recipientEmail === recipientEmailCleaned && !invite.accepted && invite.workspaceId === workspaceId);
 
   const existingUser = existingUsers.find(
     (user) => user.email === recipientEmailCleaned

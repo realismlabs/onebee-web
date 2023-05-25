@@ -164,7 +164,6 @@ const InvitePeopleDialog = ({
             // This catch block is for any errors that occur outside of the inviteAllTeammates function
             console.error(err);
             setLoading(false);
-            setToastMessage("An unexpected error occurred.");
           });
       }
     }

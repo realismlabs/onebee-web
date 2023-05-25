@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import { Toaster, toast } from "sonner";
 import Head from "next/head";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
@@ -29,6 +30,8 @@ import {
   Trash,
   CaretDown,
   Check,
+  XCircle,
+  CheckCircle,
 } from "@phosphor-icons/react";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import {
@@ -76,17 +79,35 @@ const MemberPopover = ({
           membershipId: targetMembershipId,
           jwt,
         });
+        toast(`Successfully removed workspace member`, {
+          icon: (
+            <CheckCircle
+              size={20}
+              weight="fill"
+              className="text-green-500 mt-1.5"
+            />
+          ),
+        });
         if (deletedMembership.userId === currentUser.id) {
           await signOut();
         }
       } catch (error) {
         console.error("Error deleting membership:", error);
+        toast(`Unexpected error occurred`, {
+          icon: (
+            <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+          ),
+        });
       }
     } else {
       // alert that user is the last admin and cannot be removed
-      alert(
-        `You are the last admin. If you want to delete the workspace, please do so from the settings page. Otherwise, please make another member an admin before removing yourself.`
-      );
+      toast(`Workspace must have at least one admin`, {
+        icon: (
+          <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+        ),
+        description: `You are the last admin. If you want to delete the workspace, please do so from the settings page. Otherwise, please make another member an admin before removing yourself.`,
+        duration: 10000,
+      });
     }
   };
 
@@ -200,7 +221,12 @@ const MemberRolePopover = ({
   const handleChangeMemberRole = async (targetUserRole: string) => {
     // check if user's own membership role is admin
     if (currentUserMembership?.role !== "admin") {
-      alert("You must be an admin to change a member's role.");
+      toast("You must be an admin to change a member's role.", {
+        icon: (
+          <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+        ),
+        duration: 10000,
+      });
       return;
     }
 
@@ -217,9 +243,13 @@ const MemberRolePopover = ({
 
       if (otherAdmins == 0) {
         // alert that user is the last admin and cannot be removed
-        alert(
-          `You are the last admin. If you want to demote yourself, then make another member an admin first.`
-        );
+        toast(`Workspace must have at least one admin`, {
+          icon: (
+            <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+          ),
+          description: `You are the last admin. If you want to demote yourself, then make another member an admin first.`,
+          duration: 10000,
+        });
         return;
       }
     }
@@ -233,8 +263,22 @@ const MemberRolePopover = ({
         },
         jwt,
       });
+      toast(`Successfully changed member role`, {
+        icon: (
+          <CheckCircle
+            size={20}
+            weight="fill"
+            className="text-green-500 mt-1.5"
+          />
+        ),
+      });
     } catch (error) {
-      alert(`Error updating membership: + ${error}`);
+      console.error("Error updating workspace:", error);
+      toast(`Unexpected error occurred`, {
+        icon: (
+          <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+        ),
+      });
     }
   };
 
@@ -370,12 +414,30 @@ const InvitePopover = ({
   const handleDeleteInvite = async () => {
     // User is revoking an invite
     const jwt = await getToken({ template: "test" });
-    const deletedWorkspaceInvite =
+    try {
       await deleteWorkspaceInviteMutation.mutateAsync({
         workspaceId: currentWorkspace.id,
         inviteId: workspaceInvite.id,
         jwt: jwt,
       });
+      toast(`Successfully revoked invite`, {
+        icon: (
+          <CheckCircle
+            size={20}
+            weight="fill"
+            className="text-green-500 mt-1.5"
+          />
+        ),
+      });
+    } catch (error) {
+      console.error("Error updating workspace:", error);
+      toast(`Unexpected error occurred`, {
+        icon: (
+          <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+        ),
+        description: `Error removing invite + ${error}`,
+      });
+    }
   };
 
   const queryClient = useQueryClient();
@@ -554,8 +616,23 @@ export default function Members() {
         },
         jwt,
       });
+      toast(`Successfully removed allowed domain`, {
+        icon: (
+          <CheckCircle
+            size={20}
+            weight="fill"
+            className="text-green-500 mt-1.5"
+          />
+        ),
+      });
     } catch (error) {
-      console.error("Error updating workspace:", error);
+      console.error("Error removing allowed domain:", error);
+      toast(`Unexpected error occurred`, {
+        icon: (
+          <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+        ),
+        description: `Error removing invite + ${error}`,
+      });
     }
   };
 
@@ -606,8 +683,23 @@ export default function Members() {
       if (response) {
         closeAddAllowedDomainDialog();
       }
+      toast(`Successfully added allowed domain`, {
+        icon: (
+          <CheckCircle
+            size={20}
+            weight="fill"
+            className="text-green-500 mt-1.5"
+          />
+        ),
+      });
     } catch (error) {
-      console.error("Error deleting workspace:", error);
+      console.error("Error adding allowed domain:", error);
+      toast(`Unexpected error occurred`, {
+        icon: (
+          <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+        ),
+        description: `Error removing invite + ${error}`,
+      });
     }
   };
 
@@ -725,17 +817,6 @@ export default function Members() {
                         </Dialog.Overlay>
                         <Dialog.Panel className="absolute z-30 top-[25%] left-[50%] translate-x-[-50%] translate-y-[-25%] w-[400px]">
                           <div className="flex flex-col bg-slate-2 border border-slate-4 rounded-[8px] w-full p-[24px] text-slate-12">
-                            {/* Close */}
-                            <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
-                              <button
-                                onClick={() => {
-                                  closeAddAllowedDomainDialog();
-                                }}
-                                className="text-slate-11 hover:bg-slate-4 rounded-md h-[24px] w-[24px] ml-[12px] flex items-center justify-center"
-                              >
-                                <X size={16} />
-                              </button>
-                            </div>
                             <Dialog.Title className="text-[14px]">
                               Add allowed domain
                             </Dialog.Title>
@@ -781,6 +862,17 @@ export default function Members() {
                                 Add domain
                               </button>
                             </div>
+                          </div>
+                          {/* Close */}
+                          <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">
+                            <button
+                              onClick={() => {
+                                closeAddAllowedDomainDialog();
+                              }}
+                              className="text-slate-11 hover:bg-slate-4 rounded-md h-[24px] w-[24px] ml-[12px] flex items-center justify-center"
+                            >
+                              <X size={16} />
+                            </button>
                           </div>
                         </Dialog.Panel>
                       </Dialog>
@@ -871,17 +963,6 @@ export default function Members() {
                       >
                         <p>Invite people</p>
                       </div>
-                      <InvitePeopleDialog
-                        isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
-                        setIsInvitePeopleDialogOpen={
-                          setIsInvitePeopleDialogOpen
-                        }
-                        currentUser={currentUser}
-                        currentWorkspace={currentWorkspace}
-                        customMessage={customMessage}
-                        setCustomMessage={setCustomMessage}
-                        emailTemplateLanguage={""}
-                      />
                     </div>
                     <div className="flex flex-col border-slate-4 rounded-lg border">
                       {membershipsData.length > 0 &&
@@ -1022,6 +1103,29 @@ export default function Members() {
             </div>
           </div>
         </div>
+        <Toaster
+          theme="dark"
+          expand
+          visibleToasts={6}
+          toastOptions={{
+            style: {
+              background: "var(--slate1)",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              borderColor: "var(--slate4)",
+            },
+          }}
+        />
+        <InvitePeopleDialog
+          isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
+          setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
+          currentUser={currentUser}
+          currentWorkspace={currentWorkspace}
+          customMessage={customMessage}
+          setCustomMessage={setCustomMessage}
+          emailTemplateLanguage={""}
+        />
       </WorkspaceLayout>
     </>
   );
