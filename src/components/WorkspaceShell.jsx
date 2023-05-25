@@ -237,7 +237,7 @@ const KeyCombination = ({ keys }) => {
       {keys.map((key, index) => {
         let displayKey = key;
         if (key.toLowerCase() === 'cmd' || key.toLowerCase() === 'meta') {
-          displayKey = isMac ? '⌘' : 'ctrl';
+          displayKey = isMac ? '⌘' : 'Ctrl';
         }
         return (
           <p key={index} className="min-h-[20px] min-w-[20px] bg-slate-3 flex items-center justify-center rounded-[3px]">{displayKey}</p>
