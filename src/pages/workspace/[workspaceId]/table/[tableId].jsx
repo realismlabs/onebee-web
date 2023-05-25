@@ -15,6 +15,7 @@ import IconPickerPopoverEditTable from "@/components/IconPickerPopoverEditTable"
 import { Popover, Transition, Dialog } from "@headlessui/react";
 import InvitePeopleDialog from "@/components/InvitePeopleDialog";
 import { useAuth } from "@clerk/nextjs";
+import { useLocalStorageState } from "@/utils/util"
 
 const TablePopover = ({
   tableName,
@@ -295,6 +296,7 @@ export default function TablePage() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [onboardingTableHint, setOnboardingTableHint] = useLocalStorageState("onboardingTableHint", false);
 
   const handleSearchbarFocus = () => {
     setIsSearchFocused(true);
