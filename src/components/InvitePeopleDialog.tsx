@@ -1,3 +1,4 @@
+import { Toaster, toast } from "sonner";
 import React, { useState, useEffect, FC, Fragment } from "react";
 import Link from "next/link";
 import router from "next/router";
@@ -14,43 +15,6 @@ import { motion } from "framer-motion";
 import { createInvite } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@clerk/nextjs";
-
-interface ToastProps {
-  message: string;
-  duration: number;
-  setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
-  showToast: boolean;
-  toastType: "success" | "error";
-}
-
-const Toast: React.FC<ToastProps> = ({
-  message,
-  duration,
-  setShowToast,
-  showToast,
-  toastType,
-}) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowToast(false);
-    }, duration);
-
-    return () => clearTimeout(timer);
-  }, [duration]);
-
-  if (!showToast) return null;
-
-  return (
-    <div className="mt-12 pl-[12px] pr-[20px] py-[8px] text-[14px] bg-slate-4 text-slate-12 rounded-md shadow-lg z-50 flex flex-row gap-2 items-center">
-      {toastType === "success" ? (
-        <CheckCircle size={20} weight="fill" className="text-green-500" />
-      ) : (
-        <XCircle size={20} weight="fill" className="text-red-500" />
-      )}
-      {message}
-    </div>
-  );
-};
 
 const InvitePeopleDialog = ({
   isInvitePeopleDialogOpen,
@@ -79,10 +43,6 @@ const InvitePeopleDialog = ({
   const [emailAddresses, setEmailAddresses] = useState<string>("");
   const [isValid, setIsValid] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [showToast, setShowToast] = useState(false);
-  const [toastType, setToastType] = useState<"success" | "error">("success");
-  const [toastDuration, setToastDuration] = useState(3000); // in milliseconds
-  const [toastMessage, setToastMessage] = useState("");
 
   const handleEmailAddressChange = (e: any) => {
     setEmailAddresses(e.target.value);
@@ -124,8 +84,6 @@ const InvitePeopleDialog = ({
       }
       if (regex_result === true) {
         setLoading(true);
-        setShowToast(false);
-
         const delay = new Promise<void>((resolve) => setTimeout(resolve, 2000));
 
         // count the number of elements in csv string emailAddresses
@@ -147,53 +105,66 @@ const InvitePeopleDialog = ({
                 recipientEmail,
                 jwt: token,
               });
+              toast(`Invited ${recipientEmail}!`, {
+                icon: (
+                  <CheckCircle
+                    size={20}
+                    weight="fill"
+                    className="text-green-500"
+                  />
+                ),
+              });
             } catch (err: any) {
               allSuccess = false; // update the flag to false when an error occurs
               if (err.message === "user_already_member") {
-                setToastMessage(
-                  `Error: User with email ${recipientEmail} is already a member`
+                toast(
+                  `${recipientEmail} is already a member of this workspace.`,
+                  {
+                    icon: (
+                      <XCircle
+                        size={20}
+                        weight="fill"
+                        className="text-red-500 mt-1.5"
+                      />
+                    ),
+                  }
                 );
-                setToastType("error");
-                setToastDuration(8000);
-                setShowToast(true);
                 // No need to throw the error as we want to continue with the loop
               } else if (err.message === "user_already_invited") {
-                setToastMessage(
-                  `Error: User with email ${recipientEmail} has already been invited`
+                toast(
+                  `Error: User with email ${recipientEmail} has already been invited`,
+                  {
+                    icon: (
+                      <XCircle
+                        size={20}
+                        weight="fill"
+                        className="text-red-500 mt-1.5"
+                      />
+                    ),
+                  }
                 );
-                setToastType("error");
-                setToastDuration(8000);
-                setShowToast(true);
               } else {
-                setToastMessage(
-                  `An unexpected error occurred while inviting ${recipientEmail}.`
-                );
-                setToastType("error");
-                setToastDuration(8000);
-                setShowToast(true);
-                // No need to throw the error as we want to continue with the loop
+                toast(`Error: Unexpected error occurred`, {
+                  icon: (
+                    <XCircle size={20} weight="fill" className="text-red-500" />
+                  ),
+                });
               }
             }
           }
           return allSuccess; // return the flag indicating the success status of all invitations
         };
 
-        Promise.all([inviteAllTeammates(), delay])
+        Promise.all([inviteAllTeammates()])
           .then(([allSuccess]) => {
             setLoading(false);
             setIsInvitePeopleDialogOpen(false);
-            if (allSuccess) {
-              // only show the success message if all invitations were successful
-              setToastMessage(inviteResultMessage);
-              setShowToast(true);
-            }
           })
           .catch((err) => {
             // This catch block is for any errors that occur outside of the inviteAllTeammates function
             console.error(err);
             setLoading(false);
             setToastMessage("An unexpected error occurred.");
-            setShowToast(true);
           });
       }
     }
@@ -397,23 +368,21 @@ const InvitePeopleDialog = ({
           </Dialog.Panel>
         </div>
       </Dialog>
-      <Transition
-        show={showToast}
-        enter="transition-all ease-in-out duration-300"
-        enterFrom="opacity-0 -translate-y-5"
-        enterTo="opacity-100 translate-y-0"
-        className="fixed top-0 left-1/2 -translate-x-1/2"
-      >
-        <div className=" text-slate-12 rounded-md shadow-lg transform -translate-y-25 transition-transform">
-          <Toast
-            message={toastMessage}
-            duration={toastDuration} // Duration of the Toast in milliseconds
-            setShowToast={setShowToast}
-            showToast={showToast}
-            toastType={toastType}
-          />
-        </div>
-      </Transition>
+      <div className="flex flex-row items-start bg-slate-9"></div>
+      <Toaster
+        theme="dark"
+        expand
+        visibleToasts={6}
+        toastOptions={{
+          style: {
+            background: "var(--slate1)",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-start",
+            borderColor: "var(--slate4)",
+          },
+        }}
+      />
     </>
   );
 };
