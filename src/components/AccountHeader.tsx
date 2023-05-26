@@ -17,7 +17,7 @@ export const AccountHeader: React.FC<AccountHeaderProps> = ({ email }) => {
   };
 
   return (
-    <div className="w-full flex flex-row min-h-16 items-center p-12 z-50">
+    <div className="w-full flex flex-row min-h-16 items-center px-12 py-6 z-50">
       <div className="flex flex-col grow items-start">
         <p className="text-[13px] text-slate-11 mb-1">Logged in as:</p>
         <p className="text-[13px] text-slate-12 font-medium">{email}</p>
