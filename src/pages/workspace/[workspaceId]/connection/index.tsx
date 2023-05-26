@@ -257,13 +257,17 @@ export default function Connections() {
                   <div className="max-w-[720px] w-full flex items-center">
                     <div className="flex flex-col mt-[48px] gap-4 items-center w-full">
                       <div className="flex flex-row pb-2 border-b border-slate-4 w-full items-center gap-2">
-                        <p className="text-[14px]">Connection details</p>
-                        <button
-                          className="bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px] ml-auto"
-                          onClick={() => setIsEditSnowflakeDialogOpen(true)}
-                        >
-                          Edit
-                        </button>
+                        <p className="text-[14px] mr-auto">
+                          Connection details
+                        </p>
+                        {selectedConnection?.connectionType === "snowflake" && (
+                          <button
+                            className="bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                            onClick={() => setIsEditSnowflakeDialogOpen(true)}
+                          >
+                            Edit
+                          </button>
+                        )}
                         <button
                           className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
                           onClick={openDeleteDialog}
