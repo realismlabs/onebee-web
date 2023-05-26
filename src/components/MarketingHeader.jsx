@@ -41,7 +41,7 @@ function Header() {
               <Image
                 width="112"
                 height="29"
-                src="/images/logo_darker.svg"
+                src="/images/logo_darker_v2.svg"
                 alt="Logo"
               />
             </Link>

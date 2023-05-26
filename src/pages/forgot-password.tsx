@@ -134,7 +134,7 @@ const SignInPage: NextPage = () => {
               <header className="fixed top-8">
                 <Link href="/" tabIndex={-1}>
                   <Image
-                    src="/images/logo_darker.svg"
+                    src="/images/logo_darker_v2.svg"
                     width={100}
                     height={40}
                     alt="Dataland logo"
