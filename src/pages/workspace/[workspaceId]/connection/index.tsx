@@ -21,6 +21,7 @@ import { Dialog } from "@headlessui/react";
 import Image from "next/image";
 import Head from "next/head";
 import { useAuth } from "@clerk/nextjs";
+import EditSnowflakeDialog from "@/components/connections/EditSnowflakeDialog";
 
 function findSelectedConnection(
   connectionsData: any,
@@ -45,6 +46,9 @@ export default function Connections() {
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteErrorMessage, setDeleteErrorMessage] = useState("");
+
+  const [isEditSnowflakeDialogOpen, setIsEditSnowflakeDialogOpen] =
+    useState(false);
 
   const openDeleteDialog = () => {
     setIsDeleteDialogOpen(true);
@@ -252,10 +256,16 @@ export default function Connections() {
                 <div className="flex items-center justify-center">
                   <div className="max-w-[720px] w-full flex items-center">
                     <div className="flex flex-col mt-[48px] gap-4 items-center w-full">
-                      <div className="flex flex-row pb-2 border-b border-slate-4 w-full items-center">
+                      <div className="flex flex-row pb-2 border-b border-slate-4 w-full items-center gap-2">
                         <p className="text-[14px]">Connection details</p>
                         <button
-                          className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px] ml-auto"
+                          className="bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px] ml-auto"
+                          onClick={() => setIsEditSnowflakeDialogOpen(true)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
                           onClick={openDeleteDialog}
                         >
                           Delete
@@ -332,6 +342,13 @@ export default function Connections() {
                           </div>
                         </Dialog.Panel>
                       </Dialog>
+                      <EditSnowflakeDialog
+                        connectionData={selectedConnection}
+                        isEditSnowflakeDialogOpen={isEditSnowflakeDialogOpen}
+                        setIsEditSnowflakeDialogOpen={
+                          setIsEditSnowflakeDialogOpen
+                        }
+                      />
                       {selectedConnectionId &&
                         selectedConnection?.connectionType === "snowflake" && (
                           <div className="flex flex-col gap-4 w-full">
@@ -400,6 +417,23 @@ export default function Connections() {
                             </div>
                             <div className="flex flex-row gap-3 text-[13px]">
                               <p className="min-w-[180px] text-slate-11">
+                                Connection ID
+                              </p>
+                              <p className="">{selectedConnection?.id}</p>
+                            </div>
+                            <div className="flex flex-row gap-3 text-[13px]">
+                              <p className="min-w-[180px] text-slate-11">
+                                Connection type
+                              </p>
+                              <div className="flex flex-row gap-2 items-center">
+                                <div className="h-[20px] w-[20px]">
+                                  <LogoSnowflake />
+                                </div>
+                                <p>Snowflake</p>
+                              </div>
+                            </div>
+                            <div className="flex flex-row gap-3 text-[13px]">
+                              <p className="min-w-[180px] text-slate-11">
                                 Account identifier
                               </p>
                               <p>{selectedConnection?.accountIdentifier}</p>
@@ -422,32 +456,63 @@ export default function Connections() {
                             </div>
                             <div className="flex flex-row gap-3 text-[13px]">
                               <p className="min-w-[180px] text-slate-11">
+                                Auth method
+                              </p>
+                              <p>{selectedConnection?.snowflakeAuthMethod}</p>
+                            </div>
+                            {selectedConnection?.snowflakeAuthMethod ===
+                              "user_pass" && (
+                              <>
+                                <div className="flex flex-row gap-3 text-[13px]">
+                                  <p className="min-w-[180px] text-slate-11">
+                                    Username
+                                  </p>
+                                  <p>{selectedConnection?.basicAuthUsername}</p>
+                                </div>
+                                <div className="flex flex-row gap-3 text-[13px]">
+                                  <p className="min-w-[180px] text-slate-11">
+                                    Password
+                                  </p>
+                                  <p className="font-mono">
+                                    {selectedConnection?.basicAuthPassword}
+                                  </p>
+                                </div>
+                              </>
+                            )}
+                            {selectedConnection?.snowflakeAuthMethod ===
+                              "key_passphrase" && (
+                              <>
+                                <div className="flex flex-row gap-3 text-[13px]">
+                                  <p className="min-w-[180px] text-slate-11">
+                                    Username
+                                  </p>
+                                  <p>
+                                    {selectedConnection?.keyPairAuthUsername}
+                                  </p>
+                                </div>
+                                <div className="flex flex-row gap-3 text-[13px]">
+                                  <p className="min-w-[180px] text-slate-11">
+                                    Private key
+                                  </p>
+                                  <p className="font-mono">
+                                    ----encrypted-on-server----
+                                  </p>
+                                </div>
+                                <div className="flex flex-row gap-3 text-[13px]">
+                                  <p className="min-w-[180px] text-slate-11">
+                                    Private key passphrase
+                                  </p>
+                                  <p className="font-mono">
+                                    ----encrypted-on-server----
+                                  </p>
+                                </div>
+                              </>
+                            )}
+                            <div className="flex flex-row gap-3 text-[13px]">
+                              <p className="min-w-[180px] text-slate-11">
                                 Role
                               </p>
                               <p>{selectedConnection?.role}</p>
-                            </div>
-                            <div className="flex flex-row gap-3 text-[13px]">
-                              <p className="min-w-[180px] text-slate-11">
-                                Username
-                              </p>
-                              <p>{selectedConnection?.basicAuthUsername}</p>
-                            </div>
-                            <div className="flex flex-row gap-3 text-[13px]">
-                              <p className="min-w-[180px] text-slate-11">
-                                Connection type
-                              </p>
-                              <div className="flex flex-row gap-2 items-center">
-                                <div className="h-[20px] w-[20px]">
-                                  <LogoSnowflake />
-                                </div>
-                                <p>Snowflake</p>
-                              </div>
-                            </div>
-                            <div className="flex flex-row gap-3 text-[13px]">
-                              <p className="min-w-[180px] text-slate-11">
-                                Connection ID
-                              </p>
-                              <p className="">{selectedConnection?.id}</p>
                             </div>
                           </div>
                         )}

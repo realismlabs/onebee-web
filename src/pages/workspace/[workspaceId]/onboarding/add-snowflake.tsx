@@ -127,6 +127,7 @@ export default function AddSnowflake() {
     keyPairAuthPrivateKey,
     keyPairAuthPrivateKeyPassphrase,
     role,
+    snowflakeAuthMethod,
     connectionType,
   };
 
@@ -395,7 +396,7 @@ export default function AddSnowflake() {
                 value={snowflakeAuthMethod}
               >
                 <option value="user_pass">Username / password</option>
-                <option value="key_value">Key pair</option>
+                <option value="key_passphrase">Key pair</option>
               </select>
             </div>
             <div>

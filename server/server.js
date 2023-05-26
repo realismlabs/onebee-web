@@ -671,7 +671,7 @@ app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), a
 });
 
 // updateConnectionDisplayName
-app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update', ClerkExpressRequireAuth(), async (req, res) => {
+app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update_name', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
   const connectionId = parseInt(req.params.connectionId, 10);
   const { name } = req.body;
@@ -692,6 +692,31 @@ app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update', Clerk
       'UPDATE "connections" SET "name"=$1 WHERE "workspaceId"=$2 AND "id"=$3 RETURNING *',
       [name, workspaceId, connectionId]
     );
+    const updatedConnection = result.rows[0];
+    console.log('Updated connection', updatedConnection);
+    res.json(updatedConnection);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error updating connection" });
+  } finally {
+    client.release();
+  }
+});
+
+// updateConnection
+app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const connectionId = parseInt(req.params.connectionId, 10);
+  const updateFields = req.body;
+  // Generate the SQL query
+  const setFields = Object.keys(updateFields).map((field, index) => `"${field}"=$${index + 1}`).join(", ");
+  const query = `UPDATE "connections" SET ${setFields} WHERE "workspaceId"=$${Object.keys(updateFields).length + 1} AND "id"=$${Object.keys(updateFields).length + 2} RETURNING *`;
+
+  const values = [...Object.values(updateFields), workspaceId, connectionId];
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query(query, values);
     const updatedConnection = result.rows[0];
     console.log('Updated connection', updatedConnection);
     res.json(updatedConnection);
