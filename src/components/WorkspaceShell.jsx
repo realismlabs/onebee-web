@@ -107,8 +107,8 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
           >
             <div className="px-[8px] text-[13px] cursor-pointer flex w-full">
               <div className="px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center w-full">
-                <div className="animate-pulse bg-slate-4 rounded-md w-[24px] h-[24px]"><div className="opacity-0">Placeholder</div></div>
-                <div className="animate-pulse bg-slate-4 rounded-md h-[20px] w-full"><div className="opacity-0">Placeholder</div></div>
+                <div className="skeleton animate-pulse bg-slate-4 rounded-md w-[24px] h-[24px]"><div className="opacity-0">Invisible skeleton</div></div>
+                <div className="skeleton animate-pulse bg-slate-4 rounded-md h-[20px] w-full"><div className="opacity-0">Invisible skeleton</div></div>
               </div>
             </div>
           </div>
