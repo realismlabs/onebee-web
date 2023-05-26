@@ -97,7 +97,51 @@ function WorkspacePopoverContents({ currentWorkspace, currentUser }) {
 
 
   if (currentWorkspacesForUserIsLoading.some((isLoading) => isLoading)) {
-    return <div className="h-screen bg-slate-1 text-slate-12">Loading...</div>;
+    return <>
+      <div className="px-[16px] pt-[13px] pb-[4px] text-slate-11 text-[13px]">{currentUser.email}</div>
+      <div className="max-h-[60vh] overflow-y-scroll flex flex-col w-full">
+        {(currentWorkspacesForUserData ?? []).map((workspace) => (
+          <div
+            className="flex w-full"
+            key={workspace?.id}
+          >
+            <div className="px-[8px] text-[13px] cursor-pointer flex w-full">
+              <div className="px-[8px] py-[8px] text-left flex flex-row gap-3 rounded-md items-center w-full">
+                <div className="animate-pulse bg-slate-4 rounded-md w-[24px] h-[24px]"><div className="opacity-0">Placeholder</div></div>
+                <div className="animate-pulse bg-slate-4 rounded-md h-[20px] w-full"><div className="opacity-0">Placeholder</div></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-col px-[8px] py-[13px] mt-[13px] border-t border-slate-4 w-full text-[13px] text-slate-11">
+        <Popover.Button>
+          <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
+            onClick={(e) => {
+              router.push(`/workspace/${currentWorkspace.id}/settings/general`);
+            }}>
+            Workspace settings
+          </div>
+        </Popover.Button>
+        <Popover.Button>
+          <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
+            onClick={(e) => {
+              router.push(`/welcome/create-workspace`);
+            }}>
+            Create a new workspace
+          </div>
+        </Popover.Button>
+        <Popover.Button>
+          <div className="hover:bg-slate-4 px-[8px] py-[6px] text-left flex flex-row gap-3 rounded-md items-center"
+            onClick={(e) => {
+              router.push(`/join-workspace`);
+            }}>
+            Join an existing workspace
+          </div>
+        </Popover.Button>
+      </div>
+    </>;
   }
 
   if (currentWorkspacesForUserError.some((error) => error)) {
