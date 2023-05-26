@@ -452,7 +452,7 @@ export const getConnection = async (workspaceId, connectionId, jwt) => {
   return connection;
 };
 
-// Update a specific connection
+// Update a specific connection, display name only
 export const updateConnectionDisplayName = async ({
   workspaceId,
   connectionId,
@@ -460,12 +460,36 @@ export const updateConnectionDisplayName = async ({
   jwt
 }
 ) => {
-
   //  print all args
   console.log("updateConnectionDisplayName", workspaceId, connectionId, data,)
 
   const displayName = data.name;
 
+  const response = await fetch(
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/update_name`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({ name: displayName }),
+    }
+  );
+  const updatedConnection = await response.json();
+  console.log("updatedConnection", updatedConnection)
+  return updatedConnection;
+};
+
+// Update a specific connection
+export const updateConnection = async ({
+  workspaceId,
+  connectionId,
+  data,
+  jwt
+}
+) => {
+  //  print all args
   const response = await fetch(
     `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/update`,
     {
@@ -474,7 +498,7 @@ export const updateConnectionDisplayName = async ({
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`,
       },
-      body: JSON.stringify({ name: displayName }),
+      body: JSON.stringify(data),
     }
   );
   const updatedConnection = await response.json();

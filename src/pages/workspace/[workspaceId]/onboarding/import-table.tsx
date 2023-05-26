@@ -592,6 +592,10 @@ export default function CreateTable() {
     keyPairAuthPrivateKeyPassphrase,
     role,
     connectionType,
+    customHost,
+    customHostAccountIdentifier,
+    snowflakeAuthMethod,
+    useCustomHost,
   };
 
   const [selectedTable, setSelectedTable] = useState<string | null>(null);

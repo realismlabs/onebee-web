@@ -737,18 +737,6 @@ export default function CreateTable() {
     "snowflake"
   );
 
-  const connectionRequestBody = {
-    accountIdentifier,
-    warehouse,
-    basicAuthUsername,
-    basicAuthPassword,
-    keyPairAuthUsername,
-    keyPairAuthPrivateKey,
-    keyPairAuthPrivateKeyPassphrase,
-    role,
-    connectionType,
-  };
-
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [selectedIconName, setSelectedIconName] = useState<string>("");
   const [selectedTableRowCount, setSelectedTableRowCount] = useState<
