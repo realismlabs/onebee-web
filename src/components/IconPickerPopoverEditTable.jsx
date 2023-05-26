@@ -109,10 +109,10 @@ const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspa
           </Popover.Button>
           <Transition
             as={Fragment}
-            enter="transition ease-out duration-100"
+            enter="transition ease-out duration-75"
             enterFrom="opacity-0 translate-y-1"
             enterTo="opacity-100 translate-y-0"
-            leave="transition ease-in duration-100"
+            leave="transition ease-in duration-75"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >

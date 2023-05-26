@@ -16,9 +16,10 @@ import React, { SyntheticEvent, useState, useEffect } from "react";
 import { useSignIn, useUser } from "@clerk/nextjs";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { CircleNotch, CheckCircle, X } from "@phosphor-icons/react";
+import { CircleNotch, CheckCircle, X, XCircle } from "@phosphor-icons/react";
 import { UserProfile } from "@clerk/nextjs";
 import { useAuth } from "@clerk/nextjs";
+import { Toaster, toast } from "sonner";
 
 export default function Profile() {
   const { getToken } = useAuth();
@@ -38,8 +39,23 @@ export default function Profile() {
           userData: userData,
           jwt,
         });
+        toast(`Successfully updated name`, {
+          icon: (
+            <CheckCircle
+              size={20}
+              weight="fill"
+              className="text-green-500 mt-1.5"
+            />
+          ),
+        });
       } catch (error) {
-        console.error("Error updating workspace:", error);
+        console.error("Error updating name:", error);
+        toast(`Unexpected error occurred`, {
+          icon: (
+            <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+          ),
+          description: `Error removing invite + ${error}`,
+        });
       }
     }
   };
@@ -279,6 +295,20 @@ export default function Profile() {
             </div>
           </div>
         </div>
+        <Toaster
+          theme="dark"
+          expand
+          visibleToasts={6}
+          toastOptions={{
+            style: {
+              background: "var(--slate1)",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              borderColor: "var(--slate4)",
+            },
+          }}
+        />
       </WorkspaceLayout>
     </>
   );

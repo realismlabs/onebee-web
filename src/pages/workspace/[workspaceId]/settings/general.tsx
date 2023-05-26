@@ -182,6 +182,7 @@ export default function Settings() {
           icon: (
             <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
           ),
+          description: `Error removing invite + ${error}`,
         });
       }
     }

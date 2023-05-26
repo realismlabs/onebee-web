@@ -97,6 +97,7 @@ const MemberPopover = ({
           icon: (
             <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
           ),
+          description: `Error removing invite + ${error}`,
         });
       }
     } else {
@@ -157,10 +158,10 @@ const MemberPopover = ({
               </div>
               <Transition
                 as={Fragment}
-                enter="transition ease-out duration-100"
+                enter="transition ease-out duration-75"
                 enterFrom="opacity-0 translate-y-1"
                 enterTo="opacity-100 translate-y-0"
-                leave="transition ease-in duration-100"
+                leave="transition ease-in duration-75"
                 leaveFrom="opacity-100 translate-y-0"
                 leaveTo="opacity-0 translate-y-1"
               >
@@ -278,6 +279,7 @@ const MemberRolePopover = ({
         icon: (
           <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
         ),
+        description: `Error removing invite + ${error}`,
       });
     }
   };
@@ -326,10 +328,10 @@ const MemberRolePopover = ({
             </div>
             <Transition
               as={Fragment}
-              enter="transition ease-out duration-100"
+              enter="transition ease-out duration-75"
               enterFrom="opacity-0 translate-y-1"
               enterTo="opacity-100 translate-y-0"
-              leave="transition ease-in duration-100"
+              leave="transition ease-in duration-75"
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
@@ -474,10 +476,10 @@ const InvitePopover = ({
             </div>
             <Transition
               as={Fragment}
-              enter="transition ease-out duration-100"
+              enter="transition ease-out duration-75"
               enterFrom="opacity-0 translate-y-1"
               enterTo="opacity-100 translate-y-0"
-              leave="transition ease-in duration-100"
+              leave="transition ease-in duration-75"
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
