@@ -437,9 +437,37 @@ export default function TablePage() {
 
   if (isTableLoading || isConnectionLoading) {
     return (
-      <div className="h-screen bg-slate-1 text-slate-12 text-[11px] flex items-center justify-center">
-        Loading..
-      </div>
+      <>
+        <Head>
+          <title>Dataland</title>
+        </Head>
+        <WorkspaceLayout>
+          <div className="bg-slate-1 max-h-screen text-slate-12 flex flex-col divide-slate-4 divide-y">
+            <div className="flex flex-row gap-2 items-center py-[12px] pl-[12px] h-[48px]">
+              <div className="flex flex-row items-center justify-center gap-2">
+                <div className="animate-pulse bg-slate-4 rounded-md h-[24px] w-[24px]"><div className="opacity-0">Invisible skeleton</div></div>
+                <div className="animate-pulse bg-slate-4 rounded-md w-48"><div className="opacity-0">Invisible skeleton</div></div>
+              </div>
+              <div className="ml-auto flex flex-row gap-2 flex-none justify-end">
+                <div className="bg-slate-3 hover:bg-slate-4 text-slate-11 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
+                  <p>Columns</p>
+                  <CaretDown size={12} className="text-slate-11" />
+                </div>
+                <div className="bg-slate-3 hover:bg-slate-4 text-slate-11 text-[13px] px-[12px] py-[6px] cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
+                  onClick={() => setIsInvitePeopleDialogOpen(true)}>
+                  <p>Share</p>
+                </div>
+              </div>
+            </div>
+            <div className="grow-1 overflow-x-auto overflow-y-scroll max-w-screen h-screen items-center justify-center flex text-[11px]">
+              Loading..
+            </div>
+            <div className="flex flex-row gap-2 items-center border-b border-slate-4 px-[20px] py-[8px] text-[13px] text-slate-11">
+              <div className="animate-pulse bg-slate-4 rounded-md w-48"><div className="opacity-0">Invisible skeleton</div></div>
+            </div>
+          </div>
+        </WorkspaceLayout>
+      </>
     );
   }
 
@@ -470,7 +498,7 @@ export default function TablePage() {
   return (
     <>
       <Head>
-        <title>{tableData.name}</title>
+        <title>Dataland</title>
       </Head>
       <WorkspaceLayout>
         <div className="bg-slate-1 max-h-screen text-slate-12 flex flex-col divide-slate-4 divide-y">
