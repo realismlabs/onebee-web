@@ -41,14 +41,14 @@ export default function Home() {
         <MarketingHeader />
         {/* This option is the header + two-line subheader with DWH logos */}
         <div className="fixed z-50 sm:top-1 sm:right-1 bottom-0 bg-black sm:bg-transparent px-2 py-2 rounded-full sm:py-0 sm:px-0 sm:w-auto">
-          <div className="flex flex-row">
+          <div className="flex flex-row items-center">
             <div className="bg-orange-900/30 text-orange-600 px-2 py-1 mr-2 rounded-full text-[10px]">
               Mockup
             </div>
             <select
               title="Hero Type"
               id="Hero Type"
-              className="w-16 text-slate-12 text-xs bg-transparent"
+              className="text-slate-12 border-none text-[10px] p-0 h-auto bg-transparent"
               onChange={(event) => {
                 setHeroType(event.target.value);
               }}
