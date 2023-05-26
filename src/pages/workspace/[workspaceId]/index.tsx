@@ -409,19 +409,17 @@ export default function WorkspaceHome() {
                         </div>
                         <div
                           className="text-[12px] text-slate-11 cursor-pointer flex flex-row gap-1 items-center mr-auto"
-                          onClick={() =>
-                            handleTableListHeaderClick("outerPath")
-                          }
+                          onClick={() => handleTableListHeaderClick("fullPath")}
                         >
                           <p>Connection path</p>
-                          {tableListSortField === "outerPath" &&
+                          {tableListSortField === "fullPath" &&
                             tableListSortDirection === "desc" && (
                               <CaretDown
                                 className="w-3 h-3 text-slate-10"
                                 weight="fill"
                               />
                             )}
-                          {tableListSortField === "outerPath" &&
+                          {tableListSortField === "fullPath" &&
                             tableListSortDirection === "asc" && (
                               <CaretUp
                                 className="w-3 h-3 text-slate-10"
@@ -496,7 +494,7 @@ export default function WorkspaceHome() {
                               </div>
 
                               <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate mr-auto">
-                                {table.outerPath}
+                                {table.fullPath.replaceAll(".", "/")}
                               </pre>
                               <div className="min-w-[100px] max-w-[100px] text-left text-slate-11">
                                 {friendlyRelativeDateToNow(table.updatedAt)}

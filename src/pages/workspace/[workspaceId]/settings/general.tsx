@@ -91,7 +91,7 @@ const ImageUploader = ({
         };
       }
     },
-    [setBase64URL]
+    [setBase64URL, setFile, setHasDroppedNewIcon]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -408,7 +408,7 @@ export default function Settings() {
                             </label>
                             <input
                               type={"text"}
-                              id="workspaceNameInput"
+                              id="workspaceNameInput2"
                               value={workspaceName}
                               onChange={(e) => {
                                 setWorkspaceName(e.target.value);
@@ -497,6 +497,7 @@ export default function Settings() {
                                   {workspaceName}) to confirm
                                 </label>
                                 <input
+                                  title="workspaceNameInput"
                                   type={"text"}
                                   id="workspaceNameInput"
                                   value={deleteWorkspaceName}

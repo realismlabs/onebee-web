@@ -633,6 +633,11 @@ app.get('/api/workspaces/:workspaceId/connections/:connectionId', ClerkExpressRe
   try {
     const result = await client.query('SELECT * FROM "connections" WHERE "workspaceId"=$1 AND "id"=$2 ORDER BY id ASC', [workspaceId, connectionId]);
     const connection = result.rows[0];
+    // do not send the password back
+    // keyPairAuthPrivateKeyPassphrase
+    connection.keyPairAuthPrivateKey = "encrypted-on-server";
+    connection.keyPairAuthPrivateKeyPassphrase = "encrypted-on-server";
+
     console.log('Fetched connection', connection);
     res.json(connection);
   } catch (err) {
@@ -651,6 +656,11 @@ app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), a
   try {
     const result = await client.query('SELECT * FROM connections WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
     const connections = result.rows;
+    for (const connection of connections) {
+      // do not send the passwords back
+      connection.basicAuthPassword = "----encrypted-on-server----";
+      connection.keyPairAuthPrivateKeyPassphrase = "----encrypted-on-server----";
+    }
     res.json(connections);
   } catch (err) {
     console.error(err);
@@ -665,6 +675,14 @@ app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update', Clerk
   const workspaceId = parseInt(req.params.workspaceId, 10);
   const connectionId = parseInt(req.params.connectionId, 10);
   const { name } = req.body;
+
+  // if (basicAuthPassword !== "----encrypted-on-server----") {
+  //   // include in the update
+  // }
+
+  // if (keyPairAuthPrivateKeyPassphrase !== "----encrypted-on-server----") {
+  //   // include in the update
+  // }
 
   console.log("Request body: ", req.body); // logging the body
 

@@ -493,7 +493,7 @@ export default function Connections() {
                                           {table.name}
                                         </div>
                                         <pre className="px-2 py-1 bg-slate-3 rounded-sm text-slate-11 text-[11px] truncate">
-                                          {table.outerPath}
+                                          {table.fullPath.replaceAll(".", "/")}
                                         </pre>
                                         <div className="ml-auto">
                                           {abbreviateNumber(table.rowCount) +
