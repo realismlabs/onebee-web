@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { getWorkspaceConnections, getTables } from "@/utils/api";
+import { getWorkspaceDataSources, getTables } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 import {
@@ -213,14 +213,14 @@ export default function WorkspaceHome() {
   } = useCurrentWorkspace();
 
   const {
-    data: connectionsData,
-    isLoading: isConnectionsLoading,
-    error: connectionsError,
+    data: dataSourcesData,
+    isLoading: isDataSourcesLoading,
+    error: dataSourcesError,
   } = useQuery({
-    queryKey: ["getConnections", currentWorkspace?.id],
+    queryKey: ["getDataSources", currentWorkspace?.id],
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
-      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
+      const response = await getWorkspaceDataSources(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: !!currentWorkspace?.id,
@@ -243,13 +243,13 @@ export default function WorkspaceHome() {
   if (
     isUserLoading ||
     isWorkspaceLoading ||
-    isConnectionsLoading ||
+    isDataSourcesLoading ||
     isTablesLoading
   ) {
     return <div className="h-screen bg-slate-1"></div>;
   }
 
-  if (userError || workspaceError || connectionsError || tablesError) {
+  if (userError || workspaceError || dataSourcesError || tablesError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
@@ -277,8 +277,8 @@ export default function WorkspaceHome() {
                 Welcome, {currentUser.name ?? email_content_before_at}!
               </div>
               {/* Actions */}
-              {/* If there are no connections, get them to add a connection */}
-              {connectionsData?.length === 0 && (
+              {/* If there are no data sources, get them to add a data source */}
+              {dataSourcesData?.length === 0 && (
                 <div
                   className="bg-blue-2 rounded-lg border border-blue-9 w-full pb-[200px] overflow-hidden items-center justify-center"
                   style={{
@@ -294,7 +294,7 @@ export default function WorkspaceHome() {
                   </div>
                   <div className="z-10 pt-[48px] flex flex-col gap-2 items-center justify-center">
                     <div className="text-slate-12 text-[16px] text-center">
-                      Add a data connection
+                      Add a data source
                     </div>
                     <div className="text-slate-11 text-[14px]">
                       Connect your Snowflake, BigQuery, or Postgres
@@ -306,13 +306,13 @@ export default function WorkspaceHome() {
                         type="button"
                         className="mt-[8px] bg-blue-600 hover:bg-blue-700 text-slate-12 text-[14px] font-medium py-[8px] px-[16px] rounded-md"
                       >
-                        Add connection
+                        Add data source
                       </button>
                     </Link>
                   </div>
                 </div>
               )}
-              {connectionsData?.length > 0 && tablesData?.length === 0 && (
+              {dataSourcesData?.length > 0 && tablesData?.length === 0 && (
                 <div
                   className="bg-blue-2 rounded-lg border border-blue-9 w-full pb-[200px] overflow-hidden items-center justify-center"
                   style={{
@@ -331,7 +331,7 @@ export default function WorkspaceHome() {
                       Create a table
                     </div>
                     <div className="text-slate-11 text-[14px]">
-                      Sync a source table from data connection
+                      Sync a table from data source
                     </div>
                     <Link href={`/workspace/${currentWorkspace?.id}/table/new`}>
                       <button

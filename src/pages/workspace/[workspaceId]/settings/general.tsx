@@ -443,7 +443,7 @@ export default function Settings() {
                           </label>
                           <p className="text-slate-11 text-[13px]">
                             Deleting a workspace is permanent. All imported
-                            tables and connections will be deleted. This action
+                            tables and data sources will be deleted. This action
                             is irreversible.
                           </p>
                           <button
@@ -483,8 +483,8 @@ export default function Settings() {
                                 <div>
                                   Are you sure you want to delete this
                                   workspace? This will also delete all of this
-                                  workspace&apos;s imported tables, connections,
-                                  and members.{" "}
+                                  workspace&apos;s imported tables, data
+                                  sources, and members.{" "}
                                   <span className="font-semibold text-red-9">
                                     This action is irreversible.
                                   </span>

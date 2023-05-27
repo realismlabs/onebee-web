@@ -46,10 +46,10 @@ const pool = new Pool({
 });
 
 pool.on('acquire', (client) => {
-  console.log('Connection acquired', "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
+  console.log('DataSource acquired', "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
 });
 pool.on('release', (client) => {
-  console.log('Connection released', "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
+  console.log('DataSource released', "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
 });
 
 app.get('/users', ClerkExpressRequireAuth(), async (req, res) => {
@@ -420,14 +420,14 @@ app.get('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async 
 
 
 
-// getTablesFromConnection
-app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', ClerkExpressRequireAuth(), async (req, res) => {
+// getTablesFromDataSource
+app.get('/api/workspaces/:workspaceId/data_sources/:dataSourceId/tables', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
-  const connectionId = parseInt(req.params.connectionId, 10);
+  const dataSourceId = parseInt(req.params.dataSourceId, 10);
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM tables WHERE "workspaceId"=$1 AND "connectionId"=$2 ORDER BY id ASC', [workspaceId, connectionId]);
+    const result = await client.query('SELECT * FROM tables WHERE "workspaceId"=$1 AND "dataSourceId"=$2 ORDER BY id ASC', [workspaceId, dataSourceId]);
     const tables = result.rows.map(row => {
       // If rowCount is expected to be a string representing a large integer, convert it to a number
       if ('rowCount' in row) {
@@ -438,7 +438,7 @@ app.get('/api/workspaces/:workspaceId/connections/:connectionId/tables', ClerkEx
     res.json(tables);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error getting tables from connection" });
+    res.status(500).json({ message: "Error getting tables from data source" });
   } finally {
     client.release();
   }
@@ -453,7 +453,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
     name,
     outerPath,
     rowCount,
-    connectionId,
+    dataSourceId,
     iconSvgString,
     iconColor,
     createdAt,
@@ -465,7 +465,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `INSERT INTO "tables" ("workspaceId", "fullPath", "name", "outerPath", "rowCount", "connectionId", "iconSvgString", "iconColor", "createdAt", "updatedAt") 
+      `INSERT INTO "tables" ("workspaceId", "fullPath", "name", "outerPath", "rowCount", "dataSourceId", "iconSvgString", "iconColor", "createdAt", "updatedAt") 
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
       RETURNING *`,
       [
@@ -474,7 +474,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
         name,
         outerPath,
         rowCount,
-        connectionId,
+        dataSourceId,
         iconSvgString,
         iconColor,
         createdAt,
@@ -571,8 +571,8 @@ app.delete('/api/workspaces/:workspaceId/tables/:tableId/delete', ClerkExpressRe
   }
 });
 
-// createConnection
-app.post('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), async (req, res) => {
+// createDataSource
+app.post('/api/workspaces/:workspaceId/data_sources', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
 
   const {
@@ -584,7 +584,7 @@ app.post('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), 
     keyPairAuthPrivateKey,
     keyPairAuthPrivateKeyPassphrase,
     role,
-    connectionType,
+    dataSourceType,
     name,
     createdAt
   } = req.body;
@@ -595,7 +595,7 @@ app.post('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), 
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `INSERT INTO "connections" ("accountIdentifier", "warehouse", "basicAuthUsername", "basicAuthPassword", "keyPairAuthUsername", "keyPairAuthPrivateKey", "keyPairAuthPrivateKeyPassphrase", "role", "connectionType", "name", "createdAt", "workspaceId") 
+      `INSERT INTO "data_sources" ("accountIdentifier", "warehouse", "basicAuthUsername", "basicAuthPassword", "keyPairAuthUsername", "keyPairAuthPrivateKey", "keyPairAuthPrivateKeyPassphrase", "role", "dataSourceType", "name", "createdAt", "workspaceId") 
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
       RETURNING *`,
       [
@@ -607,73 +607,73 @@ app.post('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), 
         keyPairAuthPrivateKey,
         keyPairAuthPrivateKeyPassphrase,
         role,
-        connectionType,
+        dataSourceType,
         name,
         createdAt,
         workspaceId
       ]
     );
-    const createdConnection = result.rows[0];
-    console.log('Created connection', createdConnection);
-    res.json(createdConnection);
+    const createdDataSource = result.rows[0];
+    console.log('Created data_source', createdDataSource);
+    res.json(createdDataSource);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error creating connection" });
+    res.status(500).json({ message: "Error creating data source" });
   } finally {
     client.release();
   }
 });
 
-// getConnection
-app.get('/api/workspaces/:workspaceId/connections/:connectionId', ClerkExpressRequireAuth(), async (req, res) => {
+// getDataSource
+app.get('/api/workspaces/:workspaceId/data_sources/:dataSourceId', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
-  const connectionId = parseInt(req.params.connectionId, 10);
+  const dataSourceId = parseInt(req.params.dataSourceId, 10);
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM "connections" WHERE "workspaceId"=$1 AND "id"=$2 ORDER BY id ASC', [workspaceId, connectionId]);
-    const connection = result.rows[0];
+    const result = await client.query('SELECT * FROM "data_sources" WHERE "workspaceId"=$1 AND "id"=$2 ORDER BY id ASC', [workspaceId, dataSourceId]);
+    const data_source = result.rows[0];
     // do not send the password back
     // keyPairAuthPrivateKeyPassphrase
-    connection.keyPairAuthPrivateKey = "encrypted-on-server";
-    connection.keyPairAuthPrivateKeyPassphrase = "encrypted-on-server";
+    data_source.keyPairAuthPrivateKey = "encrypted-on-server";
+    data_source.keyPairAuthPrivateKeyPassphrase = "encrypted-on-server";
 
-    console.log('Fetched connection', connection);
-    res.json(connection);
+    console.log('Fetched data_source', data_source);
+    res.json(data_source);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error getting connection" });
+    res.status(500).json({ message: "Error getting data source" });
   } finally {
     client.release();
   }
 });
 
-// getConnections
-app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), async (req, res) => {
+// getDataSources
+app.get('/api/workspaces/:workspaceId/data_sources', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM connections WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
-    const connections = result.rows;
-    for (const connection of connections) {
+    const result = await client.query('SELECT * FROM data_sources WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
+    const data_sources = result.rows;
+    for (const data_source of data_sources) {
       // do not send the passwords back
-      connection.basicAuthPassword = "----encrypted-on-server----";
-      connection.keyPairAuthPrivateKeyPassphrase = "----encrypted-on-server----";
+      data_source.basicAuthPassword = "----encrypted-on-server----";
+      data_source.keyPairAuthPrivateKeyPassphrase = "----encrypted-on-server----";
     }
-    res.json(connections);
+    res.json(data_sources);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error getting connections" });
+    res.status(500).json({ message: "Error getting data_sources" });
   } finally {
     client.release();
   }
 });
 
-// updateConnectionDisplayName
-app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update_name', ClerkExpressRequireAuth(), async (req, res) => {
+// updateDataSourceDisplayName
+app.patch('/api/workspaces/:workspaceId/data_sources/:dataSourceId/update_name', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
-  const connectionId = parseInt(req.params.connectionId, 10);
+  const dataSourceId = parseInt(req.params.dataSourceId, 10);
   const { name } = req.body;
 
   // if (basicAuthPassword !== "----encrypted-on-server----") {
@@ -689,77 +689,77 @@ app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update_name', 
   const client = await pool.connect();
   try {
     const result = await client.query(
-      'UPDATE "connections" SET "name"=$1 WHERE "workspaceId"=$2 AND "id"=$3 RETURNING *',
-      [name, workspaceId, connectionId]
+      'UPDATE "data_sources" SET "name"=$1 WHERE "workspaceId"=$2 AND "id"=$3 RETURNING *',
+      [name, workspaceId, dataSourceId]
     );
-    const updatedConnection = result.rows[0];
-    console.log('Updated connection', updatedConnection);
-    res.json(updatedConnection);
+    const updatedDataSource = result.rows[0];
+    console.log('Updated data_source', updatedDataSource);
+    res.json(updatedDataSource);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error updating connection" });
+    res.status(500).json({ message: "Error updating data source" });
   } finally {
     client.release();
   }
 });
 
-// updateConnection
-app.patch('/api/workspaces/:workspaceId/connections/:connectionId/update', ClerkExpressRequireAuth(), async (req, res) => {
+// updateDataSource
+app.patch('/api/workspaces/:workspaceId/data_sources/:dataSourceId/update', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
-  const connectionId = parseInt(req.params.connectionId, 10);
+  const dataSourceId = parseInt(req.params.dataSourceId, 10);
   const updateFields = req.body;
   // Generate the SQL query
   const setFields = Object.keys(updateFields).map((field, index) => `"${field}"=$${index + 1}`).join(", ");
-  const query = `UPDATE "connections" SET ${setFields} WHERE "workspaceId"=$${Object.keys(updateFields).length + 1} AND "id"=$${Object.keys(updateFields).length + 2} RETURNING *`;
+  const query = `UPDATE "data_sources" SET ${setFields} WHERE "workspaceId"=$${Object.keys(updateFields).length + 1} AND "id"=$${Object.keys(updateFields).length + 2} RETURNING *`;
 
-  const values = [...Object.values(updateFields), workspaceId, connectionId];
+  const values = [...Object.values(updateFields), workspaceId, dataSourceId];
 
   const client = await pool.connect();
   try {
     const result = await client.query(query, values);
-    const updatedConnection = result.rows[0];
-    console.log('Updated connection', updatedConnection);
-    res.json(updatedConnection);
+    const updatedDataSource = result.rows[0];
+    console.log('Updated data_source', updatedDataSource);
+    res.json(updatedDataSource);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error updating connection" });
+    res.status(500).json({ message: "Error updating data source" });
   } finally {
     client.release();
   }
 });
 
-// deleteConnection
-app.delete('/api/workspaces/:workspaceId/connections/:connectionId', ClerkExpressRequireAuth(), async (req, res) => {
+// deleteDataSource
+app.delete('/api/workspaces/:workspaceId/data_sources/:dataSourceId', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
-  const connectionId = parseInt(req.params.connectionId, 10);
+  const dataSourceId = parseInt(req.params.dataSourceId, 10);
 
   const client = await pool.connect();
   try {
-    const result = await client.query('DELETE FROM "connections" WHERE "workspaceId"=$1 AND "id"=$2 RETURNING *', [workspaceId, connectionId]);
-    const deletedConnection = result.rows[0];
-    console.log('Deleted connection', deletedConnection);
-    res.json(deletedConnection);
+    const result = await client.query('DELETE FROM "data_sources" WHERE "workspaceId"=$1 AND "id"=$2 RETURNING *', [workspaceId, dataSourceId]);
+    const deletedDataSource = result.rows[0];
+    console.log('Deleted data_source', deletedDataSource);
+    res.json(deletedDataSource);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error deleting connection" });
+    res.status(500).json({ message: "Error deleting data source" });
   } finally {
     client.release();
   }
 });
 
-// getWorkspaceConnections
-app.get('/api/workspaces/:workspaceId/connections', ClerkExpressRequireAuth(), async (req, res) => {
+// getWorkspaceDataSources
+app.get('/api/workspaces/:workspaceId/data_sources', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);
 
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM "connections" WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
-    const connections = result.rows;
-    console.log('Fetched connections', connections);
-    res.json(connections);
+    const result = await client.query('SELECT * FROM "data_sources" WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
+    const data_sources = result.rows;
+    console.log('Fetched data_sources', data_sources);
+    res.json(data_sources);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error getting connections" });
+    res.status(500).json({ message: "Error getting data_sources" });
   } finally {
     client.release();
   }

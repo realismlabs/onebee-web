@@ -10,7 +10,7 @@ import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { capitalizeString } from "@/utils/util";
-import { createTable, createConnection } from "@/utils/api";
+import { createTable, createDataSource } from "@/utils/api";
 import MemoizedMockTable from "@/components/MemoizedMockTable";
 import { IconList } from "@/components/IconList";
 import { Transition } from "@headlessui/react";
@@ -577,12 +577,12 @@ export default function CreateTable() {
     ""
   );
   const [role, setRole] = useLocalStorageState("role", "");
-  const [connectionType, setConnectionType] = useLocalStorageState(
-    "connectionType",
+  const [dataSourceType, setDataSourceType] = useLocalStorageState(
+    "dataSourceType",
     "snowflake"
   );
 
-  const connectionRequestBody = {
+  const dataSourceRequestBody = {
     accountIdentifier,
     warehouse,
     basicAuthUsername,
@@ -591,7 +591,7 @@ export default function CreateTable() {
     keyPairAuthPrivateKey,
     keyPairAuthPrivateKeyPassphrase,
     role,
-    connectionType,
+    dataSourceType,
     customHost,
     customHostAccountIdentifier,
     snowflakeAuthMethod,
@@ -628,25 +628,25 @@ export default function CreateTable() {
       return;
     }
 
-    const createConnectionRequestBody = {
-      ...connectionRequestBody,
+    const createDataSourceRequestBody = {
+      ...dataSourceRequestBody,
       name:
-        capitalizeString(connectionRequestBody.connectionType) +
+        capitalizeString(dataSourceRequestBody.dataSourceType) +
         " " +
-        connectionRequestBody.accountIdentifier,
+        dataSourceRequestBody.accountIdentifier,
       createdAt: new Date().toISOString(),
       workspaceId: currentWorkspace?.id,
     };
-    console.log("createConnectionRequestBody", createConnectionRequestBody);
+    console.log("createDataSourceRequestBody", createDataSourceRequestBody);
 
     const jwt = await getToken({ template: "test" });
 
-    const create_connection_response = await createConnection(
+    const create_data_source_response = await createDataSource(
       currentWorkspace?.id,
-      createConnectionRequestBody,
+      createDataSourceRequestBody,
       jwt
     );
-    console.log("create_connection_response", create_connection_response);
+    console.log("create_data_source_response", create_data_source_response);
 
     const displayName = selectedTable?.split(".")[2];
     const outerPath =
@@ -658,7 +658,7 @@ export default function CreateTable() {
       name: tableDisplayName,
       outerPath,
       rowCount: selectedTableRowCount,
-      connectionId: create_connection_response.id,
+      dataSourceId: create_data_source_response.id,
       iconSvgString: iconSvgString,
       iconColor: selectedColor,
       createdAt: new Date().toISOString(),
@@ -683,7 +683,7 @@ export default function CreateTable() {
     isLoading: isTablesQueryLoading,
     error: tablesQueryError,
   } = useQuery({
-    queryKey: ["connectionResult", connectionRequestBody],
+    queryKey: ["connectionResult", dataSourceRequestBody],
     queryFn: async () => {
       console.log("test");
       const response = await fetch("/api/test-snowflake-connection", {
@@ -691,7 +691,7 @@ export default function CreateTable() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(connectionRequestBody),
+        body: JSON.stringify(dataSourceRequestBody),
       });
       return await response.json();
     },

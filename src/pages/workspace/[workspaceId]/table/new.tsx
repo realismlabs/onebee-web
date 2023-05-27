@@ -13,7 +13,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { createTable, getWorkspaceConnections } from "@/utils/api";
+import { createTable, getWorkspaceDataSources } from "@/utils/api";
 import MemoizedMockTable from "@/components/MemoizedMockTable";
 import { IconList } from "@/components/IconList";
 import { Transition } from "@headlessui/react";
@@ -116,7 +116,7 @@ interface Connection {
   keyPairAuthPrivateKey: string | null;
   keyPairAuthPrivateKeyPassphrase: string | null;
   role: string | null;
-  connectionType: string;
+  dataSourceType: string;
   name: string;
   createdAt: string;
   workspaceId: number;
@@ -124,52 +124,52 @@ interface Connection {
 }
 
 const ConnectionSelector = ({
-  selectedConnection,
-  setSelectedConnection,
-  connectionsData,
+  selectedDataSource,
+  setSelectedDataSource,
+  dataSourcesData,
 }: {
-  selectedConnection: Connection | null;
-  setSelectedConnection: React.Dispatch<
+  selectedDataSource: Connection | null;
+  setSelectedDataSource: React.Dispatch<
     React.SetStateAction<Connection | null>
   >;
-  connectionsData: Connection[] | null;
+  dataSourcesData: Connection[] | null;
 }) => {
-  // whenever connectionsData changes, set the selectedConnection
+  // whenever dataSourcesData changes, set the selectedDataSource
   useEffect(() => {
-    if (connectionsData) {
-      setSelectedConnection(connectionsData[0]);
+    if (dataSourcesData) {
+      setSelectedDataSource(dataSourcesData[0]);
     }
-  }, [connectionsData]);
+  }, [dataSourcesData]);
 
   return (
     <div className="w-full mt-4">
-      <Listbox value={selectedConnection} onChange={setSelectedConnection}>
+      <Listbox value={selectedDataSource} onChange={setSelectedDataSource}>
         <div className="relative mt-1">
           <Listbox.Button className="relative h-[40px] w-full text-slate-12 cursor-default border border-slate-4 rounded-lg bg-slate-2 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-600 focus-visible:ring-2 focus-visible:ring-slate-2 focus-visible:ring-opacity-75 focus-visible:ring-offset-1 focus-visible:ring-offset-blue-900 sm:text-sm">
-            {selectedConnection ? (
+            {selectedDataSource ? (
               <div className="flex flex-row gap-2 items-center">
-                {selectedConnection?.connectionType === "snowflake" && (
+                {selectedDataSource?.dataSourceType === "snowflake" && (
                   <div className="max-h-[18px] max-w-[18px]">
                     <LogoSnowflake />
                   </div>
                 )}
-                {selectedConnection?.connectionType === "bigquery" && (
+                {selectedDataSource?.dataSourceType === "bigquery" && (
                   <div className="max-h-[18px] max-w-[18px]">
                     <LogoBigQuery />
                   </div>
                 )}
-                {selectedConnection?.connectionType === "postgres" && (
+                {selectedDataSource?.dataSourceType === "postgres" && (
                   <div className="max-h-[18px] max-w-[18px]">
                     <LogoPostgres />
                   </div>
                 )}
                 <span className="block truncate">
-                  {selectedConnection?.name}
+                  {selectedDataSource?.name}
                 </span>
               </div>
             ) : (
               <span className="block truncate text-slate-10">
-                Select a connection..
+                Select a data source..
               </span>
             )}
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -186,7 +186,7 @@ const ConnectionSelector = ({
             leaveTo="opacity-0"
           >
             <Listbox.Options className="absolute z-10 mt-1 max-h-60 max-w-[480px] overflow-auto rounded-md bg-[#101112] py-1 text-base shadow-lg focus:outline-none sm:text-sm">
-              {connectionsData?.map((connection, id) => (
+              {dataSourcesData?.map((connection, id) => (
                 <Listbox.Option
                   key={id}
                   className={({ active }) =>
@@ -281,9 +281,9 @@ const PreviewTableUI = ({
   setTableDisplayName,
   tableDisplayNameErrorMessage,
   setTableDisplayNameErrorMessage,
-  selectedConnection,
-  setSelectedConnection,
-  connectionsData,
+  selectedDataSource,
+  setSelectedDataSource,
+  dataSourcesData,
   isLoading,
 }: {
   tablesQueryData: any;
@@ -304,11 +304,11 @@ const PreviewTableUI = ({
   setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
   tableDisplayNameErrorMessage: string;
   setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-  selectedConnection: Connection | null;
-  setSelectedConnection: React.Dispatch<
+  selectedDataSource: Connection | null;
+  setSelectedDataSource: React.Dispatch<
     React.SetStateAction<Connection | null>
   >;
-  connectionsData: Connection[] | null;
+  dataSourcesData: Connection[] | null;
   isLoading: boolean;
 }) => {
   let data = null;
@@ -332,11 +332,11 @@ const PreviewTableUI = ({
     <>
       <div className="flex flex-row gap-6 w-full px-[20px]">
         <div className="flex flex-col max-w-[384px]">
-          <p className="text-slate-12 text-[13px]">Choose a connection</p>
+          <p className="text-slate-12 text-[13px]">Choose a data source</p>
           <ConnectionSelector
-            connectionsData={connectionsData}
-            setSelectedConnection={setSelectedConnection}
-            selectedConnection={selectedConnection}
+            dataSourcesData={dataSourcesData}
+            setSelectedDataSource={setSelectedDataSource}
+            selectedDataSource={selectedDataSource}
           />
           <p className="text-slate-12 text-[13px] mt-6">Choose a table</p>
           {isLoading === true ? (
@@ -595,7 +595,7 @@ const FileTree: React.FC<FileTreeProps> = ({
     <div className="flex flex-col h-0 flex-shrink-0 flex-grow p-2 text-slate-11 overflow-y-auto bg-slate-2 border border-slate-4 rounded-lg w-[384px] mt-4">
       {Object.entries(nestedData) == null && (
         <>
-          <div className="">Select a connection to continue</div>
+          <div className="">Select a data source to continue</div>
         </>
       )}
       {Object.entries(nestedData).length > 0 &&
@@ -732,8 +732,8 @@ export default function CreateTable() {
     ""
   );
   const [role, setRole] = useLocalStorageState("role", "");
-  const [connectionType, setConnectionType] = useLocalStorageState(
-    "connectionType",
+  const [dataSourceType, setDataSourceType] = useLocalStorageState(
+    "dataSourceType",
     "snowflake"
   );
 
@@ -752,7 +752,7 @@ export default function CreateTable() {
   const [tableDisplayNameErrorMessage, setTableDisplayNameErrorMessage] =
     useState<string>("");
 
-  const [selectedConnection, setSelectedConnection] =
+  const [selectedDataSource, setSelectedDataSource] =
     useState<Connection | null>(null);
 
   // whenever selectedTable changes, fetch the new tableDisplayName
@@ -789,7 +789,7 @@ export default function CreateTable() {
       name: tableDisplayName,
       outerPath,
       rowCount: selectedTableRowCount,
-      connectionId: selectedConnection?.id,
+      dataSourceId: selectedDataSource?.id,
       iconSvgString: iconSvgString,
       iconColor: colorValue ?? selectedColor,
       createdAt: new Date().toISOString(),
@@ -813,14 +813,14 @@ export default function CreateTable() {
     isLoading: isTablesQueryLoading,
     error: tablesQueryError,
   } = useQuery({
-    queryKey: ["connectionResult", selectedConnection],
+    queryKey: ["connectionResult", selectedDataSource],
     queryFn: async () => {
       const response = await fetch("/api/test-snowflake-connection", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(selectedConnection),
+        body: JSON.stringify(selectedDataSource),
       });
       return await response.json();
     },
@@ -839,20 +839,20 @@ export default function CreateTable() {
   } = useCurrentWorkspace();
 
   const {
-    data: connectionsData,
-    isLoading: isConnectionsLoading,
-    error: connectionsError,
+    data: dataSourcesData,
+    isLoading: isDataSourcesLoading,
+    error: dataSourcesError,
   } = useQuery({
-    queryKey: ["getConnections", currentWorkspace?.id],
+    queryKey: ["getDataSources", currentWorkspace?.id],
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
-      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
+      const response = await getWorkspaceDataSources(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: !!currentWorkspace?.id,
   });
 
-  if (isUserLoading || isTablesQueryLoading || isConnectionsLoading) {
+  if (isUserLoading || isTablesQueryLoading || isDataSourcesLoading) {
     return (
       <WorkspaceLayout>
         <div className="h-screen bg-slate-1 flex flex-col">
@@ -882,11 +882,11 @@ export default function CreateTable() {
               setTableDisplayName={setTableDisplayName}
               tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
               setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
-              setSelectedConnection={setSelectedConnection}
-              selectedConnection={selectedConnection}
-              connectionsData={connectionsData}
+              setSelectedDataSource={setSelectedDataSource}
+              selectedDataSource={selectedDataSource}
+              dataSourcesData={dataSourcesData}
               isLoading={
-                isUserLoading || isTablesQueryLoading || isConnectionsLoading
+                isUserLoading || isTablesQueryLoading || isDataSourcesLoading
               }
             />
           </div>
@@ -895,7 +895,7 @@ export default function CreateTable() {
     );
   }
 
-  if (userError || tablesQueryError || connectionsError) {
+  if (userError || tablesQueryError || dataSourcesError) {
     return <div>Error: {JSON.stringify(userError)}</div>;
   }
 
@@ -932,11 +932,11 @@ export default function CreateTable() {
               setTableDisplayName={setTableDisplayName}
               tableDisplayNameErrorMessage={tableDisplayNameErrorMessage}
               setTableDisplayNameErrorMessage={setTableDisplayNameErrorMessage}
-              setSelectedConnection={setSelectedConnection}
-              selectedConnection={selectedConnection}
-              connectionsData={connectionsData}
+              setSelectedDataSource={setSelectedDataSource}
+              selectedDataSource={selectedDataSource}
+              dataSourcesData={dataSourcesData}
               isLoading={
-                isUserLoading || isTablesQueryLoading || isConnectionsLoading
+                isUserLoading || isTablesQueryLoading || isDataSourcesLoading
               }
             />
           </div>

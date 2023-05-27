@@ -83,8 +83,8 @@ export default function AddSnowflake() {
     ""
   );
   const [role, setRole] = useLocalStorageState("role", "");
-  const [connectionType, setConnectionType] = useLocalStorageState(
-    "connectionType",
+  const [dataSourceType, setDataSourceType] = useLocalStorageState(
+    "dataSourceType",
     "snowflake"
   );
 
@@ -114,7 +114,7 @@ export default function AddSnowflake() {
     if (connectionResult.status === "success") {
       router.push(`/workspace/${currentWorkspace?.id}/onboarding/import-table`);
     } else {
-      console.log("Connection failed, try again");
+      console.log("Adding data source failed, try again");
     }
   };
 
@@ -128,7 +128,7 @@ export default function AddSnowflake() {
     keyPairAuthPrivateKeyPassphrase,
     role,
     snowflakeAuthMethod,
-    connectionType,
+    dataSourceType,
   };
 
   const connectionTestQuery = useQuery({
@@ -151,7 +151,7 @@ export default function AddSnowflake() {
         title:
           data.status === "success"
             ? "Success! You can continue to the next step."
-            : "Connection failed",
+            : "Adding data source failed",
         message: data.message,
         snowflake_error: data.snowflake_error ?? null,
         listed_tables: data.listed_tables ?? null,
@@ -162,7 +162,7 @@ export default function AddSnowflake() {
       setConnectionTestInProgress(false);
       setConnectionResult({
         status: "error",
-        title: "Connection failed",
+        title: "Adding data source failed",
         message:
           JSON.stringify(error) === "{}"
             ? "Request timed out. Check if the account identifier is correct, and try again."
@@ -174,7 +174,7 @@ export default function AddSnowflake() {
   const handleConnectionTest = async (e: any) => {
     e.preventDefault();
 
-    // Reset connection result
+    // Reset data source result
     setShowTestPanel(true);
     setConnectionTestInProgress(true);
     setConnectionResult({
@@ -246,7 +246,7 @@ export default function AddSnowflake() {
               alt="Snowflake logo"
               draggable={false}
             ></Image>
-            <p className="flex-grow text-[16px]">Set up Snowflake connection</p>
+            <p className="flex-grow text-[16px]">Set up Snowflake</p>
             <Link
               href="/"
               className="text-[13px] px-3 py-2 bg-slate-3 rounded-md"
@@ -673,7 +673,7 @@ export default function AddSnowflake() {
                         {connectionResult.status === "success" && (
                           <>
                             <p className="text-[13px]">
-                              This connection can access{" "}
+                              This data source can access{" "}
                               {connectionResult.listed_tables.length} tables
                               from {connectionResult.listed_databases.length}{" "}
                               databases.
@@ -694,7 +694,7 @@ export default function AddSnowflake() {
                             </p>
                             {/* Don't show if error message is generic */}
                             {connectionResult.message !==
-                              "Connection failed" && (
+                              "Adding data source failed" && (
                               <p className="text-[13px]">
                                 {connectionResult.message}
                               </p>

@@ -23,7 +23,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 import LogoSnowflake from "@/components/LogoSnowflake";
-import { updateConnection } from "@/utils/api";
+import { updateDataSource } from "@/utils/api";
 import { capitalizeString } from "@/utils/util";
 import { useAuth } from "@clerk/nextjs";
 import { Dialog } from "@headlessui/react";
@@ -59,11 +59,11 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
 };
 
 export default function EditSnowflakeDialog({
-  connectionData,
+  dataSourceData,
   isEditSnowflakeDialogOpen,
   setIsEditSnowflakeDialogOpen,
 }: {
-  connectionData: any;
+  dataSourceData: any;
   isEditSnowflakeDialogOpen: any;
   setIsEditSnowflakeDialogOpen: any;
 }) {
@@ -71,33 +71,33 @@ export default function EditSnowflakeDialog({
   const queryClient = useQueryClient();
 
   // Snowflake vars
-  const [name, setName] = useState(connectionData?.name);
+  const [name, setName] = useState(dataSourceData?.name);
   const [useCustomHost, setUseCustomHost] = useState(
-    connectionData?.useCustomHost
+    dataSourceData?.useCustomHost
   );
   const [customHostAccountIdentifier, setCustomHostAccountIdentifier] =
-    useState(connectionData?.customHostAccountIdentifier);
+    useState(dataSourceData?.customHostAccountIdentifier);
   const [snowflakeAuthMethod, setSnowflakeAuthMethod] = useState(
-    connectionData?.snowflakeAuthMethod
+    dataSourceData?.snowflakeAuthMethod
   );
   const [accountIdentifier, setAccountIdentifier] = useState(
-    connectionData?.accountIdentifier
+    dataSourceData?.accountIdentifier
   );
-  const [customHost, setCustomHost] = useState(connectionData?.customHost);
-  const [warehouse, setWarehouse] = useState(connectionData?.warehouse);
+  const [customHost, setCustomHost] = useState(dataSourceData?.customHost);
+  const [warehouse, setWarehouse] = useState(dataSourceData?.warehouse);
   const [basicAuthUsername, setBasicAuthUsername] = useState(
-    connectionData?.basicAuthUsername
+    dataSourceData?.basicAuthUsername
   );
   const [basicAuthPassword, setBasicAuthPassword] = useState("");
   const [keyPairAuthPrivateKey, setKeyPairAuthPrivateKey] = useState("");
   const [keyPairAuthPrivateKeyPassphrase, setKeyPairAuthPrivateKeyPassphrase] =
     useState("");
   const [keyPairAuthUsername, setKeyPairAuthUsername] = useState(
-    connectionData?.keyPairAuthUsername
+    dataSourceData?.keyPairAuthUsername
   );
-  const [role, setRole] = useState(connectionData?.role);
-  const [connectionType, setConnectionType] = useState(
-    connectionData?.connectionType
+  const [role, setRole] = useState(dataSourceData?.role);
+  const [dataSourceType, setDataSourceType] = useState(
+    dataSourceData?.dataSourceType
   );
 
   // Connection test vars
@@ -114,39 +114,39 @@ export default function EditSnowflakeDialog({
   const [showTestPanel, setShowTestPanel] = useState<boolean>(false);
 
   // UI vars
-  const [isHoveringOnAddConnectionButton, setIsHoveringOnAddConnectionButton] =
+  const [isHoveringOnAddDataSourceButton, setIsHoveringOnAddDataSourceButton] =
     useState(false);
 
-  const updateConnectionMutation = useMutation(updateConnection, {
+  const updateDataSourceMutation = useMutation(updateDataSource, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
+      queryClient.invalidateQueries(["getDataSources", currentWorkspace?.id]);
     },
   });
 
   // event handlers
-  const handleUpdateConnection = async (e: any) => {
+  const handleUpdateDataSource = async (e: any) => {
     e.preventDefault();
-    console.log("clicked Update connection button");
+    console.log("clicked Update data source button");
 
     // Separate extra attributes
     if (connectionResult.status === "success") {
-      const updateConnectionRequestBody = {
-        ...connectionRequestBody,
+      const updateDataSourceRequestBody = {
+        ...dataSourceRequestBody,
         name: name,
         workspaceId: currentWorkspace?.id,
       };
       try {
         const jwt = await getToken({ template: "test" });
-        const update_connection_response =
-          await updateConnectionMutation.mutateAsync({
+        const update_data_source_response =
+          await updateDataSourceMutation.mutateAsync({
             workspaceId: currentWorkspace?.id,
-            connectionId: connectionData?.id,
-            data: updateConnectionRequestBody,
+            dataSourceId: dataSourceData?.id,
+            data: updateDataSourceRequestBody,
             jwt,
           });
-        console.log("update_connection_response", update_connection_response);
+        console.log("update_data_source_response", update_data_source_response);
         setIsEditSnowflakeDialogOpen(false);
-        toast(`Successfully updated connection`, {
+        toast(`Successfully updated data source`, {
           icon: (
             <CheckCircle
               size={20}
@@ -156,20 +156,20 @@ export default function EditSnowflakeDialog({
           ),
         });
       } catch (error) {
-        console.error("Error updating connection:", error);
+        console.error("Error updating data source:", error);
         toast(`Unexpected error occurred`, {
           icon: (
             <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
           ),
-          description: `Error removing connection + ${error}`,
+          description: `Error removing data source + ${error}`,
         });
       }
     } else {
-      console.log("Connection failed, try again");
+      console.log("Adding data source failed, try again");
     }
   };
 
-  const connectionRequestBody = {
+  const dataSourceRequestBody = {
     accountIdentifier,
     warehouse,
     basicAuthUsername,
@@ -178,7 +178,7 @@ export default function EditSnowflakeDialog({
     keyPairAuthPrivateKey,
     keyPairAuthPrivateKeyPassphrase,
     role,
-    connectionType,
+    dataSourceType,
     customHost,
     customHostAccountIdentifier,
     snowflakeAuthMethod,
@@ -186,14 +186,14 @@ export default function EditSnowflakeDialog({
   };
 
   const connectionTestQuery = useQuery({
-    queryKey: ["connectionResult", connectionRequestBody],
+    queryKey: ["connectionResult", dataSourceRequestBody],
     queryFn: async () => {
       const response = await fetch("/api/test-snowflake-connection", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(connectionRequestBody),
+        body: JSON.stringify(dataSourceRequestBody),
       });
       return await response.json();
     },
@@ -205,7 +205,7 @@ export default function EditSnowflakeDialog({
         title:
           data.status === "success"
             ? "Success! You can continue to the next step."
-            : "Connection failed",
+            : "Adding data source failed",
         message: data.message,
         snowflake_error: data.snowflake_error ?? null,
         listed_tables: data.listed_tables ?? null,
@@ -216,7 +216,7 @@ export default function EditSnowflakeDialog({
       setConnectionTestInProgress(false);
       setConnectionResult({
         status: "error",
-        title: "Connection failed",
+        title: "Adding data source failed",
         message:
           JSON.stringify(error) === "{}"
             ? "Request timed out. Check if the account identifier is correct, and try again."
@@ -227,7 +227,7 @@ export default function EditSnowflakeDialog({
 
   const handleConnectionTest = async (e: any) => {
     e.preventDefault();
-    // Reset connection result
+    // Reset data source result
     setShowTestPanel(true);
     setConnectionTestInProgress(true);
     setConnectionResult({
@@ -671,28 +671,28 @@ export default function EditSnowflakeDialog({
                     </button>
                     <div className="relative inline-block">
                       <button
-                        onClick={handleUpdateConnection}
+                        onClick={handleUpdateDataSource}
                         onMouseEnter={() =>
-                          setIsHoveringOnAddConnectionButton(true)
+                          setIsHoveringOnAddDataSourceButton(true)
                         }
                         onMouseLeave={() =>
-                          setIsHoveringOnAddConnectionButton(false)
+                          setIsHoveringOnAddDataSourceButton(false)
                         }
                         className={`text-[13px] px-3 py-2 bg-blue-600 rounded-md ${
                           connectionResult.status !== "success" &&
                           "opacity-50 cursor-not-allowed "
                         }`}
                       >
-                        Update connection
+                        Update data source
                       </button>
                       {connectionResult.status !== "success" && (
                         <div
                           className="absolute right-0 bottom-full mb-2 w-max bg-black text-slate-12 text-[11px] py-1 px-2 rounded"
                           style={{
-                            visibility: isHoveringOnAddConnectionButton
+                            visibility: isHoveringOnAddDataSourceButton
                               ? "visible"
                               : "hidden",
-                            opacity: isHoveringOnAddConnectionButton ? 1 : 0,
+                            opacity: isHoveringOnAddDataSourceButton ? 1 : 0,
                           }}
                         >
                           You must have a successful <br></br>connection test to
@@ -762,7 +762,7 @@ export default function EditSnowflakeDialog({
                               {connectionResult.status === "success" && (
                                 <>
                                   <p className="text-[13px]">
-                                    This connection can access{" "}
+                                    This data source can access{" "}
                                     {connectionResult.listed_tables.length}{" "}
                                     tables from{" "}
                                     {connectionResult.listed_databases.length}{" "}
@@ -784,7 +784,7 @@ export default function EditSnowflakeDialog({
                                   </p>
                                   {/* Don't show if error message is generic */}
                                   {connectionResult.message !==
-                                    "Connection failed" && (
+                                    "Adding data source failed" && (
                                     <p className="text-[13px]">
                                       {connectionResult.message}
                                     </p>

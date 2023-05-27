@@ -26,7 +26,7 @@ export default function AddDataSource() {
     useState(false);
 
   const [customMessage, setCustomMessage] = useState(
-    "Hi there, \n\nI'd like to use Dataland.io as an easy and fast way to browse data from our data warehouse. Can you help me set up a read-only data source connection? \n\nPlease click the link below to get started. Thanks!"
+    "Hi there, \n\nI'd like to use Dataland.io as an easy and fast way to browse data from our data warehouse. Can you help me set up a read-only data source? \n\nPlease click the link below to get started. Thanks!"
   );
 
   const {
@@ -55,11 +55,11 @@ export default function AddDataSource() {
 
   const handleSourceClick = (source: string) => {
     if (source === "snowflake") {
-      router.push(`/workspace/${currentWorkspace.id}/connection/snowflake`);
+      router.push(`/workspace/${currentWorkspace.id}/data-source/snowflake`);
     } else if (source === "bigquery") {
-      router.push(`/workspace/${currentWorkspace.id}/connection/bigquery`);
+      router.push(`/workspace/${currentWorkspace.id}/data-source/bigquery`);
     } else if (source === "postgres") {
-      router.push(`/workspace/${currentWorkspace.id}/connection/postgres`);
+      router.push(`/workspace/${currentWorkspace.id}/data-source/postgres`);
     }
   };
 
@@ -69,7 +69,7 @@ export default function AddDataSource() {
   return (
     <>
       <Head>
-        <title>{currentWorkspace.name} › New connection</title>
+        <title>{currentWorkspace.name} › New data source</title>
       </Head>
       <WorkspaceLayout>
         <div className="h-screen bg-slate-1">
@@ -77,7 +77,7 @@ export default function AddDataSource() {
             <div className="h-[24px] w-[24px] flex items-center justify-center">
               <Plus size={20} weight="bold" className="text-slate-10" />
             </div>
-            <p className="text-slate-12 text-[13px]">Add data connection</p>
+            <p className="text-slate-12 text-[13px]">Add data source</p>
           </div>
           <div className="flex flex-col justify-center items-center w-full pt-32">
             <div className="bg-slate-1 text-slate-12 text-center text-[22px] pb-4 flex flex-row">
@@ -126,8 +126,8 @@ export default function AddDataSource() {
                 currentWorkspace={currentWorkspace}
                 customMessage={customMessage}
                 setCustomMessage={setCustomMessage}
-                emailTemplateLanguage={`Help ${currentUser.name} set up a read-only data source connection.`}
-                customInvitePeopleSubject={`Help ${currentUser.name} set up a data connection on Dataland.io`}
+                emailTemplateLanguage={`Help ${currentUser.name} set up a read-only data source`}
+                customInvitePeopleSubject={`Help ${currentUser.name} set up a data source on Dataland.io`}
               />
               <Link href={`/workspace/${currentWorkspace.id}`}>
                 <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">
