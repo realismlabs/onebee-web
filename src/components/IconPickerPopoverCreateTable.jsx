@@ -64,7 +64,7 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
 const IconPickerPopoverCreateTable = ({ iconSvgString, setIconSvgString, selectedColor, setSelectedColor }) => {
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [iconSvgBase64Url, setIconSvgBase64Url] = useState(null);
+  const [iconSvgBase64Url, setIconSvgBase64Url] = useState(svgToBase64(iconSvgString));
 
   const handleIconClick = async (iconName, selectedColor) => {
     setSelectedIcon(iconName);

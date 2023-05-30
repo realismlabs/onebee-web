@@ -548,7 +548,6 @@ export const getWorkspaceDataSources = async (workspaceId, jwt) => {
     }
   );
   const data_sources = await response.json();
-  console.log("data_sources core:", data_sources)
   return data_sources;
 };
 

@@ -563,10 +563,15 @@ const FileTree: React.FC<FileTreeProps> = ({
           ""
         );
         setSelectedIconName(icon_suggestion_name_cleaned);
+        console.log(
+          "icon_suggestion_name_cleaned",
+          icon_suggestion_name_cleaned
+        );
         const iconSvgString = getIconSvgStringFromName(
           icon_suggestion_name_cleaned
         );
         setIconSvgString(iconSvgString);
+        console.log("iconSvgString", iconSvgString);
       }
       setIsIconSuggestionLoading(false);
     } catch (error) {
