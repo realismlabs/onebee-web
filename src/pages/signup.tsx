@@ -6,16 +6,12 @@ import { useRouter } from "next/router";
 import { callApi } from "../utils/util";
 import { createUser } from "@/utils/api";
 import React, {
-  SyntheticEvent,
   useState,
   useEffect,
   createRef,
   ChangeEvent,
   KeyboardEvent,
 } from "react";
-import type { NextPage } from "next";
-import { CircleNotch, CheckCircle } from "@phosphor-icons/react";
-import { set } from "date-fns";
 import { capitalizeString } from "../utils/util";
 
 export default function Signup() {
@@ -31,8 +27,6 @@ export default function Signup() {
   const { isLoaded: isLoadedSignUp, signUp, setActive } = useSignUp();
   const [pendingVerification, setPendingVerification] = useState(false);
   const { isSignedIn, isLoaded: isLoadedUser } = useUser();
-  const { signIn } = useSignIn();
-  const { getToken } = useAuth();
 
   // ----------------------------------------------------
   const [code, setCode] = useState<Array<string>>(Array(6).fill(""));
@@ -122,11 +116,6 @@ export default function Signup() {
       setEmailErrorMessage("Please enter a valid email address.");
       return;
     }
-
-    // if (await isEmailRegistered(email)) {
-    //   setEmailErrorMessage("The email address is already registered.");
-    //   return;
-    // }
 
     const is_password_strong = isPasswordStrong(password);
     if (!is_password_strong.result) {
@@ -224,7 +213,7 @@ export default function Signup() {
     if (pendingVerification && inputs[0] && inputs[0].current) {
       inputs[0].current.focus();
     }
-  }, [pendingVerification]);
+  }, [inputs, pendingVerification]);
 
   if (isLoadedUser && !isSignedIn) {
     return (
@@ -433,7 +422,9 @@ export default function Signup() {
               className="hidden lg:w-1/2 z-30 lg:flex lg:flex-col gap-6 items-center top-96 justify-center bg-center h-screen"
               style={{
                 // backgroundImage: "url('/images/signup_render.png')",
-                backgroundImage: "url('/images/signup_render.svg')",
+                backgroundImage: "url('/images/signup_render_1.png')",
+                backgroundSize: "240%",
+                backgroundPosition: "center",
               }}
             >
               <div
