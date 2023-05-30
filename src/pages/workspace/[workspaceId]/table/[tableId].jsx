@@ -9,13 +9,14 @@ import MemoizedMockTable from "@/components/MemoizedMockTable";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
-import { CaretDown, MagnifyingGlass, Gear, X, Pencil, Trash, ClockCounterClockwise } from "@phosphor-icons/react";
+import { CaretDown, MagnifyingGlass, Gear, X, Pencil, Trash, ClockCounterClockwise, Shower } from "@phosphor-icons/react";
 import { useState, Fragment, useRef, useEffect } from "react";
 import IconPickerPopoverEditTable from "@/components/IconPickerPopoverEditTable";
 import { Popover, Transition, Dialog } from "@headlessui/react";
 import InvitePeopleDialog from "@/components/InvitePeopleDialog";
 import { useAuth } from "@clerk/nextjs";
 import { useLocalStorageState } from "@/utils/util"
+import { set } from "date-fns";
 
 const TablePopover = ({
   tableName,
@@ -281,7 +282,7 @@ const TablePopover = ({
   );
 };
 
-const KeyCombination = ({ keys }) => {
+const KeyCombinationGray = ({ keys }) => {
   const isMac = window.navigator.userAgent.includes('Mac');
 
   return (
@@ -293,6 +294,25 @@ const KeyCombination = ({ keys }) => {
         }
         return (
           <p key={index} className="min-h-[20px] min-w-[20px] bg-slate-3 flex items-center justify-center rounded-[3px] text-slate-11">{displayKey}</p>
+        );
+      })}
+    </div>
+  );
+};
+
+
+const KeyCombinationBlue = ({ keys }) => {
+  const isMac = window.navigator.userAgent.includes('Mac');
+
+  return (
+    <div className="flex flex-row gap-1">
+      {keys.map((key, index) => {
+        let displayKey = key;
+        if (key.toLowerCase() === 'cmd' || key.toLowerCase() === 'meta') {
+          displayKey = isMac ? '⌘' : 'Ctrl';
+        }
+        return (
+          <p key={index} className="min-h-[20px] min-w-[20px] bg-blue-900 flex items-center justify-center rounded-[3px] text-white">{displayKey}</p>
         );
       })}
     </div>
@@ -312,19 +332,15 @@ export default function TablePage() {
     "Hi there, \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse. \n\nJoin the workspace in order to browse and search our key datasets."
   );
 
-  console.log("id", tableId);
-
+  // search state
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false);
+  const [isSearchBlank, setIsSearchBlank] = useState(true);
   const [searchValue, setSearchValue] = useState("");
-  const [onboardingTableHint, setOnboardingTableHint] = useLocalStorageState("onboardingTableHint", false);
+
+  const [showOnboardingSearchHint, setShowOnboardingSearchHint] = useLocalStorageState("showOnboardingSearchHint", true);
 
   const handleSearchbarFocus = () => {
     setIsSearchFocused(true);
-  };
-
-  const handleSearchbarBlur = () => {
-    setIsSearchFocused(false);
   };
 
   const handleSearchbarKeyDown = (e) => {
@@ -332,6 +348,34 @@ export default function TablePage() {
       e.target.blur();
     }
   };
+
+  const handleColumnSearchInput = (value) => {
+    // added space
+    setSearchValue(value + " ");
+    setIsSearchBlank(false);
+    inputRef.current.focus();
+  };
+
+  const handleRecentSearchInput = (value) => {
+    setSearchValue(value);
+    // also refocus the input and setIsSearchBlank to false
+    setIsSearchBlank(false);
+    inputRef.current.focus();
+  };
+
+  // if inputRef contains a value, then set isSearchBlank to false
+  useEffect(() => {
+    if (!!inputRef.current?.value) {
+      setIsSearchBlank(false);
+      if (showOnboardingSearchHint) {
+        // On search input, set this to false
+        setShowOnboardingSearchHint(false);
+      }
+
+    } else {
+      setIsSearchBlank(true);
+    }
+  }, [searchValue, setShowOnboardingSearchHint, showOnboardingSearchHint]);
 
   const {
     data: currentUser,
@@ -387,6 +431,7 @@ export default function TablePage() {
     }
   }, [tableData]);
 
+
   // useEffect to use Escape key to exit search
   useEffect(() => {
     function handleKeyDown(event) {
@@ -397,6 +442,7 @@ export default function TablePage() {
 
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
+        console.log("clicked outside")
         setIsSearchFocused(false);
       }
     }
@@ -521,38 +567,37 @@ export default function TablePage() {
               />
             </div>
             {/* Search */}
-            {isSearchFocused ? (
-              <>
+            <>
+              <div
+                ref={searchRef}
+                className={`flex flex-col items-start flex-grow mx-[120px] max-h-[36px]`}
+                style={{ width: '100%' }}  // Explicitly set width to 100%
+              >
                 <div
-                  ref={searchRef}
-                  className="flex flex-col flex-grow mx-[120px]"
-                  onClick={() => setIsSearchFocused(true)}
-                  style={{ width: '100%' }}  // Explicitly set width to 100%
+                  className={`bg-slate-5 hover:bg-slate-6 text-[13px] px-[8px] py-[6px] border-2 border-slate-6  ${isSearchFocused ? "ring-2 ring-blue-600" : ""
+                    } cursor-pointer rounded-full gap-2 flex w-full items-center`}
                 >
-                  <div className="relative m-[-6px] p-[6px] bg-slate-3 rounded-t-[20px]">
-                    <div
-                      className={`bg-slate-5 hover:bg-slate-6 text-[13px] px-[8px] py-[6px] border-2 border-slate-6  ${isSearchFocused ? "ring-2 ring-blue-600" : ""
-                        } cursor-pointer rounded-full gap-2 flex flex-grow items-center`}
-                    >
-                      <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
-                      <input
-                        ref={inputRef}
-                        title="Search"
-                        className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-11 flex-grow"
-                        placeholder={`Search ${tableData.name}..`}
-                        value={searchValue}
-                        onChange={(e) => setSearchValue(e.target.value)}
-                        onFocus={handleSearchbarFocus}
-                        onBlur={handleSearchbarBlur}
-                        onKeyDown={handleSearchbarKeyDown}
-                      />
-                      <KeyCombination keys={['cmd', 'F']} />
-                    </div>
-                    <div className="h-auto mt-1 mx-[-6px] px-4 py-3 rounded-b-[20px] absolute bg-slate-3 w-full text-white shadow-2xl">
+                  <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
+                  <input
+                    ref={inputRef}
+                    title="Search"
+                    className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-11 flex-grow"
+                    placeholder={`Search ${tableData.name}..`}
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    onFocus={handleSearchbarFocus}
+                    // onBlur={handleSearchbarBlur}
+                    onKeyDown={handleSearchbarKeyDown}
+                  />
+                  <KeyCombinationGray keys={['cmd', 'F']} />
+                </div>
+                {isSearchBlank && isSearchFocused && (
+                  <div className="relative p-[6px] bg-slate-3 mt-1 rounded-t-[20px] w-full">
+                    <div className="h-auto mx-[-6px] px-4 pt-2 pb-3 rounded-b-[20px] absolute bg-slate-3 w-full text-white shadow-2xl">
                       <div className="flex flex-col gap-2">
                         <div className="flex flex-row gap-2">
                           <p className="text-slate-11 text-[12px]">Search by column</p>
-                          <p className="text-slate-10 text-[12px] flex-grow">Or type `column:` in the searchbar</p>
+                          <p className="text-slate-10 text-[12px] flex-grow">Or type `col:` in the searchbar</p>
                           <p className="text-slate-12 text-[12px]">Advanced search</p>
                         </div>
                         <div className="flex flex-row gap-2 overflow-x-scroll">
@@ -561,6 +606,9 @@ export default function TablePage() {
                               <div
                                 key={column_name}
                                 className="bg-slate-1 hover:bg-slate-2 text-[13px] px-[8px] py-[4px] border border-slate-4 cursor-pointer rounded-md gap-2 flex items-center"
+                                onClick={() => {
+                                  handleColumnSearchInput(`col:${column_name}`)
+                                }}
                               >
                                 <p className="text-slate-12">{column_name}</p>
                               </div>
@@ -580,6 +628,9 @@ export default function TablePage() {
                                 <div
                                   key={recent_search}
                                   className="hover:bg-slate-5 text-[13px] py-[4px] cursor-pointer rounded-md gap-2 flex flex-grow items-center"
+                                  onClick={() => {
+                                    handleRecentSearchInput(recent_search)
+                                  }}
                                 >
                                   <ClockCounterClockwise size={16} weight="bold" className="text-slate-11" />
                                   <p className="text-slate-12">{recent_search}</p>
@@ -591,37 +642,20 @@ export default function TablePage() {
                       </div>
                     </div>
                   </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div
-                  ref={searchRef}
-                  className="flex flex-col flex-grow mx-[120px]"
-                  onClick={() => setIsSearchFocused(true)}
-                  style={{ width: '100%' }}  // Explicitly set width to 100%
-                >
-                  <div
-                    className={`bg-slate-5 hover:bg-slate-6 text-[13px] px-[8px] py-[6px] border-2 border-slate-6  ${isSearchFocused ? "ring-2 ring-blue-600" : ""
-                      } cursor-pointer rounded-full gap-2 flex flex-grow items-center`}
-                  >
-                    <MagnifyingGlass size={16} weight="bold" className="text-slate-11" />
-                    <input
-                      ref={inputRef}
-                      title="Search"
-                      className="bg-transparent focus:outline-none focus:ring-0 placeholder:text-slate-11 flex-grow"
-                      placeholder={`Search ${tableData.name}..`}
-                      value={searchValue}
-                      onChange={(e) => setSearchValue(e.target.value)}
-                      onFocus={handleSearchbarFocus}
-                      onBlur={handleSearchbarBlur}
-                      onKeyDown={handleSearchbarKeyDown}
-                    />
-                    <KeyCombination keys={['cmd', 'F']} />
+                )}
+                {!isSearchFocused && showOnboardingSearchHint && (
+                  <div className="relative px-4 py-3 text-[13px] rounded-md bg-blue-600 flex flex-col gap-2 w-[320px]">
+                    <div className="flex flex-row items-center gap-2">
+                      <KeyCombinationBlue keys={['cmd', 'F']} />
+                      <p className="text-[13px] font-medium">to search this table</p>
+                    </div>
+                    <p className="text-[12px] text-blue-200">Dataland lets you search large tables - even billions of rows - at blazing-fast speeds.</p>
+                    <X size={12} weight="bold" className="text-blue-200 absolute top-3 right-3 cursor-pointer" onClick={() => setShowOnboardingSearchHint(false)} />
                   </div>
-                </div>
-              </>
-            )}
+                )}
+              </div>
+            </>
+
 
 
             <div className="flex flex-row gap-2 flex-none justify-end">

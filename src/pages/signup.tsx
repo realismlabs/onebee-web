@@ -4,18 +4,14 @@ import { useSignUp, useUser, useSignIn, SignUp, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { callApi } from "../utils/util";
-import { createUser, getUserByEmail } from "@/utils/api";
+import { createUser } from "@/utils/api";
 import React, {
-  SyntheticEvent,
   useState,
   useEffect,
   createRef,
   ChangeEvent,
   KeyboardEvent,
 } from "react";
-import type { NextPage } from "next";
-import { CircleNotch, CheckCircle } from "@phosphor-icons/react";
-import { set } from "date-fns";
 import { capitalizeString } from "../utils/util";
 
 export default function Signup() {
@@ -31,8 +27,6 @@ export default function Signup() {
   const { isLoaded: isLoadedSignUp, signUp, setActive } = useSignUp();
   const [pendingVerification, setPendingVerification] = useState(false);
   const { isSignedIn, isLoaded: isLoadedUser } = useUser();
-  const { signIn } = useSignIn();
-  const { getToken } = useAuth();
 
   // ----------------------------------------------------
   const [code, setCode] = useState<Array<string>>(Array(6).fill(""));
@@ -78,13 +72,13 @@ export default function Signup() {
     router.push("/dashboard");
   }
 
-  // Mock API call to check if an email address is already registered
-  const isEmailRegistered = async (email: string) => {
-    // Replace this with your actual API call
-    const result = await getUserByEmail(email);
-    console.log("result", result);
-    return result.length > 0;
-  };
+  // // Mock API call to check if an email address is already registered
+  // const isEmailRegistered = async (email: string) => {
+  //   // Replace this with your actual API call
+  //   const result = await getUserByEmail(email);
+  //   console.log("result", result);
+  //   return result.length > 0;
+  // };
 
   const isPasswordStrong = (password: string) => {
     // Replace this with your actual logic
@@ -123,11 +117,6 @@ export default function Signup() {
       return;
     }
 
-    if (await isEmailRegistered(email)) {
-      setEmailErrorMessage("The email address is already registered.");
-      return;
-    }
-
     const is_password_strong = isPasswordStrong(password);
     if (!is_password_strong.result) {
       setPasswordErrorMessage(isPasswordStrong(password).message);
@@ -151,7 +140,11 @@ export default function Signup() {
         setPasswordErrorMessage(err.message);
       }
       if (err.errors.length >= 1) {
-        setEmailErrorMessage(err.errors[0].message);
+        if (err.errors[0].message.includes("email")) {
+          setEmailErrorMessage(err.errors[0].message);
+        } else {
+          setPasswordErrorMessage(err.errors[0].message);
+        }
       }
     }
   };
@@ -220,7 +213,7 @@ export default function Signup() {
     if (pendingVerification && inputs[0] && inputs[0].current) {
       inputs[0].current.focus();
     }
-  }, [pendingVerification]);
+  }, [inputs, pendingVerification]);
 
   if (isLoadedUser && !isSignedIn) {
     return (
@@ -429,7 +422,9 @@ export default function Signup() {
               className="hidden lg:w-1/2 z-30 lg:flex lg:flex-col gap-6 items-center top-96 justify-center bg-center h-screen"
               style={{
                 // backgroundImage: "url('/images/signup_render.png')",
-                backgroundImage: "url('/images/signup_render.svg')",
+                backgroundImage: "url('/images/signup_render_1.png')",
+                backgroundSize: "240%",
+                backgroundPosition: "center",
               }}
             >
               <div

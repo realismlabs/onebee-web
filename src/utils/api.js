@@ -33,15 +33,6 @@ export const fetchCurrentWorkspace = async (workspaceId, headers) => {
   return result;
 };
 
-// used for the signup page
-export const getUserByEmail = async (email) => {
-  const user = await fetch(`${API_BASE_URL}/api/users/email/${email}`);
-  const result = await user.json();
-  console.log("getUserByEmail", result)
-  return result;
-}
-
-
 // "/api/users/": "/users",
 export const createUser = async ({ email, name, clerkUserId }) => {
   const requestBody = {
