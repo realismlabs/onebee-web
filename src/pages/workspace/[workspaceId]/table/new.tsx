@@ -107,39 +107,21 @@ interface FileTreeProps {
   isLoading: boolean;
 }
 
-interface Connection {
-  accountIdentifier: string;
-  warehouse: string;
-  basicAuthUsername: string | null;
-  basicAuthPassword: string | null;
-  keyPairAuthUsername: string | null;
-  keyPairAuthPrivateKey: string | null;
-  keyPairAuthPrivateKeyPassphrase: string | null;
-  role: string | null;
-  dataSourceType: string;
-  name: string;
-  createdAt: string;
-  workspaceId: number;
-  id: number;
-}
-
 const ConnectionSelector = ({
   selectedDataSource,
   setSelectedDataSource,
   dataSourcesData,
 }: {
-  selectedDataSource: Connection | null;
-  setSelectedDataSource: React.Dispatch<
-    React.SetStateAction<Connection | null>
-  >;
-  dataSourcesData: Connection[] | null;
+  selectedDataSource: any | null;
+  setSelectedDataSource: React.Dispatch<React.SetStateAction<any | null>>;
+  dataSourcesData: any[] | null;
 }) => {
   // whenever dataSourcesData changes, set the selectedDataSource
   useEffect(() => {
     if (dataSourcesData) {
       setSelectedDataSource(dataSourcesData[0]);
     }
-  }, [dataSourcesData]);
+  }, [dataSourcesData, setSelectedDataSource]);
 
   return (
     <div className="w-full mt-4">
@@ -304,11 +286,9 @@ const PreviewTableUI = ({
   setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
   tableDisplayNameErrorMessage: string;
   setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-  selectedDataSource: Connection | null;
-  setSelectedDataSource: React.Dispatch<
-    React.SetStateAction<Connection | null>
-  >;
-  dataSourcesData: Connection[] | null;
+  selectedDataSource: any;
+  setSelectedDataSource: React.Dispatch<React.SetStateAction<any>>;
+  dataSourcesData: any[] | null;
   isLoading: boolean;
 }) => {
   let data = null;
@@ -524,7 +504,13 @@ const FileTree: React.FC<FileTreeProps> = ({
     const first_table_row_count = data[0].row_count;
     setSelectedTable(first_table_id);
     setSelectedTableRowCount(first_table_row_count);
-  }, [data]);
+  }, [
+    allDbNames,
+    allSchemaNames,
+    data,
+    setSelectedTable,
+    setSelectedTableRowCount,
+  ]);
 
   const toggleDb = (dbName: string) => {
     setExpandedDbs((prev) =>
@@ -699,43 +685,6 @@ const FileTree: React.FC<FileTreeProps> = ({
 
 export default function CreateTable() {
   const { getToken } = useAuth();
-  const [useCustomHost, setUseCustomHost] = useLocalStorageState(
-    "useCustomHost",
-    false
-  );
-  const [customHostAccountIdentifier, setCustomHostAccountIdentifier] =
-    useLocalStorageState("customHostAccountIdentifier", "");
-  const [snowflakeAuthMethod, setSnowflakeAuthMethod] = useLocalStorageState(
-    "snowflakeAuthMethod",
-    "user_pass"
-  );
-  const [accountIdentifier, setAccountIdentifier] = useLocalStorageState(
-    "accountIdentifier",
-    ""
-  );
-  const [customHost, setCustomHost] = useLocalStorageState("customHost", "");
-  const [warehouse, setWarehouse] = useLocalStorageState("warehouse", "");
-  const [basicAuthUsername, setBasicAuthUsername] = useLocalStorageState(
-    "basicAuthUsername",
-    ""
-  );
-  const [basicAuthPassword, setBasicAuthPassword] = useLocalStorageState(
-    "basicAuthPassword",
-    ""
-  );
-  const [keyPairAuthPrivateKey, setKeyPairAuthPrivateKey] =
-    useLocalStorageState("keyPairAuthPrivateKey", "");
-  const [keyPairAuthPrivateKeyPassphrase, setKeyPairAuthPrivateKeyPassphrase] =
-    useLocalStorageState("keyPairAuthPrivateKeyPassphrase", "");
-  const [keyPairAuthUsername, setKeyPairAuthUsername] = useLocalStorageState(
-    "keyPairAuthUsername",
-    ""
-  );
-  const [role, setRole] = useLocalStorageState("role", "");
-  const [dataSourceType, setDataSourceType] = useLocalStorageState(
-    "dataSourceType",
-    "snowflake"
-  );
 
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [selectedIconName, setSelectedIconName] = useState<string>("");
@@ -752,8 +701,7 @@ export default function CreateTable() {
   const [tableDisplayNameErrorMessage, setTableDisplayNameErrorMessage] =
     useState<string>("");
 
-  const [selectedDataSource, setSelectedDataSource] =
-    useState<Connection | null>(null);
+  const [selectedDataSource, setSelectedDataSource] = useState<any>(null);
 
   // whenever selectedTable changes, fetch the new tableDisplayName
   useEffect(() => {
@@ -847,6 +795,7 @@ export default function CreateTable() {
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
       const response = await getWorkspaceDataSources(currentWorkspace?.id, jwt);
+      console.log("awu response:", response);
       return response;
     },
     enabled: !!currentWorkspace?.id,

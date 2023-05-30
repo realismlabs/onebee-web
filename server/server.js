@@ -648,6 +648,25 @@ app.get('/api/workspaces/:workspaceId/data_sources/:dataSourceId', ClerkExpressR
   }
 });
 
+// getDataSourceFull
+app.get('/api/workspaces/:workspaceId/data_sources/:dataSourceId/full', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const dataSourceId = parseInt(req.params.dataSourceId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM "data_sources" WHERE "workspaceId"=$1 AND "id"=$2 ORDER BY id ASC', [workspaceId, dataSourceId]);
+    const data_source = result.rows[0];
+    console.log('Fetched data_source', data_source);
+    res.json(data_source);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting data source" });
+  } finally {
+    client.release();
+  }
+});
+
 // getDataSources
 app.get('/api/workspaces/:workspaceId/data_sources', ClerkExpressRequireAuth(), async (req, res) => {
   const workspaceId = parseInt(req.params.workspaceId, 10);

@@ -443,6 +443,20 @@ export const getDataSource = async (workspaceId, dataSourceId, jwt) => {
   return data_source;
 };
 
+// get full details so that we can fetch tables from data source again
+export const getDataSourceFull = async (workspaceId, dataSourceId, jwt) => {
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/data_sources/${dataSourceId}/full`,
+    {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    }
+  );
+  const data_source = await response.json();
+  return data_source;
+};
 // Update a specific data_source, display name only
 export const updateDataSourceDisplayName = async ({
   workspaceId,
