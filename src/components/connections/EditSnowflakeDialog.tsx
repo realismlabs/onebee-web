@@ -23,7 +23,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 import LogoSnowflake from "@/components/LogoSnowflake";
-import { updateConnection } from "@/utils/api";
+import { updateDataSource } from "@/utils/api";
 import { capitalizeString } from "@/utils/util";
 import { useAuth } from "@clerk/nextjs";
 import { Dialog } from "@headlessui/react";
@@ -117,7 +117,7 @@ export default function EditSnowflakeDialog({
   const [isHoveringOnAddConnectionButton, setIsHoveringOnAddConnectionButton] =
     useState(false);
 
-  const updateConnectionMutation = useMutation(updateConnection, {
+  const updateDataSourceMutation = useMutation(updateDataSource, {
     onSuccess: () => {
       queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
     },
@@ -130,7 +130,7 @@ export default function EditSnowflakeDialog({
 
     // Separate extra attributes
     if (connectionResult.status === "success") {
-      const updateConnectionRequestBody = {
+      const updateDataSourceRequestBody = {
         ...connectionRequestBody,
         name: name,
         workspaceId: currentWorkspace?.id,
@@ -138,10 +138,10 @@ export default function EditSnowflakeDialog({
       try {
         const jwt = await getToken({ template: "test" });
         const update_connection_response =
-          await updateConnectionMutation.mutateAsync({
+          await updateDataSourceMutation.mutateAsync({
             workspaceId: currentWorkspace?.id,
             connectionId: connectionData?.id,
-            data: updateConnectionRequestBody,
+            data: updateDataSourceRequestBody,
             jwt,
           });
         console.log("update_connection_response", update_connection_response);
