@@ -59,11 +59,11 @@ const CopyableIP: FC<IPProps> = ({ ip }) => {
 };
 
 export default function EditSnowflakeDialog({
-  connectionData,
+  dataSourceData,
   isEditSnowflakeDialogOpen,
   setIsEditSnowflakeDialogOpen,
 }: {
-  connectionData: any;
+  dataSourceData: any;
   isEditSnowflakeDialogOpen: any;
   setIsEditSnowflakeDialogOpen: any;
 }) {
@@ -71,33 +71,33 @@ export default function EditSnowflakeDialog({
   const queryClient = useQueryClient();
 
   // Snowflake vars
-  const [name, setName] = useState(connectionData?.name);
+  const [name, setName] = useState(dataSourceData?.name);
   const [useCustomHost, setUseCustomHost] = useState(
-    connectionData?.useCustomHost
+    dataSourceData?.useCustomHost
   );
   const [customHostAccountIdentifier, setCustomHostAccountIdentifier] =
-    useState(connectionData?.customHostAccountIdentifier);
+    useState(dataSourceData?.customHostAccountIdentifier);
   const [snowflakeAuthMethod, setSnowflakeAuthMethod] = useState(
-    connectionData?.snowflakeAuthMethod
+    dataSourceData?.snowflakeAuthMethod
   );
   const [accountIdentifier, setAccountIdentifier] = useState(
-    connectionData?.accountIdentifier
+    dataSourceData?.accountIdentifier
   );
-  const [customHost, setCustomHost] = useState(connectionData?.customHost);
-  const [warehouse, setWarehouse] = useState(connectionData?.warehouse);
+  const [customHost, setCustomHost] = useState(dataSourceData?.customHost);
+  const [warehouse, setWarehouse] = useState(dataSourceData?.warehouse);
   const [basicAuthUsername, setBasicAuthUsername] = useState(
-    connectionData?.basicAuthUsername
+    dataSourceData?.basicAuthUsername
   );
   const [basicAuthPassword, setBasicAuthPassword] = useState("");
   const [keyPairAuthPrivateKey, setKeyPairAuthPrivateKey] = useState("");
   const [keyPairAuthPrivateKeyPassphrase, setKeyPairAuthPrivateKeyPassphrase] =
     useState("");
   const [keyPairAuthUsername, setKeyPairAuthUsername] = useState(
-    connectionData?.keyPairAuthUsername
+    dataSourceData?.keyPairAuthUsername
   );
-  const [role, setRole] = useState(connectionData?.role);
-  const [connectionType, setConnectionType] = useState(
-    connectionData?.connectionType
+  const [role, setRole] = useState(dataSourceData?.role);
+  const [dataSourceType, setConnectionType] = useState(
+    dataSourceData?.dataSourceType
   );
 
   // Connection test vars
@@ -119,14 +119,14 @@ export default function EditSnowflakeDialog({
 
   const updateDataSourceMutation = useMutation(updateDataSource, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
+      queryClient.invalidateQueries(["getDataSources", currentWorkspace?.id]);
     },
   });
 
   // event handlers
   const handleUpdateConnection = async (e: any) => {
     e.preventDefault();
-    console.log("clicked Update connection button");
+    console.log("clicked Update data source button");
 
     // Separate extra attributes
     if (connectionResult.status === "success") {
@@ -137,14 +137,14 @@ export default function EditSnowflakeDialog({
       };
       try {
         const jwt = await getToken({ template: "test" });
-        const update_connection_response =
+        const update_data_source_response =
           await updateDataSourceMutation.mutateAsync({
             workspaceId: currentWorkspace?.id,
-            connectionId: connectionData?.id,
+            dataSourceId: dataSourceData?.id,
             data: updateDataSourceRequestBody,
             jwt,
           });
-        console.log("update_connection_response", update_connection_response);
+        console.log("update_data_source_response", update_data_source_response);
         setIsEditSnowflakeDialogOpen(false);
         toast(`Successfully updated connection`, {
           icon: (
@@ -178,7 +178,7 @@ export default function EditSnowflakeDialog({
     keyPairAuthPrivateKey,
     keyPairAuthPrivateKeyPassphrase,
     role,
-    connectionType,
+    dataSourceType,
     customHost,
     customHostAccountIdentifier,
     snowflakeAuthMethod,
@@ -683,7 +683,7 @@ export default function EditSnowflakeDialog({
                           "opacity-50 cursor-not-allowed "
                         }`}
                       >
-                        Update connection
+                        Update data source
                       </button>
                       {connectionResult.status !== "success" && (
                         <div
