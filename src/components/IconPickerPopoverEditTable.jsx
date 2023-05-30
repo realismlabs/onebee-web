@@ -80,7 +80,6 @@ const IconPickerPopoverEditTable = ({ tableName, tableId, workspaceId, iconSvgBa
       const iconSvgString = Array.from(iconDiv.children).map((child) => child.outerHTML).join('\n');
       const iconSvgBase64Url = svgToBase64(iconSvgString);
       const tableData = {
-        iconSvgString,
         iconColor: selectedColor,
         iconSvgBase64Url
       };
