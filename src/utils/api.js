@@ -334,11 +334,11 @@ export const getTables = async (workspaceId, jwt) => {
   return tables;
 };
 
-// Get tables associated with a connection in a workspace
-export const getTablesFromConnection = async (workspaceId, connectionId, jwt) => {
+// Get tables associated with a data_source in a workspace
+export const getTablesFromDataSource = async (workspaceId, dataSourceId, jwt) => {
 
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/tables`,
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/data_sources/${dataSourceId}/tables`,
     {
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -346,7 +346,7 @@ export const getTablesFromConnection = async (workspaceId, connectionId, jwt) =>
     }
   );
   const tables = await response.json();
-  console.log("getTablesFromConnection", tables, workspaceId, connectionId)
+  console.log("getTablesFromDataSource", tables, workspaceId, dataSourceId)
   return tables;
 };
 
@@ -419,54 +419,54 @@ export const deleteTable = async ({ workspaceId, tableId, jwt }) => {
   return deletedTable;
 };
 
-// Create a new connection
-export const createConnection = async (workspaceId, connectionData, jwt) => {
+// Create a new data_source
+export const createDataSource = async (workspaceId, dataSourceData, jwt) => {
 
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`,
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/data_sources`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`,
       },
-      body: JSON.stringify(connectionData),
+      body: JSON.stringify(dataSourceData),
     }
   );
-  const createdConnection = await response.json();
-  return createdConnection;
+  const createdDataSource = await response.json();
+  return createdDataSource;
 };
 
-// Get a specific connection
-export const getConnection = async (workspaceId, connectionId, jwt) => {
+// Get a specific data_source
+export const getDataSource = async (workspaceId, dataSourceId, jwt) => {
 
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`,
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/data_sources/${dataSourceId}`,
     {
       headers: {
         Authorization: `Bearer ${jwt}`,
       }
     }
   );
-  const connection = await response.json();
-  return connection;
+  const data_source = await response.json();
+  return data_source;
 };
 
-// Update a specific connection, display name only
-export const updateConnectionDisplayName = async ({
+// Update a specific data_source, display name only
+export const updateDataSourceDisplayName = async ({
   workspaceId,
-  connectionId,
+  dataSourceId,
   data,
   jwt
 }
 ) => {
   //  print all args
-  console.log("updateConnectionDisplayName", workspaceId, connectionId, data,)
+  console.log("updateDataSourceDisplayName", workspaceId, dataSourceId, data,)
 
   const displayName = data.name;
 
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/update_name`,
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/data_sources/${dataSourceId}/update_name`,
     {
       method: "PATCH",
       headers: {
@@ -476,22 +476,22 @@ export const updateConnectionDisplayName = async ({
       body: JSON.stringify({ name: displayName }),
     }
   );
-  const updatedConnection = await response.json();
-  console.log("updatedConnection", updatedConnection)
-  return updatedConnection;
+  const updatedDataSource = await response.json();
+  console.log("updatedDataSource", updatedDataSource)
+  return updatedDataSource;
 };
 
-// Update a specific connection
-export const updateConnection = async ({
+// Update a specific data_source
+export const updateDataSource = async ({
   workspaceId,
-  connectionId,
+  dataSourceId,
   data,
   jwt
 }
 ) => {
   //  print all args
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}/update`,
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/data_sources/${dataSourceId}/update`,
     {
       method: "PATCH",
       headers: {
@@ -501,17 +501,17 @@ export const updateConnection = async ({
       body: JSON.stringify(data),
     }
   );
-  const updatedConnection = await response.json();
-  console.log("updatedConnection", updatedConnection)
-  return updatedConnection;
+  const updatedDataSource = await response.json();
+  console.log("updatedDataSource", updatedDataSource)
+  return updatedDataSource;
 };
 
-// Delete a specific connection
-export const deleteConnection = async ({ workspaceId, connectionId, jwt }) => {
+// Delete a specific data_source
+export const deleteDataSource = async ({ workspaceId, dataSourceId, jwt }) => {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/api/workspaces/${workspaceId}/connections/${connectionId}`,
+      `${API_BASE_URL}/api/workspaces/${workspaceId}/data_sources/${dataSourceId}`,
       {
         method: "DELETE",
         headers: {
@@ -522,32 +522,31 @@ export const deleteConnection = async ({ workspaceId, connectionId, jwt }) => {
     );
 
     if (!response.ok) {
-      throw new Error("Error deleting connection");
+      throw new Error("Error deleting data source");
     }
 
     return await response.json();
   } catch (error) {
-    console.error("Error in deleteConnection:", error);
+    console.error("Error in deleteDataSource:", error);
     throw error;
   }
 };
 
-// Get all connections associated with a workspace
-export const getWorkspaceConnections = async (workspaceId, jwt) => {
-
+// Get all data_sources associated with a workspace
+export const getWorkspaceDataSources = async (workspaceId, jwt) => {
   const response = await fetch(
-    `${API_BASE_URL}/api/workspaces/${workspaceId}/connections`,
+    `${API_BASE_URL}/api/workspaces/${workspaceId}/data_sources`,
     {
       headers: {
         Authorization: `Bearer ${jwt}`,
       }
     }
   );
-  const connections = await response.json();
-  return connections;
+  const data_sources = await response.json();
+  return data_sources;
 };
 
-// Get all connections associated with a workspace
+// Get all data_sources associated with a workspace
 export const getWorkspaces = async (jwt) => {
 
   console.log("getWorkspaces jwt", jwt)
@@ -558,8 +557,8 @@ export const getWorkspaces = async (jwt) => {
       }
     }
   );
-  const connections = await response.json();
-  return connections;
+  const data_sources = await response.json();
+  return data_sources;
 };
 
 

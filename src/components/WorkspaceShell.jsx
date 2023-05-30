@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
 import { useQuery, useQueryClient, useQueries } from '@tanstack/react-query';
-import { getTables, getWorkspaceConnections, getUserMemberships, getWorkspaceDetails } from '../utils/api';
+import { getTables, getWorkspaceDataSources, getUserMemberships, getWorkspaceDetails } from '../utils/api';
 import { House, Table, UserCircle, PaperPlaneTilt, CircleNotch, Check, TreeStructure, Database, SignOut, CaretDoubleLeft, Compass, Gear, } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react'
@@ -354,26 +354,26 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
   });
 
   const {
-    data: connectionsData,
-    isLoading: isConnectionsLoading,
-    error: connectionsError,
+    data: dataSourcesData,
+    isLoading: isDataSourcesLoading,
+    error: dataSourcesError,
   } = useQuery({
-    queryKey: ["getConnections", currentWorkspace?.id],
+    queryKey: ["getDataSources", currentWorkspace?.id],
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
-      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
+      const response = await getWorkspaceDataSources(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: !!currentWorkspace?.id,
   });
 
-  if (areTablesLoading || isWorkspaceLoading || isUserLoading || isConnectionsLoading) {
+  if (areTablesLoading || isWorkspaceLoading || isUserLoading || isDataSourcesLoading) {
     return (
       <></>
     )
   }
 
-  if (tablesError || workspaceError || userError || connectionsError) {
+  if (tablesError || workspaceError || userError || dataSourcesError) {
     return <div className="text-slate-12">There was an error loading your tables</div>;
   }
 
@@ -479,7 +479,8 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
           </Tooltip.Root>
         </Tooltip.Provider>
         <div className="space-y-2 mt-4">
-          {connectionsData?.length > 0 && (
+          {/* if no data sources, don't render anything */}
+          {dataSourcesData?.length > 0 && (
             <>
               <div className="pl-[8px] text-slate-11 text-[13px] flex flex-row items-center h-[28px]">
                 {shellExpanded && (<>
@@ -532,7 +533,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
       </div>
       {/* footer */}
       <div className="mt-auto flex flex-col px-[9px]">
-        <Link href={`/workspace/${currentWorkspace.id}/connection`}>
+        <Link href={`/workspace/${currentWorkspace.id}/data-source`}>
           <Tooltip.Provider>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
@@ -542,7 +543,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
                     weight="fill"
                     className="text-slate-10 group-hover:text-slate-11 transition-all duration-100 min-h-[20px] min-w-[20px]"
                   />
-                  <div className="truncate w-full">Data connections</div>
+                  <div className="truncate w-full">Data sources</div>
                 </div>
               </Tooltip.Trigger>
               <Tooltip.Portal>
@@ -551,7 +552,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
                   sideOffset={12}
                   side="left"
                 >
-                  Data connections
+                  Data sources
                   <Tooltip.Arrow className="fill-black" />
                 </Tooltip.Content>
               </Tooltip.Portal>

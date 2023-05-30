@@ -96,7 +96,7 @@ export default function EditSnowflakeDialog({
     dataSourceData?.keyPairAuthUsername
   );
   const [role, setRole] = useState(dataSourceData?.role);
-  const [dataSourceType, setConnectionType] = useState(
+  const [dataSourceType, setDataSourceType] = useState(
     dataSourceData?.dataSourceType
   );
 
@@ -114,7 +114,7 @@ export default function EditSnowflakeDialog({
   const [showTestPanel, setShowTestPanel] = useState<boolean>(false);
 
   // UI vars
-  const [isHoveringOnAddConnectionButton, setIsHoveringOnAddConnectionButton] =
+  const [isHoveringOnAddDataSourceButton, setIsHoveringOnAddDataSourceButton] =
     useState(false);
 
   const updateDataSourceMutation = useMutation(updateDataSource, {
@@ -124,14 +124,14 @@ export default function EditSnowflakeDialog({
   });
 
   // event handlers
-  const handleUpdateConnection = async (e: any) => {
+  const handleUpdateDataSource = async (e: any) => {
     e.preventDefault();
     console.log("clicked Update data source button");
 
     // Separate extra attributes
     if (connectionResult.status === "success") {
       const updateDataSourceRequestBody = {
-        ...connectionRequestBody,
+        ...dataSourceRequestBody,
         name: name,
         workspaceId: currentWorkspace?.id,
       };
@@ -146,7 +146,7 @@ export default function EditSnowflakeDialog({
           });
         console.log("update_data_source_response", update_data_source_response);
         setIsEditSnowflakeDialogOpen(false);
-        toast(`Successfully updated connection`, {
+        toast(`Successfully updated data source`, {
           icon: (
             <CheckCircle
               size={20}
@@ -156,20 +156,20 @@ export default function EditSnowflakeDialog({
           ),
         });
       } catch (error) {
-        console.error("Error updating connection:", error);
+        console.error("Error updating data source:", error);
         toast(`Unexpected error occurred`, {
           icon: (
             <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
           ),
-          description: `Error removing connection + ${error}`,
+          description: `Error removing data source + ${error}`,
         });
       }
     } else {
-      console.log("Connection failed, try again");
+      console.log("Adding data source failed, try again");
     }
   };
 
-  const connectionRequestBody = {
+  const dataSourceRequestBody = {
     accountIdentifier,
     warehouse,
     basicAuthUsername,
@@ -186,14 +186,14 @@ export default function EditSnowflakeDialog({
   };
 
   const connectionTestQuery = useQuery({
-    queryKey: ["connectionResult", connectionRequestBody],
+    queryKey: ["connectionResult", dataSourceRequestBody],
     queryFn: async () => {
       const response = await fetch("/api/test-snowflake-connection", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(connectionRequestBody),
+        body: JSON.stringify(dataSourceRequestBody),
       });
       return await response.json();
     },
@@ -205,7 +205,7 @@ export default function EditSnowflakeDialog({
         title:
           data.status === "success"
             ? "Success! You can continue to the next step."
-            : "Connection failed",
+            : "Adding data source failed",
         message: data.message,
         snowflake_error: data.snowflake_error ?? null,
         listed_tables: data.listed_tables ?? null,
@@ -216,7 +216,7 @@ export default function EditSnowflakeDialog({
       setConnectionTestInProgress(false);
       setConnectionResult({
         status: "error",
-        title: "Connection failed",
+        title: "Adding data source failed",
         message:
           JSON.stringify(error) === "{}"
             ? "Request timed out. Check if the account identifier is correct, and try again."
@@ -227,7 +227,7 @@ export default function EditSnowflakeDialog({
 
   const handleConnectionTest = async (e: any) => {
     e.preventDefault();
-    // Reset connection result
+    // Reset data source result
     setShowTestPanel(true);
     setConnectionTestInProgress(true);
     setConnectionResult({
@@ -671,12 +671,12 @@ export default function EditSnowflakeDialog({
                     </button>
                     <div className="relative inline-block">
                       <button
-                        onClick={handleUpdateConnection}
+                        onClick={handleUpdateDataSource}
                         onMouseEnter={() =>
-                          setIsHoveringOnAddConnectionButton(true)
+                          setIsHoveringOnAddDataSourceButton(true)
                         }
                         onMouseLeave={() =>
-                          setIsHoveringOnAddConnectionButton(false)
+                          setIsHoveringOnAddDataSourceButton(false)
                         }
                         className={`text-[13px] px-3 py-2 bg-blue-600 rounded-md ${
                           connectionResult.status !== "success" &&
@@ -689,10 +689,10 @@ export default function EditSnowflakeDialog({
                         <div
                           className="absolute right-0 bottom-full mb-2 w-max bg-black text-slate-12 text-[11px] py-1 px-2 rounded"
                           style={{
-                            visibility: isHoveringOnAddConnectionButton
+                            visibility: isHoveringOnAddDataSourceButton
                               ? "visible"
                               : "hidden",
-                            opacity: isHoveringOnAddConnectionButton ? 1 : 0,
+                            opacity: isHoveringOnAddDataSourceButton ? 1 : 0,
                           }}
                         >
                           You must have a successful <br></br>connection test to
@@ -762,7 +762,7 @@ export default function EditSnowflakeDialog({
                               {connectionResult.status === "success" && (
                                 <>
                                   <p className="text-[13px]">
-                                    This connection can access{" "}
+                                    This data source can access{" "}
                                     {connectionResult.listed_tables.length}{" "}
                                     tables from{" "}
                                     {connectionResult.listed_databases.length}{" "}
@@ -784,7 +784,7 @@ export default function EditSnowflakeDialog({
                                   </p>
                                   {/* Don't show if error message is generic */}
                                   {connectionResult.message !==
-                                    "Connection failed" && (
+                                    "Adding data source failed" && (
                                     <p className="text-[13px]">
                                       {connectionResult.message}
                                     </p>

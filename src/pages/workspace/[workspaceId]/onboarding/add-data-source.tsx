@@ -79,7 +79,7 @@ export default function AddDataSource() {
   return (
     <>
       <Head>
-        <title>{currentWorkspace.name} › Add data connection</title>
+        <title>{currentWorkspace.name} › Add data source</title>
       </Head>
       <div className="h-screen bg-slate-1">
         <AccountHeader email={email ?? "placeholder@example.com"} />
@@ -140,8 +140,8 @@ export default function AddDataSource() {
               currentWorkspace={currentWorkspace}
               customMessage={customMessage}
               setCustomMessage={setCustomMessage}
-              emailTemplateLanguage={`Help ${currentUser.name} set up a read-only data source connection.`}
-              customInvitePeopleSubject={`Help ${currentUser.name} set up a data connection on Dataland.io`}
+              emailTemplateLanguage={`Help ${currentUser.name} set up a read-only data source`}
+              customInvitePeopleSubject={`Help ${currentUser.name} set up a data source on Dataland.io`}
             />
             <Link href={`/workspace/${currentWorkspace.id}`}>
               <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">

@@ -5,7 +5,7 @@ export interface CoreConnectionCreationProps {
   createdAt: Date;
   name: string;
   workspaceId: number;
-  connectionType: "snowflake" | "postgres" | "bigquery";
+  dataSourceType: "snowflake" | "postgres" | "bigquery";
 }
 
 // Fields that exist in a Snowflake connection.

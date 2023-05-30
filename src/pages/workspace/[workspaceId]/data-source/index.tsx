@@ -2,10 +2,10 @@ import { useRouter } from "next/router";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import {
-  getWorkspaceConnections,
-  getTablesFromConnection,
-  deleteConnection,
-  updateConnectionDisplayName,
+  getWorkspaceDataSources,
+  getTablesFromDataSource,
+  deleteDataSource,
+  updateDataSourceDisplayName,
 } from "@/utils/api";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 import LogoSnowflake from "@/components/LogoSnowflake";
@@ -21,26 +21,26 @@ import { Dialog } from "@headlessui/react";
 import Image from "next/image";
 import Head from "next/head";
 import { useAuth } from "@clerk/nextjs";
-import EditSnowflakeDialog from "@/components/connections/EditSnowflakeDialog";
+import EditSnowflakeDialog from "@/components/data_sources/EditSnowflakeDialog";
 
-function findSelectedConnection(
-  connectionsData: any,
-  selectedConnectionId: any
+function findSelectedDataSource(
+  dataSourcesData: any,
+  selectedDataSourceId: any
 ) {
-  if (!selectedConnectionId) return null;
-  return connectionsData.find(
-    (connection: any) => connection.id === selectedConnectionId
+  if (!selectedDataSourceId) return null;
+  return dataSourcesData.find(
+    (data_source: any) => data_source.id === selectedDataSourceId
   );
 }
 
-export default function Connections() {
+export default function DataSources() {
   const { getToken } = useAuth();
   const router = useRouter();
   const { tableId } = router.query;
 
   const displayNameInputRef = useRef<HTMLInputElement>(null);
 
-  const [selectedConnectionId, setSelectedConnectionId] = useState(null);
+  const [selectedDataSourceId, setSelectedDataSourceId] = useState(null);
   const [displayNameInputValue, setDisplayNameInputValue] = useState("");
   const [isEditingDisplayName, setIsEditingDisplayName] = useState(false);
 
@@ -81,54 +81,54 @@ export default function Connections() {
   } = useCurrentWorkspace();
 
   const {
-    data: connectionsData,
-    isLoading: isConnectionsLoading,
-    error: connectionsError,
+    data: dataSourcesData,
+    isLoading: isDataSourcesLoading,
+    error: dataSourcesError,
   } = useQuery({
-    queryKey: ["getConnections", currentWorkspace?.id],
+    queryKey: ["getDataSources", currentWorkspace?.id],
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
-      const response = await getWorkspaceConnections(currentWorkspace?.id, jwt);
+      const response = await getWorkspaceDataSources(currentWorkspace?.id, jwt);
       return response;
     },
     enabled: !!currentWorkspace?.id,
   });
 
   const {
-    data: tablesFromConnectionData,
-    isLoading: istablesFromConnectionLoading,
-    error: tablesFromConnectionError,
+    data: tablesFromDataSourceData,
+    isLoading: istablesFromDataSourceLoading,
+    error: tablesFromDataSourceError,
   } = useQuery({
     queryKey: [
-      "getTablesFromConnection",
+      "getTablesFromDataSource",
       currentWorkspace?.id,
-      selectedConnectionId,
+      selectedDataSourceId,
     ],
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
-      const response = await getTablesFromConnection(
+      const response = await getTablesFromDataSource(
         currentWorkspace?.id,
-        selectedConnectionId,
+        selectedDataSourceId,
         jwt
       );
       return response;
     },
-    enabled: !!currentWorkspace?.id && !!selectedConnectionId,
+    enabled: !!currentWorkspace?.id && !!selectedDataSourceId,
   });
 
-  const deleteConnectionMutation = useMutation(deleteConnection, {
+  const deleteDataSourceMutation = useMutation(deleteDataSource, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
-      setSelectedConnectionId(null);
+      queryClient.invalidateQueries(["getDataSources", currentWorkspace?.id]);
+      setSelectedDataSourceId(null);
     },
   });
 
-  const handleDeleteConnection = async () => {
+  const handleDeleteDataSource = async () => {
     try {
       const jwt = await getToken({ template: "test" });
-      await deleteConnectionMutation.mutateAsync({
+      await deleteDataSourceMutation.mutateAsync({
         workspaceId: currentWorkspace.id,
-        connectionId: selectedConnectionId,
+        dataSourceId: selectedDataSourceId,
         jwt,
       });
       setIsDeleteDialogOpen(false);
@@ -137,17 +137,17 @@ export default function Connections() {
     }
   };
 
-  const updateConnectionMutation = useMutation(updateConnectionDisplayName, {
+  const updateDataSourceMutation = useMutation(updateDataSourceDisplayName, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["getConnections", currentWorkspace?.id]);
+      queryClient.invalidateQueries(["getDataSources", currentWorkspace?.id]);
     },
   });
 
   const handleUpdateDisplayName = async () => {
     const jwt = await getToken({ template: "test" });
-    await updateConnectionMutation.mutateAsync({
+    await updateDataSourceMutation.mutateAsync({
       workspaceId: currentWorkspace.id,
-      connectionId: selectedConnectionId,
+      dataSourceId: selectedDataSourceId,
       data: {
         name: displayNameInputValue,
       },
@@ -156,12 +156,12 @@ export default function Connections() {
     setIsEditingDisplayName(false);
   };
 
-  const selectedConnection = findSelectedConnection(
-    connectionsData,
-    selectedConnectionId
+  const selectedDataSource = findSelectedDataSource(
+    dataSourcesData,
+    selectedDataSourceId
   );
 
-  if (isConnectionsLoading) {
+  if (isDataSourcesLoading) {
     return (
       <div className="h-screen bg-slate-1 text-slate-12 text-[11px] flex items-center justify-center">
         Loading..
@@ -169,14 +169,14 @@ export default function Connections() {
     );
   }
 
-  if (connectionsError) {
+  if (dataSourcesError) {
     return <div>There was an error loading your table</div>;
   }
 
   return (
     <>
       <Head>
-        <title>{currentWorkspace.name} › Data connections</title>
+        <title>{currentWorkspace.name} › Data sources</title>
       </Head>
       <WorkspaceLayout>
         <div className="bg-slate-1 h-screen text-slate-12 flex flex-row divide-slate-4 divide-y">
@@ -189,13 +189,13 @@ export default function Connections() {
                   className="text-slate-10"
                 />
               </div>
-              <p className="text-slate-12 text-[13px]">Data connections</p>
+              <p className="text-slate-12 text-[13px]">Data sources</p>
 
               <button
                 className="bg-slate-3 hover:bg-slate-4 border border-slate-6 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px] ml-auto"
                 onClick={() => {
                   router.push(
-                    `/workspace/${currentWorkspace?.id}/connection/new`
+                    `/workspace/${currentWorkspace?.id}/data-source/new`
                   );
                 }}
               >
@@ -203,18 +203,18 @@ export default function Connections() {
               </button>
             </div>
             <div className="grow flex flex-col items-start text-[13px] overflow-y-scroll">
-              {connectionsData.map((connection: any) => (
+              {dataSourcesData.map((data_source: any) => (
                 <div
-                  key={connection.id}
+                  key={data_source.id}
                   className={`flex flex-row w-full gap-4 items-start border-b border-slate-4 px-[20px] py-[12px] cursor-pointer ${
-                    selectedConnectionId === connection.id
+                    selectedDataSourceId === data_source.id
                       ? "bg-slate-3 hover:bg-slate-3"
                       : "bg-slate-1 hover:bg-slate-2"
                   }`}
-                  onClick={() => setSelectedConnectionId(connection.id)}
+                  onClick={() => setSelectedDataSourceId(data_source.id)}
                 >
                   <div className="min-h-[36px] min-w-[36px] bg-slate-2 flex items-center justify-center border border-slate-4 rounded-md">
-                    {connection.connectionType === "snowflake" && (
+                    {data_source.dataSourceType === "snowflake" && (
                       <div className="w-[20px] h-[20px]">
                         <LogoSnowflake />
                       </div>
@@ -222,16 +222,16 @@ export default function Connections() {
                   </div>
                   <div className="flex flex-col gap-2 flex-grow-1 min-w-0">
                     <p className="text-slate-12 text-[13px] truncate max-w-full">
-                      {connection.name}
+                      {data_source.name}
                     </p>
                     <p className="text-slate-11 text-[12px]">
-                      {connection.accountIdentifier}
+                      {data_source.accountIdentifier}
                     </p>
                   </div>
                 </div>
               ))}
-              {connectionsData.length === 0 && (
-                <div className="w-full flex flex-col gap-2 mt-4 items-connection justify-center items-center py-6">
+              {dataSourcesData.length === 0 && (
+                <div className="w-full flex flex-col gap-2 mt-4 justify-center items-center py-6">
                   <Image
                     src="/images/connection-splash-zero-state.svg"
                     width={48}
@@ -240,10 +240,10 @@ export default function Connections() {
                     className=""
                   />
                   <p className="text-slate-11 px-[16px] text-center text-[13px] mt-2 truncate block">
-                    No connections created yet
+                    No data sources created yet
                   </p>
                   <p className="text-slate-10 px-[16px] text-center text-[12px] truncate block">
-                    Create a connection by clicking the <br />+ New button in
+                    Create a data source by clicking the <br />+ New button in
                     the top-right
                   </p>
                 </div>
@@ -251,16 +251,16 @@ export default function Connections() {
             </div>
           </div>
           <div className="w-full overflow-y-scroll grow ">
-            {selectedConnectionId !== null && (
+            {selectedDataSourceId !== null && (
               <>
                 <div className="flex items-center justify-center">
                   <div className="max-w-[720px] w-full flex items-center">
                     <div className="flex flex-col mt-[48px] gap-4 items-center w-full">
                       <div className="flex flex-row pb-2 border-b border-slate-4 w-full items-center gap-2">
                         <p className="text-[14px] mr-auto">
-                          Connection details
+                          Data source details
                         </p>
-                        {selectedConnection?.connectionType === "snowflake" && (
+                        {selectedDataSource?.dataSourceType === "snowflake" && (
                           <button
                             className="bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
                             onClick={() => setIsEditSnowflakeDialogOpen(true)}
@@ -298,26 +298,26 @@ export default function Connections() {
                               </button>
                             </div>
                             <Dialog.Title className="text-[14px]">
-                              Delete connection
+                              Delete data source
                             </Dialog.Title>
                             <Dialog.Description className="text-[13px] mt-[16px] gap-2 flex flex-col">
-                              {tablesFromConnectionData &&
-                                tablesFromConnectionData.length > 0 && (
+                              {tablesFromDataSourceData &&
+                                tablesFromDataSourceData.length > 0 && (
                                   <div className="">
-                                    This connection has{" "}
-                                    {tablesFromConnectionData.length} tables
+                                    This data source has{" "}
+                                    {tablesFromDataSourceData.length} tables
                                     associated with it. <br />
-                                    Deleting this connection will disconnect
+                                    Deleting this data source will disconnect
                                     these tables from getting updates.
                                   </div>
                                 )}
                               <div>
-                                Are you sure you want to delete this connection?
-                                This action is irreversible.
+                                Are you sure you want to delete this data
+                                source? This action is irreversible.
                               </div>
                             </Dialog.Description>
                             <div className="font-mono w-full break-all bg-slate-3 text-slate-12 border border-slate-4 rounded-md font-medium text-[13px] px-[8px] py-[4px] mt-[12px]">
-                              {selectedConnection.name}
+                              {selectedDataSource.name}
                             </div>
                             <div className="flex w-full justify-end mt-[24px] gap-2">
                               <button
@@ -331,7 +331,7 @@ export default function Connections() {
                               <button
                                 className="bg-red-5 hover:bg-red-6 border-red-7 border text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
                                 onClick={() => {
-                                  handleDeleteConnection();
+                                  handleDeleteDataSource();
                                   closeDeleteDialog();
                                 }}
                               >
@@ -347,14 +347,14 @@ export default function Connections() {
                         </Dialog.Panel>
                       </Dialog>
                       <EditSnowflakeDialog
-                        connectionData={selectedConnection}
+                        dataSourceData={selectedDataSource}
                         isEditSnowflakeDialogOpen={isEditSnowflakeDialogOpen}
                         setIsEditSnowflakeDialogOpen={
                           setIsEditSnowflakeDialogOpen
                         }
                       />
-                      {selectedConnectionId &&
-                        selectedConnection?.connectionType === "snowflake" && (
+                      {selectedDataSourceId &&
+                        selectedDataSource?.dataSourceType === "snowflake" && (
                           <div className="flex flex-col gap-4 w-full">
                             <div className="flex flex-row gap-3 text-[13px] relative">
                               <p className="min-w-[180px] text-slate-11">
@@ -384,7 +384,7 @@ export default function Connections() {
                                       }
                                       if (e.key === "Escape") {
                                         setDisplayNameInputValue(
-                                          selectedConnection?.name || ""
+                                          selectedDataSource?.name || ""
                                         );
                                         setIsEditingDisplayName(false);
                                       }
@@ -401,13 +401,13 @@ export default function Connections() {
                                 </div>
                               ) : (
                                 <>
-                                  <p>{selectedConnection?.name}</p>
+                                  <p>{selectedDataSource?.name}</p>
 
                                   <div
                                     className="flex flex-row items-center gap-1 cursor-pointer text-[12px] text-slate-10"
                                     onClick={() => {
                                       setDisplayNameInputValue(
-                                        selectedConnection?.name || ""
+                                        selectedDataSource?.name || ""
                                       );
                                       setIsEditingDisplayName(true);
                                       displayNameInputRef?.current?.focus();
@@ -421,13 +421,13 @@ export default function Connections() {
                             </div>
                             <div className="flex flex-row gap-3 text-[13px]">
                               <p className="min-w-[180px] text-slate-11">
-                                Connection ID
+                                Data source ID
                               </p>
-                              <p className="">{selectedConnection?.id}</p>
+                              <p className="">{selectedDataSource?.id}</p>
                             </div>
                             <div className="flex flex-row gap-3 text-[13px]">
                               <p className="min-w-[180px] text-slate-11">
-                                Connection type
+                                Data source type
                               </p>
                               <div className="flex flex-row gap-2 items-center">
                                 <div className="h-[20px] w-[20px]">
@@ -440,13 +440,13 @@ export default function Connections() {
                               <p className="min-w-[180px] text-slate-11">
                                 Account identifier
                               </p>
-                              <p>{selectedConnection?.accountIdentifier}</p>
+                              <p>{selectedDataSource?.accountIdentifier}</p>
                             </div>
                             <div className="flex flex-row gap-3 text-[13px]">
                               <p className="min-w-[180px] text-slate-11">
                                 Warehouse
                               </p>
-                              <p>{selectedConnection?.warehouse}</p>
+                              <p>{selectedDataSource?.warehouse}</p>
                             </div>
                             <div className="flex flex-row gap-3 text-[13px]">
                               <p className="min-w-[180px] text-slate-11">
@@ -454,7 +454,7 @@ export default function Connections() {
                               </p>
                               <p>
                                 {formatFriendlyDate(
-                                  selectedConnection?.createdAt
+                                  selectedDataSource?.createdAt
                                 )}
                               </p>
                             </div>
@@ -462,28 +462,28 @@ export default function Connections() {
                               <p className="min-w-[180px] text-slate-11">
                                 Auth method
                               </p>
-                              <p>{selectedConnection?.snowflakeAuthMethod}</p>
+                              <p>{selectedDataSource?.snowflakeAuthMethod}</p>
                             </div>
-                            {selectedConnection?.snowflakeAuthMethod ===
+                            {selectedDataSource?.snowflakeAuthMethod ===
                               "user_pass" && (
                               <>
                                 <div className="flex flex-row gap-3 text-[13px]">
                                   <p className="min-w-[180px] text-slate-11">
                                     Username
                                   </p>
-                                  <p>{selectedConnection?.basicAuthUsername}</p>
+                                  <p>{selectedDataSource?.basicAuthUsername}</p>
                                 </div>
                                 <div className="flex flex-row gap-3 text-[13px]">
                                   <p className="min-w-[180px] text-slate-11">
                                     Password
                                   </p>
                                   <p className="font-mono">
-                                    {selectedConnection?.basicAuthPassword}
+                                    {selectedDataSource?.basicAuthPassword}
                                   </p>
                                 </div>
                               </>
                             )}
-                            {selectedConnection?.snowflakeAuthMethod ===
+                            {selectedDataSource?.snowflakeAuthMethod ===
                               "key_passphrase" && (
                               <>
                                 <div className="flex flex-row gap-3 text-[13px]">
@@ -491,7 +491,7 @@ export default function Connections() {
                                     Username
                                   </p>
                                   <p>
-                                    {selectedConnection?.keyPairAuthUsername}
+                                    {selectedDataSource?.keyPairAuthUsername}
                                   </p>
                                 </div>
                                 <div className="flex flex-row gap-3 text-[13px]">
@@ -516,29 +516,29 @@ export default function Connections() {
                               <p className="min-w-[180px] text-slate-11">
                                 Role
                               </p>
-                              <p>{selectedConnection?.role}</p>
+                              <p>{selectedDataSource?.role}</p>
                             </div>
                           </div>
                         )}
                       <div className="w-full">
-                        {selectedConnectionId && tablesFromConnectionData && (
+                        {selectedDataSourceId && tablesFromDataSourceData && (
                           <>
                             <div className="flex flex-row gap-3 mt-8 text-[14px] items-center mb-4">
                               Connected tables{" "}
                               <div className="text-[12px] px-[4px] py-[2px] bg-slate-3">
-                                {tablesFromConnectionData.length}
+                                {tablesFromDataSourceData.length}
                               </div>
                             </div>
-                            {tablesFromConnectionData.length === 0 && (
+                            {tablesFromDataSourceData.length === 0 && (
                               <div className="flex flex-col items-center justify-center h-32 bg-slate-2 rounded-lg">
                                 <p className="text-slate-11 text-[14px]">
                                   No connected tables
                                 </p>
                               </div>
                             )}
-                            {tablesFromConnectionData.length > 0 && (
+                            {tablesFromDataSourceData.length > 0 && (
                               <div className="flex flex-col border-slate-4 rounded-lg border overflow-clip">
-                                {tablesFromConnectionData.map(
+                                {tablesFromDataSourceData.map(
                                   (table: any, index: number) => (
                                     <Link
                                       key={table.id}
@@ -547,7 +547,7 @@ export default function Connections() {
                                       <div
                                         className={`flex flex-row gap-4 items-center ${
                                           index <
-                                          tablesFromConnectionData.length - 1
+                                          tablesFromDataSourceData.length - 1
                                             ? "border-b border-slate-4"
                                             : ""
                                         } text-[13px] px-[20px] py-[12px] cursor-pointer bg-slate-1 hover:bg-slate-2 text-slate-12`}
@@ -582,10 +582,10 @@ export default function Connections() {
                 </div>
               </>
             )}
-            {selectedConnectionId == null && (
+            {selectedDataSourceId == null && (
               <div className="flex flex-col items-center justify-center h-screen">
                 <p className="text-slate-11 text-[14px]">
-                  No connection selected
+                  No data source selected
                 </p>
               </div>
             )}

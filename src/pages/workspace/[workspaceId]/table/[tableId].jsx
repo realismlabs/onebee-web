@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { getTable, getConnection, updateTable, deleteTable } from "@/utils/api";
+import { getTable, getDataSource, updateTable, deleteTable } from "@/utils/api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
@@ -48,7 +48,7 @@ const TablePopover = ({
 
 
   const displayNameInputRef = useRef(null);
-  const [selectedConnectionId, setSelectedConnectionId] = useState(null);
+  const [selectedDataSourceId, setSelectedDataSourceId] = useState(null);
   const [displayNameInputValue, setDisplayNameInputValue] = useState(tableName);
   const [isEditingDisplayName, setIsEditingDisplayName] = useState(false);
   const [displayNameInputError, setDisplayNameInputError] = useState("");
@@ -360,21 +360,21 @@ export default function TablePage() {
   });
 
   const {
-    data: connectionData,
+    data: dataSourceData,
     isLoading: isConnectionLoading,
-    error: connectionError,
+    error: dataSourceError,
   } = useQuery({
-    queryKey: ["getConnection", currentWorkspace?.id, tableData?.connectionId],
+    queryKey: ["getDataSource", currentWorkspace?.id, tableData?.dataSourceId],
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
-      const response = await getConnection(
+      const response = await getDataSource(
         currentWorkspace.id,
-        tableData.connectionId,
+        tableData.dataSourceId,
         jwt
       );
       return response;
     },
-    enabled: !!currentWorkspace?.id && !!tableData?.connectionId,
+    enabled: !!currentWorkspace?.id && !!tableData?.dataSourceId,
   });
 
 
@@ -471,8 +471,12 @@ export default function TablePage() {
     );
   }
 
-  if (tableError || connectionError) {
-    return <div>There was an error loading your table</div>;
+  if (tableError || dataSourceError) {
+    return <div className="flex flex-col bg-slate-1">
+      <p className="text-white">There was an error loading your table</p>
+      <p className="text-white">{JSON.stringify(tableError)}</p>
+      <p className="text-white">{JSON.stringify(dataSourceError)}</p>
+    </div>;
   }
 
   const example_column_names = [
@@ -651,12 +655,12 @@ export default function TablePage() {
             <div>from</div>
             <div className="flex flex-row gap-2 items-center">
               {" "}
-              {connectionData.connectionType === "snowflake" && (
+              {dataSourceData.dataSourceType === "snowflake" && (
                 <div className="h-[16px] w-[16px]">
                   <LogoSnowflake />
                 </div>
               )}
-              {connectionData.name}
+              {dataSourceData.name}
             </div>
           </div>
         </div>

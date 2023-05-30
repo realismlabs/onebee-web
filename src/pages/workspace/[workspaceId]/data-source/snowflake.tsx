@@ -22,7 +22,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import WorkspaceLayout from "@/components/WorkspaceLayout";
 import LogoSnowflake from "@/components/LogoSnowflake";
-import { createConnection } from "@/utils/api";
+import { createDataSource } from "@/utils/api";
 import { capitalizeString } from "@/utils/util";
 import { useAuth } from "@clerk/nextjs";
 
@@ -91,8 +91,8 @@ export default function AddSnowflake() {
     ""
   );
   const [role, setRole] = useLocalStorageState("role", "");
-  const [connectionType, setConnectionType] = useLocalStorageState(
-    "connectionType",
+  const [dataSourceType, setDataSourceType] = useLocalStorageState(
+    "dataSourceType",
     "snowflake"
   );
 
@@ -116,40 +116,40 @@ export default function AddSnowflake() {
   // event handlers
   const queryClient = useQueryClient();
 
-  const handleAddConnection = async (e: any) => {
+  const handleAddDataSource = async (e: any) => {
     e.preventDefault();
     console.log("clicked AddConnection button");
     // Separate extra attributes
     if (connectionResult.status === "success") {
-      const createConnectionRequestBody = {
-        ...connectionRequestBody,
+      const createDataSourceRequestBody = {
+        ...dataSourceRequestBody,
         name:
-          capitalizeString(connectionRequestBody.connectionType) +
+          capitalizeString(dataSourceRequestBody.dataSourceType) +
           " " +
-          connectionRequestBody.accountIdentifier +
+          dataSourceRequestBody.accountIdentifier +
           " " +
-          connectionRequestBody.basicAuthUsername,
+          dataSourceRequestBody.basicAuthUsername,
         createdAt: new Date().toISOString(),
         workspaceId: currentWorkspace?.id,
       };
       try {
         const jwt = await getToken({ template: "test" });
-        const create_connection_response = await createConnection(
+        const create_data_source_response = await createDataSource(
           currentWorkspace?.id,
-          createConnectionRequestBody,
+          createDataSourceRequestBody,
           jwt
         );
-        console.log("create_connection_response", create_connection_response);
-        router.push(`/workspace/${currentWorkspace?.id}/connection`);
+        console.log("create_data_source_response", create_data_source_response);
+        router.push(`/workspace/${currentWorkspace?.id}/data-source`);
       } catch (error) {
         console.log("error", error);
       }
     } else {
-      console.log("Connection failed, try again");
+      console.log("Adding data source failed, try again");
     }
   };
 
-  const connectionRequestBody = {
+  const dataSourceRequestBody = {
     accountIdentifier,
     warehouse,
     basicAuthUsername,
@@ -158,7 +158,7 @@ export default function AddSnowflake() {
     keyPairAuthPrivateKey,
     keyPairAuthPrivateKeyPassphrase,
     role,
-    connectionType,
+    dataSourceType,
     customHost,
     customHostAccountIdentifier,
     snowflakeAuthMethod,
@@ -166,14 +166,14 @@ export default function AddSnowflake() {
   };
 
   const connectionTestQuery = useQuery({
-    queryKey: ["connectionResult", connectionRequestBody],
+    queryKey: ["connectionResult", dataSourceRequestBody],
     queryFn: async () => {
       const response = await fetch("/api/test-snowflake-connection", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(connectionRequestBody),
+        body: JSON.stringify(dataSourceRequestBody),
       });
       return await response.json();
     },
@@ -185,7 +185,7 @@ export default function AddSnowflake() {
         title:
           data.status === "success"
             ? "Success! You can continue to the next step."
-            : "Connection failed",
+            : "Adding data source failed",
         message: data.message,
         snowflake_error: data.snowflake_error ?? null,
         listed_tables: data.listed_tables ?? null,
@@ -196,7 +196,7 @@ export default function AddSnowflake() {
       setConnectionTestInProgress(false);
       setConnectionResult({
         status: "error",
-        title: "Connection failed",
+        title: "Adding data source failed",
         message:
           JSON.stringify(error) === "{}"
             ? "Request timed out. Check if the account identifier is correct, and try again."
@@ -207,7 +207,7 @@ export default function AddSnowflake() {
 
   const handleConnectionTest = async (e: any) => {
     e.preventDefault();
-    // Reset connection result
+    // Reset data source result
     setShowTestPanel(true);
     setConnectionTestInProgress(true);
     setConnectionResult({
@@ -267,9 +267,9 @@ export default function AddSnowflake() {
             <div className="h-[24px] w-[24px] flex items-center justify-center">
               <Plus size={20} weight="bold" className="text-slate-10" />
             </div>
-            <Link href={`/workspace/${currentWorkspace.id}/connection/new`}>
+            <Link href={`/workspace/${currentWorkspace.id}/data-source/new`}>
               <p className="text-slate-12 text-[13px] hover:text-slate-11">
-                Add data connection
+                Add data data source
               </p>
             </Link>
             <div className="h-[18px] w-[18px] flex items-center justify-center">
@@ -636,7 +636,7 @@ export default function AddSnowflake() {
                 </button>
                 <div className="relative inline-block">
                   <button
-                    onClick={handleAddConnection}
+                    onClick={handleAddDataSource}
                     onMouseEnter={() =>
                       setIsHoveringOnAddConnectionButton(true)
                     }
@@ -648,7 +648,7 @@ export default function AddSnowflake() {
                       "opacity-50 cursor-not-allowed "
                     }`}
                   >
-                    Add connection
+                    Add data source
                   </button>
                   {connectionResult.status !== "success" && (
                     <div
@@ -727,7 +727,7 @@ export default function AddSnowflake() {
                           {connectionResult.status === "success" && (
                             <>
                               <p className="text-[13px]">
-                                This connection can access{" "}
+                                This data source can access{" "}
                                 {connectionResult.listed_tables.length} tables
                                 from {connectionResult.listed_databases.length}{" "}
                                 databases.
@@ -748,7 +748,7 @@ export default function AddSnowflake() {
                               </p>
                               {/* Don't show if error message is generic */}
                               {connectionResult.message !==
-                                "Connection failed" && (
+                                "Adding data source failed" && (
                                 <p className="text-[13px]">
                                   {connectionResult.message}
                                 </p>
