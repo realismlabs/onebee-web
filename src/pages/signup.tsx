@@ -4,7 +4,7 @@ import { useSignUp, useUser, useSignIn, SignUp, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { callApi } from "../utils/util";
-import { createUser, getUserByEmail } from "@/utils/api";
+import { createUser } from "@/utils/api";
 import React, {
   SyntheticEvent,
   useState,
@@ -78,13 +78,13 @@ export default function Signup() {
     router.push("/dashboard");
   }
 
-  // Mock API call to check if an email address is already registered
-  const isEmailRegistered = async (email: string) => {
-    // Replace this with your actual API call
-    const result = await getUserByEmail(email);
-    console.log("result", result);
-    return result.length > 0;
-  };
+  // // Mock API call to check if an email address is already registered
+  // const isEmailRegistered = async (email: string) => {
+  //   // Replace this with your actual API call
+  //   const result = await getUserByEmail(email);
+  //   console.log("result", result);
+  //   return result.length > 0;
+  // };
 
   const isPasswordStrong = (password: string) => {
     // Replace this with your actual logic
@@ -123,10 +123,10 @@ export default function Signup() {
       return;
     }
 
-    if (await isEmailRegistered(email)) {
-      setEmailErrorMessage("The email address is already registered.");
-      return;
-    }
+    // if (await isEmailRegistered(email)) {
+    //   setEmailErrorMessage("The email address is already registered.");
+    //   return;
+    // }
 
     const is_password_strong = isPasswordStrong(password);
     if (!is_password_strong.result) {
@@ -151,7 +151,11 @@ export default function Signup() {
         setPasswordErrorMessage(err.message);
       }
       if (err.errors.length >= 1) {
-        setEmailErrorMessage(err.errors[0].message);
+        if (err.errors[0].message.includes("email")) {
+          setEmailErrorMessage(err.errors[0].message);
+        } else {
+          setPasswordErrorMessage(err.errors[0].message);
+        }
       }
     }
   };
