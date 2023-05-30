@@ -504,13 +504,7 @@ const FileTree: React.FC<FileTreeProps> = ({
     const first_table_row_count = data[0].row_count;
     setSelectedTable(first_table_id);
     setSelectedTableRowCount(first_table_row_count);
-  }, [
-    allDbNames,
-    allSchemaNames,
-    data,
-    setSelectedTable,
-    setSelectedTableRowCount,
-  ]);
+  }, [data]);
 
   const toggleDb = (dbName: string) => {
     setExpandedDbs((prev) =>
@@ -763,6 +757,7 @@ export default function CreateTable() {
   } = useQuery({
     queryKey: ["connectionResult", selectedDataSource],
     queryFn: async () => {
+      console.log("selectedDataSource", selectedDataSource);
       const response = await fetch("/api/test-snowflake-connection", {
         method: "POST",
         headers: {

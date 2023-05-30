@@ -634,9 +634,9 @@ app.get('/api/workspaces/:workspaceId/data_sources/:dataSourceId', ClerkExpressR
     const result = await client.query('SELECT * FROM "data_sources" WHERE "workspaceId"=$1 AND "id"=$2 ORDER BY id ASC', [workspaceId, dataSourceId]);
     const data_source = result.rows[0];
     // do not send the password back
-    // keyPairAuthPrivateKeyPassphrase
-    data_source.keyPairAuthPrivateKey = "encrypted-on-server";
-    data_source.keyPairAuthPrivateKeyPassphrase = "encrypted-on-server";
+    // // keyPairAuthPrivateKeyPassphrase
+    // data_source.keyPairAuthPrivateKey = "encrypted-on-server";
+    // data_source.keyPairAuthPrivateKeyPassphrase = "encrypted-on-server";
 
     console.log('Fetched data_source', data_source);
     res.json(data_source);
@@ -675,11 +675,6 @@ app.get('/api/workspaces/:workspaceId/data_sources', ClerkExpressRequireAuth(), 
   try {
     const result = await client.query('SELECT * FROM data_sources WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
     const data_sources = result.rows;
-    for (const data_source of data_sources) {
-      // do not send the passwords back
-      data_source.basicAuthPassword = "----encrypted-on-server----";
-      data_source.keyPairAuthPrivateKeyPassphrase = "----encrypted-on-server----";
-    }
     res.json(data_sources);
   } catch (err) {
     console.error(err);
