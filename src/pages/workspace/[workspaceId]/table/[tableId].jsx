@@ -558,7 +558,6 @@ export default function TablePage() {
           <div className="flex flex-row gap-2 items-center py-[12px] pl-[12px] h-[48px]">
             <div className="flex flex-row items-center justify-center">
               <IconPickerPopoverEditTable
-                iconSvgString={tableData.iconSvgString}
                 tableName={tableData.name}
                 tableId={tableData.id}
                 workspaceId={currentWorkspace?.id}

@@ -53,7 +53,7 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   );
 };
 
-const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspaceId, iconSvgBase64Url }) => {
+const IconPickerPopoverEditTable = ({ tableName, tableId, workspaceId, iconSvgBase64Url }) => {
   const { getToken } = useAuth();
 
   const [selectedIcon, setSelectedIcon] = useState(null);

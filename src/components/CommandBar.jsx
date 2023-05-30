@@ -119,7 +119,6 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
       tables.push({
         name: table.name,
         description: table.fullPath,
-        iconSvgString: table.iconSvgString,
         iconSvgBase64Url: table.iconSvgBase64Url,
         type: 'table',
         id: String(table.id),

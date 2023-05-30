@@ -554,7 +554,6 @@ export default function DataSources() {
                                       >
                                         <div className="text-[13px] text-slate-12">
                                           <IconLoaderFromSvgString
-                                            iconSvgString={table.iconSvgString}
                                             iconSvgBase64Url={
                                               table.iconSvgBase64Url
                                             }

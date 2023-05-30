@@ -527,7 +527,7 @@ app.patch('/api/workspaces/:workspaceId/tables/:tableId/update', ClerkExpressReq
 
   const client = await pool.connect();
 
-  const validKeys = ["name", "iconColor", "iconSvgString", "iconSvgBase64Url"];
+  const validKeys = ["name", "iconColor", "iconSvgBase64Url"];
 
   const fields = Object.keys(req.body).filter(key => validKeys.includes(key));
   const values = Object.values(req.body);
