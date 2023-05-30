@@ -146,7 +146,9 @@ const TableCard = ({
               borderColor: table.iconColor + "30",
             }}
           >
-            <IconLoaderFromSvgString iconSvgString={table.iconSvgString} />
+            <IconLoaderFromSvgString
+              iconSvgBase64Url={table.iconSvgBase64Url}
+            />
           </div>
           <div className="flex flex-col truncate">
             <div className="text-slate-12 text-[14px] font-medium truncate block">
@@ -485,8 +487,7 @@ export default function WorkspaceHome() {
                             >
                               <div className="text-[13px] text-slate-12">
                                 <IconLoaderFromSvgString
-                                  iconSvgString={table.iconSvgString}
-                                  tableName={table.name}
+                                  iconSvgBase64Url={table.iconSvgBase64Url}
                                 />
                               </div>
                               <div className="w-[320px] truncate">

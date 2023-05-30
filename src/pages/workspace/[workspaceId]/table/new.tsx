@@ -10,7 +10,11 @@ import {
 } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
+import {
+  abbreviateNumber,
+  svgToBase64,
+  useLocalStorageState,
+} from "@/utils/util";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { createTable, getWorkspaceDataSources } from "@/utils/api";
@@ -107,39 +111,21 @@ interface FileTreeProps {
   isLoading: boolean;
 }
 
-interface Connection {
-  accountIdentifier: string;
-  warehouse: string;
-  basicAuthUsername: string | null;
-  basicAuthPassword: string | null;
-  keyPairAuthUsername: string | null;
-  keyPairAuthPrivateKey: string | null;
-  keyPairAuthPrivateKeyPassphrase: string | null;
-  role: string | null;
-  dataSourceType: string;
-  name: string;
-  createdAt: string;
-  workspaceId: number;
-  id: number;
-}
-
 const ConnectionSelector = ({
   selectedDataSource,
   setSelectedDataSource,
   dataSourcesData,
 }: {
-  selectedDataSource: Connection | null;
-  setSelectedDataSource: React.Dispatch<
-    React.SetStateAction<Connection | null>
-  >;
-  dataSourcesData: Connection[] | null;
+  selectedDataSource: any | null;
+  setSelectedDataSource: React.Dispatch<React.SetStateAction<any | null>>;
+  dataSourcesData: any[] | null;
 }) => {
   // whenever dataSourcesData changes, set the selectedDataSource
   useEffect(() => {
     if (dataSourcesData) {
       setSelectedDataSource(dataSourcesData[0]);
     }
-  }, [dataSourcesData]);
+  }, [dataSourcesData, setSelectedDataSource]);
 
   return (
     <div className="w-full mt-4">
@@ -304,11 +290,9 @@ const PreviewTableUI = ({
   setTableDisplayName: React.Dispatch<React.SetStateAction<string>>;
   tableDisplayNameErrorMessage: string;
   setTableDisplayNameErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-  selectedDataSource: Connection | null;
-  setSelectedDataSource: React.Dispatch<
-    React.SetStateAction<Connection | null>
-  >;
-  dataSourcesData: Connection[] | null;
+  selectedDataSource: any;
+  setSelectedDataSource: React.Dispatch<React.SetStateAction<any>>;
+  dataSourcesData: any[] | null;
   isLoading: boolean;
 }) => {
   let data = null;
@@ -579,10 +563,15 @@ const FileTree: React.FC<FileTreeProps> = ({
           ""
         );
         setSelectedIconName(icon_suggestion_name_cleaned);
+        console.log(
+          "icon_suggestion_name_cleaned",
+          icon_suggestion_name_cleaned
+        );
         const iconSvgString = getIconSvgStringFromName(
           icon_suggestion_name_cleaned
         );
         setIconSvgString(iconSvgString);
+        console.log("iconSvgString", iconSvgString);
       }
       setIsIconSuggestionLoading(false);
     } catch (error) {
@@ -699,43 +688,6 @@ const FileTree: React.FC<FileTreeProps> = ({
 
 export default function CreateTable() {
   const { getToken } = useAuth();
-  const [useCustomHost, setUseCustomHost] = useLocalStorageState(
-    "useCustomHost",
-    false
-  );
-  const [customHostAccountIdentifier, setCustomHostAccountIdentifier] =
-    useLocalStorageState("customHostAccountIdentifier", "");
-  const [snowflakeAuthMethod, setSnowflakeAuthMethod] = useLocalStorageState(
-    "snowflakeAuthMethod",
-    "user_pass"
-  );
-  const [accountIdentifier, setAccountIdentifier] = useLocalStorageState(
-    "accountIdentifier",
-    ""
-  );
-  const [customHost, setCustomHost] = useLocalStorageState("customHost", "");
-  const [warehouse, setWarehouse] = useLocalStorageState("warehouse", "");
-  const [basicAuthUsername, setBasicAuthUsername] = useLocalStorageState(
-    "basicAuthUsername",
-    ""
-  );
-  const [basicAuthPassword, setBasicAuthPassword] = useLocalStorageState(
-    "basicAuthPassword",
-    ""
-  );
-  const [keyPairAuthPrivateKey, setKeyPairAuthPrivateKey] =
-    useLocalStorageState("keyPairAuthPrivateKey", "");
-  const [keyPairAuthPrivateKeyPassphrase, setKeyPairAuthPrivateKeyPassphrase] =
-    useLocalStorageState("keyPairAuthPrivateKeyPassphrase", "");
-  const [keyPairAuthUsername, setKeyPairAuthUsername] = useLocalStorageState(
-    "keyPairAuthUsername",
-    ""
-  );
-  const [role, setRole] = useLocalStorageState("role", "");
-  const [dataSourceType, setDataSourceType] = useLocalStorageState(
-    "dataSourceType",
-    "snowflake"
-  );
 
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [selectedIconName, setSelectedIconName] = useState<string>("");
@@ -752,8 +704,7 @@ export default function CreateTable() {
   const [tableDisplayNameErrorMessage, setTableDisplayNameErrorMessage] =
     useState<string>("");
 
-  const [selectedDataSource, setSelectedDataSource] =
-    useState<Connection | null>(null);
+  const [selectedDataSource, setSelectedDataSource] = useState<any>(null);
 
   // whenever selectedTable changes, fetch the new tableDisplayName
   useEffect(() => {
@@ -790,7 +741,7 @@ export default function CreateTable() {
       outerPath,
       rowCount: selectedTableRowCount,
       dataSourceId: selectedDataSource?.id,
-      iconSvgString: iconSvgString,
+      iconSvgBase64Url: svgToBase64(iconSvgString),
       iconColor: colorValue ?? selectedColor,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -815,6 +766,7 @@ export default function CreateTable() {
   } = useQuery({
     queryKey: ["connectionResult", selectedDataSource],
     queryFn: async () => {
+      console.log("selectedDataSource", selectedDataSource);
       const response = await fetch("/api/test-snowflake-connection", {
         method: "POST",
         headers: {
@@ -847,6 +799,7 @@ export default function CreateTable() {
     queryFn: async () => {
       const jwt = await getToken({ template: "test" });
       const response = await getWorkspaceDataSources(currentWorkspace?.id, jwt);
+      console.log("awu response:", response);
       return response;
     },
     enabled: !!currentWorkspace?.id,

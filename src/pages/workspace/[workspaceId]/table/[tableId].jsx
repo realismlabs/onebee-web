@@ -9,14 +9,15 @@ import MemoizedMockTable from "@/components/MemoizedMockTable";
 import LogoSnowflake from "@/components/LogoSnowflake";
 import LogoBigQuery from "@/components/LogoBigQuery";
 import LogoPostgres from "@/components/LogoPostgres";
-import { CaretDown, MagnifyingGlass, Gear, X, Pencil, Trash, ClockCounterClockwise, Shower } from "@phosphor-icons/react";
+import { CaretDown, MagnifyingGlass, Gear, X, Check, CheckCircle, CopySimple, Pencil, Trash, ClockCounterClockwise, Shower } from "@phosphor-icons/react";
 import { useState, Fragment, useRef, useEffect } from "react";
 import IconPickerPopoverEditTable from "@/components/IconPickerPopoverEditTable";
 import { Popover, Transition, Dialog } from "@headlessui/react";
 import InvitePeopleDialog from "@/components/InvitePeopleDialog";
 import { useAuth } from "@clerk/nextjs";
 import { useLocalStorageState } from "@/utils/util"
-import { set } from "date-fns";
+import { Toaster, toast } from "sonner";
+import useCopyToClipboard from "@/components/useCopyToClipboard";
 
 const TablePopover = ({
   tableName,
@@ -300,7 +301,6 @@ const KeyCombinationGray = ({ keys }) => {
   );
 };
 
-
 const KeyCombinationBlue = ({ keys }) => {
   const isMac = window.navigator.userAgent.includes('Mac');
 
@@ -327,7 +327,6 @@ export default function TablePage() {
   const inputRef = useRef(null);
 
 
-  const [isInvitePeopleDialogOpen, setIsInvitePeopleDialogOpen] = useState(false);
   const [customInviteMessage, setCustomInviteMessage] = useState(
     "Hi there, \n\nWe're using Dataland.io as an easy and fast way to browse data from our data warehouse. \n\nJoin the workspace in order to browse and search our key datasets."
   );
@@ -338,6 +337,10 @@ export default function TablePage() {
   const [searchValue, setSearchValue] = useState("");
 
   const [showOnboardingSearchHint, setShowOnboardingSearchHint] = useLocalStorageState("showOnboardingSearchHint", true);
+
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isInvitePeopleDialogOpen, setIsInvitePeopleDialogOpen] = useState(false);
+  const { isCopied, handleCopy } = useCopyToClipboard();
 
   const handleSearchbarFocus = () => {
     setIsSearchFocused(true);
@@ -500,7 +503,7 @@ export default function TablePage() {
                   <CaretDown size={12} className="text-slate-11" />
                 </div>
                 <div className="bg-slate-3 hover:bg-slate-4 text-slate-11 text-[13px] px-[12px] py-[6px] cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
-                  onClick={() => setIsInvitePeopleDialogOpen(true)}>
+                  onClick={() => setIsShareDialogOpen(true)}>
                   <p>Share</p>
                 </div>
               </div>
@@ -555,10 +558,10 @@ export default function TablePage() {
           <div className="flex flex-row gap-2 items-center py-[12px] pl-[12px] h-[48px]">
             <div className="flex flex-row items-center justify-center">
               <IconPickerPopoverEditTable
-                iconSvgString={tableData.iconSvgString}
                 tableName={tableData.name}
                 tableId={tableData.id}
                 workspaceId={currentWorkspace?.id}
+                iconSvgBase64Url={tableData.iconSvgBase64Url}
               />
               <TablePopover
                 tableName={tableData.name}
@@ -655,29 +658,64 @@ export default function TablePage() {
                 )}
               </div>
             </>
-
-
-
             <div className="flex flex-row gap-2 flex-none justify-end">
               <div className="bg-slate-3 hover:bg-slate-4 text-slate-11 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
                 <p>Columns</p>
                 <CaretDown size={12} className="text-slate-11" />
               </div>
               <div className="bg-slate-3 hover:bg-slate-4 text-slate-11 text-[13px] px-[12px] py-[6px] cursor-pointer rounded-[6px] flex flex-row gap-1 items-center"
-                onClick={() => setIsInvitePeopleDialogOpen(true)}>
+                onClick={() => setIsShareDialogOpen(true)}>
                 <p>Share</p>
               </div>
-              <InvitePeopleDialog
-                isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
-                setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
-                currentUser={currentUser}
-                currentWorkspace={currentWorkspace}
-                customMessage={customInviteMessage}
-                setCustomMessage={setCustomInviteMessage}
-                emailTemplateLanguage={""}
-                customInvitePeopleDialogHeader={`Share ${tableData.name} with your team`}
-                customInvitePeopleSubject={`${currentUser.name} shared ${tableData.name} with you on Dataland.io`}
-              />
+              <>
+                <Dialog
+                  open={isShareDialogOpen}
+                  onClose={() => setIsShareDialogOpen(false)}
+                  className="absolute inset-0 flex min-w-full h-screen"
+                >
+                  <Dialog.Overlay className="z-0 bg-slate-1 opacity-[60%] fixed inset-0" />
+                  <div className="fixed inset-0 flex items-start justify-center z-10">
+                    <Dialog.Panel className="fixed mx-auto max-h-[85vh] translate-y-[-30%] top-[30%] max-w-[90vw] w-[560px] rounded-[6px] bg-slate-2 border border-slate-3 text-slate-12 p-5 focus:outline-none overflow-hidden">
+                      <Dialog.Title className="m-0 text-[14px] font-medium">
+                        Share {tableData.name} with your team
+                      </Dialog.Title>
+                      <Dialog.Description className="flex flex-col gap-2 mt-4">
+                        <div className="flex flex-col gap-4">
+                          <div className="flex flex-row px-3 py-2 bg-slate-1 rounded-lg items-center">
+                            <div className="text-[18px] text-slate-12 flex-grow">{window.location.href}
+                            </div>
+                            <div
+                              className="flex flex-row gap-1 relative cursor-pointer"
+                              onClick={() => handleCopy(window.location.href)}
+                            >
+                              <CopySimple size={20} weight="bold" className="text-slate-11 hover:text-slate-10" />
+                              {isCopied && (
+                                <div className="absolute top-6 px-2 py-1 text-slate-12 right-0 bg-black rounded flex flex-row items-center gap-1 text-[14px]">
+                                  <CheckCircle size={16} weight="fill" className="text-green-500 flex-none" />
+                                  Copied!
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-0">
+                            <div className="text-[13px] text-slate-11">Only workspace members can access this table. </div>
+                            <div className="text-[13px] text-slate-11">You can invite others&nbsp;
+                              <span onClick={() => setIsInvitePeopleDialogOpen(true)}
+                                className="cursor-pointer underline text-slate-12">here.</span></div>
+                          </div>
+                        </div>
+                      </Dialog.Description>
+                      <button
+                        className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+                        aria-label="Close"
+                        onClick={() => setIsShareDialogOpen(false)}
+                      >
+                        <X size={16} weight="bold" />
+                      </button>
+                    </Dialog.Panel>
+                  </div>
+                </Dialog>
+              </>
             </div>
           </div>
           <div className="grow-1 overflow-x-auto overflow-y-scroll max-w-screen">
@@ -698,6 +736,31 @@ export default function TablePage() {
             </div>
           </div>
         </div>
+        <InvitePeopleDialog
+          isInvitePeopleDialogOpen={isInvitePeopleDialogOpen}
+          setIsInvitePeopleDialogOpen={setIsInvitePeopleDialogOpen}
+          currentUser={currentUser}
+          currentWorkspace={currentWorkspace}
+          customMessage={customInviteMessage}
+          setCustomMessage={setCustomInviteMessage}
+          emailTemplateLanguage={""}
+          customInvitePeopleDialogHeader={`Invite others to join ${currentWorkspace.name} to browse ${tableData.name}`}
+          customInvitePeopleSubject={`${currentUser.name} shared ${tableData.name} with you on Dataland.io`}
+        />
+        <Toaster
+          theme="dark"
+          expand
+          visibleToasts={6}
+          toastOptions={{
+            style: {
+              background: "var(--slate1)",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              borderColor: "var(--slate4)",
+            },
+          }}
+        />
       </WorkspaceLayout>
     </>
   );

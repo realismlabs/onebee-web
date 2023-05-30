@@ -6,16 +6,19 @@ import Head from "next/head";
 import { CaretRight, Table } from "@phosphor-icons/react";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
+import {
+  abbreviateNumber,
+  svgToBase64,
+  useLocalStorageState,
+  capitalizeString,
+} from "@/utils/util";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
-import { capitalizeString } from "@/utils/util";
 import { createTable, createDataSource } from "@/utils/api";
 import MemoizedMockTable from "@/components/MemoizedMockTable";
 import { IconList } from "@/components/IconList";
 import { Transition } from "@headlessui/react";
 import IconPickerPopoverCreateTable from "@/components/IconPickerPopoverCreateTable";
-import { IconLoaderFromSvgString } from "@/components/IconLoaderFromSVGString";
 import { AccountHeader } from "@/components/AccountHeader";
 import { useAuth } from "@clerk/nextjs";
 
@@ -659,7 +662,7 @@ export default function CreateTable() {
       outerPath,
       rowCount: selectedTableRowCount,
       dataSourceId: create_data_source_response.id,
-      iconSvgString: iconSvgString,
+      iconSvgBase64Url: svgToBase64(iconSvgString),
       iconColor: selectedColor,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

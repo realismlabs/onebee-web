@@ -454,7 +454,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
     outerPath,
     rowCount,
     dataSourceId,
-    iconSvgString,
+    iconSvgBase64Url,
     iconColor,
     createdAt,
     updatedAt
@@ -465,7 +465,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `INSERT INTO "tables" ("workspaceId", "fullPath", "name", "outerPath", "rowCount", "dataSourceId", "iconSvgString", "iconColor", "createdAt", "updatedAt") 
+      `INSERT INTO "tables" ("workspaceId", "fullPath", "name", "outerPath", "rowCount", "dataSourceId", "iconSvgBase64Url", "iconColor", "createdAt", "updatedAt") 
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
       RETURNING *`,
       [
@@ -475,7 +475,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
         outerPath,
         rowCount,
         dataSourceId,
-        iconSvgString,
+        iconSvgBase64Url,
         iconColor,
         createdAt,
         updatedAt
@@ -527,7 +527,7 @@ app.patch('/api/workspaces/:workspaceId/tables/:tableId/update', ClerkExpressReq
 
   const client = await pool.connect();
 
-  const validKeys = ["name", "iconColor", "iconSvgString"];
+  const validKeys = ["name", "iconColor", "iconSvgBase64Url"];
 
   const fields = Object.keys(req.body).filter(key => validKeys.includes(key));
   const values = Object.values(req.body);
@@ -634,10 +634,29 @@ app.get('/api/workspaces/:workspaceId/data_sources/:dataSourceId', ClerkExpressR
     const result = await client.query('SELECT * FROM "data_sources" WHERE "workspaceId"=$1 AND "id"=$2 ORDER BY id ASC', [workspaceId, dataSourceId]);
     const data_source = result.rows[0];
     // do not send the password back
-    // keyPairAuthPrivateKeyPassphrase
-    data_source.keyPairAuthPrivateKey = "encrypted-on-server";
-    data_source.keyPairAuthPrivateKeyPassphrase = "encrypted-on-server";
+    // // keyPairAuthPrivateKeyPassphrase
+    // data_source.keyPairAuthPrivateKey = "encrypted-on-server";
+    // data_source.keyPairAuthPrivateKeyPassphrase = "encrypted-on-server";
 
+    console.log('Fetched data_source', data_source);
+    res.json(data_source);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error getting data source" });
+  } finally {
+    client.release();
+  }
+});
+
+// getDataSourceFull
+app.get('/api/workspaces/:workspaceId/data_sources/:dataSourceId/full', ClerkExpressRequireAuth(), async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  const dataSourceId = parseInt(req.params.dataSourceId, 10);
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM "data_sources" WHERE "workspaceId"=$1 AND "id"=$2 ORDER BY id ASC', [workspaceId, dataSourceId]);
+    const data_source = result.rows[0];
     console.log('Fetched data_source', data_source);
     res.json(data_source);
   } catch (err) {
@@ -656,11 +675,6 @@ app.get('/api/workspaces/:workspaceId/data_sources', ClerkExpressRequireAuth(), 
   try {
     const result = await client.query('SELECT * FROM data_sources WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
     const data_sources = result.rows;
-    for (const data_source of data_sources) {
-      // do not send the passwords back
-      data_source.basicAuthPassword = "----encrypted-on-server----";
-      data_source.keyPairAuthPrivateKeyPassphrase = "----encrypted-on-server----";
-    }
     res.json(data_sources);
   } catch (err) {
     console.error(err);

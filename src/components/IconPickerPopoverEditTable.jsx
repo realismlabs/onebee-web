@@ -5,6 +5,8 @@ import { updateTable } from '@/utils/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
 import { useAuth } from "@clerk/nextjs";
+import { svgToBase64 } from '@/utils/util';
+import Image from 'next/image';
 
 const LazyIconGrid = lazy(() => import('./IconGrid'));
 
@@ -51,7 +53,7 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   );
 };
 
-const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspaceId }) => {
+const IconPickerPopoverEditTable = ({ tableName, tableId, workspaceId, iconSvgBase64Url }) => {
   const { getToken } = useAuth();
 
   const [selectedIcon, setSelectedIcon] = useState(null);
@@ -76,9 +78,10 @@ const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspa
     const iconDiv = document.getElementById(iconName);
     if (iconDiv) {
       const iconSvgString = Array.from(iconDiv.children).map((child) => child.outerHTML).join('\n');
+      const iconSvgBase64Url = svgToBase64(iconSvgString);
       const tableData = {
-        iconSvgString,
         iconColor: selectedColor,
+        iconSvgBase64Url
       };
       try {
         const jwt = await getToken({ template: "test" });
@@ -104,7 +107,7 @@ const IconPickerPopoverEditTable = ({ iconSvgString, tableName, tableId, workspa
               flex flex-row gap-3 items-center justify-center focus:outline-none py-[6px] rounded-[3px] w-[24px] h-[24px]`}
           >
             <div>
-              <div className="text-[13px] text-slate-12"><IconLoaderFromSvgString iconSvgString={iconSvgString} tableName={tableName} /></div>
+              <div className="text-[13px] text-slate-12"><IconLoaderFromSvgString iconSvgBase64Url={iconSvgBase64Url} /></div>
             </div>
           </Popover.Button>
           <Transition
