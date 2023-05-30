@@ -120,6 +120,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
         name: table.name,
         description: table.fullPath,
         iconSvgString: table.iconSvgString,
+        iconSvgBase64Url: table.iconSvgBase64Url,
         type: 'table',
         id: String(table.id),
         link: `/workspace/${currentWorkspace?.id}/table/${table.id}`,
@@ -206,7 +207,7 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                           }
                         >
                           <div className="flex flex-row gap-2 w-full">
-                            <div className="min-w-[24px] text-slate-10"><IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.name} /></div>
+                            <div className="min-w-[24px] text-slate-10"><IconLoaderFromSvgString iconSvgBase64Url={item.iconSvgBase64Url} /></div>
                             <div className="w-[240px] truncate">{item.name}</div>
                             <div className="ml-2 font-mono block truncate px-1.5 py-0.5 bg-slate-3 rounded-md text-[12px] text-slate-11">
                               {item.description.replaceAll(".", "/")}

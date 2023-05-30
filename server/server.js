@@ -454,7 +454,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
     outerPath,
     rowCount,
     dataSourceId,
-    iconSvgString,
+    iconSvgBase64Url,
     iconColor,
     createdAt,
     updatedAt
@@ -465,7 +465,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `INSERT INTO "tables" ("workspaceId", "fullPath", "name", "outerPath", "rowCount", "dataSourceId", "iconSvgString", "iconColor", "createdAt", "updatedAt") 
+      `INSERT INTO "tables" ("workspaceId", "fullPath", "name", "outerPath", "rowCount", "dataSourceId", "iconSvgBase64Url", "iconColor", "createdAt", "updatedAt") 
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
       RETURNING *`,
       [
@@ -475,7 +475,7 @@ app.post('/api/workspaces/:workspaceId/tables', ClerkExpressRequireAuth(), async
         outerPath,
         rowCount,
         dataSourceId,
-        iconSvgString,
+        iconSvgBase64Url,
         iconColor,
         createdAt,
         updatedAt
@@ -527,7 +527,7 @@ app.patch('/api/workspaces/:workspaceId/tables/:tableId/update', ClerkExpressReq
 
   const client = await pool.connect();
 
-  const validKeys = ["name", "iconColor", "iconSvgString"];
+  const validKeys = ["name", "iconColor", "iconSvgString", "iconSvgBase64Url"];
 
   const fields = Object.keys(req.body).filter(key => validKeys.includes(key));
   const values = Object.values(req.body);

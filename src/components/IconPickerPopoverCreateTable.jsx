@@ -2,6 +2,7 @@
 import React, { useState, Fragment, useRef, lazy, Suspense } from 'react';
 import { Popover, Transition } from '@headlessui/react'
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
+import { svgToBase64 } from '@/utils/util';
 
 const LazyIconGrid = lazy(() => import('./IconGrid'));
 
@@ -63,6 +64,7 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
 const IconPickerPopoverCreateTable = ({ iconSvgString, setIconSvgString, selectedColor, setSelectedColor }) => {
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [iconSvgBase64Url, setIconSvgBase64Url] = useState(null);
 
   const handleIconClick = async (iconName, selectedColor) => {
     setSelectedIcon(iconName);
@@ -71,6 +73,7 @@ const IconPickerPopoverCreateTable = ({ iconSvgString, setIconSvgString, selecte
       const iconSvgString = Array.from(iconDiv.children).map((child) => child.outerHTML).join('\n');
       const iconSvgString_updated = updateSvgColor(iconSvgString, selectedColor);
       setIconSvgString(iconSvgString_updated);
+      setIconSvgBase64Url(svgToBase64(iconSvgString_updated));
     } else {
       console.error(`Div with id "${iconName}" not found.`);
     }
@@ -86,7 +89,7 @@ const IconPickerPopoverCreateTable = ({ iconSvgString, setIconSvgString, selecte
               flex flex-row gap-3 items-center justify-center focus:outline-none py-[6px] rounded-[3px] w-[31px] h-[31px] bg-slate-4 border-slate-6 hover:bg-slate-5 hover:border-slate-8 active:bg-slate-6 border `}
           >
             <div>
-              <div className="text-[13px] text-slate-12"><IconLoaderFromSvgString iconSvgString={iconSvgString} /></div>
+              <div className="text-[13px] text-slate-12"><IconLoaderFromSvgString iconSvgBase64Url={iconSvgBase64Url} /></div>
             </div>
           </Popover.Button>
           <Transition

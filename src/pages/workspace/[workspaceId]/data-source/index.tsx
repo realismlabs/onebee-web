@@ -555,7 +555,9 @@ export default function DataSources() {
                                         <div className="text-[13px] text-slate-12">
                                           <IconLoaderFromSvgString
                                             iconSvgString={table.iconSvgString}
-                                            tableName={table.name}
+                                            iconSvgBase64Url={
+                                              table.iconSvgBase64Url
+                                            }
                                           />
                                         </div>
                                         <div className="w-[180px] truncate">

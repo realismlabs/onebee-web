@@ -508,7 +508,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
                       <Tooltip.Root>
                         <Tooltip.Trigger asChild>
                           <div className={`flex flex-row gap-3 group hover:bg-slate-3 transition-all duration-100 cursor-pointer px-[8px] py-[6px] rounded-md ${router.asPath === `workspace/${currentWorkspace.id}/table/${item.id}` ? "bg-slate-3" : ""}`}>
-                            <IconLoaderFromSvgString iconSvgString={item.iconSvgString} tableName={item.name} />
+                            <IconLoaderFromSvgString iconSvgBase64Url={item.iconSvgBase64Url} />
                             <div className="truncate w-full">{item.name}</div>
                           </div>
                         </Tooltip.Trigger>

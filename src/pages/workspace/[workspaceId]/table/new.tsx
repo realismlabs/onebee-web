@@ -10,7 +10,11 @@ import {
 } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { abbreviateNumber, useLocalStorageState } from "@/utils/util";
+import {
+  abbreviateNumber,
+  svgToBase64,
+  useLocalStorageState,
+} from "@/utils/util";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCurrentWorkspace } from "@/hooks/useCurrentWorkspace";
 import { createTable, getWorkspaceDataSources } from "@/utils/api";
@@ -732,7 +736,7 @@ export default function CreateTable() {
       outerPath,
       rowCount: selectedTableRowCount,
       dataSourceId: selectedDataSource?.id,
-      iconSvgString: iconSvgString,
+      iconSvgBase64Url: svgToBase64(iconSvgString),
       iconColor: colorValue ?? selectedColor,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

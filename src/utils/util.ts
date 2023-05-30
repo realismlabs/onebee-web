@@ -270,3 +270,7 @@ export function isCommonEmailProvider(str: string) {
     /(gmail\.com|yahoo\.com|hotmail\.com|aol\.com|outlook\.com|live\.com|msn\.com|icloud\.com|zoho\.com|protonmail\.com|mail\.com|yandex\.com)$/;
   return pattern.test(str);
 }
+
+export function svgToBase64(svg: string) {
+  return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+}

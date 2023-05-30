@@ -562,6 +562,7 @@ export default function TablePage() {
                 tableName={tableData.name}
                 tableId={tableData.id}
                 workspaceId={currentWorkspace?.id}
+                iconSvgBase64Url={tableData.iconSvgBase64Url}
               />
               <TablePopover
                 tableName={tableData.name}
