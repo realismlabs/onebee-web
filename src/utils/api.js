@@ -50,6 +50,8 @@ export const createUser = async ({ email, name, clerkUserId }) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${null}`, // this is bug, can remove in the future https://discord.com/channels/856971667393609759/1109556672420139049/1110295072639045683
+
     },
     body: JSON.stringify(requestBody),
   });
@@ -217,7 +219,12 @@ export const acceptWorkspaceInvite = async ({ workspaceId, inviteId, jwt }) => {
 // This is a public route that does not require authentication
 export const getWorkspaceDetails = async (workspaceId) => {
 
-  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`);
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${null}`, // this is bug, can remove in the future https://discord.com/channels/856971667393609759/1109556672420139049/1110295072639045683
+    },
+  });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch workspace details for id: ${workspaceId}`);

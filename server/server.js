@@ -28,51 +28,15 @@ app.use(cors({
   }
 }));
 
+app.use(ClerkExpressWithAuth());
+
 app.use((req, res, next) => {
   console.log(`Received a ${req.method} request for ${req.url}`);
-  // verify if user is authenticated / logged in
-  // console.log("awu: req", req, )
-  next();
-});
-
-
-app.use(ClerkExpressWithAuth(), (req, res, next) => {
-  console.log("awu: req.auth", req.auth); // this logs out the auth object, ie.:
-  // awu: req.auth {
-  //   actor: undefined,
-  //   sessionClaims: {
-  //     azp: 'http://localhost:3000',
-  //     clerkId: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA',
-  //     email: 'arthur+alpha@dataland.io',
-  //     exp: 1685545146,
-  //     iat: 1685545086,
-  //     iss: 'https://busy-ladybug-79.clerk.accounts.dev',
-  //     jti: '03ce518275c7ec4b1b78',
-  //     nbf: 1685545081,
-  //     sub: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA'
-  //   },
-  //   sessionId: undefined,
-  //   session: undefined,
-  //   userId: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA',
-  //   user: undefined,
-  //   orgId: undefined,
-  //   orgRole: undefined,
-  //   orgSlug: undefined,
-  //   organization: undefined,
-  //   getToken: [AsyncFunction (anonymous)],
-  //   debug: [Function (anonymous)],
-  //   claims: {
-  //     azp: 'http://localhost:3000',
-  //     clerkId: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA',
-  //     email: 'arthur+alpha@dataland.io',
-  //     exp: 1685545146,
-  //     iat: 1685545086,
-  //     iss: 'https://busy-ladybug-79.clerk.accounts.dev',
-  //     jti: '03ce518275c7ec4b1b78',
-  //     nbf: 1685545081,
-  //     sub: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA'
-  //   }
-  // }
+  if (req.auth.userId) {
+    console.log('User is authenticated');
+  } else {
+    console.log('User is not authenticated');
+  }
   next();
 });
 
@@ -92,6 +56,31 @@ const pool = new Pool({
 // pool.on('release', (client) => {
 //   console.log('DataSource released', "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
 // });
+
+// fetchCurrentWorkspace + getWorkspaceDetails -- public route
+app.get('/api/workspaces/:workspaceId', async (req, res) => {
+  const workspaceId = parseInt(req.params.workspaceId, 10);
+  console.log("workspaceId", workspaceId)
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM workspaces WHERE "id" = $1 ORDER BY id ASC', [workspaceId]);
+    const workspace = result.rows[0];
+
+    if (!workspace) {
+      console.error("Error fetching current workspace", result);
+      res.status(404).json({ message: "Workspace not found" });
+      return;
+    }
+
+    res.json(workspace);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching current workspace" });
+  } finally {
+    client.release();
+  }
+});
 
 app.get('/users', ClerkExpressRequireAuth(), async (req, res) => {
   const client = await pool.connect();
@@ -138,54 +127,6 @@ app.get('/api/users/clerkUserId/:clerkUserId', ClerkExpressRequireAuth(), async 
   }
 });
 
-// fetchCurrentWorkspace + getWorkspaceDetails -- public route
-app.get('/api/workspaces/:workspaceId', async (req, res) => {
-  const workspaceId = parseInt(req.params.workspaceId, 10);
-  console.log("workspaceId", workspaceId)
-
-  const client = await pool.connect();
-  try {
-    const result = await client.query('SELECT * FROM workspaces WHERE "id" = $1 ORDER BY id ASC', [workspaceId]);
-    const workspace = result.rows[0];
-
-    if (!workspace) {
-      console.error("Error fetching current workspace", result);
-      res.status(404).json({ message: "Workspace not found" });
-      return;
-    }
-
-    res.json(workspace);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error fetching current workspace" });
-  } finally {
-    client.release();
-  }
-});
-
-// getUserByEmail -- public because signup page hits this first to see if user can use specified email
-app.get('/api/users/email/:email', async (req, res) => {
-  const email = req.params.email;
-
-  console.log("email", email)
-
-  const client = await pool.connect();
-  try {
-    const result = await client.query('SELECT * FROM users WHERE "email" = $1 ORDER BY id ASC', [email]);
-    const user = result.rows[0];
-    if (!user) {
-      res.json([]);
-      return;
-    }
-    console.log("user", user)
-    res.json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error fetching user" });
-  } finally {
-    client.release();
-  }
-});
 
 // createUser - also a public route
 app.post('/api/users', async (req, res) => {
@@ -910,7 +851,6 @@ app.get('/api/workspaces/:workspaceId/memberships', ClerkExpressRequireAuth(), a
   try {
     const result = await client.query('SELECT * FROM "memberships" WHERE "workspaceId"=$1 ORDER BY id ASC', [workspaceId]);
     const memberships = result.rows;
-    console.log('Fetched memberships', memberships);
     res.json(memberships);
   } catch (err) {
     console.error(err);
@@ -929,7 +869,7 @@ app.get('/api/users/:userId/memberships', ClerkExpressRequireAuth(), async (req,
   try {
     const result = await client.query('SELECT * FROM "memberships" WHERE "userId"=$1 ORDER BY id ASC', [userId]);
     const memberships = result.rows;
-    console.log('Fetched memberships', memberships);
+    console.log('Fetched memberships', memberships.length);
     res.json(memberships);
   } catch (err) {
     console.error(err);

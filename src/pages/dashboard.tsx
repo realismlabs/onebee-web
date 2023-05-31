@@ -46,6 +46,7 @@ export default function Welcome() {
                 membership?.workspaceId
               );
               if (response) {
+                console.log("response", response);
                 return response;
               } else {
                 throw new Error("No response from server");
