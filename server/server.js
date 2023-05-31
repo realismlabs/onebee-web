@@ -1,6 +1,6 @@
 require('dotenv').config(); // To read CLERK_API_KEY
 const express = require('express');
-const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node');
+const { ClerkExpressRequireAuth, ClerkExpressWithAuth } = require('@clerk/clerk-sdk-node');
 const cors = require('cors');
 
 const port = process.env.PORT || 5002;
@@ -13,8 +13,6 @@ const allowedOrigins = ['http://localhost:3000', 'http://dataland.io', 'https://
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
-    console.log("origin", origin)
     if (!origin) return callback(null, true);
 
     // allow any origin matching the pattern https://onebee-web-git-[whatever].vercel.app
@@ -37,6 +35,47 @@ app.use((req, res, next) => {
   next();
 });
 
+
+app.use(ClerkExpressWithAuth(), (req, res, next) => {
+  console.log("awu: req.auth", req.auth); // this logs out the auth object, ie.:
+  // awu: req.auth {
+  //   actor: undefined,
+  //   sessionClaims: {
+  //     azp: 'http://localhost:3000',
+  //     clerkId: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA',
+  //     email: 'arthur+alpha@dataland.io',
+  //     exp: 1685545146,
+  //     iat: 1685545086,
+  //     iss: 'https://busy-ladybug-79.clerk.accounts.dev',
+  //     jti: '03ce518275c7ec4b1b78',
+  //     nbf: 1685545081,
+  //     sub: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA'
+  //   },
+  //   sessionId: undefined,
+  //   session: undefined,
+  //   userId: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA',
+  //   user: undefined,
+  //   orgId: undefined,
+  //   orgRole: undefined,
+  //   orgSlug: undefined,
+  //   organization: undefined,
+  //   getToken: [AsyncFunction (anonymous)],
+  //   debug: [Function (anonymous)],
+  //   claims: {
+  //     azp: 'http://localhost:3000',
+  //     clerkId: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA',
+  //     email: 'arthur+alpha@dataland.io',
+  //     exp: 1685545146,
+  //     iat: 1685545086,
+  //     iss: 'https://busy-ladybug-79.clerk.accounts.dev',
+  //     jti: '03ce518275c7ec4b1b78',
+  //     nbf: 1685545081,
+  //     sub: 'user_2PwdGxzs9QVxdiRL9hcBgL3geBA'
+  //   }
+  // }
+  next();
+});
+
 const { Pool } = require('pg');
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -47,12 +86,12 @@ const pool = new Pool({
   max: 20, // Increase this value
 });
 
-pool.on('acquire', (client) => {
-  console.log('DataSource acquired', "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
-});
-pool.on('release', (client) => {
-  console.log('DataSource released', "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
-});
+// pool.on('acquire', (client) => {
+//   console.log('DataSource acquired', "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
+// });
+// pool.on('release', (client) => {
+//   console.log('DataSource released', "pool.totalCount", pool.totalCount, "pool.idleCount", pool.idleCount, "pool.waitingCount", pool.waitingCount);
+// });
 
 app.get('/users', ClerkExpressRequireAuth(), async (req, res) => {
   const client = await pool.connect();
