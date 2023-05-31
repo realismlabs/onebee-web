@@ -89,7 +89,10 @@ export default function Welcome() {
 
     // Only set next_route if userMembershipsData is not null or undefined
     if (!!userMembershipsData && Array.isArray(currentWorkspacesIdsForUser)) {
-      if (currentWorkspacesIdsForUser.length > 0) {
+      if (
+        currentWorkspacesIdsForUser.length > 0 &&
+        !!currentWorkspacesIdsForUser[0]
+      ) {
         next_route = `/workspace/${currentWorkspacesIdsForUser[0]}`;
       } else if (currentWorkspacesIdsForUser.length === 0) {
         next_route = `/welcome`;
