@@ -32,6 +32,8 @@ app.use(cors({
 
 app.use((req, res, next) => {
   console.log(`Received a ${req.method} request for ${req.url}`);
+  // verify if user is authenticated / logged in
+  // console.log("awu: req", req, )
   next();
 });
 
