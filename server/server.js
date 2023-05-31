@@ -30,15 +30,67 @@ app.use(cors({
 
 app.use(ClerkExpressWithAuth());
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   console.log(`Received a ${req.method} request for ${req.url}`);
-  if (req.auth.userId) {
-    console.log('User is authenticated');
-  } else {
+
+  // req.auth is set by ClerkExpressWithAuth
+  if (!req.auth.userId) {
     console.log('User is not authenticated');
+    return next();
   }
-  next();
+
+  // Route user to the no-access page if they are not a member of the workspace
+  console.log("awu req", req.url)
+  if (
+    req.auth.userId &&
+    req.url.includes("workspaces/")
+  ) {
+    const client = await pool.connect();
+
+    try {
+      // Try to fetch the user with the given Clerk user ID
+      let user;
+      try {
+        const result = await client.query('SELECT * FROM users WHERE "clerkUserId" = $1 ORDER BY id ASC', [req.auth.userId]);
+        user = result.rows[0];
+        console.log("user", user)
+      } catch (error) {
+        console.error("Error fetching user", error);
+        throw error;
+      }
+
+      if (!user) {
+        console.log('User not found');
+        return next();
+      }
+
+      // If the user exists, fetch their memberships
+      try {
+        const result = await client.query('SELECT * FROM memberships WHERE "userId" = $1 ORDER BY id ASC', [user.id]);
+        const memberships = result.rows;
+        const after_base_url = req.url.split("workspaces/")[1];
+        const workspaceId = after_base_url.split("/")[0];
+        const hasMembership = memberships.some(membership => membership.workspaceId === parseInt(workspaceId, 10));
+        if (hasMembership === false) {
+          // Send a specific status code or JSON response
+          return res.status(403).json({ message: "No access", redirectUrl: `/workspace/${workspaceId}/no-access` });
+        }
+      } catch (error) {
+        console.error("Error fetching memberships", error);
+        throw error;
+      }
+      next(); // call next only if res.redirect() hasn't been called.
+    } catch (err) {
+      next(err);
+    } finally {
+      client.release();
+    }
+  } else {
+    next();
+  }
 });
+
+
 
 const { Pool } = require('pg');
 const pool = new Pool({
