@@ -185,7 +185,24 @@ const ColumnPopoverTestGroup = () => {
       </div>
       <div className="text-white flex flex-col divide-y divide-slate-5">
         {columns.map((column) => (
-          <ColumnPopover {...column} key={column.id} />
+          <div className="flex flex-col gap-4 rounded-lg" key={column.id}>
+            {/* <p>{column.id}</p> */}
+            <div className="flex flex-row gap-3 py-2">
+              <p className="text-[14px] text-slate-12 w-[240px]">
+                {column.name}
+              </p>
+              <p className="text-[14px] text-slate-11 w-[240px]">
+                {column.type}
+              </p>
+              <p className="text-[14px] text-slate-11 w-[240px]">
+                {column.display_type}
+              </p>
+              <div className="flex-col gap-2 text-blue-9">
+                <ColumnPopover {...column} />
+              </div>
+            </div>
+            {/* <p>{JSON.stringify(column.display_config)}</p> */}
+          </div>
         ))}
       </div>
     </div>
