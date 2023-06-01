@@ -174,7 +174,7 @@ const columns: Column[] = [
 
 const ColumnPopoverTestGroup = () => {
   return (
-    <div className="bg-slate-1">
+    <div className="bg-slate-1 h-full">
       <p>Column popover testing</p>
       {/* set up grid for 3 columns */}
       <div className="flex flex-row gap-3 pb-4">

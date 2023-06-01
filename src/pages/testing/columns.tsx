@@ -17,7 +17,7 @@ export default function ComponentStaging() {
       <Head>
         <title>Dataland | Playground</title>
       </Head>
-      <div className="bg-slate-1 flex-col">
+      <div className="bg-slate-1 flex-col h-[4000px] overflow-auto">
         <div className="max-w-[1200px] pt-24 mx-auto bg-slate-1">
           <p className="text-white bg-slate-1">
             This page is used to test out new UI components.
