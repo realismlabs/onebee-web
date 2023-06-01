@@ -276,7 +276,8 @@ export default function WorkspaceHome() {
           <div className="flex flex-col justify-center items-center w-full pt-16">
             <div className="bg-slate-1 text-slate-12 text-left flex flex-col items-start text-[22px] pb-4 w-[1000px] gap-4">
               <div className="items-start text-left text-[16px] pb-[16px] border-b border-slate-4 w-full">
-                Welcome, {currentUser.name ?? email_content_before_at}!
+                Welcome to Dataland,{" "}
+                {currentUser.name ?? email_content_before_at}!
               </div>
               {/* Actions */}
               {/* If there are no data sources, get them to add a data source */}

@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useCurrentWorkspace } from '../hooks/useCurrentWorkspace';
-import { CircleNotch, TreeStructure, House, Table, Plus, Gear } from '@phosphor-icons/react';
+import { CircleNotch, TreeStructure, House, Table, Plus, Gear, ChatText } from '@phosphor-icons/react';
 import { getTables } from '@/utils/api';
 import { useRouter } from 'next/router';
 import { IconLoaderFromSvgString } from '@/components/IconLoaderFromSVGString';
@@ -152,36 +152,6 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
               <Command.List className="py-[6px]"
               >
                 <Command.Empty><div className="px-[10px] pt-[8px] text-slate-11">No results found.</div></Command.Empty>
-                <Command.Group heading="Navigation" className="py-[8px]">
-                  {navigationItems.map((item) => {
-                    const id = item.id;
-                    const searchable_id_name = `${item.id} ${item.name} ${item.description}`;
-                    return (
-                      <Command.Item
-                        key={searchable_id_name}
-                        value={searchable_id_name}
-                        className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
-                        onMouseEnter={() => {
-                          setValue(searchable_id_name);
-                        }}
-                        onSelect={
-                          () => {
-                            // route to table
-                            router.push(item.link)
-                            // toggle closed
-                            setCommandBarOpen(false);
-                          }
-                        }
-                      >
-                        <div className="flex flex-row gap-2 w-full">
-                          <div className="min-w-[24px] text-slate-10">{item.icon}</div>
-                          <div className="min-w-[240px]">{item.name}</div>
-                          <div className="ml-2 text-slate-11">{item.description}</div>
-                        </div>
-                      </Command.Item>
-                    )
-                  })}
-                </Command.Group>
                 {tablesData.length > 0 && (
 
                   <Command.Group heading="Tables" className="mt-2">
@@ -217,6 +187,67 @@ export const CommandBar = ({ commandBarOpen, setCommandBarOpen }) => {
                     })}
                   </Command.Group>
                 )}
+                <Command.Group heading="Navigation" className="py-[8px]">
+                  {navigationItems.map((item) => {
+                    const id = item.id;
+                    const searchable_id_name = `${item.id} ${item.name} ${item.description}`;
+                    return (
+                      <Command.Item
+                        key={searchable_id_name}
+                        value={searchable_id_name}
+                        className={`focus:border focus:border-white ${(value === searchable_id_name.toLowerCase()) ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
+                        onMouseEnter={() => {
+                          setValue(searchable_id_name);
+                        }}
+                        onSelect={
+                          () => {
+                            // route to table
+                            router.push(item.link)
+                            // toggle closed
+                            setCommandBarOpen(false);
+                          }
+                        }
+                      >
+                        <div className="flex flex-row gap-2 w-full">
+                          <div className="min-w-[24px] text-slate-10">{item.icon}</div>
+                          <div className="min-w-[240px]">{item.name}</div>
+                          <div className="ml-2 text-slate-11">{item.description}</div>
+                        </div>
+                      </Command.Item>
+                    )
+                  })}
+                  <Command.Item
+                    value="helpsupport"
+                    className={`focus:border focus:border-white ${(value === "helpsupport") ? "bg-slate-3" : ""} flex flex-row py-2 px-[10px] rounded-[4px]`}
+                    onMouseEnter={() => {
+                      setValue("helpsupport");
+                    }}
+                    onSelect={
+                      () => {
+                        // get the current url
+                        const current_url = window.location.href;
+                        const support_body = `Write what you need help with:\n\n\n
+                        ---------------------------------------------
+                        Report details:
+                        - Reporting URL: ${current_url}
+                        - User ID: ${currentUser.id}
+                        - User email: ${currentUser.email}
+                        - Workspace name: ${currentWorkspace.name}
+                        - Workspace ID: ${currentWorkspace.id}`
+                        // open mailto: link
+                        window.open(`mailto:support@dataland.io?subject=Help%20with%20Dataland&body=${encodeURIComponent(support_body)}`)
+                        // toggle closed
+                        setCommandBarOpen(false);
+                      }
+                    }
+                  >
+                    <div className="flex flex-row gap-2 w-full">
+                      <div className="min-w-[24px] text-slate-10"><ChatText size={20} className="text-slate-10" weight='fill' /></div>
+                      <div className="min-w-[240px]">Contact support</div>
+                      <div className="ml-2 text-slate-11">Email us if you need help!</div>
+                    </div>
+                  </Command.Item>
+                </Command.Group>
               </Command.List>
             </div>
           </div>
