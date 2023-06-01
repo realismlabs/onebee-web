@@ -197,9 +197,7 @@ const ColumnPopoverTestGroup = () => {
               <p className="text-[14px] text-slate-11 w-[240px]">
                 {column.display_type}
               </p>
-              <div className="flex-col gap-2 text-blue-9">
-                <ColumnPopover {...column} />
-              </div>
+              <ColumnPopover {...column} />
             </div>
             {/* <p>{JSON.stringify(column.display_config)}</p> */}
           </div>
