@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "mock-api": "node mock-db/json-server.js",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "export": "next export"
   },
   "dependencies": {
     "@clerk/clerk-js": "^4.41.0",
