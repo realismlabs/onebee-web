@@ -658,7 +658,7 @@ export default function TablePage() {
                 )}
               </div>
             </>
-            <div className="flex flex-row gap-2 flex-none justify-end">
+            <div className="flex flex-row gap-2 flex-none justify-end mr-2">
               <div className="bg-slate-3 hover:bg-slate-4 text-slate-11 text-[13px] px-[12px] py-[6px] border border-slate-4 cursor-pointer rounded-[6px] flex flex-row gap-1 items-center">
                 <p>Columns</p>
                 <CaretDown size={12} className="text-slate-11" />
@@ -681,12 +681,20 @@ export default function TablePage() {
                       </Dialog.Title>
                       <Dialog.Description className="flex flex-col gap-2 mt-4">
                         <div className="flex flex-col gap-4">
-                          <div className="flex flex-row px-3 py-2 bg-slate-1 rounded-lg items-center">
+                          <div className="flex flex-row px-3 py-2 bg-slate-1 rounded-lg items-center focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                handleCopy(window.location.href)
+                              }
+                            }}
+                            tabIndex={1}
+                          >
                             <div className="text-[18px] text-slate-12 flex-grow">{window.location.href}
                             </div>
                             <div
-                              className="flex flex-row gap-1 relative cursor-pointer"
+                              className="flex flex-row gap-1 relative cursor-pointer focus:ring-2"
                               onClick={() => handleCopy(window.location.href)}
+                            // also add a listener if the user clicks Enter
                             >
                               <CopySimple size={20} weight="bold" className="text-slate-11 hover:text-slate-10" />
                               {isCopied && (
@@ -699,7 +707,7 @@ export default function TablePage() {
                           </div>
                           <div className="flex flex-col gap-0">
                             <div className="text-[13px] text-slate-11">Only workspace members can access this table. </div>
-                            <div className="text-[13px] text-slate-11">You can invite others&nbsp;
+                            <div className="text-[13px] text-slate-11">You can invite others to your workspace&nbsp;
                               <span onClick={() => setIsInvitePeopleDialogOpen(true)}
                                 className="cursor-pointer underline text-slate-12">here.</span></div>
                           </div>
@@ -709,6 +717,7 @@ export default function TablePage() {
                         className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
                         aria-label="Close"
                         onClick={() => setIsShareDialogOpen(false)}
+                      // tabIndex={-1}
                       >
                         <X size={16} weight="bold" />
                       </button>
