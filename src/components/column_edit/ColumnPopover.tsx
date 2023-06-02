@@ -3,7 +3,8 @@ import { Popover, Transition } from "@headlessui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CaretDown, CaretUp, DeviceMobile } from "@phosphor-icons/react";
 import useMeasure from "react-use-measure";
-import { useFloating, autoUpdate } from "@floating-ui/react-dom";
+import { useFloating, autoUpdate, offset } from "@floating-ui/react-dom";
+import { enumColorMap } from "../colorMap";
 
 interface Column {
   id: number;
@@ -59,7 +60,7 @@ const columnDisplayTypes = [
 const PlainTextContent = (column: Column) => {
   return (
     <div className="flex flex-col">
-      <p className="text-[14px] text-slate-11">
+      <p className="text-[13px] text-slate-11">
         Text is displayed just as plain text in cells.
       </p>
     </div>
@@ -69,36 +70,48 @@ const PlainTextContent = (column: Column) => {
 const JsonContent = (column: Column) => {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-[14px] text-slate-11">
+      <p className="text-[13px] text-slate-11">
         Strings with valid JSON format will be syntax highlighted. Users can
         double click a cell to see and copy full JSON.
       </p>
     </div>
   );
 };
+
 const ColorCodedText = (column: Column) => {
-  const [selectedMapping, setSelectedMapping] = React.useState<any>(null);
+  const [selectedMapping, setSelectedMapping] = useState<any>(null);
   const [colorPickerPopoverOpen, setColorPickerPopoverOpen] =
-    React.useState<boolean>(false);
+    useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const [filter, setFilter] = useState<string>("");
+
+  const filteredMappings = column?.display_config?.color_mappings.filter(
+    (mapping: any) => mapping.value.includes(filter)
+  );
 
   const { refs, floatingStyles } = useFloating({
     elements: {
       reference: anchorEl,
     },
     whileElementsMounted: autoUpdate,
+    placement: "bottom-start",
   });
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      if (anchorEl && !anchorEl.contains(event.target)) {
-        setColorPickerPopoverOpen(false); // Close popover if clicked outside
+      if (
+        !!anchorEl && // anchorEl is not null
+        !anchorEl?.contains(event.target) && // clicked outside of anchorEl
+        !event.target.classList.contains("color-mapping") // clicked outside of color-mapping div, because there is another click handler for color-mapping div
+      ) {
+        setColorPickerPopoverOpen(false);
       }
     };
 
     const handleKeyDown = (event: { key: string }) => {
       if (event.key === "Escape") {
-        setColorPickerPopoverOpen(false); // Close popover if ESC key is pressed
+        setColorPickerPopoverOpen(false);
       }
     };
 
@@ -113,44 +126,116 @@ const ColorCodedText = (column: Column) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-[14px] text-slate-11">
+      <p className="text-[13px] text-slate-11">
         Text is color-coded depending on cell values. Values are refreshed on
         data sync.
       </p>
       <div className="flex flex-row gap-2 items-center mt-2">
-        <p className="text-slate-12 text-[14px]">Values</p>
+        <p className="text-slate-12 text-[13px]">Values</p>
         <p className="text-slate-12 text-[12px] font-medium bg-slate-5 px-1 py-0.5 rounded-md">
           {column?.display_config?.color_mappings?.length}
         </p>
       </div>
-      <div className="flex flex-col gap-1 max-h-[312px] overflow-y-auto">
-        {column?.display_config?.color_mappings?.map((mapping: any) => (
-          <div
-            className="flex flex-row py-1 px-1.5 gap-2 items-center"
-            key={mapping.id}
-          >
+      {/* add a filter input */}
+      <input
+        type="text"
+        placeholder="Filter values.."
+        className="bg-slate-3 text-[13px] h-[32px] border border-slate-6 rounded-md"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+      />
+      <div className="flex flex-col gap-1 max-h-[208px] min-h-[120px] overflow-y-auto bg-slate-2 rounded-md border border-slate-6 py-2">
+        {filteredMappings.map((mapping: any, index: number) => (
+          <div className="flex flex-row gap-1 items-center" key={index}>
             <div
-              className="w-3 h-3 rounded-md color-mapping"
-              style={{ backgroundColor: mapping.color }}
-              onClick={(event) => {
-                setSelectedMapping(mapping);
-                setAnchorEl(event.currentTarget);
-                setColorPickerPopoverOpen(true);
-              }}
-            />
-            <p className="text-slate-11 text-[14px] truncate">
+              className={`hover:bg-slate-3 hover:border hover:border-slate-6 ml-2 w-[24px] h-[24px] rounded-md items-center justify-center flex flex-none`}
+            >
+              <div
+                className="w-[16px] h-[16px] rounded-full flex-none items-center justify-center flex"
+                style={{
+                  backgroundColor: enumColorMap.find(
+                    (item) => item.name === mapping.color
+                  )?.backgroundColor1,
+                  border: `1px solid ${
+                    enumColorMap.find((item) => item.name === mapping.color)
+                      ?.backgroundColor2
+                  }`,
+                }}
+                onClick={(event) => {
+                  setSelectedMapping(mapping);
+                  setAnchorEl(event.currentTarget);
+                  setColorPickerPopoverOpen(true);
+                }}
+              >
+                <div
+                  className="h-[8px] w-[8px] rounded-full"
+                  style={{
+                    backgroundColor: enumColorMap.find(
+                      (item) => item.name === mapping.color
+                    )?.foregroundColor,
+                  }}
+                ></div>
+              </div>
+            </div>
+            <p className="text-slate-11 text-[13px] truncate">
               {mapping.value}
             </p>
           </div>
         ))}
+        {/* if filteredMappings is 0 and filter is not "" */}
+        {filteredMappings.length === 0 && filter !== "" && (
+          <div className="flex flex-row gap-2 items-center w-full justify-center h-24">
+            <p className="text-slate-11 text-[13px]">No values found</p>
+          </div>
+        )}
+        {filteredMappings.length === 0 && filter == "" && (
+          <div className="flex flex-row gap-2 items-center w-full justify-center h-24">
+            <p className="text-slate-11 text-[13px]">
+              This column doesn&apos;t have any values yet
+            </p>
+          </div>
+        )}
       </div>
       {colorPickerPopoverOpen && (
         <div
           ref={refs.setFloating}
-          className="absolute bg-red-9 shadow-2xl py-3"
+          className="absolute bg-black rounded-lg text-[13px] shadow-2xl p-3"
           style={floatingStyles}
+          onClick={() => {
+            console.log("test");
+          }}
         >
-          This is a Popover.
+          <div className="grid grid-cols-6 gap-1">
+            {enumColorMap.map((item) => (
+              <div
+                className="hover:bg-slate-3 px-1 py-1 rounded-md flex items-center justify-center"
+                key={item.name}
+                onClick={() => {
+                  console.log("selectedMapping", selectedMapping);
+                  console.log(
+                    "selectedMapping update text",
+                    selectedMapping?.value,
+                    "from",
+                    selectedMapping?.color,
+                    "update color to",
+                    item.name
+                  );
+                  setColorPickerPopoverOpen(false);
+                }}
+              >
+                <div
+                  style={{
+                    backgroundColor: item.backgroundColor1,
+                    border: `1px solid ${item.backgroundColor2}`,
+                    color: item.foregroundColor,
+                  }}
+                  className="px-1.5 rounded-full color-mapping"
+                >
+                  Aa
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -171,7 +256,7 @@ const ColumnPopover = (column: Column) => {
           <Popover.Button
             className={`
               ${open ? "" : "hover:bg-slate-5 active:bg-slate-6"}
-              bg-slate-4 flex flex-col gap-4 rounded-lg cursor-default px-3 py-1.5 text-[14px]`}
+              bg-slate-4 flex flex-col gap-4 rounded-lg cursor-default px-3 py-1.5 text-[13px]`}
           >
             Edit column
           </Popover.Button>
@@ -183,8 +268,8 @@ const ColumnPopover = (column: Column) => {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute z-10 mt-3 px-4 py-3 max-h-[80vh] top-0 rounded-md bg-slate-2 shadow-2xl border border-slate-4 flex flex-shrink w-[320px] flex-col gap-2 items-start justify-start cursor-default">
-              <p className="text-[14px] font-medium">Edit display type</p>
+            <Popover.Panel className="absolute z-10 mt-3 px-4 py-3 max-h-[80vh] top-0 rounded-md bg-slate-1 shadow-2xl border border-slate-4 flex flex-shrink w-[320px] flex-col gap-2 items-start justify-start cursor-default">
+              <p className="text-[13px] font-medium">Edit display type</p>
               <motion.div
                 className="w-full mt-2"
                 animate={{ height: bounds.height }}
@@ -199,7 +284,7 @@ const ColumnPopover = (column: Column) => {
                           className="flex flex-row items-center flex-grow bg-slate-3 hover:bg-slate-4 active:bg-slate-5 py-2 px-4 rounded-md border border-slate-6"
                           onClick={() => setIsSelectingDisplayType(true)}
                         >
-                          <p className="text-[14px] mr-auto">{displayType}</p>
+                          <p className="text-[13px] mr-auto">{displayType}</p>
                           <CaretDown
                             size={12}
                             className="text-slate-12"
@@ -225,7 +310,7 @@ const ColumnPopover = (column: Column) => {
                             setIsSelectingDisplayType(false);
                           }}
                         >
-                          <p className="text-[14px] text-slate-11 mr-auto">
+                          <p className="text-[13px] text-slate-11 mr-auto">
                             Choose a display type..
                           </p>
                           <CaretUp
@@ -249,7 +334,7 @@ const ColumnPopover = (column: Column) => {
                                 setIsSelectingDisplayType(false);
                               }}
                             >
-                              <p className="text-[14px] mr-auto">
+                              <p className="text-[13px] mr-auto">
                                 {displayType.display_type}
                               </p>
                             </div>
@@ -257,9 +342,9 @@ const ColumnPopover = (column: Column) => {
                       </div>
                     )}
                     {/* Buttons */}
-                    <div className="flex flex-row gap-2 mt-8">
+                    <div className="flex flex-row gap-2 mt-4">
                       <div
-                        className="bg-slate-3 hover:bg-slate-4 px-3 py-1.5 text-[14px] rounded-md ml-auto"
+                        className="bg-slate-3 hover:bg-slate-4 px-3 py-1.5 text-[13px] rounded-md ml-auto"
                         onClick={() => {
                           close();
                         }}
@@ -267,7 +352,7 @@ const ColumnPopover = (column: Column) => {
                         Cancel
                       </div>
                       <div
-                        className="bg-blue-600 hover:bg-blue-700  px-3 py-1.5 text-[14px] rounded-md "
+                        className="bg-blue-600 hover:bg-blue-700  px-3 py-1.5 text-[13px] rounded-md "
                         onClick={() => {
                           // run whatever validations here
                           close();

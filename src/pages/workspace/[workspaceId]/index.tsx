@@ -31,7 +31,7 @@ const TableCard = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const colorMap: any = [
+  const tableCardColorMap: any = [
     {
       name: "red",
       backgroundColor1: "#1F1315",
@@ -116,10 +116,10 @@ const TableCard = ({
     // '#9BA1A6', // slate
   ];
 
-  const backgroundColor1 = colorMap.find(
+  const backgroundColor1 = tableCardColorMap.find(
     (color: any) => color.foregroundColor === table.iconColor
   )?.backgroundColor1;
-  const backgroundColor2 = colorMap.find(
+  const backgroundColor2 = tableCardColorMap.find(
     (color: any) => color.foregroundColor === table.iconColor
   )?.backgroundColor2;
 

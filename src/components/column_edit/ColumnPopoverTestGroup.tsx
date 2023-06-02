@@ -11,36 +11,6 @@ interface Column {
 
 const columns: Column[] = [
   {
-    id: 2,
-    name: "order_amount",
-    type: "number",
-    display_type: "plain_number",
-    display_config: {},
-  },
-  {
-    id: 3,
-    name: "usage",
-    type: "number",
-    display_type: "conditional_color_number",
-    display_config: {
-      color_scale: "red_orange_amber_yellow_green",
-    },
-  },
-  {
-    id: 1,
-    name: "order_id",
-    type: "string",
-    display_type: "plain_text",
-    display_config: {},
-  },
-  {
-    id: 4,
-    name: "order_json",
-    type: "string",
-    display_type: "json",
-    display_config: {},
-  },
-  {
     id: 5,
     name: "payment_status",
     type: "string",
@@ -136,11 +106,41 @@ const columns: Column[] = [
     },
   },
   {
+    id: 1,
+    name: "order_id",
+    type: "string",
+    display_type: "plain_text",
+    display_config: {},
+  },
+  {
+    id: 4,
+    name: "order_json",
+    type: "string",
+    display_type: "json",
+    display_config: {},
+  },
+  {
     id: 6,
     name: "link_to_stripe",
     type: "string",
     display_type: "url",
     display_config: {},
+  },
+  {
+    id: 2,
+    name: "order_amount",
+    type: "number",
+    display_type: "plain_number",
+    display_config: {},
+  },
+  {
+    id: 3,
+    name: "usage",
+    type: "number",
+    display_type: "conditional_color_number",
+    display_config: {
+      color_scale: "red_orange_amber_yellow_green",
+    },
   },
   {
     id: 7,
