@@ -78,7 +78,7 @@ const JsonContent = (column: Column) => {
   );
 };
 
-const ColorCodedText = (column: Column) => {
+const ColorCodedTextContent = (column: Column) => {
   const [selectedMapping, setSelectedMapping] = useState<any>(null);
   const [colorPickerPopoverOpen, setColorPickerPopoverOpen] =
     useState<boolean>(false);
@@ -127,8 +127,8 @@ const ColorCodedText = (column: Column) => {
   return (
     <div className="flex flex-col gap-2">
       <p className="text-[13px] text-slate-11">
-        Text is color-coded depending on cell values. Values are refreshed on
-        data sync.
+        Text is color-coded based on the value. Values are refreshed on every
+        data source sync.
       </p>
       <div className="flex flex-row gap-2 items-center mt-2">
         <p className="text-slate-12 text-[13px]">Values</p>
@@ -149,6 +149,11 @@ const ColorCodedText = (column: Column) => {
           <div className="flex flex-row gap-1 items-center" key={index}>
             <div
               className={`hover:bg-slate-3 hover:border hover:border-slate-6 ml-2 w-[24px] h-[24px] rounded-md items-center justify-center flex flex-none`}
+              onClick={(event) => {
+                setSelectedMapping(mapping);
+                setAnchorEl(event.currentTarget);
+                setColorPickerPopoverOpen(true);
+              }}
             >
               <div
                 className="w-[16px] h-[16px] rounded-full flex-none items-center justify-center flex"
@@ -160,11 +165,6 @@ const ColorCodedText = (column: Column) => {
                     enumColorMap.find((item) => item.name === mapping.color)
                       ?.backgroundColor2
                   }`,
-                }}
-                onClick={(event) => {
-                  setSelectedMapping(mapping);
-                  setAnchorEl(event.currentTarget);
-                  setColorPickerPopoverOpen(true);
                 }}
               >
                 <div
@@ -201,9 +201,6 @@ const ColorCodedText = (column: Column) => {
           ref={refs.setFloating}
           className="absolute bg-black rounded-lg text-[13px] shadow-2xl p-3"
           style={floatingStyles}
-          onClick={() => {
-            console.log("test");
-          }}
         >
           <div className="grid grid-cols-6 gap-1">
             {enumColorMap.map((item) => (
@@ -238,6 +235,296 @@ const ColorCodedText = (column: Column) => {
           </div>
         </div>
       )}
+    </div>
+  );
+};
+
+const PlainNumberContent = (column: Column) => {
+  return (
+    <div className="flex flex-col">
+      <p className="text-[13px] text-slate-11">
+        Number is displayed just as a plain integer or decimal in cells. Numbers
+        are right-aligned for easy scanning.
+      </p>
+    </div>
+  );
+};
+
+const ConditionalColorNumberContent = (column: Column) => {
+  const colorScales = [
+    {
+      name: "red-yellow-green",
+      colorScale: [
+        {
+          stop: 1,
+          backgroundColor: "#291415",
+          textColor: "#FF6369",
+        },
+        {
+          stop: 2,
+          textColor: "#FF8B3E",
+          backgroundColor: "#2B1400",
+        },
+        {
+          stop: 3,
+          backgroundColor: "#271700",
+          textColor: "#F1A10D",
+        },
+        {
+          stop: 4,
+          backgroundColor: "#221A00",
+          textColor: "#F0C000",
+        },
+        {
+          stop: 5,
+          backgroundColor: "#0C1F17",
+          textColor: "#4CC38A",
+        },
+      ],
+    },
+    {
+      name: "green-yellow-red",
+      colorScale: [
+        {
+          stop: 5,
+          backgroundColor: "#291415",
+          textColor: "#FF6369",
+        },
+        {
+          stop: 4,
+          textColor: "#FF8B3E",
+          backgroundColor: "#2B1400",
+        },
+        {
+          stop: 3,
+          backgroundColor: "#271700",
+          textColor: "#F1A10D",
+        },
+        {
+          stop: 2,
+          backgroundColor: "#221A00",
+          textColor: "#F0C000",
+        },
+        {
+          stop: 1,
+          backgroundColor: "#0C1F17",
+          textColor: "#4CC38A",
+        },
+      ],
+    },
+    {
+      name: "red-white-green",
+      colorScale: [
+        {
+          stop: 1,
+          backgroundColor: "#291415",
+          textColor: "#FF6369",
+        },
+        {
+          stop: 2,
+          backgroundColor: "#231819",
+          textColor: "#FFA1A5",
+        },
+        {
+          stop: 3,
+          backgroundColor: "#1A1D1E",
+          textColor: "#FFFFFF",
+        },
+        {
+          stop: 4,
+          backgroundColor: "#121E1A",
+          textColor: "#94DBB9",
+        },
+        {
+          stop: 5,
+          backgroundColor: "#0C1F17",
+          textColor: "#4CC38A",
+        },
+      ],
+    },
+    {
+      name: "green-white-red",
+      colorScale: [
+        {
+          stop: 5,
+          backgroundColor: "#291415",
+          textColor: "#FF6369",
+        },
+        {
+          stop: 4,
+          backgroundColor: "#231819",
+          textColor: "#FFA1A5",
+        },
+        {
+          stop: 3,
+          backgroundColor: "#1A1D1E",
+          textColor: "#FFFFFF",
+        },
+        {
+          stop: 2,
+          backgroundColor: "#121E1A",
+          textColor: "#94DBB9",
+        },
+        {
+          stop: 1,
+          backgroundColor: "#0C1F17",
+          textColor: "#4CC38A",
+        },
+      ],
+    },
+    {
+      name: "green-white",
+      colorScale: [
+        {
+          stop: 1,
+          backgroundColor: "#0C1F17",
+          textColor: "#4CC38A",
+        },
+        {
+          stop: 2,
+          backgroundColor: "#0F1F18",
+          textColor: "#70CFA1",
+        },
+        {
+          stop: 3,
+          backgroundColor: "#121E1A",
+          textColor: "#94DBB9",
+        },
+        {
+          stop: 4,
+          backgroundColor: "#141E1B",
+          textColor: "#B7E7D0",
+        },
+        {
+          stop: 5,
+          backgroundColor: "#1A1D1E",
+          textColor: "#FFFFFF",
+        },
+      ],
+    },
+    {
+      name: "white-green",
+      colorScale: [
+        {
+          stop: 5,
+          backgroundColor: "#0C1F17",
+          textColor: "#4CC38A",
+        },
+        {
+          stop: 4,
+          backgroundColor: "#0F1F18",
+          textColor: "#70CFA1",
+        },
+        {
+          stop: 3,
+          backgroundColor: "#121E1A",
+          textColor: "#94DBB9",
+        },
+        {
+          stop: 2,
+          backgroundColor: "#141E1B",
+          textColor: "#B7E7D0",
+        },
+        {
+          stop: 1,
+          backgroundColor: "#1A1D1E",
+          textColor: "#FFFFFF",
+        },
+      ],
+    },
+    {
+      name: "red-white",
+      colorScale: [
+        {
+          stop: 1,
+          backgroundColor: "#291415",
+          textColor: "#FF6369",
+        },
+        {
+          stop: 2,
+          backgroundColor: "#261617",
+          textColor: "#FF8287",
+        },
+        {
+          stop: 3,
+          backgroundColor: "#231819",
+          textColor: "#FFA1A5",
+        },
+        {
+          stop: 4,
+          backgroundColor: "#20191A",
+          textColor: "#FFC1C3",
+        },
+        {
+          stop: 5,
+          backgroundColor: "#1A1D1E",
+          textColor: "#FFFFFF",
+        },
+      ],
+    },
+    {
+      name: "white-red",
+      colorScale: [
+        {
+          stop: 5,
+          backgroundColor: "#291415",
+          textColor: "#FF6369",
+        },
+        {
+          stop: 4,
+          backgroundColor: "#261617",
+          textColor: "#FF8287",
+        },
+        {
+          stop: 3,
+          backgroundColor: "#231819",
+          textColor: "#FFA1A5",
+        },
+        {
+          stop: 2,
+          backgroundColor: "#20191A",
+          textColor: "#FFC1C3",
+        },
+        {
+          stop: 1,
+          backgroundColor: "#1A1D1E",
+          textColor: "#FFFFFF",
+        },
+      ],
+    },
+  ];
+  return (
+    <div className="flex flex-col">
+      <p className="text-[13px] text-slate-11">
+        Numbers are colored depending on cell values.
+      </p>
+      <div className="flex flex-col gap-2 mt-2">
+        <p className="text-white font-medium text-[13px]">Color values</p>
+        {colorScales.map((colorScale) => (
+          <div
+            key={colorScale.name}
+            className="flex flex-row gap-0 cursor-pointer overflow-hidden rounded-md w-full"
+            onClick={() => {
+              console.log("clicked on color scale", colorScale.name);
+            }}
+          >
+            {colorScale.colorScale
+              .sort((a, b) => a.stop - b.stop)
+              .map((color) => (
+                <div
+                  key={color.stop}
+                  className="flex flex-grow items-center justify-center py-1 tabular-nums text-[13px]"
+                  style={{
+                    backgroundColor: color.backgroundColor,
+                    color: color.textColor,
+                  }}
+                >
+                  {color.stop}
+                </div>
+              ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -297,7 +584,13 @@ const ColumnPopover = (column: Column) => {
                         )}
                         {displayType == "json" && <JsonContent {...column} />}
                         {displayType == "color_coded_text" && (
-                          <ColorCodedText {...column} />
+                          <ColorCodedTextContent {...column} />
+                        )}
+                        {displayType == "plain_number" && (
+                          <PlainNumberContent {...column} />
+                        )}
+                        {displayType == "conditional_color_number" && (
+                          <ConditionalColorNumberContent {...column} />
                         )}
                       </div>
                     )}
@@ -305,7 +598,7 @@ const ColumnPopover = (column: Column) => {
                     {isSelectingDisplayType == true && (
                       <div className="flex-col flex bg-slate-3 rounded-md border border-slate-6">
                         <div
-                          className="flex flex-row items-center flex-grow bg-slate-3  hover:bg-slate-4 active:bg-slate-5 py-2 px-4 rounded-md"
+                          className="flex flex-row items-center flex-grow bg-slate-3  hover:bg-slate-4 active:bg-slate-5 py-2 px-4 rounded-t-md border-b border-slate-6"
                           onClick={() => {
                             setIsSelectingDisplayType(false);
                           }}
