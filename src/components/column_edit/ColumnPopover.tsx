@@ -177,7 +177,7 @@ const ColorCodedTextContent = (column: Column) => {
                 ></div>
               </div>
             </div>
-            <p className="text-slate-11 text-[13px] truncate">
+            <p className="text-slate-12 text-[13px] truncate">
               {mapping.value}
             </p>
           </div>
