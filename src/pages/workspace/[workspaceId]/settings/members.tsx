@@ -45,6 +45,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import InvitePeopleDialog from "@/components/InvitePeopleDialog";
 import { useAuth } from "@clerk/nextjs";
+import { set } from "date-fns";
 
 const MemberPopover = ({
   currentUser,
@@ -764,6 +765,13 @@ export default function Members() {
             />
           ),
         });
+        setIsAtVerifyDomainStep2(false);
+        setAllowedDomainInput("");
+        setAddAllowedDomainErrorMessage("");
+        setVerificationCodeInput("");
+        setVerificationCodeErrorMessage("");
+        setRecipientEmail("");
+        setRecipientEmailErrorMessage("");
       } catch (error) {
         console.error("Error adding allowed domain:", error);
         toast(`Unexpected error occurred`, {
@@ -914,7 +922,7 @@ export default function Members() {
                                     onChange={(e) =>
                                       setAllowedDomainInput(e.target.value)
                                     }
-                                    placeholder="acme.com"
+                                    placeholder={"acme.com"}
                                     className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
                                   ${
                                     addAllowedDomainErrorMessage !== ""
@@ -930,7 +938,7 @@ export default function Members() {
                                     </div>
                                   )}
                                   <label className="mt-2">
-                                    Email for domain
+                                    Email for domain verification
                                   </label>
                                   <input
                                     type={"text"}
@@ -939,7 +947,12 @@ export default function Members() {
                                     onChange={(e) =>
                                       setRecipientEmail(e.target.value)
                                     }
-                                    placeholder="someone@acme.com"
+                                    placeholder={`Email ending in ${
+                                      allowedDomainInput !== "" &&
+                                      allowedDomainInput
+                                        ? allowedDomainInput
+                                        : "acme.com"
+                                    }`}
                                     className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
                                   ${
                                     recipientEmailErrorMessage !== ""
@@ -980,14 +993,18 @@ export default function Members() {
                               {isAtVerifyDomainStep2 == true && (
                                 <>
                                   <label>Verification code</label>
+                                  <p className="text-slate-11">
+                                    Check {recipientEmail} for a verification
+                                    code
+                                  </p>
                                   <input
                                     type={"text"}
-                                    id="workspaceNameInput"
+                                    id="verificationCodeInput"
                                     value={verificationCodeInput}
                                     onChange={(e) =>
                                       setVerificationCodeInput(e.target.value)
                                     }
-                                    placeholder="acme.com"
+                                    placeholder="Enter verification code"
                                     className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
                                   ${
                                     verificationCodeErrorMessage !== ""
