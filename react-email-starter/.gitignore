@@ -1,3 +1,4 @@
-node_modules/
-.react_email/node_modules/
-.react_email/.next/
+/node_modules/
+/.react_email/node_modules/
+/.react_email/.next/
+/.react_email/*
