@@ -30,7 +30,10 @@ app.use(cors({
 
     // allow any origin matching the pattern https://onebee-web-git-[whatever].vercel.app
     // This lets us use Vercel commit previews
-    if (/^https:\/\/onebee-web-git-.*\.vercel\.app$/.test(origin)) {
+    const regex = /^https:\/\/onebee-web-git-.*\.vercel\.app$/;
+    const match = origin.match(regex);
+    console.log("origin", origin, "match", match)
+    if (match) {
       return callback(null, true);
     }
     if (allowedOrigins.indexOf(origin) === -1) {
