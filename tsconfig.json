@@ -24,7 +24,8 @@
     "**/*.tsx",
     "src/components/GradientBorder.jsx",
     "src/pages/index.tsx",
-    "src/pages/workspace/[workspaceId]/table/[tableId].jsx"
+    "src/pages/workspace/[workspaceId]/table/[tableId].jsx",
+    "server/emails/dataland_verify_domain.jsx"
   ],
   "exclude": ["node_modules"]
 }
