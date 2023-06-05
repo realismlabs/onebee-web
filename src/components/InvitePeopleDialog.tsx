@@ -225,7 +225,7 @@ const InvitePeopleDialog = ({
         <div className="pl-4 py-2 border-l border-slate-12 italic">
           <p>{message}</p>
         </div>
-        <div className="bg-blue-600 px-3 py-1.5 rounded-md text-slate-12 font-medium pointer-events-none">
+        <div className="bg-blue-600 px-3 py-1.5 rounded-md text-slate-12 font-medium pointer-events-none w-28 flex items-center justify-center">
           Accept invite
         </div>
         <p>You can also copy + paste this link into your browser:</p>
