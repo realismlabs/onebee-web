@@ -14,12 +14,11 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 
-interface DatalandVerifyEmailProps {
-  slug?: string | null;
-  inviterName?: string | null;
-  inviterEmail?: string | null;
-  workspaceName?: string | null;
-  customMessage?: string | null;
+interface DatalandInviteTeammateDataSourceProps {
+  inviterName?: string;
+  inviterEmail?: string;
+  customMessage?: string;
+  workspaceName?: string;
   workspaceLink?: string;
 }
 
@@ -27,14 +26,13 @@ const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "";
 
-export const DatalandVerifyEmail = ({
-  slug = null,
-  inviterName = null,
-  inviterEmail = null,
-  workspaceName = null,
+export const DatalandInviteTeammateDataSource = ({
+  inviterName = "Arthur Wu",
+  inviterEmail = "arthur@sidekick.video",
+  workspaceName = "Sidekick",
   customMessage = `Hi there, \n\nI'd like to use Dataland.io as an easy and fast way to browse data from our data warehouse. Can you help me set up a read-only data source? \n\nPlease click the link below to get started. Thanks!`,
   workspaceLink = `https://dataland.io/workspace/6`,
-}: DatalandVerifyEmailProps) => (
+}: DatalandInviteTeammateDataSourceProps) => (
   <Html>
     <Head />
     <Preview>
@@ -89,7 +87,7 @@ export const DatalandVerifyEmail = ({
   </Html>
 );
 
-export default DatalandVerifyEmail;
+export default DatalandInviteTeammateDataSource;
 
 const logo = {
   width: 42,

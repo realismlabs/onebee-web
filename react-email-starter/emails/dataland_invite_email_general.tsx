@@ -14,8 +14,7 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 
-interface DatalandVerifyEmailProps {
-  slug?: string | null;
+interface DatalandInviteTeammateGeneralProps {
   inviterName?: string;
   inviterEmail?: string;
   workspaceName?: string;
@@ -27,14 +26,13 @@ const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "";
 
-export const DatalandVerifyEmail = ({
-  slug = null,
+export const DatalandInviteTeammateGeneral = ({
   inviterName = "Arthur Wu",
   inviterEmail = "arthur@sidekick.video",
   workspaceName = "Sidekick",
   customMessage = `Hi there, We're using Dataland.io as an easy and fast way to browse data from our data warehouse. Join the workspace in order to browse and search our key datasets.`,
   workspaceLink = `https://dataland.io/workspace/6`,
-}: DatalandVerifyEmailProps) => (
+}: DatalandInviteTeammateGeneralProps) => (
   <Html>
     <Head />
     <Preview>
@@ -91,7 +89,7 @@ export const DatalandVerifyEmail = ({
   </Html>
 );
 
-export default DatalandVerifyEmail;
+export default DatalandInviteTeammateGeneral;
 
 const logo = {
   width: 42,
