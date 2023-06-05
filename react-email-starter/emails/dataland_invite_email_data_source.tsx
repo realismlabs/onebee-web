@@ -61,7 +61,7 @@ export const DatalandVerifyEmail = ({
           </span>{" "}
           invited you to join{" "}
           <span className="font-semibold">
-            {workspaceName ? `the ${workspaceName} workspace` : `a workspace `}
+            {workspaceName ? `the ${workspaceName} workspace ` : `a workspace `}
           </span>
           on Dataland. Dataland makes it easy for your whole team to browse data
           from your data warehouse.

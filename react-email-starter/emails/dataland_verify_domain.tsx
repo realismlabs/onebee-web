@@ -15,19 +15,19 @@ import {
 import * as React from "react";
 
 interface DatalandVerifyEmailProps {
-  slug?: string;
+  domain?: string;
+  settingsLink?: string;
+  verificationCode?: string | number;
 }
 
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "";
-
 export const DatalandVerifyEmail = ({
-  slug = "/verify/" + "97aa0d97-53a9-4a20-8dec-c43824dd12e1",
+  domain = "acme.io",
+  settingsLink = "https://onebee-web.vercel.app/workspace/6/settings",
+  verificationCode = 123456,
 }: DatalandVerifyEmailProps) => (
   <Html>
     <Head />
-    <Preview>Verify your Dataland account</Preview>
+    <Preview>Verify the domain {domain} for Dataland</Preview>
     <Body style={main}>
       <Container style={container} align="left">
         <Img
@@ -37,23 +37,19 @@ export const DatalandVerifyEmail = ({
           alt="Dataland"
           style={logo}
         />
-        <Heading style={heading}>Verify your Dataland account</Heading>
+        <Heading style={heading}>
+          Verify the domain {domain} for Dataland
+        </Heading>
+        <Text style={code}>{verificationCode}</Text>
         <Text style={paragraph}>
-          Thanks for signing up for Dataland! To continue, click the button
-          below to verify your account.
+          Go to workspace settings to enter the code.
         </Text>
         <Container style={spacer} />
-        <Button pY={11} pX={23} style={button} href="https://dataland.io">
-          Verify account
+        <Button pY={11} pX={23} style={button} href={settingsLink}>
+          Open settings
         </Button>
         <Container style={spacer} />
         <Container style={spacer} />
-        <Text style={paragraph}>
-          You can also copy + paste this link into your browser:
-        </Text>
-        <Link href="https://dataland.io" style={verify_link}>
-          {"https://dataland.io" + slug}
-        </Link>
         <Hr style={hr} />
         <Link href="https://dataland.io" style={reportLink}>
           Dataland.io: the ultimate data browser
@@ -107,7 +103,7 @@ const buttonContainer = {
 
 const button = {
   backgroundColor: "#4315F3",
-  borderRadius: "3px",
+  borderRadius: "6px",
   fontWeight: "600",
   color: "#fff",
   fontSize: "15px",
@@ -130,12 +126,11 @@ const hr = {
 };
 
 const code = {
-  fontFamily: "monospace",
-  fontWeight: "700",
-  padding: "1px 4px",
-  backgroundColor: "#dfe1e4",
+  width: "fit-content",
+  fontWeight: "600",
   letterSpacing: "-0.3px",
-  fontSize: "21px",
+  fontSize: "48px",
+  lineHeight: "1.2",
   borderRadius: "4px",
   color: "#3c4149",
 };

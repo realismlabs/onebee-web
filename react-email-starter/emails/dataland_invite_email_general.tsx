@@ -16,10 +16,10 @@ import * as React from "react";
 
 interface DatalandVerifyEmailProps {
   slug?: string | null;
-  inviterName?: string | null;
-  inviterEmail?: string | null;
-  workspaceName?: string | null;
-  customMessage?: string | null;
+  inviterName?: string;
+  inviterEmail?: string;
+  workspaceName?: string;
+  customMessage?: string;
   workspaceLink?: string;
 }
 
@@ -29,9 +29,9 @@ const baseUrl = process.env.VERCEL_URL
 
 export const DatalandVerifyEmail = ({
   slug = null,
-  inviterName = null,
-  inviterEmail = null,
-  workspaceName = null,
+  inviterName = "Arthur Wu",
+  inviterEmail = "arthur@sidekick.video",
+  workspaceName = "Sidekick",
   customMessage = `Hi there, We're using Dataland.io as an easy and fast way to browse data from our data warehouse. Join the workspace in order to browse and search our key datasets.`,
   workspaceLink = `https://dataland.io/workspace/6`,
 }: DatalandVerifyEmailProps) => (
@@ -39,7 +39,7 @@ export const DatalandVerifyEmail = ({
     <Head />
     <Preview>
       {inviterName ?? "Your teammate"} invited you to join{" "}
-      {workspaceName ? `the ${workspaceName} workspace` : `a workspace `} on
+      {workspaceName ? `the ${workspaceName} workspace ` : `a workspace `} on
       Dataland.io
     </Preview>
     <Body style={main}>
@@ -63,7 +63,7 @@ export const DatalandVerifyEmail = ({
           </span>{" "}
           invited you to join{" "}
           <span className="font-semibold">
-            {workspaceName ? `the ${workspaceName} workspace` : `a workspace `}
+            {workspaceName ? `the ${workspaceName} workspace ` : `a workspace `}
           </span>
           on Dataland. Dataland makes it easy for your whole team to browse data
           from your data warehouse.
