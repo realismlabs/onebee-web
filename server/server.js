@@ -1,3 +1,5 @@
+const sendgrid = require('@sendgrid/mail');
+const render = require('@react-email/render').render;
 require('dotenv').config(); // To read CLERK_API_KEY
 const express = require('express');
 const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node');
@@ -7,7 +9,8 @@ const port = process.env.PORT || 5002;
 const app = express();
 app.use(express.json()); // The express.json() middleware is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on the body-parser module.
 
-// app url is https://dataland-demo-995df.uc.r.appspot.com/api/users/clerkUserId/user_2QADjxJOASIi8uWWDd9SqUh1d0a
+// Set SendGrid API key
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY || '');
 
 const allowedOrigins = ['http://localhost:3000', 'http://dataland.io', 'https://dataland.io', "https://onebee-web.vercel.app", "https://onebee-web-git-aw-express-realismlabs.vercel.app",];
 
@@ -897,6 +900,116 @@ app.get('/api/users/:userId/memberships', ClerkExpressRequireAuth(), async (req,
     client.release();
   }
 });
+
+
+// Send email
+// app.post('/api/send-email-invite-teammate', ClerkExpressRequireAuth(), (req, res) => {
+//   // Get data from the request body
+//   const {
+//     emailType,
+//     inviterName,
+//     inviterEmail,
+//     recipientEmail,
+//     customMessage,
+//     workspaceName,
+//     workspaceLink,
+//     tableName,
+//     tableLink,
+//   } = req.body;
+
+//   if (emailType === 'invite-teammate-data-source') {
+//     const emailHtml = render(React.createElement(DatalandInviteTeammateDataSource, {
+//       inviterName,
+//       inviterEmail,
+//       customMessage,
+//       workspaceName,
+//       workspaceLink
+//     }));
+
+//     const options = {
+//       from: 'support@dataland.io',
+//       to: recipientEmail,
+//       subject: `Help ${inviterName} set up a data source on Dataland.io`,
+//       html: emailHtml,
+//     };
+
+//     sendgrid.send(options)
+//       .then(() => res.status(200).send("Email sent successfully"))
+//       .catch((error) => {
+//         console.error(error);
+//         if (error.response) {
+//           console.error(error.response.body)
+//         }
+//         res.status(500).send("Error sending email");
+//       });
+//   } else if (emailType === 'invite-teammate-general') {
+
+//     const emailHtml = render(React.createElement(DatalandInviteTeammateGeneral, {
+//       inviterName,
+//       inviterEmail,
+//       customMessage,
+//       workspaceName,
+//       workspaceLink
+//     }));
+
+//     const options = {
+//       from: 'support@dataland.io',
+//       to: recipientEmail,
+//       subject: `${inviterName} invited you to join the ${workspaceName} workspace on Dataland.io`,
+//       html: emailHtml,
+//     };
+
+//     sendgrid.send(options)
+//       .then(() => res.status(200).send("Email sent successfully"))
+//       .catch((error) => {
+//         console.error(error);
+//         if (error.response) {
+//           console.error(error.response.body)
+//         }
+//         res.status(500).send("Error sending email");
+//       });
+//   } else if (emailType === 'invite-teammate-table') {
+
+//     if (!tableName) {
+//       res.status(500).send("Table nameis required");
+//       return;
+//     }
+
+//     if (!tableLink) {
+//       res.status(500).send("Table link is required");
+//       return;
+//     }
+
+//     const emailHtml = render(React.createElement(DatalandInviteTeammateForTable, {
+//       inviterName,
+//       inviterEmail,
+//       customMessage,
+//       workspaceName,
+//       tableName,
+//       tableLink
+//     }));
+
+//     const options = {
+//       from: 'support@dataland.io',
+//       to: recipientEmail,
+//       subject: `${inviterName} shared ${tableName} with you on Dataland.io`,
+//       html: emailHtml,
+//     };
+
+//     sendgrid.send(options)
+//       .then(() => res.status(200).send("Email sent successfully"))
+//       .catch((error) => {
+//         console.error(error);
+//         if (error.response) {
+//           console.error(error.response.body)
+//         }
+//         res.status(500).send("Error sending email");
+//       });
+//   } else {
+//     res.status(500).send("Invalid email type");
+//     return;
+//   }
+// });
 
 
 // Catch errors from ClerkExpressRequireAuth
