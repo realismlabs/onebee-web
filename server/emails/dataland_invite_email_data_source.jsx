@@ -6,7 +6,7 @@ import * as React from "react";
 export const DatalandInviteTeammateDataSource = ({
   inviterName,
   inviterEmail,
-  customMessage,
+  // customMessage,
   workspaceName,
   workspaceLink,
 }) => {

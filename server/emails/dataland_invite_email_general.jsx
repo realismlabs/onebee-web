@@ -10,7 +10,7 @@ const baseUrl = process.env.VERCEL_URL
 export const DatalandInviteTeammateGeneral = ({
   inviterName,
   inviterEmail,
-  customMessage,
+  // customMessage,
   workspaceName,
   workspaceLink,
 }) => {
