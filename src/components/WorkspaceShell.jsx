@@ -578,6 +578,7 @@ const WorkspaceShell = ({ commandBarOpen, setCommandBarOpen }) => {
                   customMessage={customInviteMessage}
                   setCustomMessage={setCustomInviteMessage}
                   emailTemplateLanguage={""}
+                  emailType="invite-teammate-general"
                 />
               </div>
             </Tooltip.Trigger>

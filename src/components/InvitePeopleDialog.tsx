@@ -12,7 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import { Disclosure, Transition, Dialog } from "@headlessui/react";
 import { motion } from "framer-motion";
-import { createInvite } from "@/utils/api";
+import { createInvite, sendEmailInviteSendGrid } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@clerk/nextjs";
 
@@ -26,7 +26,10 @@ const InvitePeopleDialog = ({
   emailTemplateLanguage,
   customInvitePeopleDialogHeader,
   customInvitePeopleSubject,
+  emailType,
+  currentTable,
 }: {
+  emailType: string;
   isInvitePeopleDialogOpen: boolean;
   setIsInvitePeopleDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentUser: any;
@@ -36,6 +39,7 @@ const InvitePeopleDialog = ({
   emailTemplateLanguage: string;
   customInvitePeopleDialogHeader?: string;
   customInvitePeopleSubject?: string;
+  currentTable?: any;
 }) => {
   let inviterEmail = currentUser.email;
   const { getToken } = useAuth();
@@ -105,6 +109,23 @@ const InvitePeopleDialog = ({
                 recipientEmail,
                 jwt: token,
               });
+
+              // send email logic
+              // const emailData = {
+              //   emailType,
+              //   inviterName: currentUser.name,
+              //   inviterEmail,
+              //   recipientEmail,
+              //   customMessage,
+              //   workspaceName: currentWorkspace.name,
+              //   workspaceLink: `${process.env.NEXT_PUBLIC_APP_URL}/workspace/${currentWorkspace.id}`,
+              //   tableName: currentTable?.name,
+              //   tableLink: `${process.env.NEXT_PUBLIC_APP_URL}/workspace/${currentWorkspace.id}/table/${currentTable?.id}`,
+              // };
+
+              // const email_result = await sendEmailInviteSendGrid({ emailData });
+              // console.log("email_result: ", email_result);
+
               toast(`Invited ${recipientEmail}!`, {
                 icon: (
                   <CheckCircle

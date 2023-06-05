@@ -14,17 +14,8 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 
-interface DatalandInviteTeammateDataSourceProps {
-  inviterName?: string;
-  inviterEmail?: string;
-  customMessage?: string;
-  workspaceName?: string;
-  workspaceLink?: string;
-}
 
-export const DatalandInviteTeammateDataSource: React.FC<
-  Readonly<DatalandInviteTeammateDataSourceProps>
-> = ({
+export const DatalandInviteTeammateDataSource = ({
   inviterName,
   inviterEmail,
   customMessage,
@@ -137,7 +128,7 @@ const quote = {
 
 const buttonContainer = {
   padding: "12px 0 24px",
-  align: "left" as const,
+  align: "left",
 };
 
 const button = {
@@ -147,7 +138,7 @@ const button = {
   color: "#fff",
   fontSize: "15px",
   textDecoration: "none",
-  textAlign: "center" as const,
+  textAlign: "center",
   display: "block",
 };
 

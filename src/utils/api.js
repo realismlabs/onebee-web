@@ -703,3 +703,47 @@ export const getAllowedWorkspacesForUser = async (userId, jwt) => {
 
   return allowedWorkspaces;
 }
+
+export const sendEmailInviteSendGrid = async ({ emailData
+}) => {
+  const {
+    emailType,
+    inviterName,
+    inviterEmail,
+    recipientEmail,
+    customMessage,
+    workspaceName,
+    workspaceLink,
+    tableName,
+    tableLink
+  } = emailData;
+
+  try {
+    const response = await fetch('/api/send-email-invite-teammate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        emailType,
+        inviterName,
+        inviterEmail,
+        recipientEmail,
+        customMessage,
+        workspaceName,
+        workspaceLink,
+        tableName,
+        tableLink,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error: ' + response.statusText);
+    }
+
+    const data = await response.text();
+    console.log('Email sent successfully: ', data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};

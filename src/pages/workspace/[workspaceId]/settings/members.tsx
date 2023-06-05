@@ -1127,6 +1127,7 @@ export default function Members() {
           customMessage={customMessage}
           setCustomMessage={setCustomMessage}
           emailTemplateLanguage={""}
+          emailType="invite-teammate-general"
         />
       </WorkspaceLayout>
     </>

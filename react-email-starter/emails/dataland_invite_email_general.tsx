@@ -26,68 +26,74 @@ const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "";
 
-export const DatalandInviteTeammateGeneral = ({
-  inviterName = "Arthur Wu",
-  inviterEmail = "arthur@sidekick.video",
-  workspaceName = "Sidekick",
-  customMessage = `Hi there, We're using Dataland.io as an easy and fast way to browse data from our data warehouse. Join the workspace in order to browse and search our key datasets.`,
-  workspaceLink = `https://dataland.io/workspace/6`,
-}: DatalandInviteTeammateGeneralProps) => (
-  <Html>
-    <Head />
-    <Preview>
-      {inviterName ?? "Your teammate"} invited you to join{" "}
-      {workspaceName ? `the ${workspaceName} workspace ` : `a workspace `} on
-      Dataland.io
-    </Preview>
-    <Body style={main}>
-      <Container style={container} align="left">
-        <Img
-          src={`https://storage.googleapis.com/dl_marketing_assets/dataland-logo.png`}
-          width="42"
-          height="38"
-          alt="Dataland"
-          style={logo}
-        />
-        <Heading style={heading}>
-          {inviterName ?? "Your teammate"} invited you to join{" "}
-          {workspaceName ? `the ${workspaceName} workspace` : `a workspace `} on
-          Dataland.io
-        </Heading>
-        <Text style={paragraph}>
-          {inviterName ?? "Your teammate"}{" "}
-          <span className="font-semibold">
-            {inviterEmail ? `(${inviterEmail})` : ""}
-          </span>{" "}
-          invited you to join{" "}
-          <span className="font-semibold">
-            {workspaceName ? `the ${workspaceName} workspace ` : `a workspace `}
-          </span>
-          on Dataland. Dataland makes it easy for your whole team to browse data
-          from your data warehouse.
-        </Text>
-        <Text style={paragraph}>They wrote you a note:</Text>
-        <Text style={quote}>{customMessage}</Text>
-        <Container style={spacer} />
-        <Button pY={11} pX={23} style={button} href={workspaceLink}>
-          Accept invite
-        </Button>
-        <Container style={spacer} />
-        <Container style={spacer} />
-        <Text style={paragraph}>
-          You can also copy + paste this link into your browser:
-        </Text>
-        <Link href={workspaceLink} style={verify_link}>
-          {workspaceLink}
-        </Link>
-        <Hr style={hr} />
-        <Link href="https://dataland.io" style={reportLink}>
-          Dataland.io: the ultimate data browser
-        </Link>
-      </Container>
-    </Body>
-  </Html>
-);
+export const DatalandInviteTeammateGeneral: React.FC<
+  Readonly<DatalandInviteTeammateGeneralProps>
+> = ({
+  inviterName,
+  inviterEmail,
+  customMessage,
+  workspaceName,
+  workspaceLink,
+}) => {
+  return (
+    <Html>
+      <Head />
+      <Preview>
+        {inviterName ?? "Your teammate"} invited you to join{" "}
+        {workspaceName ? `the ${workspaceName} workspace ` : `a workspace `} on
+        Dataland.io
+      </Preview>
+      <Body style={main}>
+        <Container style={container} align="left">
+          <Img
+            src={`https://storage.googleapis.com/dl_marketing_assets/dataland-logo.png`}
+            width="42"
+            height="38"
+            alt="Dataland"
+            style={logo}
+          />
+          <Heading style={heading}>
+            {inviterName ?? "Your teammate"} invited you to join{" "}
+            {workspaceName ? `the ${workspaceName} workspace` : `a workspace `}{" "}
+            on Dataland.io
+          </Heading>
+          <Text style={paragraph}>
+            {inviterName ?? "Your teammate"}{" "}
+            <span className="font-semibold">
+              {inviterEmail ? `(${inviterEmail})` : ""}
+            </span>{" "}
+            invited you to join{" "}
+            <span className="font-semibold">
+              {workspaceName
+                ? `the ${workspaceName} workspace `
+                : `a workspace `}
+            </span>
+            on Dataland. Dataland makes it easy for your whole team to browse
+            data from your data warehouse.
+          </Text>
+          <Text style={paragraph}>They wrote you a note:</Text>
+          <Text style={quote}>{customMessage}</Text>
+          <Container style={spacer} />
+          <Button pY={11} pX={23} style={button} href={workspaceLink}>
+            Accept invite
+          </Button>
+          <Container style={spacer} />
+          <Container style={spacer} />
+          <Text style={paragraph}>
+            You can also copy + paste this link into your browser:
+          </Text>
+          <Link href={workspaceLink} style={verify_link}>
+            {workspaceLink}
+          </Link>
+          <Hr style={hr} />
+          <Link href="https://dataland.io" style={reportLink}>
+            Dataland.io: the ultimate data browser
+          </Link>
+        </Container>
+      </Body>
+    </Html>
+  );
+};
 
 export default DatalandInviteTeammateGeneral;
 
