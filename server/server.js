@@ -1,12 +1,16 @@
-const sendgrid = require('@sendgrid/mail');
-const render = require('@react-email/render').render;
-require('dotenv').config(); // To read CLERK_API_KEY
-const express = require('express');
-const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node');
-const cors = require('cors');
+import sendgrid from '@sendgrid/mail';
+import { render } from '@react-email/render';
+import "dotenv/config"; // To read CLERK_API_KEY
+import express from 'express';
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
+import cors from 'cors';
+import pkg from 'pg';
+const { Pool } = pkg;
+
 
 const port = process.env.PORT || 5002;
 const app = express();
+
 app.use(express.json()); // The express.json() middleware is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on the body-parser module.
 
 // Set SendGrid API key
@@ -38,7 +42,6 @@ app.use((req, res, next) => {
   next();
 });
 
-const { Pool } = require('pg');
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
