@@ -1,37 +1,21 @@
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Img,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from "@react-email/components";
+import react_email_components from '@react-email/components';
+const { Body, Button, Container, Head, Heading, Hr, Html, Img, Link, Preview, Section, Text } = react_email_components;
 import * as React from "react";
 
 
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "";
-
-export const DatalandInviteTeammateGeneral = ({
+export const DatalandInviteTeammateForTable = ({
   inviterName,
   inviterEmail,
-  customMessage,
+  // customMessage,
   workspaceName,
-  workspaceLink,
+  tableName,
+  tableLink,
 }) => {
   return (
     <Html>
       <Head />
       <Preview>
-        {inviterName ?? "Your teammate"} invited you to join{" "}
-        {workspaceName ? `the ${workspaceName} workspace ` : `a workspace `} on
+        {inviterName ?? "Your teammate"} shared {tableName} with you on
         Dataland.io
       </Preview>
       <Body style={main}>
@@ -44,9 +28,8 @@ export const DatalandInviteTeammateGeneral = ({
             style={logo}
           />
           <Heading style={heading}>
-            {inviterName ?? "Your teammate"} invited you to join{" "}
-            {workspaceName ? `the ${workspaceName} workspace` : `a workspace `}{" "}
-            on Dataland.io
+            {inviterName ?? "Your teammate"} shared {tableName} with you on
+            Dataland.io
           </Heading>
           <Text style={paragraph}>
             {inviterName ?? "Your teammate"}{" "}
@@ -62,10 +45,10 @@ export const DatalandInviteTeammateGeneral = ({
             on Dataland. Dataland makes it easy for your whole team to browse
             data from your data warehouse.
           </Text>
-          <Text style={paragraph}>They wrote you a note:</Text>
-          <Text style={quote}>{customMessage}</Text>
+          {/* <Text style={paragraph}>They wrote you a note:</Text>
+          <Text style={quote}>{customMessage}</Text> */}
           <Container style={spacer} />
-          <Button pY={11} pX={23} style={button} href={workspaceLink}>
+          <Button pY={11} pX={23} style={button} href={tableLink}>
             Accept invite
           </Button>
           <Container style={spacer} />
@@ -73,8 +56,8 @@ export const DatalandInviteTeammateGeneral = ({
           <Text style={paragraph}>
             You can also copy + paste this link into your browser:
           </Text>
-          <Link href={workspaceLink} style={verify_link}>
-            {workspaceLink}
+          <Link href={tableLink} style={verify_link}>
+            {tableLink}
           </Link>
           <Hr style={hr} />
           <Link href="https://dataland.io" style={reportLink}>
@@ -86,7 +69,6 @@ export const DatalandInviteTeammateGeneral = ({
   );
 };
 
-export default DatalandInviteTeammateGeneral;
 
 const logo = {
   width: 42,

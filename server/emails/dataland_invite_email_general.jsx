@@ -1,21 +1,13 @@
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Img,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from "@react-email/components";
+import react_email_components from '@react-email/components';
+const { Body, Button, Container, Head, Heading, Hr, Html, Img, Link, Preview, Section, Text } = react_email_components;
 import * as React from "react";
 
 
-export const DatalandInviteTeammateDataSource = ({
+const baseUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "";
+
+export const DatalandInviteTeammateGeneral = ({
   inviterName,
   inviterEmail,
   customMessage,
@@ -26,8 +18,9 @@ export const DatalandInviteTeammateDataSource = ({
     <Html>
       <Head />
       <Preview>
-        {inviterName ?? "Someone"} invited you to join{" "}
-        {workspaceName ?? "a workspace"} on Dataland.io
+        {inviterName ?? "Your teammate"} invited you to join{" "}
+        {workspaceName ? `the ${workspaceName} workspace ` : `a workspace `} on
+        Dataland.io
       </Preview>
       <Body style={main}>
         <Container style={container} align="left">
@@ -39,8 +32,9 @@ export const DatalandInviteTeammateDataSource = ({
             style={logo}
           />
           <Heading style={heading}>
-            Help {inviterName ?? "your teammate"} set up a data source on
-            Dataland.io
+            {inviterName ?? "Your teammate"} invited you to join{" "}
+            {workspaceName ? `the ${workspaceName} workspace` : `a workspace `}{" "}
+            on Dataland.io
           </Heading>
           <Text style={paragraph}>
             {inviterName ?? "Your teammate"}{" "}
@@ -56,8 +50,8 @@ export const DatalandInviteTeammateDataSource = ({
             on Dataland. Dataland makes it easy for your whole team to browse
             data from your data warehouse.
           </Text>
-          <Text style={paragraph}>They wrote you a note:</Text>
-          <Text style={quote}>{customMessage}</Text>
+          {/* <Text style={paragraph}>They wrote you a note:</Text>
+          <Text style={quote}>{customMessage}</Text> */}
           <Container style={spacer} />
           <Button pY={11} pX={23} style={button} href={workspaceLink}>
             Accept invite
@@ -80,7 +74,6 @@ export const DatalandInviteTeammateDataSource = ({
   );
 };
 
-export default DatalandInviteTeammateDataSource;
 
 const logo = {
   width: 42,

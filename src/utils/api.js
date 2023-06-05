@@ -707,11 +707,12 @@ export const getAllowedWorkspacesForUser = async (userId, jwt) => {
 export const sendEmailInviteSendGrid = async ({ emailData
 }) => {
   const {
+    jwt,
     emailType,
     inviterName,
     inviterEmail,
     recipientEmail,
-    customMessage,
+    // customMessage,
     workspaceName,
     workspaceLink,
     tableName,
@@ -719,17 +720,18 @@ export const sendEmailInviteSendGrid = async ({ emailData
   } = emailData;
 
   try {
-    const response = await fetch('/api/send-email-invite-teammate', {
+    const response = await fetch(`${API_BASE_URL}/api/send-email-invite-teammate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify({
         emailType,
         inviterName,
         inviterEmail,
         recipientEmail,
-        customMessage,
+        // customMessage,
         workspaceName,
         workspaceLink,
         tableName,

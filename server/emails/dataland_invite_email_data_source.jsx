@@ -1,34 +1,21 @@
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Img,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from "@react-email/components";
+import react_email_components from '@react-email/components';
+const { Body, Button, Container, Head, Heading, Hr, Html, Img, Link, Preview, Section, Text } = react_email_components;
 import * as React from "react";
 
 
-export const DatalandInviteTeammateForTable = ({
+export const DatalandInviteTeammateDataSource = ({
   inviterName,
   inviterEmail,
   customMessage,
   workspaceName,
-  tableName,
-  tableLink,
+  workspaceLink,
 }) => {
   return (
     <Html>
       <Head />
       <Preview>
-        {inviterName ?? "Your teammate"} shared {tableName} with you on
-        Dataland.io
+        {inviterName ?? "Someone"} invited you to join{" "}
+        {workspaceName ?? "a workspace"} on Dataland.io
       </Preview>
       <Body style={main}>
         <Container style={container} align="left">
@@ -40,7 +27,7 @@ export const DatalandInviteTeammateForTable = ({
             style={logo}
           />
           <Heading style={heading}>
-            {inviterName ?? "Your teammate"} shared {tableName} with you on
+            Help {inviterName ?? "your teammate"} set up a data source on
             Dataland.io
           </Heading>
           <Text style={paragraph}>
@@ -57,10 +44,10 @@ export const DatalandInviteTeammateForTable = ({
             on Dataland. Dataland makes it easy for your whole team to browse
             data from your data warehouse.
           </Text>
-          <Text style={paragraph}>They wrote you a note:</Text>
-          <Text style={quote}>{customMessage}</Text>
+          {/* <Text style={paragraph}>They wrote you a note:</Text> */}
+          {/* <Text style={quote}>{customMessage}</Text> */}
           <Container style={spacer} />
-          <Button pY={11} pX={23} style={button} href={tableLink}>
+          <Button pY={11} pX={23} style={button} href={workspaceLink}>
             Accept invite
           </Button>
           <Container style={spacer} />
@@ -68,8 +55,8 @@ export const DatalandInviteTeammateForTable = ({
           <Text style={paragraph}>
             You can also copy + paste this link into your browser:
           </Text>
-          <Link href={tableLink} style={verify_link}>
-            {tableLink}
+          <Link href={workspaceLink} style={verify_link}>
+            {workspaceLink}
           </Link>
           <Hr style={hr} />
           <Link href="https://dataland.io" style={reportLink}>
@@ -80,8 +67,6 @@ export const DatalandInviteTeammateForTable = ({
     </Html>
   );
 };
-
-export default DatalandInviteTeammateForTable;
 
 const logo = {
   width: 42,
