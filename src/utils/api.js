@@ -703,3 +703,103 @@ export const getAllowedWorkspacesForUser = async (userId, jwt) => {
 
   return allowedWorkspaces;
 }
+
+export const sendEmailInviteSendGrid = async ({ emailData
+}) => {
+  const {
+    jwt,
+    emailType,
+    inviterName,
+    inviterEmail,
+    recipientEmail,
+    // customMessage,
+    workspaceName,
+    workspaceLink,
+    tableName,
+    tableLink
+  } = emailData;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/send-email-invite-teammate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({
+        emailType,
+        inviterName,
+        inviterEmail,
+        recipientEmail,
+        // customMessage,
+        workspaceName,
+        workspaceLink,
+        tableName,
+        tableLink,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error: ' + response.statusText);
+    }
+
+    const data = await response.text();
+    console.log('Email sent successfully: ', data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+
+export const sendEmailVerifyDomainSendGrid = async ({ emailData
+}) => {
+  const {
+    jwt,
+    recipientEmail,
+    domain,
+    settingsLink,
+  } = emailData;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/send-email-verify-domain`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({
+        recipientEmail,
+        domain,
+        settingsLink,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error: ' + response.statusText);
+    }
+
+    const data = await response.text();
+    console.log('Email sent successfully: ', data);
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+export const validateDomainVerificationCode = async (verificationRequestId, verificationCode, jwt) => {
+  const response = await fetch(`${API_BASE_URL}/api/verify-domain`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({
+      verificationRequestId,
+      verificationCode
+    })
+  });
+
+  const data = await response.json();
+  console.log('validateDomainVerificationCode data', data)
+  return data.success;
+}

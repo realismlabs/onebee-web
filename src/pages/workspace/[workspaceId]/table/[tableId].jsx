@@ -755,6 +755,8 @@ export default function TablePage() {
           emailTemplateLanguage={""}
           customInvitePeopleDialogHeader={`Invite others to join ${currentWorkspace.name} to browse ${tableData.name}`}
           customInvitePeopleSubject={`${currentUser.name} shared ${tableData.name} with you on Dataland.io`}
+          emailType="invite-teammate-table"
+          currentTable={tableData}
         />
         <Toaster
           theme="dark"

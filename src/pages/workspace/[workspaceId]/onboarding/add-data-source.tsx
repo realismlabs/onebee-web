@@ -142,6 +142,7 @@ export default function AddDataSource() {
               setCustomMessage={setCustomMessage}
               emailTemplateLanguage={`Help ${currentUser.name} set up a read-only data source`}
               customInvitePeopleSubject={`Help ${currentUser.name} set up a data source on Dataland.io`}
+              emailType="invite-teammate-data-source"
             />
             <Link href={`/workspace/${currentWorkspace.id}`}>
               <div className="text-slate-12 text-[14px] text-center w-full cursor-pointer">

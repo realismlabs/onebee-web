@@ -1,13 +1,25 @@
-require('dotenv').config(); // To read CLERK_API_KEY
-const express = require('express');
-const { ClerkExpressRequireAuth } = require('@clerk/clerk-sdk-node');
-const cors = require('cors');
+import sendgrid from '@sendgrid/mail';
+import { render } from '@react-email/render';
+import "dotenv/config"; // To read CLERK_API_KEY
+import express from 'express';
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
+import cors from 'cors';
+import pkg from 'pg';
+import React from 'react';
+const { Pool } = pkg;
+
+import { DatalandInviteTeammateForTable } from './dist/emails/dataland_invite_email_table.js';
+import { DatalandInviteTeammateGeneral } from './dist/emails/dataland_invite_email_general.js';
+import { DatalandInviteTeammateDataSource } from './dist/emails/dataland_invite_email_data_source.js';
+import { DatalandVerifyDomain } from './dist/emails/dataland_verify_domain.js';
 
 const port = process.env.PORT || 5002;
 const app = express();
+
 app.use(express.json()); // The express.json() middleware is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on the body-parser module.
 
-// app url is https://dataland-demo-995df.uc.r.appspot.com/api/users/clerkUserId/user_2QADjxJOASIi8uWWDd9SqUh1d0a
+// Set SendGrid API key
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY || '');
 
 const allowedOrigins = ['http://localhost:3000', 'http://dataland.io', 'https://dataland.io', "https://onebee-web.vercel.app", "https://onebee-web-git-aw-express-realismlabs.vercel.app",];
 
@@ -19,7 +31,10 @@ app.use(cors({
 
     // allow any origin matching the pattern https://onebee-web-git-[whatever].vercel.app
     // This lets us use Vercel commit previews
-    if (/^https:\/\/onebee-web-git-.*\.vercel\.app$/.test(origin)) {
+    const regex = /^https:\/\/onebee-web-git-.*\.vercel\.app$/;
+    const match = origin.match(regex);
+    console.log("origin", origin, "match", match)
+    if (match) {
       return callback(null, true);
     }
     if (allowedOrigins.indexOf(origin) === -1) {
@@ -35,7 +50,6 @@ app.use((req, res, next) => {
   next();
 });
 
-const { Pool } = require('pg');
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -895,6 +909,190 @@ app.get('/api/users/:userId/memberships', ClerkExpressRequireAuth(), async (req,
     res.status(500).json({ message: "Error getting memberships" });
   } finally {
     client.release();
+  }
+});
+
+
+// Send email
+app.post('/api/send-email-invite-teammate', ClerkExpressRequireAuth(), (req, res) => {
+  // Get data from the request body
+  const {
+    emailType,
+    inviterName,
+    inviterEmail,
+    recipientEmail,
+    // customMessage,
+    workspaceName,
+    workspaceLink,
+    tableName,
+    tableLink,
+  } = req.body;
+
+  console.log("email-invite request body: ", req.body); // logging the body
+
+  if (emailType === 'invite-teammate-data-source') {
+    const emailHtml = render(React.createElement(DatalandInviteTeammateDataSource, {
+      inviterName,
+      inviterEmail,
+      // customMessage,
+      workspaceName,
+      workspaceLink
+    }));
+
+    const options = {
+      // from: 'Dataland <notify@em3119.mail.dataland.io>', // from your `mailed-by` domain
+      from: `Dataland Support <${process.env.SENDGRID_FROM_EMAIL}`,
+      replyTo: 'Dataland Support <support@dataland.io>',
+      to: recipientEmail,
+      subject: `Help ${inviterName} set up a data source on Dataland.io`,
+      html: emailHtml,
+    };
+    sendgrid.send(options)
+      .then(() => {
+        console.log('Email sent successfully');
+        res.status(200).send("Email sent successfully");
+      }
+      )
+      .catch((error) => {
+        console.error(error);
+        if (error.response) {
+          console.error(error.response.body)
+        }
+        res.status(500).send("Error sending email");
+      });
+  } else if (emailType === 'invite-teammate-general') {
+
+    const emailHtml = render(React.createElement(DatalandInviteTeammateGeneral, {
+      inviterName,
+      inviterEmail,
+      // customMessage,
+      workspaceName,
+      workspaceLink
+    }));
+
+    const options = {
+      // from: 'Dataland <notify@em3119.mail.dataland.io>', // from your `mailed-by` domain
+      from: `Dataland Support <${process.env.SENDGRID_FROM_EMAIL}`,
+      replyTo: 'Dataland Support <support@dataland.io>',
+      to: recipientEmail,
+      subject: `${inviterName} invited you to join the ${workspaceName} workspace on Dataland.io`,
+      html: emailHtml,
+    };
+
+    sendgrid.send(options)
+      .then(() => {
+        console.log('Email sent successfully');
+        res.status(200).send("Email sent successfully")
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.response) {
+          console.error(error.response.body)
+        }
+        res.status(500).send("Error sending email");
+      });
+  } else if (emailType === 'invite-teammate-table') {
+
+    if (!tableName) {
+      res.status(500).send("Table name is required");
+      return;
+    }
+
+    if (!tableLink) {
+      res.status(500).send("Table link is required");
+      return;
+    }
+
+    const emailHtml = render(React.createElement(DatalandInviteTeammateForTable, {
+      inviterName,
+      inviterEmail,
+      // customMessage,
+      workspaceName,
+      tableName,
+      tableLink
+    }));
+
+    const options = {
+      // from: 'Dataland <notify@em3119.mail.dataland.io>', // from your `mailed-by` domain
+      from: `Dataland Support <${process.env.SENDGRID_FROM_EMAIL}`,
+      replyTo: 'Dataland Support <support@dataland.io>',
+      to: recipientEmail,
+      subject: `${inviterName} shared ${tableName} with you on Dataland.io`,
+      html: emailHtml,
+    };
+
+    sendgrid.send(options)
+      .then(() => {
+        console.log('Email sent successfully');
+        res.status(200).send("Email sent successfully")
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.response) {
+          console.error(error.response.body)
+        }
+        res.status(500).send("Error sending email");
+      });
+  } else {
+    res.status(500).send("Invalid email type");
+    return;
+  }
+});
+
+app.post('/api/send-email-verify-domain', ClerkExpressRequireAuth(), (req, res) => {
+  // Get data from the request body
+  const {
+    recipientEmail,
+    domain,
+    settingsLink,
+  } = req.body;
+
+  const verificationCode = 123456; // TODO: Replace with a real verification codes
+
+  console.log("verify-domain request body: ", req.body); // logging the body
+
+  const emailHtml = render(React.createElement(DatalandVerifyDomain, {
+    domain,
+    settingsLink,
+    verificationCode,
+  }));
+
+  const options = {
+    // from: 'Dataland <notify@em3119.mail.dataland.io>', // from your `mailed-by` domain
+    from: `Dataland Support <${process.env.SENDGRID_FROM_EMAIL}`,
+    replyTo: 'Dataland Support <support@dataland.io>',
+    to: recipientEmail,
+    subject: `Verify the domain ${domain} for Dataland`,
+    html: emailHtml,
+  };
+  sendgrid.send(options)
+    .then(() => {
+      console.log('Email sent successfully');
+      res.status(200).send("Email sent successfully");
+    }
+    )
+    .catch((error) => {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+      res.status(500).send("Error sending email");
+    });
+});
+
+// Fake endpoint to verify the domain
+app.post('/api/verify-domain', ClerkExpressRequireAuth(), (req, res) => {
+  const {
+    verificationRequestId,
+    verificationCode,
+  } = req.body;
+
+  console.log("verify-domain request body: ", req.body); // logging the body
+
+  if (verificationCode === '123456') {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
   }
 });
 

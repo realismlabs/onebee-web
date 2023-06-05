@@ -12,7 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import { Disclosure, Transition, Dialog } from "@headlessui/react";
 import { motion } from "framer-motion";
-import { createInvite } from "@/utils/api";
+import { createInvite, sendEmailInviteSendGrid } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@clerk/nextjs";
 
@@ -26,7 +26,10 @@ const InvitePeopleDialog = ({
   emailTemplateLanguage,
   customInvitePeopleDialogHeader,
   customInvitePeopleSubject,
+  emailType,
+  currentTable,
 }: {
+  emailType: string;
   isInvitePeopleDialogOpen: boolean;
   setIsInvitePeopleDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentUser: any;
@@ -36,6 +39,7 @@ const InvitePeopleDialog = ({
   emailTemplateLanguage: string;
   customInvitePeopleDialogHeader?: string;
   customInvitePeopleSubject?: string;
+  currentTable?: any;
 }) => {
   let inviterEmail = currentUser.email;
   const { getToken } = useAuth();
@@ -73,10 +77,12 @@ const InvitePeopleDialog = ({
       setErrorMessage("Email address is required.");
     } else {
       const regex =
-        /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]+(,\s*[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]+)*$/;
+        /^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(,\s*[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})*$/;
       const regex_result = regex.test(emailAddresses);
+
       setIsValid(regex_result);
       if (regex_result === false) {
+        console.log("regex_result: ", regex_result);
         setErrorMessage(
           "Error: Invalid email format. Please check your input, then try again."
         );
@@ -105,6 +111,24 @@ const InvitePeopleDialog = ({
                 recipientEmail,
                 jwt: token,
               });
+
+              // send email logic
+              const emailData = {
+                jwt: token,
+                emailType,
+                inviterName: currentUser.name,
+                inviterEmail,
+                recipientEmail,
+                // customMessage,
+                workspaceName: currentWorkspace.name,
+                workspaceLink: `${process.env.NEXT_PUBLIC_APP_URL}/workspace/${currentWorkspace.id}`,
+                tableName: currentTable?.name,
+                tableLink: `${process.env.NEXT_PUBLIC_APP_URL}/workspace/${currentWorkspace.id}/table/${currentTable?.id}`,
+              };
+
+              const email_result = await sendEmailInviteSendGrid({ emailData });
+              console.log("email_result: ", email_result);
+
               toast(`Invited ${recipientEmail}!`, {
                 icon: (
                   <CheckCircle
@@ -173,75 +197,75 @@ const InvitePeopleDialog = ({
   //  wait, timeout for validateEmailAddresses
 
   // define email preview
-  const EmailPreview = ({
-    sender_email,
-    workspace,
-    message,
-    emailTemplateLanguage,
-  }: {
-    sender_email: any;
-    workspace: any;
-    message: any;
-    emailTemplateLanguage: string;
-  }) => {
-    let sender_email_name = sender_email.split("@")[0];
-    sender_email_name =
-      sender_email_name.charAt(0).toUpperCase() +
-      sender_email_name.slice(1).toLowerCase();
+  // const EmailPreview = ({
+  //   sender_email,
+  //   workspace,
+  //   message,
+  //   emailTemplateLanguage,
+  // }: {
+  //   sender_email: any;
+  //   workspace: any;
+  //   message: any;
+  //   emailTemplateLanguage: string;
+  // }) => {
+  //   let sender_email_name = sender_email.split("@")[0];
+  //   sender_email_name =
+  //     sender_email_name.charAt(0).toUpperCase() +
+  //     sender_email_name.slice(1).toLowerCase();
 
-    return (
-      <div className="mt-4 h-[280px] overflow-y-scroll p-4 bg-white text-black rounded-md text-[13px] space-y-2">
-        <div className="text-slate-10 pb-1">
-          <p>From: Dataland Support &lt;no-reply@dataland.io&gt;</p>
-          {customInvitePeopleSubject ? (
-            <p>Subject: {customInvitePeopleSubject}</p>
-          ) : (
-            <p>
-              Subject: {sender_email_name} invited you to{" "}
-              {currentWorkspace.name} on Dataland.io
-            </p>
-          )}
-          {/* dashed border */}
-          <div className="border border-dashed border-slate-11 my-2"></div>
-        </div>
-        <div className="p-1.5 rounded-md bg-[#E7E5FF] w-8 h-8 items-center justify-center flex">
-          <Image
-            src="/images/logo-icon-only.png"
-            width="30"
-            height="20"
-            alt="Dataland"
-          />
-        </div>
-        <p>Hi there,</p>
-        <p>
-          {sender_email_name}{" "}
-          <span className="font-semibold">({sender_email})</span> invited you to
-          join the <span className="font-semibold">{workspace}</span> workspace
-          on Dataland. Dataland makes it easy for your whole team to browse data
-          from your data warehouse.
-        </p>
-        {emailTemplateLanguage !== "" && <p>{emailTemplateLanguage}</p>}
-        <p>They wrote you a note:</p>
-        <div className="pl-4 py-2 border-l border-slate-12 italic">
-          <p>{message}</p>
-        </div>
-        <div className="bg-blue-600 px-3 py-1.5 rounded-md text-slate-12 font-medium pointer-events-none">
-          Accept invite
-        </div>
-        <p>You can also copy + paste this link into your browser:</p>
-        <Link
-          href="https://dataland.io"
-          className="text-blue-500 underline mb-2"
-        >
-          dataland.io/join-workspace/workspace-id
-        </Link>
-        <hr className="pb-2" />
-        <Link href="https://dataland.io">
-          Dataland.io: the ultimate data browser
-        </Link>
-      </div>
-    );
-  };
+  //   return (
+  //     <div className="mt-4 h-[280px] overflow-y-scroll p-4 bg-white text-black rounded-md text-[13px] space-y-2">
+  //       <div className="text-slate-10 pb-1">
+  //         <p>From: Dataland Support &lt;no-reply@dataland.io&gt;</p>
+  //         {customInvitePeopleSubject ? (
+  //           <p>Subject: {customInvitePeopleSubject}</p>
+  //         ) : (
+  //           <p>
+  //             Subject: {sender_email_name} invited you to{" "}
+  //             {currentWorkspace.name} on Dataland.io
+  //           </p>
+  //         )}
+  //         {/* dashed border */}
+  //         <div className="border border-dashed border-slate-11 my-2"></div>
+  //       </div>
+  //       <div className="p-1.5 rounded-md bg-[#E7E5FF] w-8 h-8 items-center justify-center flex">
+  //         <Image
+  //           src="/images/logo-icon-only.png"
+  //           width="30"
+  //           height="20"
+  //           alt="Dataland"
+  //         />
+  //       </div>
+  //       <p>Hi there,</p>
+  //       <p>
+  //         {sender_email_name}{" "}
+  //         <span className="font-semibold">({sender_email})</span> invited you to
+  //         join the <span className="font-semibold">{workspace}</span> workspace
+  //         on Dataland. Dataland makes it easy for your whole team to browse data
+  //         from your data warehouse.
+  //       </p>
+  //       {emailTemplateLanguage !== "" && <p>{emailTemplateLanguage}</p>}
+  //       <p>They wrote you a note:</p>
+  //       <div className="pl-4 py-2 border-l border-slate-12 italic">
+  //         <p>{message}</p>
+  //       </div>
+  //       <div className="bg-blue-600 px-3 py-1.5 rounded-md text-slate-12 font-medium pointer-events-none w-28 flex items-center justify-center">
+  //         Accept invite
+  //       </div>
+  //       <p>You can also copy + paste this link into your browser:</p>
+  //       <Link
+  //         href="https://dataland.io"
+  //         className="text-blue-500 underline mb-2"
+  //       >
+  //         dataland.io/join-workspace/workspace-id
+  //       </Link>
+  //       <hr className="pb-2" />
+  //       <Link href="https://dataland.io">
+  //         Dataland.io: the ultimate data browser
+  //       </Link>
+  //     </div>
+  //   );
+  // };
 
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -268,7 +292,7 @@ const InvitePeopleDialog = ({
                     <label className="text-[14px] w-[120px]">
                       Email address(es)
                     </label>
-                    <input
+                    <textarea
                       className={`rounded-md block w-full bg-slate-3 text-slate-12 text-[13px] py-2 px-3 border focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10
                       ${
                         isValid === false
@@ -289,7 +313,7 @@ const InvitePeopleDialog = ({
                       <></>
                     )}
                   </div>
-                  <div className="flex flex-col gap-2">
+                  {/* <div className="flex flex-col gap-2">
                     <label className="text-[14px] w-[120px]">Message</label>
                     <textarea
                       className="flex-grow rounded-md block bg-slate-3 text-slate-12 text-[13px] py-2 px-3 h-36 min-h-[64px] border border-slate-6 hover:border-slate-7 focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-10 leading-normal"
@@ -298,10 +322,10 @@ const InvitePeopleDialog = ({
                       value={customMessage}
                       onChange={(e) => setCustomMessage(e.target.value)}
                     />
-                  </div>
+                  </div> */}
                 </div>
                 {/* Toggle preview */}
-                <div className="mx-auto w-full">
+                {/* <div className="mx-auto w-full">
                   <Disclosure as="div" className="mt-2">
                     {({ open }) => (
                       <>
@@ -331,7 +355,7 @@ const InvitePeopleDialog = ({
                       </>
                     )}
                   </Disclosure>
-                </div>
+                </div> */}
               </div>
               <div className="mt-5 flex justify-end gap-2">
                 <button
