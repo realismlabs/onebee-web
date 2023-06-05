@@ -1,4 +1,4 @@
-import react_email_components from '@react-email/components';
+import react_email_components from "@react-email/components";
 var Body = react_email_components.Body,
   Button = react_email_components.Button,
   Container = react_email_components.Container,
@@ -12,13 +12,11 @@ var Body = react_email_components.Body,
   Section = react_email_components.Section,
   Text = react_email_components.Text;
 import * as React from "react";
-var baseUrl = process.env.VERCEL_URL ? "https://".concat(process.env.VERCEL_URL) : "";
-export var DatalandInviteTeammateGeneral = function DatalandInviteTeammateGeneral(_ref) {
-  var inviterName = _ref.inviterName,
-    inviterEmail = _ref.inviterEmail,
-    workspaceName = _ref.workspaceName,
-    workspaceLink = _ref.workspaceLink;
-  return /*#__PURE__*/React.createElement(Html, null, /*#__PURE__*/React.createElement(Head, null), /*#__PURE__*/React.createElement(Preview, null, inviterName !== null && inviterName !== void 0 ? inviterName : "Your teammate", " invited you to join", " ", workspaceName ? "the ".concat(workspaceName, " workspace ") : "a workspace ", " on Dataland.io"), /*#__PURE__*/React.createElement(Body, {
+export var DatalandVerifyDomain = function DatalandVerifyDomain(_ref) {
+  var domain = _ref.domain,
+    settingsLink = _ref.settingsLink,
+    verificationCode = _ref.verificationCode;
+  return /*#__PURE__*/React.createElement(Html, null, /*#__PURE__*/React.createElement(Head, null), /*#__PURE__*/React.createElement(Preview, null, "Verify the domain ", domain, " for Dataland"), /*#__PURE__*/React.createElement(Body, {
     style: main
   }, /*#__PURE__*/React.createElement(Container, {
     style: container,
@@ -31,35 +29,29 @@ export var DatalandInviteTeammateGeneral = function DatalandInviteTeammateGenera
     style: logo
   }), /*#__PURE__*/React.createElement(Heading, {
     style: heading
-  }, inviterName !== null && inviterName !== void 0 ? inviterName : "Your teammate", " invited you to join", " ", workspaceName ? "the ".concat(workspaceName, " workspace") : "a workspace ", " ", "on Dataland.io"), /*#__PURE__*/React.createElement(Text, {
+  }, "Verify the domain ", domain, " for Dataland"), /*#__PURE__*/React.createElement(Text, {
+    style: code
+  }, verificationCode), /*#__PURE__*/React.createElement(Text, {
     style: paragraph
-  }, inviterName !== null && inviterName !== void 0 ? inviterName : "Your teammate", " ", /*#__PURE__*/React.createElement("span", {
-    className: "font-semibold"
-  }, inviterEmail ? "(".concat(inviterEmail, ")") : ""), " ", "invited you to join", " ", /*#__PURE__*/React.createElement("span", {
-    className: "font-semibold"
-  }, workspaceName ? "the ".concat(workspaceName, " workspace ") : "a workspace "), "on Dataland. Dataland makes it easy for your whole team to browse data from your data warehouse."), /*#__PURE__*/React.createElement(Container, {
+  }, "Go to workspace settings to enter the code."), /*#__PURE__*/React.createElement(Container, {
     style: spacer
   }), /*#__PURE__*/React.createElement(Button, {
     pY: 11,
     pX: 23,
     style: button,
-    href: workspaceLink
-  }, "Accept invite"), /*#__PURE__*/React.createElement(Container, {
+    href: settingsLink
+  }, "Open settings"), /*#__PURE__*/React.createElement(Container, {
     style: spacer
   }), /*#__PURE__*/React.createElement(Container, {
     style: spacer
-  }), /*#__PURE__*/React.createElement(Text, {
-    style: paragraph
-  }, "You can also copy + paste this link into your browser:"), /*#__PURE__*/React.createElement(Link, {
-    href: workspaceLink,
-    style: verify_link
-  }, workspaceLink), /*#__PURE__*/React.createElement(Hr, {
+  }), /*#__PURE__*/React.createElement(Hr, {
     style: hr
   }), /*#__PURE__*/React.createElement(Link, {
     href: "https://dataland.io",
     style: reportLink
   }, "Dataland.io: the ultimate data browser"))));
 };
+export default DatalandVerifyDomain;
 var logo = {
   width: 42,
   height: 38,
@@ -89,14 +81,6 @@ var paragraph = {
   lineHeight: "1.4",
   color: "#3c4149"
 };
-var quote = {
-  paddingLeft: "20px",
-  fontSize: "15px",
-  lineHeight: "1.4",
-  color: "#3c4149",
-  borderLeft: "4px solid #dfe1e4",
-  fontStyle: "italic"
-};
 var buttonContainer = {
   padding: "12px 0 24px",
   align: "left"
@@ -123,12 +107,11 @@ var hr = {
   margin: "42px 0 26px"
 };
 var code = {
-  fontFamily: "monospace",
-  fontWeight: "700",
-  padding: "1px 4px",
-  backgroundColor: "#dfe1e4",
+  width: "fit-content",
+  fontWeight: "600",
   letterSpacing: "-0.3px",
-  fontSize: "21px",
+  fontSize: "48px",
+  lineHeight: "1.2",
   borderRadius: "4px",
   color: "#3c4149"
 };

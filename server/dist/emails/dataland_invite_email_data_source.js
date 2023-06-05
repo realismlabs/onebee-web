@@ -15,7 +15,6 @@ import * as React from "react";
 export var DatalandInviteTeammateDataSource = function DatalandInviteTeammateDataSource(_ref) {
   var inviterName = _ref.inviterName,
     inviterEmail = _ref.inviterEmail,
-    customMessage = _ref.customMessage,
     workspaceName = _ref.workspaceName,
     workspaceLink = _ref.workspaceLink;
   return /*#__PURE__*/React.createElement(Html, null, /*#__PURE__*/React.createElement(Head, null), /*#__PURE__*/React.createElement(Preview, null, inviterName !== null && inviterName !== void 0 ? inviterName : "Someone", " invited you to join", " ", workspaceName !== null && workspaceName !== void 0 ? workspaceName : "a workspace", " on Dataland.io"), /*#__PURE__*/React.createElement(Body, {

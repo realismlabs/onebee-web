@@ -15,6 +15,8 @@ import {
   getWorkspaceInvites,
   deleteWorkspaceInvite,
   updateMembership,
+  sendEmailVerifyDomainSendGrid,
+  validateDomainVerificationCode,
 } from "@/utils/api";
 import {
   useQuery,
@@ -38,6 +40,7 @@ import {
   capitalizeString,
   getInitials,
   isCommonEmailProvider,
+  validateEmail,
 } from "@/utils/util";
 import { v4 as uuidv4 } from "uuid";
 import InvitePeopleDialog from "@/components/InvitePeopleDialog";
@@ -648,7 +651,10 @@ export default function Members() {
     (membership: any) => membership.userId === currentUser?.id
   );
 
-  const handleAddAllowedDomain = async (domain: string) => {
+  const handleAddAllowedDomainStep1 = async (
+    domain: string,
+    recipientEmail: string
+  ) => {
     if (!domain) {
       setAddAllowedDomainErrorMessage("Please enter a domain.");
       return;
@@ -667,41 +673,106 @@ export default function Members() {
       setAddAllowedDomainErrorMessage("Domain is already allowed.");
       return;
     }
+
+    // verify if email is valid
+    const isEmailValid = validateEmail(recipientEmail);
+    if (!isEmailValid) {
+      setRecipientEmailErrorMessage("Please enter a valid email.");
+      return;
+    }
+    // verify if email ends in the domain
+    const isEmailInDomain = recipientEmail.endsWith(domain);
+    if (!isEmailInDomain) {
+      setRecipientEmailErrorMessage(
+        "Please enter an email that ends with the domain."
+      );
+      return;
+    }
+
+    const emailData = {
+      jwt: await getToken({ template: "test" }),
+      recipientEmail: recipientEmail,
+      domain: domain,
+      settingsLink: `https://dataland.io/workspace/${currentWorkspace.id}/settings/members`,
+    };
+
     try {
-      const jwt = await getToken({ template: "test" });
-      const response = await updateWorkspaceMutation.mutateAsync({
-        workspaceId: currentWorkspace.id,
-        workspaceData: {
-          allowedDomains: [
-            ...currentWorkspace.allowedDomains,
-            {
-              id: uuidv4(),
-              domain: domain,
-            },
-          ],
-        },
-        jwt,
+      const email_result = await sendEmailVerifyDomainSendGrid({
+        emailData,
       });
-      if (response) {
-        closeAddAllowedDomainDialog();
+
+      if (email_result === "Email sent successfully") {
+        console.log(
+          "email sent successfully - now waiting for verification code"
+        );
+        setIsAtVerifyDomainStep2(true);
       }
-      toast(`Successfully added allowed domain`, {
-        icon: (
-          <CheckCircle
-            size={20}
-            weight="fill"
-            className="text-green-500 mt-1.5"
-          />
-        ),
-      });
     } catch (error) {
-      console.error("Error adding allowed domain:", error);
-      toast(`Unexpected error occurred`, {
-        icon: (
-          <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
-        ),
-        description: `Error removing invite + ${error}`,
-      });
+      console.error("Error sending email:", error);
+    }
+  };
+
+  const handleAddAllowedDomainStep2 = async (
+    domain: string,
+    verificationCodeInput: string
+  ) => {
+    if (!verificationCodeInput) {
+      setAddAllowedDomainErrorMessage("Please enter a verification code.");
+      return;
+    }
+
+    const jwt = await getToken({ template: "test" });
+
+    // test validate verification code
+    const isVerificationCodeValid = await validateDomainVerificationCode(
+      "whatever_verification_request_id",
+      verificationCodeInput,
+      jwt
+    );
+
+    if (!isVerificationCodeValid) {
+      setVerificationCodeErrorMessage("Incorrect code, please try again.");
+      return;
+    }
+    if (isVerificationCodeValid) {
+      console.log("verification code is valid");
+      setVerificationCodeErrorMessage("");
+      try {
+        const jwt = await getToken({ template: "test" });
+        const response = await updateWorkspaceMutation.mutateAsync({
+          workspaceId: currentWorkspace.id,
+          workspaceData: {
+            allowedDomains: [
+              ...currentWorkspace.allowedDomains,
+              {
+                id: uuidv4(),
+                domain: domain,
+              },
+            ],
+          },
+          jwt,
+        });
+        if (response) {
+          closeAddAllowedDomainDialog();
+        }
+        toast(`Successfully added allowed domain`, {
+          icon: (
+            <CheckCircle
+              size={20}
+              weight="fill"
+              className="text-green-500 mt-1.5"
+            />
+          ),
+        });
+      } catch (error) {
+        console.error("Error adding allowed domain:", error);
+        toast(`Unexpected error occurred`, {
+          icon: (
+            <XCircle size={20} weight="fill" className="text-red-500 mt-1.5" />
+          ),
+          description: `Error removing invite + ${error}`,
+        });
+      }
     }
   };
 
@@ -713,6 +784,16 @@ export default function Members() {
     useState("");
 
   const [allowedDomainInput, setAllowedDomainInput] = useState("");
+
+  const [recipientEmailErrorMessage, setRecipientEmailErrorMessage] =
+    useState("");
+
+  const [recipientEmail, setRecipientEmail] = useState("");
+
+  const [isAtVerifyDomainStep2, setIsAtVerifyDomainStep2] = useState(false);
+  const [verificationCodeInput, setVerificationCodeInput] = useState("");
+  const [verificationCodeErrorMessage, setVerificationCodeErrorMessage] =
+    useState("");
 
   const openAddAllowedDomainDialog = () => {
     setIsAddAllowedDomainDialogOpen(true);
@@ -822,48 +903,129 @@ export default function Members() {
                             <Dialog.Title className="text-[14px]">
                               Add allowed domain
                             </Dialog.Title>
-                            <Dialog.Description className="text-[13px] mt-[16px] gap-0 flex flex-col">
-                              <input
-                                type={"text"}
-                                id="workspaceNameInput"
-                                value={allowedDomainInput}
-                                onChange={(e) =>
-                                  setAllowedDomainInput(e.target.value)
-                                }
-                                placeholder="i.e. acme.com"
-                                className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
-                                ${
-                                  addAllowedDomainErrorMessage !== ""
-                                    ? "border-red-9"
-                                    : "border-slate-6"
-                                }
-                                focus:outline-none focus:ring-blue-600
-                                `}
-                              />
-                              {addAllowedDomainErrorMessage && (
-                                <div className="text-red-9 text-[13px] mt-[12px]">
-                                  {addAllowedDomainErrorMessage}
-                                </div>
+                            <Dialog.Description className="text-[13px] mt-[16px] gap-2 flex flex-col">
+                              {isAtVerifyDomainStep2 == false && (
+                                <>
+                                  <label>Domain</label>
+                                  <input
+                                    type={"text"}
+                                    id="workspaceNameInput"
+                                    value={allowedDomainInput}
+                                    onChange={(e) =>
+                                      setAllowedDomainInput(e.target.value)
+                                    }
+                                    placeholder="acme.com"
+                                    className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
+                                  ${
+                                    addAllowedDomainErrorMessage !== ""
+                                      ? "border-red-9"
+                                      : "border-slate-6"
+                                  }
+                                  focus:outline-none focus:ring-blue-600
+                                  `}
+                                  />
+                                  {addAllowedDomainErrorMessage && (
+                                    <div className="text-red-9 text-[13px] mt-[12px]">
+                                      {addAllowedDomainErrorMessage}
+                                    </div>
+                                  )}
+                                  <label className="mt-2">
+                                    Email for domain
+                                  </label>
+                                  <input
+                                    type={"text"}
+                                    id="recipientEmail"
+                                    value={recipientEmail}
+                                    onChange={(e) =>
+                                      setRecipientEmail(e.target.value)
+                                    }
+                                    placeholder="someone@acme.com"
+                                    className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
+                                  ${
+                                    recipientEmailErrorMessage !== ""
+                                      ? "border-red-9"
+                                      : "border-slate-6"
+                                  }
+                                  focus:outline-none focus:ring-blue-600
+                                  `}
+                                  />
+                                  {recipientEmailErrorMessage && (
+                                    <div className="text-red-9 text-[13px]">
+                                      {recipientEmailErrorMessage}
+                                    </div>
+                                  )}
+                                  <div className="flex w-full justify-end mt-[24px] gap-2">
+                                    <button
+                                      className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                                      onClick={() => {
+                                        closeAddAllowedDomainDialog();
+                                      }}
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px]"
+                                      onClick={() => {
+                                        handleAddAllowedDomainStep1(
+                                          allowedDomainInput,
+                                          recipientEmail
+                                        );
+                                      }}
+                                    >
+                                      Continue
+                                    </button>
+                                  </div>
+                                </>
+                              )}
+                              {isAtVerifyDomainStep2 == true && (
+                                <>
+                                  <label>Verification code</label>
+                                  <input
+                                    type={"text"}
+                                    id="workspaceNameInput"
+                                    value={verificationCodeInput}
+                                    onChange={(e) =>
+                                      setVerificationCodeInput(e.target.value)
+                                    }
+                                    placeholder="acme.com"
+                                    className={`bg-slate-3 border text-slate-12 text-[14px] rounded-md px-3 py-2 placeholder-slate-9 w-full
+                                  ${
+                                    verificationCodeErrorMessage !== ""
+                                      ? "border-red-9"
+                                      : "border-slate-6"
+                                  }
+                                  focus:outline-none focus:ring-blue-600
+                                  `}
+                                  />
+                                  {verificationCodeErrorMessage && (
+                                    <div className="text-red-9 text-[13px] mt-[12px]">
+                                      {verificationCodeErrorMessage}
+                                    </div>
+                                  )}
+                                  <div className="flex w-full justify-end mt-[24px] gap-2">
+                                    <button
+                                      className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
+                                      onClick={() => {
+                                        closeAddAllowedDomainDialog();
+                                      }}
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px]"
+                                      onClick={() => {
+                                        handleAddAllowedDomainStep2(
+                                          allowedDomainInput,
+                                          verificationCodeInput
+                                        );
+                                      }}
+                                    >
+                                      Add domain
+                                    </button>
+                                  </div>
+                                </>
                               )}
                             </Dialog.Description>
-                            <div className="flex w-full justify-end mt-[24px] gap-2">
-                              <button
-                                className="ml-auto bg-slate-3 hover:bg-slate-4 text-[13px] text-slate-12 px-[12px] py-[4px] rounded-[4px]"
-                                onClick={() => {
-                                  closeAddAllowedDomainDialog();
-                                }}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className="bg-blue-600 hover:bg-blue-700 text-[13px] px-[12px] py-[6px] h-[32px] border border-slate-4 cursor-pointer rounded-[6px]"
-                                onClick={() => {
-                                  handleAddAllowedDomain(allowedDomainInput);
-                                }}
-                              >
-                                Add domain
-                              </button>
-                            </div>
                           </div>
                           {/* Close */}
                           <div className="rounded-[4px] text-[13px] absolute right-[16px] top-[16px] z-40">

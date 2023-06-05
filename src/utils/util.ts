@@ -274,3 +274,8 @@ export function isCommonEmailProvider(str: string) {
 export function svgToBase64(svg: string) {
   return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
 }
+
+export function validateEmail(email: string) {
+  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return pattern.test(email);
+}

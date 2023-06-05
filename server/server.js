@@ -11,6 +11,7 @@ const { Pool } = pkg;
 import { DatalandInviteTeammateForTable } from './dist/emails/dataland_invite_email_table.js';
 import { DatalandInviteTeammateGeneral } from './dist/emails/dataland_invite_email_general.js';
 import { DatalandInviteTeammateDataSource } from './dist/emails/dataland_invite_email_data_source.js';
+import { DatalandVerifyDomain } from './dist/emails/dataland_verify_domain.js';
 
 const port = process.env.PORT || 5002;
 const app = express();
@@ -1035,6 +1036,63 @@ app.post('/api/send-email-invite-teammate', ClerkExpressRequireAuth(), (req, res
   } else {
     res.status(500).send("Invalid email type");
     return;
+  }
+});
+
+app.post('/api/send-email-verify-domain', ClerkExpressRequireAuth(), (req, res) => {
+  // Get data from the request body
+  const {
+    recipientEmail,
+    domain,
+    settingsLink,
+  } = req.body;
+
+  const verificationCode = 123456; // TODO: Replace with a real verification codes
+
+  console.log("verify-domain request body: ", req.body); // logging the body
+
+  const emailHtml = render(React.createElement(DatalandVerifyDomain, {
+    domain,
+    settingsLink,
+    verificationCode,
+  }));
+
+  const options = {
+    // from: 'Dataland <notify@em3119.mail.dataland.io>', // from your `mailed-by` domain
+    from: `Dataland Support <${process.env.SENDGRID_FROM_EMAIL}`,
+    replyTo: 'Dataland Support <support@dataland.io>',
+    to: recipientEmail,
+    subject: `Verify the domain ${domain} for Dataland`,
+    html: emailHtml,
+  };
+  sendgrid.send(options)
+    .then(() => {
+      console.log('Email sent successfully');
+      res.status(200).send("Email sent successfully");
+    }
+    )
+    .catch((error) => {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+      res.status(500).send("Error sending email");
+    });
+});
+
+// Fake endpoint to verify the domain
+app.post('/api/verify-domain', ClerkExpressRequireAuth(), (req, res) => {
+  const {
+    verificationRequestId,
+    verificationCode,
+  } = req.body;
+
+  console.log("verify-domain request body: ", req.body); // logging the body
+
+  if (verificationCode === '123456') {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
   }
 });
 
